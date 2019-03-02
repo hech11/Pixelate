@@ -13,7 +13,29 @@
 	// This is extern is declared in the "Application.h" file.
 	extern RGF::Application* RGF::CreateApplication(); // Should return a Heap allocated application.
 
+	#include "RetroGF/Log.h"
 	int main() {
+
+		RGF::Log logger;
+		logger.Init();
+
+		int a = 123;
+
+		RGF_MSG("Hello World: %d\n", a);
+		RGF_TRACE("Hello World: %d\n", a);
+		RGF_WARN("Hello World: %d\n", a);
+		RGF_ERROR("Hello World: %d\n", a);
+		RGF_CRIT("Hello World: %d\n", a);
+
+		std::cout << "-------" << std::endl;
+
+		RGF_CORE_MSG("Hello World: %d\n", a);
+		RGF_CORE_TRACE("Hello World: %d\n", a);
+		RGF_CORE_WARN("Hello World: %d\n", a);
+		RGF_CORE_ERROR("Hello World: %d\n", a);
+		RGF_CORE_CRIT("Hello World: %d\n", a);
+
+
 		auto app = RGF::CreateApplication();
 		app->Run();
 		delete app;

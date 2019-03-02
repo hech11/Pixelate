@@ -6,7 +6,9 @@
 class SandboxApp : public RGF::Application {
 
 	public:	
-		SandboxApp() {}
+		SandboxApp() {
+			RGF_TRACE("Sandbox App was created!");
+		}
 		~SandboxApp() {}
 
 };

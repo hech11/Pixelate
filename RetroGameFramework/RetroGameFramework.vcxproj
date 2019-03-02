@@ -93,7 +93,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -105,7 +105,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -119,7 +119,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -137,7 +137,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -150,10 +150,12 @@
     <ClInclude Include="src\RetroGF\Application.h" />
     <ClInclude Include="src\RetroGF\Core.h" />
     <ClInclude Include="src\RetroGF\EntryPoint.h" />
+    <ClInclude Include="src\RetroGF\Log.h" />
     <ClInclude Include="src\RetroGF\RGFpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp" />
+    <ClCompile Include="src\RetroGF\Log.cpp" />
     <ClCompile Include="src\RetroGF\RGFpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
