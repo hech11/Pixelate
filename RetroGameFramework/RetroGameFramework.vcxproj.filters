@@ -27,6 +27,9 @@
     <ClInclude Include="src\RetroGF\RGFpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RetroGF\EntryPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp">

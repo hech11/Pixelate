@@ -4,3 +4,11 @@
 
 
 #include "RetroGF/Application.h"
+
+
+// ---- ENTRY POINT ---- \\.
+#include "RetroGF/EntryPoint.h"
+// ---- ---------- ---- \\.
+
+
+

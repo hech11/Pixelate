@@ -1,5 +1,7 @@
 #include <RetroGF.h>
 
+// Example application using RGF
+
 
 class SandboxApp : public RGF::Application {
 
@@ -9,10 +11,6 @@ class SandboxApp : public RGF::Application {
 
 };
 
-
-
-int main() {
-	SandboxApp* app = new SandboxApp;
-	app->Run();
-	delete app;
+RGF::Application* RGF::CreateApplication() {
+	return new SandboxApp;
 }

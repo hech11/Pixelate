@@ -149,6 +149,7 @@
     <ClInclude Include="src\RetroGF.h" />
     <ClInclude Include="src\RetroGF\Application.h" />
     <ClInclude Include="src\RetroGF\Core.h" />
+    <ClInclude Include="src\RetroGF\EntryPoint.h" />
     <ClInclude Include="src\RetroGF\RGFpch.h" />
   </ItemGroup>
   <ItemGroup>
