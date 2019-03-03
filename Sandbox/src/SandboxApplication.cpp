@@ -1,6 +1,6 @@
 #include <RetroGF.h>
 
-// Example application using RGF
+// An example application using RGF
 
 
 class SandboxApp : public RGF::Application {
