@@ -24,9 +24,6 @@
     <ClInclude Include="src\RetroGF\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\RGFpch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RetroGF\EntryPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,15 +42,27 @@
     <ClInclude Include="src\RetroGF\Events\MouseEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RetroGF\Platform\Windows\WindowsWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\WindowImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RGFpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RetroGF\RGFpch.cpp">
+    <ClCompile Include="src\RetroGF\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RetroGF\Log.cpp">
+    <ClCompile Include="src\RetroGF\Platform\Windows\WindowsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RGFpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
