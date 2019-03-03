@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RetroGF/Core.h"
-#include "RetroGF/RGFpch.h"
+#include "RGFpch.h"
 
 #include "RetroGF/Events/Event.h"
 
