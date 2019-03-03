@@ -30,6 +30,7 @@
     <ClInclude Include="src\RetroGF\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="src\RetroGF\Events\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,6 +52,8 @@
     <ClInclude Include="src\RGFpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+>>>>>>> parent of fe0a850... Implemented an event system.
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp">

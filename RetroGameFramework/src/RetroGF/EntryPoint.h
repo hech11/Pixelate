@@ -1,7 +1,5 @@
 #pragma once
-
-// ! The entrypoint only supports windows ! \\.
-// ! This means that other platforms cannot run RGF yet ! \\.
+// ! Only supports windows ! \\.
 
 
 // The entry point is handled via RGF.
@@ -13,18 +11,14 @@
 #ifdef RGF_PLATFORM_WINDOWS
 
 	// This is extern is declared in the "Application.h" file.
-	extern RGF::Application* RGF::CreateApplication(); // Should return a Heap allocated "Application".
+	extern RGF::Application* RGF::CreateApplication(); // Should return a Heap allocated application.
 
 	#include "RetroGF/Log.h"
-
-
 	int main() {
 
 		RGF::Log logger;
 		logger.Init();
 
-
-		// Testing the logger
 		int a = 123;
 
 		RGF_MSG("Hello World: %d\n", a);

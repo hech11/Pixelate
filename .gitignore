@@ -3,4 +3,4 @@ bin/
 intermediates/
 
 
-*.user/
+*.user

@@ -1,10 +1,9 @@
 #pragma once
 
+// Common marcos that are used when developing RGF
 
 
-// Common marcos that are used when developing RGF.
 
-//TODO: i should really add the PCH here.
 
 
 #ifdef RGF_PLATFORM_WINDOWS

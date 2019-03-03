@@ -2,9 +2,6 @@
 #include "Application.h"
 
 
-#include "Events/Event.h"
-#include "Events/KeyEvents.h"
-
 namespace RGF {
 
 	Application::Application() {
