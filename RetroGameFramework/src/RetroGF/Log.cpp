@@ -35,7 +35,7 @@ namespace RGF {
 	#define PRINT_MSG(FuncName, SysTime, message, ...) va_list args;\
 											  va_start(args, message);\
 											  printf("[%s][%s][%s]:\t", SysTime.c_str(), m_Name.c_str(), FuncName);\
-											  vprintf(message, args)
+											  vprintf(message, args);\
 
 
 

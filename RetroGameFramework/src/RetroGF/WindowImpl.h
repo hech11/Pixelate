@@ -4,6 +4,8 @@
 #include "RetroGF/Core.h"
 #include "RGFpch.h"
 
+#include "RetroGF/Events/Event.h"
+
 /*  
 	This is a representation of a window.
 	It is only a interface containing pure virtual functions.
@@ -36,6 +38,8 @@ namespace RGF {
 	class RGF_API WindowImpl {
 
 		public :
+			// function pointer used to create a callback events. From window to "Application".
+			using EventCallbackFncPtr = std::function<void(Event&)>;
 
 			virtual ~WindowImpl(){}
 
@@ -48,6 +52,7 @@ namespace RGF {
 			virtual void SetVsync(bool enabled) = 0;
 			virtual void SetTitle(const std::string& title) = 0;
 						
+			virtual inline void SetEventCallback(const EventCallbackFncPtr& callback) = 0;
 			virtual inline int GetWidth() const = 0;
 			virtual inline int GetHeight() const = 0;
 			virtual inline const std::string& GetTitle() const = 0;

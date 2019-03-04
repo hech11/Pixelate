@@ -5,6 +5,11 @@
 #include "RetroGF/Platform/Windows/WindowsWindow.h"
 
 
+#include "Events/Event.h"
+#include "Events/KeyEvents.h"
+#include "Events/WindowEvents.h"
+
+
 // This would be inherited from another class from CLIENT side.
 // The application class is the main 'hub' of all RGF compondents.
 
@@ -18,13 +23,20 @@ namespace RGF {
 
 		public :
 			Application();
-			~Application();
+			virtual ~Application();
 
 
 			void Run();
+			void OnEvent(Event& e);
 
-			// TODO: This may want to be private?
-			std::unique_ptr<WindowImpl> Window;
+
+		private :
+			std::unique_ptr<WindowImpl> m_Window;
+			bool m_IsRunning = true;
+
+		private :
+			// Callbacks. ( Should all return bools )
+			bool OnWindowClose(WindowCloseEvent& e);
 
 	};
 

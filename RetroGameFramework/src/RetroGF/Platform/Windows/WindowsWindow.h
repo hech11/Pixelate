@@ -40,10 +40,11 @@ namespace RGF {
 			void SetVsync(bool enabled) override;
 			void SetTitle(const std::string& title) override { m_Data.props.Title = title; }
 
-			inline const std::string& GetTitle() const { return m_Data.props.Title; };
-			inline bool IsVsyncEnabled() const { return m_Data.Vsync; };
-			inline int GetWidth() const { return m_Data.props.Width; };
-			inline int GetHeight() const { return m_Data.props.Height; };
+			inline void SetEventCallback(const EventCallbackFncPtr& callback) override { m_Data.EventCallback = callback; }
+			inline const std::string& GetTitle() const override { return m_Data.props.Title; };
+			inline bool IsVsyncEnabled() const override { return m_Data.Vsync; };
+			inline int GetWidth() const override { return m_Data.props.Width; };
+			inline int GetHeight() const override { return m_Data.props.Height; };
 
 		private :
 			GLFWwindow* m_Window;
@@ -54,14 +55,13 @@ namespace RGF {
 			
 				WindowProps props;
 				bool Vsync;
+
+				// Implement the callback using "SetEventCallback". Declared in "WindowImpl".
+				EventCallbackFncPtr EventCallback;
 			};
 
 
-			/*
-				"m_Data" should create events callbacks, dispatch events and create the window. 
-				Right now "m_Data" is used to create the window. This is because 
-				an event callback function has not been implemented in "Application" yet.
-			*/
+			// "m_Data" should create events callbacks from GLFW and create the window. 
 			WindowData m_Data;
 	};
 }
