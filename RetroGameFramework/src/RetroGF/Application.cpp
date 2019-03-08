@@ -4,18 +4,25 @@
 
 #include "RetroGF/Platform/Windows/WindowsWindow.h"
 
+#include <GLAD/include/glad.h>
+
 namespace RGF {
 
-	Application::Application() {
+	Application* Application::s_Instance = nullptr;
 
-		// TODO: Find out if this is safe or not...it should be safe.
-		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create());
+	Application::Application() {
+		s_Instance = this;
+
+
+		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create()); // TODO: Find out if this is safe or not...it should be safe.
+		m_ImguiLayer = new ImguiLayer();
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
+		PushOverlay(m_ImguiLayer);
 	}
 	Application::~Application() {
-
 	}
 
 
@@ -23,8 +30,8 @@ namespace RGF {
 		m_LayerStack.PushLayer(layer);
 
 	}
-	void Application::PushOverlay(Layer* layer) {
-
+	void Application::PushOverlay(Layer* overlay) {
+		m_LayerStack.PushOverlay(overlay);
 	}
 
 
@@ -49,10 +56,17 @@ namespace RGF {
 	void Application::Run() {
 		while (m_IsRunning) {
 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate();
 			}
+
+			m_ImguiLayer->Start();
+			for (Layer* layer : m_LayerStack.GetLayerStack()) {
+				layer->OnImguiRender();
+			}
+			m_ImguiLayer->End();
 
 			m_Window->OnUpdate();
 		}

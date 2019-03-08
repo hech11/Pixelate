@@ -44,6 +44,9 @@ namespace RGF {
 			inline int GetWidth() const override { return m_Data.props.Width; };
 			inline int GetHeight() const override { return m_Data.props.Height; };
 
+			inline void* GetNativeWindow() const override { return m_Window; }
+
+
 		private :
 			GLFWwindow* m_Window;
 

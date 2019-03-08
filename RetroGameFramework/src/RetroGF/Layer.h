@@ -36,6 +36,7 @@ namespace RGF {
 
 			virtual void OnUpdate() {}
 			virtual void OnEvent(Event& e) {}
+			virtual void OnImguiRender() {}
 
 			virtual void Init() {}
 			virtual void ShutDown() {}

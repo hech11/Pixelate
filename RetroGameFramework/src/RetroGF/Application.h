@@ -11,6 +11,7 @@
 
 
 #include "RetroGF/LayerStack.h"
+#include "RetroGF/Imgui/ImguiLayer.h"
 
 
 // This would be inherited from another class from CLIENT side.
@@ -33,13 +34,17 @@ namespace RGF {
 			void OnEvent(Event& e);
 
 			void PushLayer(Layer* layer);
-			void PushOverlay(Layer* layer);
+			void PushOverlay(Layer* overlay);
 
+			WindowImpl& GetWindow() { return *m_Window; }
+			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			std::unique_ptr<WindowImpl> m_Window;
+			ImguiLayer* m_ImguiLayer;
 			LayerStack m_LayerStack;
 
 			bool m_IsRunning = true;
+			static Application* s_Instance;
 
 		private :
 			// Callbacks. ( Should all return bools )
