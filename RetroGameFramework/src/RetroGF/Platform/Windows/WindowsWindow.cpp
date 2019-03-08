@@ -7,6 +7,9 @@
 #include "RetroGF/Events/MouseEvents.h"
 
 
+#include <GLAD/include/glad.h>
+#include <GLFW/include/GLFW/glfw3.h>
+
 namespace RGF {
 
 
@@ -57,7 +60,10 @@ namespace RGF {
 		
 		glfwSetWindowUserPointer(m_Window, &m_Data); // Used to access "m_Data" for sending the events to "OnEvent" in "Application".
 
-
+		int GladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		if (!GladStatus) {
+			RGF_CORE_ERROR("Failed to load GLAD!\n");
+		}
 
 
 		// Setting glfw callbacks.

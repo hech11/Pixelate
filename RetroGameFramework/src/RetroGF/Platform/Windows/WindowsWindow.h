@@ -5,7 +5,6 @@
 
 #include "RetroGF/WindowImpl.h"
 
-#include <GLFW/glfw3.h>
 
 
 // This is the implementation of the "WindowsImpl.h" pure virtual functions.
@@ -22,7 +21,7 @@
  // TODO: "SetVsync" is the only "attribute" function that is not defined here. I should look into this.
 
 
-
+struct GLFWwindow;
 namespace RGF {
 
 	class RGF_API WindowsWindow : public WindowImpl {
