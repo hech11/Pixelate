@@ -41,7 +41,7 @@ namespace RGF {
 			RGF_CORE_ERROR("Failed to init GLFW!\n");
 			return;
 		}
-
+		
 
 		m_Window = glfwCreateWindow(m_Data.props.Width, m_Data.props.Height, m_Data.props.Title.c_str(), nullptr, nullptr);
 		if (m_Window == nullptr) {
@@ -63,7 +63,6 @@ namespace RGF {
 		// Setting glfw callbacks.
 		// First create the event, set this window's variables to the callbacks data, call the "OnEvent" function in "Application" and pass the created event by ref.
 
-		// TODO: Implement the rest of the callbacks. Such as WindowMoved, WindowLosedFocus, WindowGainedFocus.
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			// *Example of setting a callback*.
 
@@ -153,7 +152,23 @@ namespace RGF {
 			MouseScrolledEvent event((int)xScroll, (int)yScroll);
 			data.EventCallback(event);
 		});
+		glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xPos, int yPos) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			WindowMovedEvent event;
+			data.EventCallback(event);
+		});
+		glfwSetWindowFocusCallback(m_Window, [](GLFWwindow* window, int focused) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
+			if (focused) {
+				WindowGainedFocusEvent event;
+				data.EventCallback(event);
+			} else {
+				WindowLosedFocusEvent event;
+				data.EventCallback(event);
+			}
+
+		});
 
 		RGF_CORE_TRACE("Created the window!\n");
 

@@ -2,12 +2,15 @@
 
 #include "RetroGF/Core.h"
 #include "RetroGF/WindowImpl.h"
-#include "RetroGF/Platform/Windows/WindowsWindow.h"
 
 
-#include "Events/Event.h"
-#include "Events/KeyEvents.h"
-#include "Events/WindowEvents.h"
+#include "RetroGF/Events/Event.h"
+#include "RetroGF/Events/KeyEvents.h"
+#include "RetroGF/Events/WindowEvents.h"
+
+
+
+#include "RetroGF/LayerStack.h"
 
 
 // This would be inherited from another class from CLIENT side.
@@ -29,9 +32,13 @@ namespace RGF {
 			void Run();
 			void OnEvent(Event& e);
 
+			void PushLayer(Layer* layer);
+			void PushOverlay(Layer* layer);
 
 		private :
 			std::unique_ptr<WindowImpl> m_Window;
+			LayerStack m_LayerStack;
+
 			bool m_IsRunning = true;
 
 		private :

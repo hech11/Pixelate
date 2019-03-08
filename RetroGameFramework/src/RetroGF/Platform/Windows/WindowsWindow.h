@@ -22,9 +22,8 @@
  // TODO: "SetVsync" is the only "attribute" function that is not defined here. I should look into this.
 
 
+
 namespace RGF {
-
-
 
 	class RGF_API WindowsWindow : public WindowImpl {
 		public :
@@ -64,4 +63,5 @@ namespace RGF {
 			// "m_Data" should create events callbacks from GLFW and create the window. 
 			WindowData m_Data;
 	};
+
 }

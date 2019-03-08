@@ -10,6 +10,12 @@
 #include "RetroGF/Events/MouseEvents.h"
 #include "RetroGF/Events/WindowEvents.h"
 
+
+#include "RetroGF/LayerStack.h"
+#include "RetroGF/Layer.h"
+
+
+
 // ---- ENTRY POINT ---- \\.
 #include "RetroGF/EntryPoint.h"
 // ---- ---------- ---- \\.

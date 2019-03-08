@@ -12,9 +12,7 @@
 
 #ifdef RGF_PLATFORM_WINDOWS
 
-	// This is extern is declared in the "Application.h" file.
-	extern RGF::Application* RGF::CreateApplication(); // Should return a Heap allocated "Application".
-
+	
 	#include "RetroGF/Log.h"
 
 
