@@ -4,6 +4,9 @@
 
 #include "RetroGF/Application.h"
 
+#include "RetroGF/FileSystem.h"
+
+
 // Events.
 #include "RetroGF/Events/Event.h"
 #include "RetroGF/Events/KeyEvents.h"

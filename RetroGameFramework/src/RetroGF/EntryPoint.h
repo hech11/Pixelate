@@ -17,14 +17,16 @@
 
 
 	int main() {
+		using namespace RGF;
 
-		RGF::Log logger;
-		logger.Init();
+		Log Logger;
+		Logger.Init();
 
+		FileSystem FileSys;
 
-		auto app = RGF::CreateApplication();
-		app->Run();
-		delete app;
+		auto App = RGF::CreateApplication();
+		App->Run();
+		delete App;
 
 	}
 

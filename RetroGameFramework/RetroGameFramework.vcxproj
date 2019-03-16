@@ -251,6 +251,7 @@
     <ClInclude Include="src\RetroGF\Events\KeyEvents.h" />
     <ClInclude Include="src\RetroGF\Events\MouseEvents.h" />
     <ClInclude Include="src\RetroGF\Events\WindowEvents.h" />
+    <ClInclude Include="src\RetroGF\FileSystem.h" />
     <ClInclude Include="src\RetroGF\Imgui\ImguiLayer.h" />
     <ClInclude Include="src\RetroGF\Layer.h" />
     <ClInclude Include="src\RetroGF\LayerStack.h" />
@@ -270,6 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp" />
+    <ClCompile Include="src\RetroGF\FileSystem.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\BuildImguiFiles.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\ImguiLayer.cpp" />
     <ClCompile Include="src\RetroGF\LayerStack.cpp" />

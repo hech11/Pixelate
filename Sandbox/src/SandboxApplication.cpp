@@ -1,13 +1,12 @@
 #include <RetroGF.h>
 
-
-
-
 // An example application using RGF
-#include "RetroGF/Imgui/ImguiLayer.h"
+
+
+
+
+
 #include "../../IMGUI/imgui.h"
-
-
 
 // A test layer.
 class TestLayer : public RGF::Layer {
@@ -40,6 +39,14 @@ class SandboxApp : public RGF::Application {
 			RGF_TRACE("Sandbox App was created!\n");
 
 			PushLayer(new TestLayer());
+
+
+			// Testing the filesystem.
+			RGF::File TestFile("Data...data..binary data");
+			RGF::FileSystem::WriteFile("TestFolder/SubFolder/test.data", TestFile);
+
+			RGF::File ReadFile(RGF::FileSystem::ReadFile("TestFolder/SubFolder/test.data").c_str());
+			RGF_MSG("%s", ReadFile.GetData());
 		}
 		~SandboxApp() {}
 
