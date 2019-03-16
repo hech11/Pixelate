@@ -1,7 +1,11 @@
 #include <RetroGF.h>
 
 
+
+
 // An example application using RGF
+#include "RetroGF/Imgui/ImguiLayer.h"
+#include "../../IMGUI/imgui.h"
 
 
 
@@ -9,16 +13,21 @@
 class TestLayer : public RGF::Layer {
 
 	public :
-
-
 		TestLayer() : Layer("Test Layer") {}
 		~TestLayer() {}
 
-		void Init() override { RGF_TRACE(" %s Init Layer\n", m_DebugName.c_str()); }
-		void ShutDown() override { RGF_TRACE(" %s Shutdown Layer\n", m_DebugName.c_str()); }
+		void Init() override { }
+		void ShutDown() override { }
 
-		void OnUpdate() override {}
+		void OnUpdate() override { 	}
 		void OnEvent(RGF::Event& e) override {}
+
+		void OnImguiRender() override { 
+			ImGui::Begin("Testing window!");
+
+			ImGui::End();
+		}
+
 
 
 };

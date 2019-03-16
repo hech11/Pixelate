@@ -13,6 +13,9 @@
 #include "RetroGF/LayerStack.h"
 #include "RetroGF/Imgui/ImguiLayer.h"
 
+#include "RetroGF/Timer.h"
+
+
 
 // This would be inherited from another class from CLIENT side.
 // The application class is the main 'hub' of all RGF compondents.
@@ -36,6 +39,7 @@ namespace RGF {
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
 
+
 			WindowImpl& GetWindow() { return *m_Window; }
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
@@ -46,9 +50,15 @@ namespace RGF {
 			bool m_IsRunning = true;
 			static Application* s_Instance;
 
+			Timer m_AppTimer;
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);
+
+		private :
+			void OnTick();
+			void OnUpdate();
+			void OnRender();
 
 	};
 

@@ -6,6 +6,7 @@
 
 #include <GLAD/include/glad.h>
 
+
 namespace RGF {
 
 	Application* Application::s_Instance = nullptr;
@@ -21,6 +22,8 @@ namespace RGF {
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		PushOverlay(m_ImguiLayer);
+
+		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 	}
 	Application::~Application() {
 	}
@@ -54,6 +57,13 @@ namespace RGF {
 
 
 	void Application::Run() {
+		float FPS = 60.0f;
+		float Time = 0.0f;
+		float UpdateTimer = 0.0f;
+		float UpdateTick = 1.0f / FPS;
+		unsigned int Frames = 0;
+		unsigned int Updates = 0;
+
 		while (m_IsRunning) {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -62,13 +72,29 @@ namespace RGF {
 				layer->OnUpdate();
 			}
 
+
+			if (m_AppTimer.GetElapsedMillis() - UpdateTimer > UpdateTick) {
+				Updates++;
+				OnUpdate();
+				UpdateTimer += UpdateTick;
+			}
+			Frames++;
+			OnRender();
+
 			m_ImguiLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnImguiRender();
 			}
 			m_ImguiLayer->End();
-
 			m_Window->OnUpdate();
+
+			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {
+				Time += 1.0f;
+				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
+				OnTick();
+				Frames = 0;
+				Updates = 0;
+			}
 		}
 	}
 
@@ -77,5 +103,18 @@ namespace RGF {
 		m_IsRunning = false;
 		return true;
 	}
+
+
+	void Application::OnTick() {
+
+	}
+	void Application::OnUpdate() {
+
+
+	}
+	void Application::OnRender() {
+
+	}
+
 
 }

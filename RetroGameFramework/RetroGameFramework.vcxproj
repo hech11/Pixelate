@@ -131,7 +131,12 @@
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>RGF_DEBUG;_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
+    <Link />
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -143,7 +148,11 @@
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -157,11 +166,15 @@
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>RGF_RELEASE;_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Distribute|Win32'">
     <ClCompile>
@@ -175,11 +188,15 @@
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>RGF_DISTRIBUTE;_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -193,11 +210,15 @@
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Distribute|x64'">
     <ClCompile>
@@ -211,11 +232,15 @@
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\RetroGF.h" />
@@ -233,6 +258,7 @@
     <ClInclude Include="src\RetroGF\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\RGFpch.h" />
     <ClInclude Include="src\RetroGF\WindowImpl.h" />
+    <ClInclude Include="src\RetroGF\Timer.h" />
     <ClInclude Include="vendor\IMGUI\examples\imgui_impl_glfw.h" />
     <ClInclude Include="vendor\IMGUI\examples\imgui_impl_opengl3.h" />
     <ClInclude Include="vendor\IMGUI\imconfig.h" />

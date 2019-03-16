@@ -76,9 +76,12 @@ namespace RGF {
 
 
 	class RGF_API WindowMovedEvent: public Event {
+		private :
+			unsigned int m_WinPosX, m_WinPosY;
 		public:
-			WindowMovedEvent() {}
-			
+			WindowMovedEvent(int xpos, int ypos) : m_WinPosX(xpos), m_WinPosY(ypos) {}
+			inline unsigned int GetWinPosX() const { return m_WinPosX; }
+			inline unsigned int GetWinPosY() const { return m_WinPosY; }
 			EVENT_CLASS_TYPE(WindowMoved);
 	};
 

@@ -62,14 +62,14 @@ namespace RGF {
 
 		if ((m_Level != LogLevels::LAll && m_Level != LogLevels::LTrace) || m_Level == LogLevels::LNone)
 			return;
-		CHANGE_CONSOLE_COLOR(COLOR_ID::WHITE);
+		CHANGE_CONSOLE_COLOR(COLOR_ID::GREEN);
 		PRINT_MSG("Trace", GetSystemTime(), message);
 	}
 	void Log::Logger::Message(const char* message, ...) {
 
 		if ((m_Level != LogLevels::LAll && m_Level != LogLevels::LMsg) || m_Level == LogLevels::LNone)
 			return;
-		CHANGE_CONSOLE_COLOR(COLOR_ID::GREEN);
+		CHANGE_CONSOLE_COLOR(COLOR_ID::WHITE);
 		PRINT_MSG("Msg", GetSystemTime(), message);
 
 	}

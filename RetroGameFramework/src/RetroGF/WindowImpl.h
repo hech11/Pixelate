@@ -25,12 +25,13 @@ namespace RGF {
 
 	// Contains all the properties that the window will contain.
 	struct RGF_API WindowProps {
-		unsigned int Width, Height;
+		unsigned int Width, Height, xPos, yPos;
 		std::string Title;
 
 		WindowProps(unsigned int width = 1280, unsigned int height = 720,
+			unsigned int xpos = 50, unsigned int ypos = 50,
 			const std::string& title = "Retro GameFramework")
-			: Width(width), Height(height), Title(title)
+			: Width(width), Height(height), xPos(xpos), yPos(ypos), Title(title)
 		{}
 	};
 
@@ -57,6 +58,10 @@ namespace RGF {
 			virtual inline int GetHeight() const = 0;
 			virtual inline const std::string& GetTitle() const = 0;
 			virtual inline bool IsVsyncEnabled() const = 0;
+
+			virtual unsigned int GetXPos() const = 0;
+			virtual unsigned int GetYPos() const = 0;
+
 
 			virtual inline void* GetNativeWindow() const = 0;
 

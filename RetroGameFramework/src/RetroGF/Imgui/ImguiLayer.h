@@ -3,6 +3,8 @@
 #include "RetroGF/Core.h"
 #include "RetroGF/Layer.h"
 
+#include "RetroGF/Events/WindowEvents.h"
+
 
 namespace RGF {
 
@@ -14,7 +16,7 @@ namespace RGF {
 
 
 			virtual void OnUpdate() override {}
-			virtual void OnEvent(Event& e) override {}
+			virtual void OnEvent(Event& e) override{}
 
 			virtual void Init()override;
 			virtual void ShutDown()override;

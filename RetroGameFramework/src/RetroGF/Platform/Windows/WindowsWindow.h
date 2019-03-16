@@ -43,6 +43,8 @@ namespace RGF {
 			inline bool IsVsyncEnabled() const override { return m_Data.Vsync; };
 			inline int GetWidth() const override { return m_Data.props.Width; };
 			inline int GetHeight() const override { return m_Data.props.Height; };
+			inline unsigned int GetXPos() const override { return m_Data.props.xPos; };
+			inline unsigned int GetYPos() const override { return m_Data.props.yPos; };
 
 			inline void* GetNativeWindow() const override { return m_Window; }
 

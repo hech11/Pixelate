@@ -38,7 +38,6 @@ namespace RGF {
 	void WindowsWindow::StartUp(const WindowProps& props) {
 		m_Data.props = props;
 
-
 		if (!glfwInit()) {
 			glfwTerminate();
 			RGF_CORE_ERROR("Failed to init GLFW!\n");
@@ -56,8 +55,7 @@ namespace RGF {
 		glfwMakeContextCurrent(m_Window);
 		SetVsync(true);
 
-
-		
+		glfwSetWindowPos(m_Window, m_Data.props.xPos, m_Data.props.yPos);
 		glfwSetWindowUserPointer(m_Window, &m_Data); // Used to access "m_Data" for sending the events to "OnEvent" in "Application".
 
 		int GladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -160,8 +158,11 @@ namespace RGF {
 		});
 		glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xPos, int yPos) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			WindowMovedEvent event;
+			WindowMovedEvent event(xPos, yPos);
 			data.EventCallback(event);
+
+			data.props.xPos = xPos;
+			data.props.yPos = yPos;
 		});
 		glfwSetWindowFocusCallback(m_Window, [](GLFWwindow* window, int focused) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
