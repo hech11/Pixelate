@@ -248,7 +248,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Random.h" />
+    <ClInclude Include="src\RetroGF\Random.h" />
     <ClInclude Include="src\RetroGF.h" />
     <ClInclude Include="src\RetroGF\Application.h" />
     <ClInclude Include="src\RetroGF\Core.h" />
@@ -276,7 +276,7 @@
     <ClInclude Include="vendor\IMGUI\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Random.cpp" />
+    <ClCompile Include="src\RetroGF\Random.cpp" />
     <ClCompile Include="src\RetroGF\Application.cpp" />
     <ClCompile Include="src\RetroGF\FileSystem.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\BuildImguiFiles.cpp" />
@@ -350,6 +350,9 @@
     </ProjectReference>
     <ProjectReference Include="vendor\GLFW\proj\GLFW.vcxproj">
       <Project>{1cfd0671-e85b-43b1-8d44-ada5d149fc01}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\GLM\proj\GLM\GLM.vcxproj">
+      <Project>{39d2d6e0-16f5-403f-8938-32afe2b1603f}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

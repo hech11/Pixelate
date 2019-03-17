@@ -1,3 +1,4 @@
+#include "RGFpch.h"
 #include "Random.h"
 
 namespace RGF {

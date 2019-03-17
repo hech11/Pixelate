@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLAD", "RetroGameFramework\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLFW", "RetroGameFramework\vendor\GLFW\proj\GLFW.vcxproj", "{1CFD0671-E85B-43B1-8D44-ADA5D149FC01}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLM", "RetroGameFramework\vendor\GLM\proj\GLM\GLM.vcxproj", "{39D2D6E0-16F5-403F-8938-32AFE2B1603F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,18 @@ Global
 		{1CFD0671-E85B-43B1-8D44-ADA5D149FC01}.Release|x64.Build.0 = Release|x64
 		{1CFD0671-E85B-43B1-8D44-ADA5D149FC01}.Release|x86.ActiveCfg = Release|Win32
 		{1CFD0671-E85B-43B1-8D44-ADA5D149FC01}.Release|x86.Build.0 = Release|Win32
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Debug|x64.ActiveCfg = Debug|x64
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Debug|x64.Build.0 = Debug|x64
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Debug|x86.ActiveCfg = Debug|Win32
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Debug|x86.Build.0 = Debug|Win32
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Distribute|x64.ActiveCfg = Debug|x64
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Distribute|x64.Build.0 = Debug|x64
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Distribute|x86.ActiveCfg = Debug|Win32
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Distribute|x86.Build.0 = Debug|Win32
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Release|x64.ActiveCfg = Release|x64
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Release|x64.Build.0 = Release|x64
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Release|x86.ActiveCfg = Release|Win32
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +92,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{483F0B8E-102D-430F-9806-20CFE78FF3E6} = {95A20A09-90DA-4311-84FE-1A82C942BC1A}
 		{1CFD0671-E85B-43B1-8D44-ADA5D149FC01} = {95A20A09-90DA-4311-84FE-1A82C942BC1A}
+		{39D2D6E0-16F5-403F-8938-32AFE2B1603F} = {95A20A09-90DA-4311-84FE-1A82C942BC1A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EB11D425-D88A-4AE4-BB12-4B86AF92BB0A}

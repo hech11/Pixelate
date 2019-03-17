@@ -3,7 +3,7 @@
 // An example application using RGF
 
 
-
+#include "../../GLM/glm/glm.hpp"
 
 
 #include "../../IMGUI/imgui.h"
@@ -18,7 +18,19 @@ class TestLayer : public RGF::Layer {
 		void Init() override { }
 		void ShutDown() override { }
 
-		void OnUpdate() override { 	}
+		void OnUpdate() override { 
+
+			// testing the random num gen class.
+			int rnd = RGF::Random::GetRandomInRange(0, 100);
+			static int SameNum;
+			if (SameNum == rnd) {
+				RGF_WARN("\n\n\n");
+				RGF_WARN("Same number!\n");
+				RGF_WARN("\n\n\n");
+			}
+			RGF_MSG("rand nunm: %d\n", rnd);
+			SameNum = rnd;
+		}
 		void OnEvent(RGF::Event& e) override {}
 
 		void OnImguiRender() override { 

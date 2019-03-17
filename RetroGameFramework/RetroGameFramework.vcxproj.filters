@@ -90,7 +90,7 @@
     <ClInclude Include="src\RetroGF\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Random.h">
+    <ClInclude Include="src\RetroGF\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,7 +137,7 @@
     <ClCompile Include="src\RetroGF\FileSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Random.cpp">
+    <ClCompile Include="src\RetroGF\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

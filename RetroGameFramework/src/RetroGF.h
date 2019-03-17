@@ -5,6 +5,7 @@
 #include "RetroGF/Application.h"
 
 #include "RetroGF/FileSystem.h"
+#include "RetroGF/Random.h"
 
 
 // Events.
@@ -16,7 +17,6 @@
 
 #include "RetroGF/LayerStack.h"
 #include "RetroGF/Layer.h"
-
 
 
 // ---- ENTRY POINT ---- \\.
