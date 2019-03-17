@@ -1,8 +1,10 @@
 #pragma once
 
+
 #include "RGFpch.h"
 #include "RetroGF/Core.h"
 
+#ifndef RGF_DISTRIBUTE
 
 
 // Used to log messages to the console.
@@ -82,6 +84,7 @@ namespace RGF {
 	These macros are also used to disable and strip the "Log" and "Logger" code in "Distribute" builds.
 */
 
+
 #define RGF_TRACE(message, ...) RGF::Log::GetClient()->Trace(message, __VA_ARGS__ )
 #define RGF_MSG(message, ...)	RGF::Log::GetClient()->Message(message, __VA_ARGS__ )
 #define RGF_WARN(message, ...)	RGF::Log::GetClient()->Warn(message, __VA_ARGS__ )
@@ -95,4 +98,20 @@ namespace RGF {
 #define RGF_CORE_ERROR(message, ...) RGF::Log::GetCore()->Error(message, __VA_ARGS__ )
 #define RGF_CORE_CRIT(message, ...)	RGF::Log::GetCore()->Critical(message, __VA_ARGS__ )
 
+#else 
 
+#define RGF_TRACE(message, ...) 
+#define RGF_MSG(message, ...) 
+#define RGF_WARN(message, ...) 
+#define RGF_ERROR(message, ...) 
+#define RGF_CRIT(message, ...) 
+
+
+#define RGF_CORE_TRACE(message, ...) 
+#define RGF_CORE_MSG(message, ...) 
+#define RGF_CORE_WARN(message, ...)
+#define RGF_CORE_ERROR(message, ...) 
+#define RGF_CORE_CRIT(message, ...)	
+
+
+#endif

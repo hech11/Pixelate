@@ -1,3 +1,6 @@
+#ifndef RGF_DISTRIBUTE
+
+
 // dear imgui, v1.69 WIP
 // (drawing and font code)
 
@@ -3331,3 +3334,6 @@ static const char* GetDefaultCompressedFontDataTTFBase85()
 {
     return proggy_clean_ttf_compressed_data_base85;
 }
+
+
+#endif

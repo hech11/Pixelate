@@ -18,9 +18,10 @@
 
 	int main() {
 		using namespace RGF;
-
+#ifndef RGF_DISTRIBUTE
 		Log Logger;
 		Logger.Init();
+#endif
 
 		FileSystem FileSys;
 

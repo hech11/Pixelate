@@ -16,12 +16,17 @@ namespace RGF {
 
 
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create()); // TODO: Find out if this is safe or not...it should be safe.
+
+#ifndef RGF_DISTRIBUTE
 		m_ImguiLayer = new ImguiLayer();
+#endif
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+#ifndef RGF_DISTRIBUTE
 		PushOverlay(m_ImguiLayer);
+#endif
 
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 	}
@@ -80,12 +85,13 @@ namespace RGF {
 			}
 			Frames++;
 			OnRender();
-
+#ifndef RGF_DISTRIBUTE
 			m_ImguiLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnImguiRender();
 			}
 			m_ImguiLayer->End();
+#endif
 			m_Window->OnUpdate();
 
 			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {

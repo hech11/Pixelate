@@ -44,7 +44,9 @@ namespace RGF {
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			std::unique_ptr<WindowImpl> m_Window;
+#ifndef RGF_DISTRIBUTE
 			ImguiLayer* m_ImguiLayer;
+#endif
 			LayerStack m_LayerStack;
 
 			bool m_IsRunning = true;

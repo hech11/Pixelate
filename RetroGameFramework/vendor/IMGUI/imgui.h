@@ -1,3 +1,6 @@
+#ifndef RGF_DISTRIBUTE
+
+
 // dear imgui, v1.69 WIP
 // (headers)
 
@@ -2360,4 +2363,6 @@ struct ImGuiViewport
 // Include imgui_user.h at the end of imgui.h (convenient for user to only explicitly include vanilla imgui.h)
 #ifdef IMGUI_INCLUDE_IMGUI_USER_H
 #include "imgui_user.h"
+#endif
+
 #endif

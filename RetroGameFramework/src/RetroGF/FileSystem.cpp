@@ -4,14 +4,14 @@
 #include <filesystem>
 
 namespace RGF {
-	FileSystem* FileSystem::m_Instance = nullptr;
+	FileSystem* FileSystem::s_Instance = nullptr;
 
 	FileSystem::FileSystem() {
-		if (m_Instance != nullptr) {
+		if (s_Instance != nullptr) {
 			RGF_CORE_WARN("File System already created!");
 			return;
 		}
-		m_Instance = this;
+		s_Instance = this;
 	}
 
 

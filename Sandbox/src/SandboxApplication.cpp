@@ -22,9 +22,6 @@ class TestLayer : public RGF::Layer {
 		void OnEvent(RGF::Event& e) override {}
 
 		void OnImguiRender() override { 
-			ImGui::Begin("Testing window!");
-
-			ImGui::End();
 		}
 
 

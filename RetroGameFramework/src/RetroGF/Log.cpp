@@ -1,4 +1,6 @@
 #include "RGFpch.h"
+#ifndef RGF_DISTRIBUTE
+
 #include "Log.h"
 
 
@@ -94,3 +96,5 @@ namespace RGF {
 	}
 
 }
+
+#endif

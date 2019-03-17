@@ -1,3 +1,6 @@
+
+#ifndef RGF_DISTRIBUTE
+
 // dear imgui, v1.69 WIP
 // (demo code)
 
@@ -4615,5 +4618,7 @@ void ImGui::ShowAboutWindow(bool*) {}
 void ImGui::ShowDemoWindow(bool*) {}
 void ImGui::ShowUserGuide() {}
 void ImGui::ShowStyleEditor(ImGuiStyle*) {}
+
+#endif
 
 #endif

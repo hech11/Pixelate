@@ -1,3 +1,6 @@
+#ifndef RGF_DISTRIBUTE
+
+
 // dear imgui, v1.69 WIP
 // (widgets code)
 
@@ -6977,3 +6980,6 @@ bool ImGui::TabItemLabelAndCloseButton(ImDrawList* draw_list, const ImRect& bb, 
 
     return close_button_pressed;
 }
+
+
+#endif

@@ -1,4 +1,6 @@
 #include "RGFpch.h"
+#ifndef RGF_DISTRIBUTE
+
 #include "ImguiLayer.h"
 
 
@@ -133,3 +135,5 @@ namespace RGF {
 
 
 }
+
+#endif

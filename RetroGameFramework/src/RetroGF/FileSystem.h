@@ -7,26 +7,46 @@ namespace RGF {
 	class RGF_API File {
 		public :
 
-			File(const char* data) {
-				m_Size = strlen(data);
-				m_Data = new char[m_Size + 1];
-				memcpy(m_Data, data, m_Size);
-				m_Data[m_Size] = 0;
+			File(const char* data, std::string debugName = "File") : m_DebugName(debugName) {
+				WriteData(data);
 			}
 			~File() {
-				delete[] m_Data;
+				ClearData();
 			}
 
 			File(const File& other)
-				: m_Size(other.m_Size) {
+				: m_Size(other.m_Size), m_DebugName(other.m_DebugName) {
 				m_Data = new char[m_Size + 1];
 				memcpy(m_Data, other.m_Data, m_Size + 1);
 				m_Data[m_Size] = 0;
 
 			}
 
-			char* GetData() const { return m_Data; }
+			inline char* GetData() const { return m_Data; }
 
+			void ClearData() {
+				HasData = false;
+				delete[] m_Data;
+			}
+
+			void WriteData(const char* data) {
+				if (HasData) {
+					RGF_CORE_WARN("'%s' already has data loaded in memory! The data was not overridden!", m_DebugName.c_str());
+					return;
+				}
+				m_Size = strlen(data);
+				m_Data = new char[m_Size + 1];
+				memcpy(m_Data, m_Data, m_Size + 1);
+				m_Data[m_Size] = 0;
+
+				HasData = true;
+			}
+			inline const std::string& GetName() const { return m_DebugName; }
+			void SetName(const std::string& name) { m_DebugName = name; }
+
+		private : // debugging AND saftey variables.
+			std::string m_DebugName;
+			bool HasData = false;
 		private :
 			char* m_Data;
 			unsigned int m_Size;
@@ -36,7 +56,7 @@ namespace RGF {
 
 	class RGF_API FileSystem {
 		private :
-			static FileSystem* m_Instance;
+			static FileSystem* s_Instance;
 		public :
 			FileSystem();
 

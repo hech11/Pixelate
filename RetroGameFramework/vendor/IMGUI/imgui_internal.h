@@ -1,3 +1,6 @@
+#ifndef RGF_DISTRIBUTE
+
+
 // dear imgui, v1.69 WIP
 // (internal structures/api)
 
@@ -1801,4 +1804,7 @@ extern void                 ImGuiTestEngineHook_ItemInfo(ImGuiContext* ctx, ImGu
 
 #ifdef _MSC_VER
 #pragma warning (pop)
+#endif
+
+
 #endif
