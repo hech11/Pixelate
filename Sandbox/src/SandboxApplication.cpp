@@ -3,11 +3,6 @@
 // An example application using RGF
 
 
-#include "../../GLM/glm/glm.hpp"
-
-
-#include "../../IMGUI/imgui.h"
-
 // A test layer.
 class TestLayer : public RGF::Layer {
 
@@ -20,7 +15,7 @@ class TestLayer : public RGF::Layer {
 
 		void OnUpdate() override { 
 
-			// testing the random num gen class.
+			// testing the random num gen class and input polling.
 			int rnd = RGF::Random::GetRandomInRange(0, 100);
 			static int SameNum;
 			if (SameNum == rnd) {
@@ -30,6 +25,10 @@ class TestLayer : public RGF::Layer {
 			}
 			RGF_MSG("rand nunm: %d\n", rnd);
 			SameNum = rnd;
+
+			if (RGF::InputImpl::IsKeyDown(RGF_KEY_C)) {
+				RGF_MSG("C key was pressed!\n");
+			}
 		}
 		void OnEvent(RGF::Event& e) override {}
 

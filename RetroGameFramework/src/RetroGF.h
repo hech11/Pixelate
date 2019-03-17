@@ -6,7 +6,10 @@
 
 #include "RetroGF/FileSystem.h"
 #include "RetroGF/Random.h"
+#include "RetroGF/InputImpl.h"
 
+#include "RetroGF/KeyCodes.h"
+#include "RetroGF/MouseButtonCodes.h"
 
 // Events.
 #include "RetroGF/Events/Event.h"

@@ -248,6 +248,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RetroGF\InputImpl.h" />
+    <ClInclude Include="src\RetroGF\KeyCodes.h" />
+    <ClInclude Include="src\RetroGF\MouseButtonCodes.h" />
+    <ClInclude Include="src\RetroGF\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\RetroGF\Random.h" />
     <ClInclude Include="src\RetroGF.h" />
     <ClInclude Include="src\RetroGF\Application.h" />
@@ -276,6 +280,7 @@
     <ClInclude Include="vendor\IMGUI\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RetroGF\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\RetroGF\Random.cpp" />
     <ClCompile Include="src\RetroGF\Application.cpp" />
     <ClCompile Include="src\RetroGF\FileSystem.cpp" />
