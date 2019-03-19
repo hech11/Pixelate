@@ -2,7 +2,6 @@
 
 // An example application using RGF
 
-
 // A test layer.
 class TestLayer : public RGF::Layer {
 
@@ -29,6 +28,7 @@ class TestLayer : public RGF::Layer {
 			if (RGF::InputImpl::IsKeyDown(RGF_KEY_C)) {
 				RGF_MSG("C key was pressed!\n");
 			}
+
 		}
 		void OnEvent(RGF::Event& e) override {}
 

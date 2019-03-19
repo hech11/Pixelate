@@ -7,6 +7,15 @@
 #include <GLAD/include/glad.h>
 
 
+
+
+#include <RetroGF/Rendering/API/VertexBuffer.h>
+#include <RetroGF/Rendering/API/VertexArray.h>
+#include <RetroGF/Rendering/API/IndexBuffer.h>
+#include <RetroGF/Rendering/API/VertexBufferLayout.h>
+
+
+
 namespace RGF {
 
 	Application* Application::s_Instance = nullptr;
@@ -119,6 +128,38 @@ namespace RGF {
 
 	}
 	void Application::OnRender() {
+		float vertex[] = {
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 0.5f,  0.5f,
+			-0.5f,  0.5f
+		};
+
+		std::unique_ptr<RGF::VertexArray> vao = std::unique_ptr<RGF::VertexArray>(RGF::VertexArray::Create());
+		vao->Bind();
+
+		std::unique_ptr<RGF::VertexBuffer> vbo = std::unique_ptr<RGF::VertexBuffer>(RGF::VertexBuffer::Create());
+		vbo->Bind();
+		RGF::VertexBufferLayout layout;
+
+		vbo->SetData(sizeof(float) * 2 * 4, vertex);
+
+		layout.Push<float>(2);
+		vbo->SetLayout(layout);
+		vao->PushBuffer(vbo.get());
+
+
+		unsigned int indicies[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		std::unique_ptr<RGF::IndexBuffer> ibo = std::unique_ptr<RGF::IndexBuffer>(RGF::IndexBuffer::Create(indicies, 6));
+		ibo->Bind();
+
+
+		vao->Draw(ibo->GetCount());
+
 
 	}
 
