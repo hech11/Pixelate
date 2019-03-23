@@ -13,7 +13,10 @@
 #include <RetroGF/Rendering/API/VertexArray.h>
 #include <RetroGF/Rendering/API/IndexBuffer.h>
 #include <RetroGF/Rendering/API/VertexBufferLayout.h>
+#include <RetroGF/Rendering/API/Shader.h>
 
+
+#include <RetroGF/FileSystem.h>
 
 
 namespace RGF {
@@ -22,24 +25,20 @@ namespace RGF {
 
 	Application::Application() {
 		s_Instance = this;
-
-
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create()); // TODO: Find out if this is safe or not...it should be safe.
-
-#ifndef RGF_DISTRIBUTE
-		m_ImguiLayer = new ImguiLayer();
-#endif
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+
 #ifndef RGF_DISTRIBUTE
+		m_ImguiLayer = new ImguiLayer();
 		PushOverlay(m_ImguiLayer);
 #endif
-
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 	}
 	Application::~Application() {
+		//m_Renderer->ShutDown();
 	}
 
 
@@ -78,6 +77,43 @@ namespace RGF {
 		unsigned int Frames = 0;
 		unsigned int Updates = 0;
 
+
+
+		float vertex[] = {
+		-0.5f, -0.5f,
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f,  0.5f
+		};
+
+		std::unique_ptr<RGF::Shader> shader = std::unique_ptr<RGF::Shader>(RGF::Shader::Create());
+		std::unique_ptr<RGF::VertexArray> vao = std::unique_ptr<RGF::VertexArray>(RGF::VertexArray::Create());
+		std::unique_ptr<RGF::VertexBuffer> vbo = std::unique_ptr<RGF::VertexBuffer>(RGF::VertexBuffer::Create());
+
+
+
+		shader->Bind();
+		vao->Bind();
+		vbo->Bind();
+		RGF::VertexBufferLayout layout;
+		vbo->SetData(sizeof(float) * 2 * 4, vertex);
+
+		layout.Push<float>(2);
+		vbo->SetLayout(layout);
+		vao->PushBuffer(vbo.get());
+
+
+		unsigned int indicies[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+		std::unique_ptr<RGF::IndexBuffer> ibo = std::unique_ptr<RGF::IndexBuffer>(RGF::IndexBuffer::Create(indicies, 6));
+
+
+		shader->Init();
+		shader->LoadFromSrc("res/shader/test.shader");
+
+
 		while (m_IsRunning) {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -89,11 +125,23 @@ namespace RGF {
 
 			if (m_AppTimer.GetElapsedMillis() - UpdateTimer > UpdateTick) {
 				Updates++;
-				OnUpdate();
 				UpdateTimer += UpdateTick;
 			}
 			Frames++;
-			OnRender();
+
+
+
+			shader->Bind();
+			vao->Bind();
+			vbo->Bind();
+			ibo->Bind();
+
+			vao->Draw(ibo->GetCount());
+
+
+
+
+
 #ifndef RGF_DISTRIBUTE
 			m_ImguiLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
@@ -101,12 +149,13 @@ namespace RGF {
 			}
 			m_ImguiLayer->End();
 #endif
+
+
 			m_Window->OnUpdate();
 
 			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {
 				Time += 1.0f;
 				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
-				OnTick();
 				Frames = 0;
 				Updates = 0;
 			}
@@ -119,49 +168,6 @@ namespace RGF {
 		return true;
 	}
 
-
-	void Application::OnTick() {
-
-	}
-	void Application::OnUpdate() {
-
-
-	}
-	void Application::OnRender() {
-		float vertex[] = {
-			-0.5f, -0.5f,
-			 0.5f, -0.5f,
-			 0.5f,  0.5f,
-			-0.5f,  0.5f
-		};
-
-		std::unique_ptr<RGF::VertexArray> vao = std::unique_ptr<RGF::VertexArray>(RGF::VertexArray::Create());
-		vao->Bind();
-
-		std::unique_ptr<RGF::VertexBuffer> vbo = std::unique_ptr<RGF::VertexBuffer>(RGF::VertexBuffer::Create());
-		vbo->Bind();
-		RGF::VertexBufferLayout layout;
-
-		vbo->SetData(sizeof(float) * 2 * 4, vertex);
-
-		layout.Push<float>(2);
-		vbo->SetLayout(layout);
-		vao->PushBuffer(vbo.get());
-
-
-		unsigned int indicies[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-
-		std::unique_ptr<RGF::IndexBuffer> ibo = std::unique_ptr<RGF::IndexBuffer>(RGF::IndexBuffer::Create(indicies, 6));
-		ibo->Bind();
-
-
-		vao->Draw(ibo->GetCount());
-
-
-	}
 
 
 }

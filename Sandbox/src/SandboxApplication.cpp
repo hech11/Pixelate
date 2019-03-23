@@ -12,22 +12,7 @@ class TestLayer : public RGF::Layer {
 		void Init() override { }
 		void ShutDown() override { }
 
-		void OnUpdate() override { 
-
-			// testing the random num gen class and input polling.
-			int rnd = RGF::Random::GetRandomInRange(0, 100);
-			static int SameNum;
-			if (SameNum == rnd) {
-				RGF_WARN("\n\n\n");
-				RGF_WARN("Same number!\n");
-				RGF_WARN("\n\n\n");
-			}
-			RGF_MSG("rand nunm: %d\n", rnd);
-			SameNum = rnd;
-
-			if (RGF::InputImpl::IsKeyDown(RGF_KEY_C)) {
-				RGF_MSG("C key was pressed!\n");
-			}
+		void OnUpdate() override {
 
 		}
 		void OnEvent(RGF::Event& e) override {}
@@ -47,14 +32,6 @@ class SandboxApp : public RGF::Application {
 			RGF_TRACE("Sandbox App was created!\n");
 
 			PushLayer(new TestLayer());
-
-
-			// Testing the filesystem.
-			RGF::File TestFile("Data...data..binary data");
-			RGF::FileSystem::WriteFile("TestFolder/SubFolder/test.data", TestFile);
-
-			RGF::File ReadFile(RGF::FileSystem::ReadFile("TestFolder/SubFolder/test.data").c_str());
-			RGF_MSG("%s", ReadFile.GetData());
 		}
 		~SandboxApp() {}
 

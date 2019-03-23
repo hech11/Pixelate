@@ -127,7 +127,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RetroGameFramework\src;$(SolutionDir)RetroGameFramework\vendor\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RetroGameFramework\src;$(SolutionDir)RetroGameFramework\vendor\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RGF_DEBUG;RGF_PLATFORM_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -223,6 +223,9 @@
     <ProjectReference Include="..\RetroGameFramework\RetroGameFramework.vcxproj">
       <Project>{1db95a5f-2480-4063-bda2-cabf5e2b37fb}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shader\test.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

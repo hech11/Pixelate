@@ -15,6 +15,8 @@
 
 #include "RetroGF/Timer.h"
 
+//#include "RetroGF/Rendering/Renderer2D.h"
+
 
 
 // This would be inherited from another class from CLIENT side.
@@ -43,24 +45,21 @@ namespace RGF {
 			WindowImpl& GetWindow() { return *m_Window; }
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
-			std::unique_ptr<WindowImpl> m_Window;
-#ifndef RGF_DISTRIBUTE
-			ImguiLayer* m_ImguiLayer;
-#endif
-			LayerStack m_LayerStack;
-
-			bool m_IsRunning = true;
 			static Application* s_Instance;
 
+			std::unique_ptr<WindowImpl> m_Window;
+			LayerStack m_LayerStack;
 			Timer m_AppTimer;
+
+
+			bool m_IsRunning = true;
+#ifndef RGF_DISTRIBUTE
+		private :
+			ImguiLayer* m_ImguiLayer;
+#endif
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);
-
-		private :
-			void OnTick();
-			void OnUpdate();
-			void OnRender();
 
 	};
 
