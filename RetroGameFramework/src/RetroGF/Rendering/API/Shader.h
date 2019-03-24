@@ -2,6 +2,7 @@
 
 #include "RetroGF/Core.h"
 #include "RGFpch.h"
+#include "GLM/glm/glm.hpp"
 
 namespace RGF {
 
@@ -21,7 +22,7 @@ namespace RGF {
 
 			virtual void LoadFromSrc(const std::string& filepath) = 0;
 
-
+			virtual void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) = 0;
 		public :
 			static Shader* Create();
 

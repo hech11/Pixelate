@@ -4,11 +4,6 @@
 
 #include "RetroGF/Platform/Windows/WindowsWindow.h"
 
-#include <GLAD/include/glad.h>
-
-
-
-
 #include <RetroGF/Rendering/API/VertexBuffer.h>
 #include <RetroGF/Rendering/API/VertexArray.h>
 #include <RetroGF/Rendering/API/IndexBuffer.h>
@@ -16,7 +11,11 @@
 #include <RetroGF/Rendering/API/Shader.h>
 
 
+#include <GLM/glm/gtc/matrix_transform.hpp>
 #include <RetroGF/FileSystem.h>
+
+#include <RetroGF/Rendering/Renderer2D.h>
+#include <RetroGF/Rendering/BatchedSprite.h>
 
 
 namespace RGF {
@@ -25,7 +24,7 @@ namespace RGF {
 
 	Application::Application() {
 		s_Instance = this;
-		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create()); // TODO: Find out if this is safe or not...it should be safe.
+		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create());
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
@@ -79,44 +78,25 @@ namespace RGF {
 
 
 
-		float vertex[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
-		};
-
 		std::unique_ptr<RGF::Shader> shader = std::unique_ptr<RGF::Shader>(RGF::Shader::Create());
-		std::unique_ptr<RGF::VertexArray> vao = std::unique_ptr<RGF::VertexArray>(RGF::VertexArray::Create());
-		std::unique_ptr<RGF::VertexBuffer> vbo = std::unique_ptr<RGF::VertexBuffer>(RGF::VertexBuffer::Create());
+		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create());
+		renderer->Init();
 
-
-
-		shader->Bind();
-		vao->Bind();
-		vbo->Bind();
-		RGF::VertexBufferLayout layout;
-		vbo->SetData(sizeof(float) * 2 * 4, vertex);
-
-		layout.Push<float>(2);
-		vbo->SetLayout(layout);
-		vao->PushBuffer(vbo.get());
-
-
-		unsigned int indicies[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-		std::unique_ptr<RGF::IndexBuffer> ibo = std::unique_ptr<RGF::IndexBuffer>(RGF::IndexBuffer::Create(indicies, 6));
 
 
 		shader->Init();
 		shader->LoadFromSrc("res/shader/test.shader");
+		shader->Bind();
 
+		shader->SetUniformMatrix("u_Proj", glm::ortho(-(16.0f/2), 16.0f/2, -(9.0f/2), 9.0f/2));
 
+		std::vector<BatchedSprite*> sprites;
+		for (int i = 0; i < 100; i++) {
+			sprites.push_back(new BatchedSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f,0.0f }, { 1.0f ,1.0f, 1.0f,1.0f }));
+		}
 		while (m_IsRunning) {
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			renderer->Clear();
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate();
@@ -130,14 +110,12 @@ namespace RGF {
 			Frames++;
 
 
-
-			shader->Bind();
-			vao->Bind();
-			vbo->Bind();
-			ibo->Bind();
-
-			vao->Draw(ibo->GetCount());
-
+			renderer->Start();
+			for (int i = 0; i < sprites.size(); i++) {
+				renderer->Submit(sprites[i]);
+			}
+			renderer->End();
+			renderer->Render();
 
 
 
@@ -156,6 +134,9 @@ namespace RGF {
 			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {
 				Time += 1.0f;
 				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
+#ifdef RGF_DISTRIBUTE
+				printf("%d: FPS\t%d: UPS\n", Frames, Updates);
+#endif
 				Frames = 0;
 				Updates = 0;
 			}

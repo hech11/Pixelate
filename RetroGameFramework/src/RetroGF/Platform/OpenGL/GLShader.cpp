@@ -3,6 +3,7 @@
 
 #include <GLAD/include/glad.h>
 
+#include <glm/glm/gtc/type_ptr.hpp>
 #include "RetroGF/FileSystem.h"
 
 namespace RGF {
@@ -116,4 +117,20 @@ namespace RGF {
 	void GLShader::ShutDown() {
 		glDeleteProgram(m_RendererID);
 	}
+
+
+
+
+
+
+
+
+	void GLShader::SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) {
+		int location = glGetUniformLocation(m_RendererID, uniformName.c_str());
+		if (!location) {
+			RGF_CORE_WARN("Uniform '%s' does not exist!", uniformName.c_str());
+		}
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
 }

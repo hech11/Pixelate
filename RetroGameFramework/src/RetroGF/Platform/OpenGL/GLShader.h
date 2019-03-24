@@ -26,6 +26,9 @@ namespace RGF {
 
 			void LoadFromSrc(const std::string& filepath) override;
 
+			void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) override;
+
+
 		private :
 			unsigned int m_RendererID;
 

@@ -31,6 +31,6 @@ namespace RGF {
 	}
 
 	void GLVertexArray::Draw(unsigned int count) {
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, NULL);
 	}
 }
