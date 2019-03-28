@@ -1,7 +1,7 @@
 #include "RGFpch.h"
 #include "GLIndexBuffer.h"
 
-#include <GLAD/include/glad.h>
+#include "GLCommon.h"
 
 namespace RGF {
 
@@ -17,31 +17,31 @@ namespace RGF {
 	}
 
 	GLIndexBuffer::GLIndexBuffer(unsigned int* data, unsigned int count) : m_Count(count) {
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+		GLCall(glGenBuffers(1, &m_RendererID));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
 	}
-	GLIndexBuffer::GLIndexBuffer(unsigned short* data, unsigned int count) {
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned short), data, GL_STATIC_DRAW);
+	GLIndexBuffer::GLIndexBuffer(unsigned short* data, unsigned int count) : m_Count(count) {
+		GLCall(glGenBuffers(1, &m_RendererID));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned short), data, GL_STATIC_DRAW));
 	}
-	GLIndexBuffer::GLIndexBuffer(unsigned char* data, unsigned int count) {
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned char), data, GL_STATIC_DRAW);
+	GLIndexBuffer::GLIndexBuffer(unsigned char* data, unsigned int count) : m_Count(count) {
+		GLCall(glGenBuffers(1, &m_RendererID));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned char), data, GL_STATIC_DRAW));
 
 	}
 
 	GLIndexBuffer::~GLIndexBuffer() {
-		glDeleteBuffers(1, &m_RendererID);
+		GLCall(glDeleteBuffers(1, &m_RendererID));
 	}
 
-	void GLIndexBuffer::Bind() {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+	void GLIndexBuffer::Bind() const {
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 	}
-	void GLIndexBuffer::Unbind() {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	void GLIndexBuffer::Unbind() const {
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 	}
 

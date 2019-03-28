@@ -20,8 +20,8 @@ namespace RGF {
 
 
 
-			virtual void Bind() = 0;
-			virtual void Unbind() = 0;
+			virtual void Bind() const = 0;
+			virtual void Unbind() const = 0;
 
 			static VertexBuffer* Create(VertexBufferUsage usage = VertexBufferUsage::Static);
 	};

@@ -17,8 +17,8 @@ namespace RGF {
 			void SetLayout(const VertexBufferLayout& layout) override;
 
 
-			void Bind() override;
-			void Unbind() override;
+			void Bind() const override;
+			void Unbind() const override;
 			
 		private :
 			unsigned int m_RendererID;

@@ -9,28 +9,48 @@ namespace RGF {
 	class RGF_API Sprite : public Renderable {
 
 		public :
-			Sprite(glm::vec3 position, glm::vec3 scale, glm::vec4 color, Shader& shader) 
+			Sprite(glm::vec3 position, glm::vec3 scale, glm::vec4 color, Shader* shader) 
 				: Renderable(position, scale, color), m_Shader(shader)
 			{
-				m_VertexArray = VertexArray::Create();
 				float vertex[]{
-					0, 0, 0, color.x, color.y, color.z, color.w,
-					0, scale.y, 0, color.x, color.y, color.z, color.w,
-					scale.x, scale.y, 0, color.x, color.y, color.z, color.w,
-					scale.x, 0, 0, scale.x, color.y, color.z, color.w
+					-0.5f, -0.5f, -0.5f, color.x, color.y, color.z, color.w, // bottom left 0 
+					scale.x / 2, -0.5f, -0.5f, color.x, color.y, color.z, color.w, // bottom right 1
+					scale.x / 2, scale.y / 2, -0.5f, color.x, color.y, color.z, color.w, // top right 2
+					-0.5f, scale.y / 2, -0.5f, color.x, color.y, color.z, color.w // top left 3
+				};
+				unsigned short indicies[] = {
+					0, 1, 2,
+					2, 3, 0
 				};
 
-
-				VertexBuffer* m_VertexBuffer = VertexBuffer::Create();
-				m_VertexBuffer->SetData(4 * 7 * sizeof(float), vertex);
-
-				m_VertexArray->PushBuffer(m_VertexBuffer);
+				m_VertexArray = VertexArray::Create();
+				VertexBuffer* vbo = VertexBuffer::Create();
+				VertexBufferLayout layout;
 
 
-				unsigned int indicies[] = { 0, 1, 2, 2, 3 ,0 };
+
+
+
+				m_VertexArray->Bind();
+				vbo->Bind();
+
+				vbo->SetData(7 * 4 * sizeof(float), vertex);
+				m_VertexArray->PushBuffer(vbo);
+
+
+
 				m_IndexBuffer = IndexBuffer::Create(indicies, 6);
+				m_IndexBuffer->Bind();
 
-				delete m_VertexBuffer;
+
+				layout.Push<float>(3);
+				layout.Push<float>(4);
+				m_VertexArray->Bind();
+				m_IndexBuffer->Bind();
+
+				vbo->SetLayout(layout);
+				delete vbo;
+
 			}
 
 			~Sprite() {
@@ -39,14 +59,14 @@ namespace RGF {
 			}
 
 
-			inline const VertexArray* GetVao() const { return m_VertexArray; }
-			inline const IndexBuffer* GetIbo() const { return m_IndexBuffer; }
-			inline Shader& GetShader() const { return m_Shader; }
+			inline const VertexArray* GetVao() const override { return m_VertexArray; }
+			inline const IndexBuffer* GetIbo() const override { return m_IndexBuffer; }
+			inline Shader* GetShader() const override { return m_Shader; }
 
 		private :
 			VertexArray* m_VertexArray;
 			IndexBuffer* m_IndexBuffer;
-			Shader& m_Shader;
+			Shader* m_Shader;
 	};
 
 }

@@ -155,6 +155,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>GLM_FORCE_INLINE;GLM_FORCE_SIMD_SSE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -175,6 +176,8 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PreprocessorDefinitions>GLM_FORCE_INLINE;GLM_FORCE_SIMD_SSE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -195,6 +198,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>GLM_FORCE_INLINE;GLM_FORCE_SIMD_SSE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -215,6 +219,8 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>GLM_FORCE_INLINE;GLM_FORCE_SIMD_SSE2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

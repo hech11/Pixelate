@@ -11,8 +11,8 @@ namespace RGF {
 		public :
 			virtual void PushBuffer(RGF::VertexBuffer* buffer) = 0;
 
-			virtual void Bind() = 0;
-			virtual void Unbind() = 0;
+			virtual void Bind() const = 0;
+			virtual void Unbind() const = 0;
 
 			virtual void Draw(unsigned int count) = 0;
 

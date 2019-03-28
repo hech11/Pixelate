@@ -1,8 +1,7 @@
 #include "RGFpch.h"
 #include "GLVertexBuffer.h"
 
-#include <GLAD/include/glad.h>
-
+#include "GLCommon.h"
 
 namespace RGF {
 
@@ -26,12 +25,12 @@ namespace RGF {
 	GLVertexBuffer::GLVertexBuffer(VertexBufferUsage usage) 
 	: m_Usage(usage) 
 	{
-		glGenBuffers(1, &m_RendererID);
+		GLCall(glGenBuffers(1, &m_RendererID));
 	}
 
 
 	GLVertexBuffer::~GLVertexBuffer() {
-		glDeleteBuffers(1, &m_RendererID);
+		GLCall(glDeleteBuffers(1, &m_RendererID));
 	}
 
 
@@ -39,14 +38,14 @@ namespace RGF {
 	void GLVertexBuffer::Resize(unsigned int size) {
 		m_Size = size;
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, NULL, BufferUsageToOpenGL(m_Usage));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, NULL, BufferUsageToOpenGL(m_Usage)));
 	}
 
 
 	void GLVertexBuffer::SetData(unsigned int size, const void* data) {
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, data, BufferUsageToOpenGL(m_Usage));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, BufferUsageToOpenGL(m_Usage)));
 	}
 
 
@@ -56,19 +55,18 @@ namespace RGF {
 		unsigned int offset = 0;
 		for (int i = 0; i < elements.size(); i++) {
 			const auto& element = elements[i];
-			glEnableVertexAttribArray(i);
-			glVertexAttribPointer(i, element.count, element.type, 
-				element.normilized, layout.GetStride(), (const void*)offset);
+			GLCall(glEnableVertexAttribArray(i));
+			GLCall(glVertexAttribPointer(i, element.count, element.type, element.normilized, layout.GetStride(), (const void*)offset));
 				offset += element.count * BufferElement::ConvertGLTypeToBytes(element.type);
 		}
 	}
 
 
-	void GLVertexBuffer::Bind() {
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+	void GLVertexBuffer::Bind() const {
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 	}
 
-	void GLVertexBuffer::Unbind() {
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	void GLVertexBuffer::Unbind() const {
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 }

@@ -14,7 +14,7 @@ namespace RGF {
 
 	struct RGF_API VertexData {
 		glm::vec3 verticies;
-		glm::vec4 color;
+		unsigned int color;
 	};
 	class RGF_API Renderable {
 		protected :
@@ -29,6 +29,10 @@ namespace RGF {
 
 			virtual ~Renderable() {}
 		public :
+			virtual inline const VertexArray* GetVao() const { return nullptr; }
+			virtual inline const IndexBuffer* GetIbo() const { return nullptr; }
+			virtual inline Shader* GetShader() const { return nullptr; };
+
 
 			inline const glm::vec3& GetPosition() const { return m_Position; }
 			inline const glm::vec3& GetScale() const { return m_Scale; }

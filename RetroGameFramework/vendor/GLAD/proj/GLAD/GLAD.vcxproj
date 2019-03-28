@@ -162,9 +162,9 @@
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -172,6 +172,8 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

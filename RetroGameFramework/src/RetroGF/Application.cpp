@@ -16,7 +16,9 @@
 
 #include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/BatchedSprite.h>
+#include <RetroGF/Rendering/Sprite.h>
 
+#include "RetroGF/Platform/OpenGL/GLCommon.h"
 
 namespace RGF {
 
@@ -24,7 +26,7 @@ namespace RGF {
 
 	Application::Application() {
 		s_Instance = this;
-		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create());
+		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
@@ -76,24 +78,40 @@ namespace RGF {
 		unsigned int Frames = 0;
 		unsigned int Updates = 0;
 
+#define BATCH_RENDERING true
+#define SPRITE_ON_SCREEN 5000
 
 
-		std::unique_ptr<RGF::Shader> shader = std::unique_ptr<RGF::Shader>(RGF::Shader::Create());
-		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create());
+
+
+#if BATCH_RENDERING == true
+		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
+#elif BATCH_RENDERING == false
+		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
+#endif
 		renderer->Init();
 
 
 
+		RGF::Shader* shader = RGF::Shader::Create();
 		shader->Init();
 		shader->LoadFromSrc("res/shader/test.shader");
 		shader->Bind();
 
-		shader->SetUniformMatrix("u_Proj", glm::ortho(-(16.0f/2), 16.0f/2, -(9.0f/2), 9.0f/2));
+		shader->SetUniformMatrix("u_Proj", glm::ortho(-8.0f, 8.0f, -4.5f, 4.5f));
 
+#if BATCH_RENDERING == true
 		std::vector<BatchedSprite*> sprites;
-		for (int i = 0; i < 100; i++) {
-			sprites.push_back(new BatchedSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f,0.0f }, { 1.0f ,1.0f, 1.0f,1.0f }));
+		for (int i = 0; i < SPRITE_ON_SCREEN; i++) {
+			sprites.push_back(new BatchedSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f,0.0f }, { 0.0f ,1.0f, 1.0f,1.0f }));
 		}
+#elif BATCH_RENDERING == false
+
+		std::vector<Sprite*> sprites;
+		for (int i = 0; i < SPRITE_ON_SCREEN; i++) {
+			sprites.push_back(new Sprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f,0.0f }, { 0.0f ,1.0f, 1.0f,1.0f }, shader));
+		}
+#endif
 		while (m_IsRunning) {
 
 			renderer->Clear();
@@ -109,15 +127,12 @@ namespace RGF {
 			}
 			Frames++;
 
-
 			renderer->Start();
-			for (int i = 0; i < sprites.size(); i++) {
+			for (unsigned short i = 0; i < sprites.size(); i++) {
 				renderer->Submit(sprites[i]);
 			}
 			renderer->End();
 			renderer->Render();
-
-
 
 
 #ifndef RGF_DISTRIBUTE
@@ -141,6 +156,8 @@ namespace RGF {
 				Updates = 0;
 			}
 		}
+		delete shader;
+
 	}
 
 

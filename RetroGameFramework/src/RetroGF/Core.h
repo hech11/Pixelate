@@ -17,3 +17,6 @@
 #else
 	#error RetroGameFramework only supports windows!
 #endif
+
+
+#define RGF_ASSERT(x) if(!(x)) __debugbreak();

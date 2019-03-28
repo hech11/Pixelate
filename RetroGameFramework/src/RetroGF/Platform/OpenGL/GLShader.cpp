@@ -6,6 +6,8 @@
 #include <glm/glm/gtc/type_ptr.hpp>
 #include "RetroGF/FileSystem.h"
 
+#include "GLCommon.h"
+
 namespace RGF {
 
 	Shader* Shader::Create() {
@@ -22,7 +24,7 @@ namespace RGF {
 
 
 	void GLShader::Init() {
-		m_RendererID = glCreateProgram();
+		GLCall(m_RendererID = glCreateProgram());
 	}
 
 
@@ -60,6 +62,7 @@ namespace RGF {
 
 
 	void GLShader::LoadFromSrc(const std::string& filepath) {
+		m_Filepath = filepath;
 		const auto& program = m_RendererID;
 		ShaderSource source = PraseShader(filepath);
 
@@ -67,22 +70,22 @@ namespace RGF {
 		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
 
 
-		glAttachShader(program, vs);
-		glAttachShader(program, fs);
+		GLCall(glAttachShader(program, vs));
+		GLCall(glAttachShader(program, fs));
 		
-		glLinkProgram(program);
-		glValidateProgram(program);
+		GLCall(glLinkProgram(program));
+		GLCall(glValidateProgram(program));
 
-		glDeleteShader(vs);
-		glDeleteShader(fs);
+		GLCall(glDeleteShader(vs));
+		GLCall(glDeleteShader(fs));
 	}
 
 	unsigned int GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
 		unsigned int shader = glCreateShader(type);
 		const char* shdSrc = shaderSource.c_str();
 		
-		glShaderSource(shader, 1, &shdSrc, nullptr);
-		glCompileShader(shader);
+		GLCall(glShaderSource(shader, 1, &shdSrc, nullptr));
+		GLCall(glCompileShader(shader));
 
 		int validation;
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &validation);
@@ -92,12 +95,12 @@ namespace RGF {
 			int logLength;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
 			char* message = (char*)alloca(logLength);
-			glGetShaderInfoLog(shader, logLength, &logLength, message);
+			GLCall(glGetShaderInfoLog(shader, logLength, &logLength, message));
 
 			std::string shaderType = (type == GL_VERTEX_SHADER ? "vertex" : "fragment");
 			RGF_ERROR("OpenGL (%s) Error! MESSAGE :\n %s\n\n", shaderType.c_str(), message);
 
-			glDeleteShader(shader);
+			GLCall(glDeleteShader(shader));
 			return 0;
 		}
 
@@ -107,15 +110,15 @@ namespace RGF {
 
 
 	void GLShader::Bind() const {
-		glUseProgram(m_RendererID);
+		GLCall(glUseProgram(m_RendererID));
 	}
 	void GLShader::Unbind() const {
-		glUseProgram(0);
+		GLCall(glUseProgram(0));
 	}
 
 
 	void GLShader::ShutDown() {
-		glDeleteProgram(m_RendererID);
+		GLCall(glDeleteProgram(m_RendererID));
 	}
 
 
@@ -127,7 +130,7 @@ namespace RGF {
 
 	void GLShader::SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) {
 		int location = glGetUniformLocation(m_RendererID, uniformName.c_str());
-		if (!location) {
+		if (location == -1) {
 			RGF_CORE_WARN("Uniform '%s' does not exist!", uniformName.c_str());
 		}
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));

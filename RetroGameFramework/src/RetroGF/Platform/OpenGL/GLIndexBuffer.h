@@ -14,8 +14,8 @@ namespace RGF {
 
 			~GLIndexBuffer();
 
-			void Bind() override;
-			void Unbind() override;
+			void Bind() const override;
+			void Unbind() const override;
 
 
 			unsigned int GetCount() const override;

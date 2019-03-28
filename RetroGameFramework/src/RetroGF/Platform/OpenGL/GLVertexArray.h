@@ -14,8 +14,8 @@ namespace RGF {
 
 			void PushBuffer(RGF::VertexBuffer* buffer) override;
 
-			void Bind() override;
-			void Unbind() override;
+			void Bind() const override;
+			void Unbind() const override;
 
 			void Draw(unsigned int count) override;
 		private :

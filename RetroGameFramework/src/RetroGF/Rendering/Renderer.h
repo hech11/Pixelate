@@ -16,10 +16,11 @@ namespace RGF {
 			virtual void Start() = 0;
 			virtual void End() = 0;
 
-			virtual ~Renderer() { }
+
 
 			virtual void Init() = 0;
 			virtual void ShutDown() = 0;
+
 	};
 
 }

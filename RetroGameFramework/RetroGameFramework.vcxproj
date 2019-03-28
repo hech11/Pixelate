@@ -132,6 +132,7 @@
       <PreprocessorDefinitions>RGF_DEBUG;_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link />
     <PostBuildEvent>
@@ -167,6 +168,12 @@
       <PreprocessorDefinitions>RGF_RELEASE;_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -180,9 +187,9 @@
     <ClCompile>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>RGFpch.h</PrecompiledHeaderFile>
@@ -194,10 +201,26 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <StringPooling>false</StringPooling>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <HeapReserveSize>
+      </HeapReserveSize>
+      <HeapCommitSize>
+      </HeapCommitSize>
+      <StackReserveSize>
+      </StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)bin\$(ProjectName)-$(Platform)-$(Configuration)\$(ProjectName).dll" "$(SolutionDir)bin\Sandbox-$(Platform)-$(Configuration)\" /Y /I </Command>
@@ -251,7 +274,9 @@
     <ClInclude Include="src\RetroGF\InputImpl.h" />
     <ClInclude Include="src\RetroGF\KeyCodes.h" />
     <ClInclude Include="src\RetroGF\MouseButtonCodes.h" />
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLCommon.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.h" />
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLBatchRenderer2D.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLShader.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLVertexArray.h" />
@@ -296,6 +321,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.cpp" />
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLBatchRenderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLShader.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLVertexArray.cpp" />
@@ -310,6 +336,7 @@
     <ClCompile Include="src\RetroGF\Log.cpp" />
     <ClCompile Include="src\RetroGF\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\API\VertexBufferLayout.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\RGFpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
