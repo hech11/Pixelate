@@ -3,6 +3,9 @@
 
 #include "RetroGF/Rendering/API/VertexBuffer.h"
 
+// OpenGL's implementation of 'VertexBuffer.h'
+
+
 namespace RGF {
 
 	class RGF_API GLVertexBuffer : public VertexBuffer {

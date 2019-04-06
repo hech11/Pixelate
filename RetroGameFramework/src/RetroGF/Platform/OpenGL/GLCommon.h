@@ -4,9 +4,13 @@
 #include "RetroGF/Core.h"
 #include <GLAD/include/glad.h>
 
+// This is used to debug OpenGL code.
+
 #ifdef RGF_DISTRIBUTE
 #define GLCall(x) x
 #else 
+ // This is to be wrapped around every opengl code. Example : GLCall(glGenBuffers(1, ...)));
+
 #define GLCall(x) RGF::GL::GLClearError();\
 				x;\
 RGF_ASSERT(RGF::GL::GLLogCall(#x, __FILE__, __LINE__))

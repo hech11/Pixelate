@@ -2,8 +2,26 @@
 
 #include "RGFpch.h"
 
+// This file system will load & create a binary file.
+
+
+// This uses the c++ way to load files. Maybe in the future: switch between c and c++ and benchmark.
+
+/*
+	This is also missing features. Such as:
+
+	- Read files only as a binary format.
+	- Switch between read files as binary or read as text.
+	- Make read-only files, write-only files. ( only supports both )
+*/
+
 namespace RGF {
 
+	// File is just a 'container' that contains data of the file to write to disk.
+	// It is just a char*.
+
+
+	// TODO: Turns out this does not work properly? Investiagte.
 	class RGF_API File {
 		public :
 

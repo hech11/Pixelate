@@ -6,6 +6,8 @@
 
 namespace RGF {
 
+	// TODO: In the future this 'Create' may want to be in the implementation class and not hardcoded into here.
+	// TODO: There is no way to switch between other API's at the moment if i wanted to.
 	VertexArray* VertexArray::Create(){
 		return new GLVertexArray;
 	}

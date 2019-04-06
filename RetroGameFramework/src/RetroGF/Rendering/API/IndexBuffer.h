@@ -3,6 +3,12 @@
 #include "RetroGF/Core.h"
 
 
+// IndexBuffer interface.
+
+// The 'Create' method will decide depending on the API choice should IndexBuffer choose
+// OpenGL, Directx 11 or 12, vulkan etc... implementation of IndexBuffer.
+
+
 namespace RGF {
 
 	class RGF_API IndexBuffer {

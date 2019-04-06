@@ -3,6 +3,7 @@
 
 namespace RGF {
 
+	// TODO: This may not be as fast! Investiagte.
 
 	float Random::GetRandomInRange(float low, float high) {
 		std::random_device m_Rd;

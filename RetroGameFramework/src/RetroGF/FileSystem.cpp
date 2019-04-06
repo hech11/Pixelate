@@ -3,17 +3,20 @@
 
 #include <filesystem>
 
+
+
 namespace RGF {
 	FileSystem* FileSystem::s_Instance = nullptr;
 
-	FileSystem::FileSystem() {
+
+	// TODO: instanciating and init'ing in the entry point may be not be needed.
+	FileSystem::FileSystem() { 
 		if (s_Instance != nullptr) {
 			RGF_CORE_WARN("File System already created!");
 			return;
 		}
 		s_Instance = this;
 	}
-
 
 	void FileSystem::WriteFile(const std::string& filepath, const File& file) {
 

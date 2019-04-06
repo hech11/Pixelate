@@ -2,6 +2,7 @@
 
 #include "RetroGF/Rendering/API/Shader.h"
 
+// OpenGL's implementation of 'Shader.h'
 
 namespace RGF {
 

@@ -4,6 +4,13 @@
 #include "RGFpch.h"
 #include "GLM/glm/glm.hpp"
 
+// Shader interface.
+
+// The 'Create' method will decide depending on the API choice should Shader choose
+// OpenGL, Directx 11 or 12, vulkan etc... implementation of Shader.
+
+
+
 namespace RGF {
 
 

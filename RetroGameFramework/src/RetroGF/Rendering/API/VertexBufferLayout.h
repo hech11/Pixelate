@@ -5,6 +5,13 @@
 
 #include "RGFpch.h"
 
+
+
+// VertexBufferLayout.
+
+// TODO: This only supports OpenGL.
+
+
 namespace RGF {
 
 	struct RGF_API BufferElement {

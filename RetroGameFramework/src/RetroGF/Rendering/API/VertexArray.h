@@ -4,6 +4,13 @@
 #include "RetroGF/Core.h"
 
 
+
+// VertexArray interface.
+
+// The 'Create' method will decide depending on the API choice should VertexArray choose
+// OpenGL, Directx 11 or 12, vulkan etc... implementation of VertexArray.
+
+
 namespace RGF {
 
 	class RGF_API VertexArray {

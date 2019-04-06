@@ -3,6 +3,15 @@
 #include "RetroGF/Core.h"
 #include "RetroGF/Rendering/API/VertexBufferLayout.h"
 
+
+
+// VertexBuffer interface.
+
+// The 'Create' method will decide depending on the API choice should VertexBuffer choose
+// OpenGL, Directx 11 or 12, vulkan etc... implementation of VertexBuffer.
+
+
+
 namespace RGF {
 	enum class VertexBufferUsage {
 		None = 0,

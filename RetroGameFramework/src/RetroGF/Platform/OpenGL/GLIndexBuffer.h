@@ -3,6 +3,9 @@
 
 #include "RetroGF/Rendering/API/IndexBuffer.h"
 
+
+// OpenGL's implementation of 'IndexBuffer.h'
+
 namespace RGF {
 
 	class RGF_API GLIndexBuffer : public IndexBuffer {

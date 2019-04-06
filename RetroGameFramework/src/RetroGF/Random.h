@@ -2,6 +2,9 @@
 
 #include "RetroGF/Core.h"
 
+
+// This is just a thin wrapper that returns a random number.
+
 namespace RGF {
 
 	class RGF_API Random {
