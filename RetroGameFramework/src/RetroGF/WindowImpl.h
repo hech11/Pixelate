@@ -6,6 +6,7 @@
 
 #include "RetroGF/Events/Event.h"
 
+#include "RetroGF/Rendering/RenderingContext.h"
 /*  
 	This is a representation of a window.
 	It is only a interface containing pure virtual functions.
@@ -67,6 +68,9 @@ namespace RGF {
 
 			// To be defined in the inherented DERIVED class.
 			static WindowImpl* Create(const WindowProps& props = WindowProps()); // Should return a HEAP allocated window object.
+
+		protected :
+			RGF::RenderingContext* m_Context;
 	};
 
 }

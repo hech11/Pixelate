@@ -10,6 +10,7 @@
 #include <GLAD/include/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
+
 namespace RGF {
 
 
@@ -38,6 +39,10 @@ namespace RGF {
 	void WindowsWindow::StartUp(const WindowProps& props) {
 		m_Data.props = props;
 
+
+		m_Context = RGF::RenderingContext::CreateContext(RGF::RenderingContext::ContextAPI::OPENGL);
+
+
 		if (!glfwInit()) {
 			glfwTerminate();
 			RGF_CORE_ERROR("Failed to init GLFW!\n");
@@ -52,16 +57,13 @@ namespace RGF {
 			return;
 		}
 
-		glfwMakeContextCurrent(m_Window);
+		m_Context->Init(m_Window);
 		SetVsync(false);
 
 		glfwSetWindowPos(m_Window, m_Data.props.xPos, m_Data.props.yPos);
 		glfwSetWindowUserPointer(m_Window, &m_Data); // Used to access "m_Data" for sending the events to "OnEvent" in "Application".
 
-		int GladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		if (!GladStatus) {
-			RGF_CORE_ERROR("Failed to load GLAD!\n");
-		}
+		// Init Rendering Context
 
 
 		// Setting glfw callbacks.
@@ -197,7 +199,7 @@ namespace RGF {
 	void WindowsWindow::OnUpdate() {
 
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	

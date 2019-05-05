@@ -78,40 +78,13 @@ namespace RGF {
 		unsigned int Frames = 0;
 		unsigned int Updates = 0;
 
-#define BATCH_RENDERING true
-#define SPRITE_ON_SCREEN 5000
 
 
-
-
-#if BATCH_RENDERING == true
 		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
-#elif BATCH_RENDERING == false
-		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
-#endif
 		renderer->Init();
 
 
 
-		RGF::Shader* shader = RGF::Shader::Create();
-		shader->Init();
-		shader->LoadFromSrc("res/shader/test.shader");
-		shader->Bind();
-
-		shader->SetUniformMatrix("u_Proj", glm::ortho(-8.0f, 8.0f, -4.5f, 4.5f));
-
-#if BATCH_RENDERING == true
-		std::vector<BatchedSprite*> sprites;
-		for (int i = 0; i < SPRITE_ON_SCREEN; i++) {
-			sprites.push_back(new BatchedSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f,0.0f }, { 0.0f ,1.0f, 1.0f,1.0f }));
-		}
-#elif BATCH_RENDERING == false
-
-		std::vector<Sprite*> sprites;
-		for (int i = 0; i < SPRITE_ON_SCREEN; i++) {
-			sprites.push_back(new Sprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f,0.0f }, { 0.0f ,1.0f, 1.0f,1.0f }, shader));
-		}
-#endif
 		while (m_IsRunning) {
 
 			renderer->Clear();
@@ -128,9 +101,8 @@ namespace RGF {
 			Frames++;
 
 			renderer->Start();
-			for (unsigned short i = 0; i < sprites.size(); i++) {
-				renderer->Submit(sprites[i]);
-			}
+
+
 			renderer->End();
 			renderer->Render();
 
@@ -156,7 +128,6 @@ namespace RGF {
 				Updates = 0;
 			}
 		}
-		delete shader;
 
 	}
 
