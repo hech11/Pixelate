@@ -12,10 +12,10 @@
 
 #include "RetroGF/LayerStack.h"
 #include "RetroGF/Imgui/ImguiLayer.h"
+#include "RetroGF/Imgui/ImguiEngineEditor.h"
 
 #include "RetroGF/Timer.h"
 
-//#include "RetroGF/Rendering/Renderer2D.h"
 
 
 
@@ -56,6 +56,7 @@ namespace RGF {
 #ifndef RGF_DISTRIBUTE
 		private :
 			ImguiLayer* m_ImguiLayer;
+			ImguiEngineEditor* m_EngineEditorLayer;
 #endif
 		private :
 			// Callbacks. ( Should all return bools )

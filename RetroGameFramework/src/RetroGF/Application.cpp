@@ -9,6 +9,8 @@
 #include <RetroGF/Rendering/API/IndexBuffer.h>
 #include <RetroGF/Rendering/API/VertexBufferLayout.h>
 #include <RetroGF/Rendering/API/Shader.h>
+#include <RetroGF/Rendering/API/Texture.h>
+#include <RetroGF/Rendering/API/FrameBuffer.h>
 
 
 #include <GLM/glm/gtc/matrix_transform.hpp>
@@ -33,13 +35,16 @@ namespace RGF {
 
 
 #ifndef RGF_DISTRIBUTE
+		// These are deleted by the layerstack.
 		m_ImguiLayer = new ImguiLayer();
+		m_EngineEditorLayer = new ImguiEngineEditor();
 		PushOverlay(m_ImguiLayer);
+		PushOverlay(m_EngineEditorLayer);
 #endif
+		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 	}
 	Application::~Application() {
-		//m_Renderer->ShutDown();
 	}
 
 
@@ -80,14 +85,19 @@ namespace RGF {
 
 
 
-		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
+		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
 		renderer->Init();
 
-
+		FrameBuffer* fbo = FrameBuffer::Create(960, 540);
+		fbo->Bind();
+		Shader* shader = Shader::Create();
+		shader->LoadFromSrc("res/shader/test.shader");
+		shader->Bind();
+		Sprite sprite({ 0.0f,0.0f,0.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, shader);
 
 		while (m_IsRunning) {
 
-			renderer->Clear();
+			fbo->Clear();
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate();
@@ -100,12 +110,12 @@ namespace RGF {
 			}
 			Frames++;
 
+			fbo->Bind();
 			renderer->Start();
-
-
+			renderer->Submit(&sprite);
 			renderer->End();
 			renderer->Render();
-
+			fbo->Unbind();
 
 #ifndef RGF_DISTRIBUTE
 			m_ImguiLayer->Start();
@@ -120,7 +130,7 @@ namespace RGF {
 
 			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {
 				Time += 1.0f;
-				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
+				//RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
 #ifdef RGF_DISTRIBUTE
 				printf("%d: FPS\t%d: UPS\n", Frames, Updates);
 #endif

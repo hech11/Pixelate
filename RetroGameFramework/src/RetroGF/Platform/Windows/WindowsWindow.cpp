@@ -37,8 +37,10 @@ namespace RGF {
 
 	// Init Window and event callbacks.
 	void WindowsWindow::StartUp(const WindowProps& props) {
-		m_Data.props = props;
 
+		RGF_CORE_MSG("Creating the window...\n");
+
+		m_Data.props = props;
 
 		m_Context = RGF::RenderingContext::CreateContext(RGF::RenderingContext::ContextAPI::OPENGL);
 
@@ -179,7 +181,6 @@ namespace RGF {
 
 		});
 
-		RGF_CORE_TRACE("Created the window!\n");
 
 	}
 

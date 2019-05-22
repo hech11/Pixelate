@@ -150,7 +150,7 @@
       <PreprocessorDefinitions>RGF_DEBUG;_CRT_SECURE_NO_WARNINGS;RGF_BUILD_DLL;RGF_PLATFORM_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <PostBuildEvent>
       <Command>
@@ -287,15 +287,18 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RetroGF\Imgui\ImguiEngineEditor.h" />
     <ClInclude Include="src\RetroGF\InputImpl.h" />
     <ClInclude Include="src\RetroGF\KeyCodes.h" />
     <ClInclude Include="src\RetroGF\MouseButtonCodes.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLCommon.h" />
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLFrameBuffer.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLBatchRenderer2D.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRenderingContext.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLShader.h" />
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLTexture.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLVertexArray.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLVertexBuffer.h" />
     <ClInclude Include="src\RetroGF\Platform\Windows\WindowsInput.h" />
@@ -314,8 +317,10 @@
     <ClInclude Include="src\RetroGF\LayerStack.h" />
     <ClInclude Include="src\RetroGF\Log.h" />
     <ClInclude Include="src\RetroGF\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\RetroGF\Rendering\API\FrameBuffer.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\IndexBuffer.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\Shader.h" />
+    <ClInclude Include="src\RetroGF\Rendering\API\Texture.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\VertexArray.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\VertexBuffer.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\VertexBufferLayout.h" />
@@ -336,13 +341,17 @@
     <ClInclude Include="vendor\IMGUI\imstb_rectpack.h" />
     <ClInclude Include="vendor\IMGUI\imstb_textedit.h" />
     <ClInclude Include="vendor\IMGUI\imstb_truetype.h" />
+    <ClInclude Include="vendor\STB\IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RetroGF\Imgui\ImguiEngineEditor.cpp" />
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLFrameBuffer.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLBatchRenderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRenderingContext.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLShader.cpp" />
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLTexture.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLVertexArray.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLVertexBuffer.cpp" />
     <ClCompile Include="src\RetroGF\Platform\Windows\WindowsInput.cpp" />
@@ -354,6 +363,12 @@
     <ClCompile Include="src\RetroGF\LayerStack.cpp" />
     <ClCompile Include="src\RetroGF\Log.cpp" />
     <ClCompile Include="src\RetroGF\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\API\FrameBuffer.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\API\IndexBuffer.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\API\Shader.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\API\Texture.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\API\VertexArray.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\API\VertexBuffer.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\API\VertexBufferLayout.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\RenderingContext.cpp" />
@@ -406,6 +421,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\IMGUI\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Distribute|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Distribute|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="vendor\STB\IMAGE\stb_image.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Distribute|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

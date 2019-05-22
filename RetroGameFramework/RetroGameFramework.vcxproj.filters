@@ -162,6 +162,24 @@
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRenderingContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\STB\IMAGE\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Imgui\ImguiEngineEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLFrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp">
@@ -240,6 +258,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRenderingContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\IndexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\VertexArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\STB\IMAGE\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Imgui\ImguiEngineEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLFrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

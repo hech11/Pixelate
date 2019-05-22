@@ -25,6 +25,7 @@
 
 		FileSystem FileSys;
 
+		RGF_CORE_MSG("Creating RGF Application...\n");
 		auto App = RGF::CreateApplication();
 		App->Run();
 		delete App;

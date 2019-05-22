@@ -13,10 +13,10 @@ namespace RGF {
 				: Renderable(position, scale, color), m_Shader(shader)
 			{
 				float vertex[]{
-					-0.5f, -0.5f, -0.5f, color.x, color.y, color.z, color.w, // bottom left 0 
-					scale.x / 2, -0.5f, -0.5f, color.x, color.y, color.z, color.w, // bottom right 1
-					scale.x / 2, scale.y / 2, -0.5f, color.x, color.y, color.z, color.w, // top right 2
-					-0.5f, scale.y / 2, -0.5f, color.x, color.y, color.z, color.w // top left 3
+					-0.5f, -0.5f, -0.5f, color.x, color.y, color.z, color.w, 0.0f, 0.0f, // bottom left 0 
+					scale.x / 2, -0.5f, -0.5f, color.x, color.y, color.z, color.w, 1.0f, 0.0f, // bottom right 1
+					scale.x / 2, scale.y / 2, -0.5f, color.x, color.y, color.z, color.w, 1.0f, 1.0f, // top right 2
+					-0.5f, scale.y / 2, -0.5f, color.x, color.y, color.z, color.w, 0.0f, 1.0f// top left 3
 				};
 				unsigned short indicies[] = {
 					0, 1, 2,
@@ -34,7 +34,7 @@ namespace RGF {
 				m_VertexArray->Bind();
 				vbo->Bind();
 
-				vbo->SetData(7 * 4 * sizeof(float), vertex);
+				vbo->SetData(9*4*sizeof(float), vertex);
 				m_VertexArray->PushBuffer(vbo);
 
 
@@ -45,6 +45,7 @@ namespace RGF {
 
 				layout.Push<float>(3);
 				layout.Push<float>(4);
+				layout.Push<float>(2);
 				m_VertexArray->Bind();
 				m_IndexBuffer->Bind();
 

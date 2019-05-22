@@ -18,10 +18,10 @@ namespace RGF {
 			virtual std::string GetContextName() const = 0;
 
 			static RenderingContext* CreateContext(const ContextAPI& context);
-			inline int GetContext() const { return (int)m_Context; }
+			static ContextAPI GetContext() { return m_Context; }
 			
 		protected:
-			ContextAPI m_Context;
+			static ContextAPI m_Context;
 
 	};
 

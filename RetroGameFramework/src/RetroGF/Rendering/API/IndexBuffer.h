@@ -14,6 +14,9 @@ namespace RGF {
 	class RGF_API IndexBuffer {
 
 		public :
+
+			virtual ~IndexBuffer(){}
+
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 

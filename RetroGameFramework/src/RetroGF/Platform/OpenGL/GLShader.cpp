@@ -11,11 +11,6 @@
 namespace RGF {
 
 
-	// TODO: In the future this 'Create' may want to be in the implementation class and not hardcoded into here.
-	// TODO: There is no way to switch between other API's at the moment if i wanted to.
-	Shader* Shader::Create() {
-		return new GLShader;
-	}
 
 	GLShader::GLShader() {
 		Init();
@@ -125,18 +120,28 @@ namespace RGF {
 	}
 
 
+	int GLShader::m_GetUniformLocation(const std::string& name) {
+		int location = glGetUniformLocation(m_RendererID, name.c_str());
+		if (location == -1) {
+			RGF_CORE_WARN("Uniform '%s' does not exist!", name.c_str());
+		}
+
+		//TODO: Cache locations
+		return location;
+	}
 
 
+	void GLShader::SetUniform4f(const std::string& uniformName, const glm::vec4& values) {
+		glUniform4f(m_GetUniformLocation(uniformName), values.x, values.y, values.z, values.w);
+	}
 
-
+	void GLShader::SetUniform1i(const std::string& uniformName, const int value) {
+		glUniform1i(m_GetUniformLocation(uniformName), value);
+	}
 
 
 	void GLShader::SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) {
-		int location = glGetUniformLocation(m_RendererID, uniformName.c_str());
-		if (location == -1) {
-			RGF_CORE_WARN("Uniform '%s' does not exist!", uniformName.c_str());
-		}
-		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+		glUniformMatrix4fv(m_GetUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 }

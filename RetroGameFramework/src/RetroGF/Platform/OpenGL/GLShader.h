@@ -27,6 +27,9 @@ namespace RGF {
 
 			void LoadFromSrc(const std::string& filepath) override;
 
+
+			void SetUniform4f(const std::string& uniformName, const glm::vec4& values) override;
+			void SetUniform1i(const std::string& uniformName, const int value) override;
 			void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) override;
 
 
@@ -35,6 +38,7 @@ namespace RGF {
 
 			std::string m_Filepath;
 		private :
+			int m_GetUniformLocation(const std::string& name);
 			ShaderSource PraseShader(const std::string shaderFile);
 			unsigned int CreateShader(unsigned int type, const std::string& shaderSource);
 	};
