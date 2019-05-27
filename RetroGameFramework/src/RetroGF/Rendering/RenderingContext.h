@@ -15,7 +15,12 @@ namespace RGF {
 
 			virtual void Init(void* window) = 0;
 			virtual void SwapBuffers() = 0;
+
 			virtual std::string GetContextName() const = 0;
+			virtual std::string GetVendorName() const = 0;
+			virtual std::string GetVersion() const = 0;
+			virtual std::string GetRendererName() const = 0;
+
 
 			static RenderingContext* CreateContext(const ContextAPI& context);
 			static ContextAPI GetContext() { return m_Context; }

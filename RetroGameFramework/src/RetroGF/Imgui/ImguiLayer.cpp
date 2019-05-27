@@ -110,7 +110,7 @@ namespace RGF {
 
 
 	void ImguiLayer::OnImguiRender() {
-
+/*
 		static bool s_MiscWindowOpen = false;
 
 		ImGui::Begin("MISC", &s_MiscWindowOpen, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoMove | ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar);
@@ -129,7 +129,7 @@ namespace RGF {
 
 
 		ImGui::End();
-
+		*/
 
 	}
 

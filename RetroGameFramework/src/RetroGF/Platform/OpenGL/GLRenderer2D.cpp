@@ -11,7 +11,7 @@
 namespace RGF {
 
 	void GLRenderer2D::Clear() {
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
 
 	void GLRenderer2D::Submit(const Renderable* renderable) {
@@ -26,7 +26,11 @@ namespace RGF {
 			renderable->GetShader()->Bind();
 			renderable->GetShader()->SetUniformMatrix("u_Model", glm::translate(glm::mat4(1.0f), renderable->GetPosition()));
 
-			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_SHORT, nullptr);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glDrawElements(GL_TRIANGLE_STRIP, renderable->GetIbo()->GetCount(), GL_UNSIGNED_SHORT, nullptr);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			
 			renderable->GetVao()->Unbind();
 			renderable->GetIbo()->Unbind();
 

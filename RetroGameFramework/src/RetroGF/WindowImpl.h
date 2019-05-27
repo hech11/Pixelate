@@ -65,6 +65,7 @@ namespace RGF {
 
 
 			virtual inline void* GetNativeWindow() const = 0;
+			virtual inline RGF::RenderingContext* GetContext() const = 0;
 
 			// To be defined in the inherented DERIVED class.
 			static WindowImpl* Create(const WindowProps& props = WindowProps()); // Should return a HEAP allocated window object.

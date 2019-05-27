@@ -27,6 +27,7 @@ namespace RGF {
 			void Start();
 			void End();
 
+			FrameBuffer* ViewportFBO;
 	};
 
 }

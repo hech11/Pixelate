@@ -47,6 +47,7 @@ namespace RGF {
 			inline unsigned int GetYPos() const override { return m_Data.props.yPos; };
 
 			inline void* GetNativeWindow() const override { return m_Window; }
+			inline RGF::RenderingContext* GetContext() const override { return m_Context; }
 
 
 		private :

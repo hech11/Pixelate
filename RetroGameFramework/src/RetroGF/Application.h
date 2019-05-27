@@ -4,6 +4,7 @@
 #include "RetroGF/WindowImpl.h"
 
 
+
 #include "RetroGF/Events/Event.h"
 #include "RetroGF/Events/KeyEvents.h"
 #include "RetroGF/Events/WindowEvents.h"
@@ -25,9 +26,9 @@
 // This would initialize the window, renderer, physics, ect.
 
 
-
 namespace RGF {
 
+	class Renderer;
 	class RGF_API Application {
 
 		public :
@@ -43,11 +44,15 @@ namespace RGF {
 
 
 			WindowImpl& GetWindow() { return *m_Window; }
+			Renderer& GetRenderer() { return *m_Renderer; }
+
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			static Application* s_Instance;
 
 			std::unique_ptr<WindowImpl> m_Window;
+			std::unique_ptr<Renderer> m_Renderer;
+
 			LayerStack m_LayerStack;
 			Timer m_AppTimer;
 

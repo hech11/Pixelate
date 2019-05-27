@@ -52,11 +52,11 @@ namespace RGF {
 	void GLFrameBuffer::Bind() const {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo));
-		GLCall(glViewport(0, 0, m_Width, m_Height));
+		//GLCall(glViewport(0, 0, m_Width, m_Height));
 	}
 	void GLFrameBuffer::Unbind() const {
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-		GLCall(glViewport(0, 0, Application::GetApp().GetWindow().GetWidth(), Application::GetApp().GetWindow().GetHeight()));
+		//GLCall(glViewport(0, 0, Application::GetApp().GetWindow().GetWidth(), Application::GetApp().GetWindow().GetHeight()));
 
 	}
 

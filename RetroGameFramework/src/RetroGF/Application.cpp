@@ -16,8 +16,8 @@
 #include <GLM/glm/gtc/matrix_transform.hpp>
 #include <RetroGF/FileSystem.h>
 
-#include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/BatchedSprite.h>
+#include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/Sprite.h>
 
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
@@ -29,6 +29,7 @@ namespace RGF {
 	Application::Application() {
 		s_Instance = this;
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
+		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
@@ -43,6 +44,9 @@ namespace RGF {
 #endif
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
+
+
+		m_Renderer->Init();
 	}
 	Application::~Application() {
 	}
@@ -85,11 +89,8 @@ namespace RGF {
 
 
 
-		std::unique_ptr<RGF::Renderer> renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
-		renderer->Init();
+		m_Renderer->Init();
 
-		FrameBuffer* fbo = FrameBuffer::Create(960, 540);
-		fbo->Bind();
 		Shader* shader = Shader::Create();
 		shader->LoadFromSrc("res/shader/test.shader");
 		shader->Bind();
@@ -97,7 +98,8 @@ namespace RGF {
 
 		while (m_IsRunning) {
 
-			fbo->Clear();
+			m_EngineEditorLayer->ViewportFBO->Bind();
+			m_Renderer->Clear();
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate();
@@ -110,14 +112,17 @@ namespace RGF {
 			}
 			Frames++;
 
-			fbo->Bind();
-			renderer->Start();
-			renderer->Submit(&sprite);
-			renderer->End();
-			renderer->Render();
-			fbo->Unbind();
+			m_Renderer->Start();
+			m_Renderer->Submit(&sprite);
+			m_Renderer->End();
+			m_Renderer->Render();
 
+
+			
 #ifndef RGF_DISTRIBUTE
+			m_EngineEditorLayer->ViewportFBO->Unbind();
+			m_EngineEditorLayer->ViewportFBO->Clear();
+
 			m_ImguiLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnImguiRender();

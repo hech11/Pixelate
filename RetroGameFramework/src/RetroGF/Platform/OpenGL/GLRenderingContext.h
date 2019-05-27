@@ -20,6 +20,12 @@ namespace RGF {
 				return "OpengGL";
 			}
 
+			virtual std::string GetVendorName() const override;
+			virtual std::string GetVersion() const override;
+			virtual std::string GetRendererName() const override;
+
+
+
 		private :
 			GLFWwindow* m_WindowHandle;
 	};
