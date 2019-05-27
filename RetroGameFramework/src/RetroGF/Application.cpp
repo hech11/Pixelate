@@ -41,6 +41,9 @@ namespace RGF {
 		m_EngineEditorLayer = new ImguiEngineEditor();
 		PushOverlay(m_ImguiLayer);
 		PushOverlay(m_EngineEditorLayer);
+		PushOverlay(m_EngineEditorLayer->GameView);
+		PushOverlay(m_EngineEditorLayer->RenderingProps);
+		PushOverlay(m_EngineEditorLayer->EngineColEditor);
 #endif
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
@@ -98,7 +101,7 @@ namespace RGF {
 
 		while (m_IsRunning) {
 
-			m_EngineEditorLayer->ViewportFBO->Bind();
+			m_EngineEditorLayer->GameView->ViewportFBO->Bind();
 			m_Renderer->Clear();
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
@@ -120,8 +123,8 @@ namespace RGF {
 
 			
 #ifndef RGF_DISTRIBUTE
-			m_EngineEditorLayer->ViewportFBO->Unbind();
-			m_EngineEditorLayer->ViewportFBO->Clear();
+			m_EngineEditorLayer->GameView->ViewportFBO->Unbind();
+			m_EngineEditorLayer->GameView->ViewportFBO->Clear();
 
 			m_ImguiLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {

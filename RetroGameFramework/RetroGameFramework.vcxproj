@@ -287,6 +287,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RetroGF\Imgui\EditorWindows\ColorStyleEditor.h" />
+    <ClInclude Include="src\RetroGF\Imgui\EditorWindows\GameViewport.h" />
+    <ClInclude Include="src\RetroGF\Imgui\EditorWindows\RendererProperties.h" />
     <ClInclude Include="src\RetroGF\Imgui\ImguiEngineEditor.h" />
     <ClInclude Include="src\RetroGF\InputImpl.h" />
     <ClInclude Include="src\RetroGF\KeyCodes.h" />
@@ -344,6 +347,9 @@
     <ClInclude Include="vendor\STB\IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RetroGF\Imgui\EditorWindows\ColorStyleEditor.cpp" />
+    <ClCompile Include="src\RetroGF\Imgui\EditorWindows\GameViewport.cpp" />
+    <ClCompile Include="src\RetroGF\Imgui\EditorWindows\RendererProperties.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\ImguiEngineEditor.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLFrameBuffer.cpp" />
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.cpp" />

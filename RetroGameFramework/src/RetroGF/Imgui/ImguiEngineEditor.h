@@ -7,6 +7,10 @@
 
 #include "RetroGF/Events/WindowEvents.h"
 
+#include "EditorWindows/GameViewport.h"
+#include "EditorWindows/RendererProperties.h"
+#include "EditorWindows/ColorStyleEditor.h"
+
 namespace RGF {
 
 	class FrameBuffer;
@@ -27,7 +31,9 @@ namespace RGF {
 			void Start();
 			void End();
 
-			FrameBuffer* ViewportFBO;
+			GameViewport* GameView;
+			RendererProperties* RenderingProps;
+			ColorStyleEditor* EngineColEditor;
 	};
 
 }

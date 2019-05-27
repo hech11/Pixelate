@@ -7,6 +7,41 @@
 
 namespace RGF {
 
+	void GLBatchRenderer2D::SetDepthTesting(bool enable) {
+		if (enable) {
+			GLCall(glEnable(GL_DEPTH_TEST));
+		} else {
+			GLCall(glDisable(GL_DEPTH_TEST));
+		}
+
+	}
+	void GLBatchRenderer2D::SetStencilTesting(bool enable) {
+		if (enable) {
+			GLCall(glEnable(GL_STENCIL_TEST));
+		} else {
+			GLCall(glDisable(GL_STENCIL_TEST));
+		}
+
+	}
+	
+	void GLBatchRenderer2D::RenderWireFrame(bool enable) {
+		if (enable) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+	}
+
+
+
+	void GLBatchRenderer2D::ClearColor(float r, float g, float b) {
+		GLCall(glClearColor(r, g, b, 1.0f));
+	}
+	void GLBatchRenderer2D::ClearColor(unsigned char r, unsigned char g, unsigned char b) {
+		GLCall(glClearColor(r / 256.0f, g / 256.0f, b / 256.0f, 1.0f));
+	}
+
 
 	void GLBatchRenderer2D::Clear() {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));

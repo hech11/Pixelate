@@ -18,6 +18,15 @@ namespace RGF {
 
 		public :
 
+
+			void SetDepthTesting(bool enable) override;
+			void SetStencilTesting(bool enable) override;
+			void RenderWireFrame(bool enable) override;
+
+
+			void ClearColor(float r, float g, float b) override;
+			void ClearColor(unsigned char r, unsigned char g, unsigned char b) override;
+
 			void Clear() override;
 
 			void Submit(const Renderable* renderable) override;
