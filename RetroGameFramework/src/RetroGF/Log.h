@@ -98,6 +98,12 @@ namespace RGF {
 #define RGF_CORE_ERROR(message, ...) RGF::Log::GetCore()->Error(message, __VA_ARGS__ )
 #define RGF_CORE_CRIT(message, ...)	RGF::Log::GetCore()->Critical(message, __VA_ARGS__ )
 
+
+#define RGF_ASSERT(x, message, ...) if(!(x)){\
+RGF::Log::GetCore()->Critical(message, __VA_ARGS__ );\
+__debugbreak();\
+}\
+
 #else 
 
 #define RGF_TRACE(message, ...) 
@@ -111,7 +117,12 @@ namespace RGF {
 #define RGF_CORE_MSG(message, ...) 
 #define RGF_CORE_WARN(message, ...)
 #define RGF_CORE_ERROR(message, ...) 
-#define RGF_CORE_CRIT(message, ...)	
+#define RGF_CORE_CRIT(message, ...)
+
+#define RGF_ASSERT(x, message, ...) if(!(x)){\
+__debugbreak();\
+}\
+
 
 
 #endif

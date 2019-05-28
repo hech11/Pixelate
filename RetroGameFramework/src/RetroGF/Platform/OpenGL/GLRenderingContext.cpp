@@ -2,14 +2,17 @@
 #include "GLRenderingContext.h"
 
 
-#include "RetroGF/WindowImpl.h"
+#include "RetroGF/Window.h"
 #include "RetroGF/Application.h"
 
 #include <GLAD/include/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
-namespace RGF {
 
+
+
+namespace RGF {
+	static GLFWwindow* s_WindowHandle = nullptr; // not sure on using static for this...but it works for now.
 
 	GLRenderingContext::GLRenderingContext() {
 		RGF_CORE_MSG("Creating rendering context...\n");
@@ -32,13 +35,14 @@ namespace RGF {
 
 
 	void GLRenderingContext::Init(void* window) {
-		m_WindowHandle = static_cast<GLFWwindow*>(window);
-		glfwMakeContextCurrent(m_WindowHandle);
+		s_WindowHandle = static_cast<GLFWwindow*>(window);
+		glfwMakeContextCurrent(s_WindowHandle);
 
+		
+		
 		int GladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		if (!GladStatus) {
-			RGF_CORE_ERROR("Failed to load GLAD!\n");
-		}
+		RGF_ASSERT(GladStatus, "Failed to load GLAD!\n");
+
 
 		RGF_CORE_MSG("Rendering context : OpenGL\n\n");
 
@@ -50,6 +54,6 @@ namespace RGF {
 
 	}
 	void GLRenderingContext::SwapBuffers() {
-		glfwSwapBuffers(m_WindowHandle);
+		glfwSwapBuffers(s_WindowHandle);
 	}
 }

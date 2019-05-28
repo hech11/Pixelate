@@ -3,13 +3,20 @@
 #include "Texture.h"
 #include <GLM/glm/glm.hpp>
 
+
+
+// FrameBuffer interface.
+
+// The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
+
 namespace RGF {
 
 	class FrameBuffer {
 
 		public :
 
-			static FrameBuffer* Create(unsigned int width, unsigned int height);
+			//TODO: width and height are not actually used...
+			static FrameBuffer* Create(unsigned int width, unsigned int height); 
 
 
 			virtual void Clear() const = 0;

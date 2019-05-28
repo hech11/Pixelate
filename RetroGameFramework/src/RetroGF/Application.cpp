@@ -16,7 +16,6 @@
 #include <GLM/glm/gtc/matrix_transform.hpp>
 #include <RetroGF/FileSystem.h>
 
-#include <RetroGF/Rendering/BatchedSprite.h>
 #include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/Sprite.h>
 

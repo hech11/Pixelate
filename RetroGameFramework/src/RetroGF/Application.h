@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RetroGF/Core.h"
-#include "RetroGF/WindowImpl.h"
+#include "RetroGF/Window.h"
 
 
 
@@ -28,7 +28,7 @@
 
 namespace RGF {
 
-	class Renderer;
+	class Renderer2D;
 	class RGF_API Application {
 
 		public :
@@ -44,14 +44,14 @@ namespace RGF {
 
 
 			WindowImpl& GetWindow() { return *m_Window; }
-			Renderer& GetRenderer() { return *m_Renderer; }
+			Renderer2D& GetRenderer() { return *m_Renderer; }
 
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			static Application* s_Instance;
 
 			std::unique_ptr<WindowImpl> m_Window;
-			std::unique_ptr<Renderer> m_Renderer;
+			std::unique_ptr<Renderer2D> m_Renderer;
 
 			LayerStack m_LayerStack;
 			Timer m_AppTimer;

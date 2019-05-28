@@ -4,6 +4,21 @@
 #include "Renderable.h"
 #include "RetroGF/Core.h"
 
+
+
+// This contains classes for "Sprite" and "BatchedSprite"
+/* 
+	TODO: Sprites and BatchedSprites are implemented in this file. 
+		  Investigate to see if it is worth seperating into their own files
+		  such as "GLSprite" or "DX11Sprite".
+
+*/
+
+/* 
+	TODO: "BatchedSprite" may be unnecessary. Investiage on combining "BatchSprite" into the "Sprite" class and 
+		  switch between either batched or dynamic via a value or boolean.
+*/
+
 namespace RGF {
 
 	class RGF_API Sprite : public Renderable {
@@ -27,17 +42,11 @@ namespace RGF {
 				VertexBuffer* vbo = VertexBuffer::Create();
 				VertexBufferLayout layout;
 
-
-
-
-
 				m_VertexArray->Bind();
 				vbo->Bind();
 
 				vbo->SetData(9*4*sizeof(float), vertex);
 				m_VertexArray->PushBuffer(vbo);
-
-
 
 				m_IndexBuffer = IndexBuffer::Create(indicies, 6);
 				m_IndexBuffer->Bind();
@@ -68,6 +77,21 @@ namespace RGF {
 			VertexArray* m_VertexArray;
 			IndexBuffer* m_IndexBuffer;
 			Shader* m_Shader;
+	};
+
+
+
+
+	class RGF_API BatchedSprite : public Renderable {
+
+		public:
+			BatchedSprite(glm::vec3 position, glm::vec3 scale, glm::vec4 color)
+				: Renderable(position, scale, color)
+			{
+			
+			}
+
+
 	};
 
 }

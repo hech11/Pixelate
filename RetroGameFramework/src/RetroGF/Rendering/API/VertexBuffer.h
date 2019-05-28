@@ -7,9 +7,7 @@
 
 // VertexBuffer interface.
 
-// The 'Create' method will decide depending on the API choice should VertexBuffer choose
-// OpenGL, Directx 11 or 12, vulkan etc... implementation of VertexBuffer.
-
+// The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
 
 
 namespace RGF {

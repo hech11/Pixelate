@@ -3,6 +3,8 @@
 #include "RetroGF/Rendering/API/FrameBuffer.h"
 
 
+// OpenGL's implementation of FrameBuffers.
+
 namespace RGF {
 
 	class GLFrameBuffer : public FrameBuffer {

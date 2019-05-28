@@ -7,7 +7,7 @@ namespace RGF {
 
 
 	// Theme generator code based on: https://github.com/ocornut/imgui/issues/2265#issuecomment-465432091
-
+	// Again, this is just used for fun.
 
 	static ImVec4 base = ImVec4(0.502f, 0.075f, 0.256f, 1.0f);
 	static ImVec4 bg = ImVec4(0.200f, 0.220f, 0.270f, 1.0f);

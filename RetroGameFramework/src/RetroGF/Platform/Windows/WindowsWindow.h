@@ -3,18 +3,18 @@
 #include "RetroGF/Core.h"
 #include "RGFpch.h"
 
-#include "RetroGF/WindowImpl.h"
+#include "RetroGF/Window.h"
 
 
 
 // This is the implementation of the "WindowsImpl.h" pure virtual functions.
-// Other platforms will inheret "WindowsImpl" and implement their own pure virtual functions.
+// Other platforms will inheret "Windows" and implement their own pure virtual functions.
 
 
 
 
 /*
-	TODO: This implementation of "WindowsImpl" uses GLFW for creating the window.
+	TODO: This implementation of "WindowsWindow" uses GLFW for creating the window.
 	At some point I may switch to "Windows.h" instead to create a window and handle events.
 */
 

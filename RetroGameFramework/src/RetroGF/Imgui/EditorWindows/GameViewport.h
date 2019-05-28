@@ -7,6 +7,10 @@
 #include "RetroGF/Events/WindowEvents.h"
 
 
+// This layer shows the game viewport.
+// TODO: This uses layers. This could just be implemented into "ImguiEngineEdtior" without the use of layers. Investigate.
+
+
 namespace RGF {
 
 	class FrameBuffer;

@@ -7,9 +7,7 @@
 
 // VertexArray interface.
 
-// The 'Create' method will decide depending on the API choice should VertexArray choose
-// OpenGL, Directx 11 or 12, vulkan etc... implementation of VertexArray.
-
+// The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
 
 namespace RGF {
 

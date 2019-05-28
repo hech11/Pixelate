@@ -5,7 +5,9 @@
 #include "GLFW/include/GLFW/glfw3.h"
 
 namespace RGF {
-	InputImpl* InputImpl::s_Instance = new WindowsInput();
+
+	// TODO: This needs to be "macro-fied" as this input system is only hardcoded to support windows.
+	Input* Input::s_Instance = new WindowsInput();
 
 	bool WindowsInput::IsKeyDownImpl(int keycode) {
 		auto win = static_cast<GLFWwindow*>(Application::GetApp().GetWindow().GetNativeWindow());

@@ -7,9 +7,12 @@
 
 #include "RetroGF/Events/WindowEvents.h"
 
+
+
+// This layer only initializes Imgui.
 namespace RGF {
 
-	// TODO: This may unnecessary as the "ImguiEngineEditor" could just initialize imgui.
+	// TODO: This may unnecessary as the "ImguiEngineEditor" could just initialize Imgui.
 	class RGF_API ImguiLayer : public Layer {
 
 		public :

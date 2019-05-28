@@ -10,12 +10,18 @@
 
 #include "RetroGF/Core.h"
 
+// This is a polymorphic class that will be inherited by everything that needs to be rendered on screen.
+// Such as.. sprites, text, menus, buttons... anything that needs to be rendered will be inherited by this class.
+
 namespace RGF {
 
+	// Data that will be sent to the GPU.
 	struct RGF_API VertexData {
 		glm::vec3 verticies;
 		unsigned int color;
 	};
+
+
 	class RGF_API Renderable {
 		protected :
 			glm::vec3 m_Position;

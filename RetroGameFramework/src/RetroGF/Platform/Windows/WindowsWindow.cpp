@@ -45,19 +45,13 @@ namespace RGF {
 		m_Context = RGF::RenderingContext::CreateContext(RGF::RenderingContext::ContextAPI::OPENGL);
 
 
-		if (!glfwInit()) {
-			glfwTerminate();
-			RGF_CORE_ERROR("Failed to init GLFW!\n");
-			return;
-		}
+		int glfwValidation = glfwInit();
+		RGF_ASSERT(glfwValidation, "Failed to init GLFW!\n");
 		
 
 		m_Window = glfwCreateWindow(m_Data.props.Width, m_Data.props.Height, m_Data.props.Title.c_str(), nullptr, nullptr);
-		if (m_Window == nullptr) {
-			glfwTerminate();
-			RGF_CORE_ERROR("Failed to create the window!\n");
-			return;
-		}
+		RGF_ASSERT(m_Window, "Failed to create the window");
+
 
 		m_Context->Init(m_Window);
 		SetVsync(false);

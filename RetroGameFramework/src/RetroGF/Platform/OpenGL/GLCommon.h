@@ -13,7 +13,7 @@
 
 #define GLCall(x) RGF::GL::GLClearError();\
 				x;\
-RGF_ASSERT(RGF::GL::GLLogCall(#x, __FILE__, __LINE__))
+RGF_ASSERT(RGF::GL::GLLogCall(#x, __FILE__, __LINE__), "");
 
 #endif
 

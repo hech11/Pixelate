@@ -19,4 +19,3 @@
 #endif
 
 
-#define RGF_ASSERT(x) if(!(x)) __debugbreak();

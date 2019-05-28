@@ -2,6 +2,13 @@
 
 #include "RGFpch.h"
 
+// TODO: is "Rendering Context" a good name? Maybe rename to just "Context"
+
+// Rendering Context interface.
+
+// This decides what graphics API that RGF will use.
+// The 'CreateContext' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
+
 namespace RGF {
 
 	class RenderingContext {

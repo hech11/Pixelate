@@ -3,8 +3,11 @@
 #include "RetroGF/Rendering/RenderingContext.h"
 
 
+// OpenGL's implementation of 'IndexBuffer.h'
 
-struct GLFWwindow;
+
+// TODO: This uses GLFW. Switch to the OS windows implentation.
+
 namespace RGF {
 
 
@@ -26,7 +29,5 @@ namespace RGF {
 
 
 
-		private :
-			GLFWwindow* m_WindowHandle;
 	};
 }

@@ -7,6 +7,10 @@
 #include "RetroGF/Events/WindowEvents.h"
 
 
+// This allows to change Imgui's "Theme". This class can also create custom themes.
+// (Although it's not really a main feature. Just used to develop the framework and used for fun)
+
+// TODO: This uses layers. This could just be implemented into "ImguiEngineEdtior" without the use of layers. Investigate.
 
 namespace RGF {
 

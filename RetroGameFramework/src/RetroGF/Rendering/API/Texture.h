@@ -5,7 +5,13 @@
 #include "RGFpch.h"
 
 
+// Texture interface.
+
+// The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
+
 namespace RGF {
+	// A abstracted way to format the textures.
+	// The abstraction code should be implemented in the API texture's ".cpp" file.
 
 	enum class TextureFormat {
 		None = -1,
@@ -39,6 +45,10 @@ namespace RGF {
 		TextureWrap Wrap;
 
 	};
+
+
+
+
 	class RGF_API Texture {
 
 		public :

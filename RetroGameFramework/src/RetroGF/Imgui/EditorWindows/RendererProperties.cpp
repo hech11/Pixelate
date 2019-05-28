@@ -10,7 +10,7 @@
 #include <GLFW/include/GLFW/glfw3.h>
 
 #include "RetroGF/Application.h"
-#include "RetroGF/Rendering/Renderer.h"
+#include "RetroGF/Rendering/Renderer2D.h"
 
 
 

@@ -45,9 +45,6 @@
     <ClInclude Include="src\RetroGF\Platform\Windows\WindowsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\WindowImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RGFpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -91,9 +88,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RetroGF\Random.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RetroGF\InputImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RetroGF\Platform\Windows\WindowsInput.h">
@@ -141,15 +135,6 @@
     <ClInclude Include="src\RetroGF\Rendering\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\BatchedSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLBatchRenderer2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -187,6 +172,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RetroGF\Imgui\EditorWindows\ColorStyleEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -252,9 +243,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLBatchRenderer2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Rendering\Renderer2D.cpp">
