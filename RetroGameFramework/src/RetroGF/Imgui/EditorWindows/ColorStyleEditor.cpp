@@ -1,4 +1,6 @@
 #include "RGFpch.h"
+#ifndef RGF_DISTRIBUTE
+
 #include "ColorStyleEditor.h"
 
 #include <IMGUI/imgui.h>
@@ -331,3 +333,5 @@ namespace RGF {
 
 	}
 }
+
+#endif

@@ -15,20 +15,30 @@
 
 #include <GLM/glm/gtc/matrix_transform.hpp>
 #include <RetroGF/FileSystem.h>
+#include <RetroGF/Random.h>
 
 #include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/Sprite.h>
 
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
 
+
 namespace RGF {
+
+
+
+#define Batchrendering 1
 
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application() {
 		s_Instance = this;
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
+#if Batchrendering 
+		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
+#else
 		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
+#endif
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
@@ -93,19 +103,50 @@ namespace RGF {
 
 		m_Renderer->Init();
 
-		Shader* shader = Shader::Create();
+		Shader* shader = nullptr;
+		shader = Shader::Create();
 		shader->LoadFromSrc("res/shader/test.shader");
 		shader->Bind();
-		Sprite sprite({ 0.0f,0.0f,0.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, shader);
+		//shader->SetUniformMatrix("u_Proj", glm::ortho(-8.0f, 8.0f, -4.5f, 4.5f, -1.0f, 1.0f));
 
+
+
+#if Batchrendering
+		std::vector<BatchedSprite*> sprites;
+#else
+		std::vector<Sprite*> sprites;
+
+#endif
+
+#if 1
+		for (float y = 0.0f; y < 9.0f; y += 0.14f) {
+			for (float x = 0.0f; x < 16.0f; x += 0.14f) {
+			sprites.push_back(new
+#if Batchrendering
+				BatchedSprite
+#else
+				Sprite
+#endif
+				({ 1-x, 1-y, 0.0f }, { 0.08f, 0.08f, 1.0f }, {Random::GetRandomInRange(0.0f, 1.0f), 0.0f, 1.0f, 1.0f}
+#if !Batchrendering
+				, shader
+#endif
+
+				));
+		}
+	}
+
+#endif
+
+
+
+
+		RGF_CORE_MSG("Sprites: %d\n", sprites.size());
 		while (m_IsRunning) {
-
+#ifndef RGF_DISTRIBUTE
 			m_EngineEditorLayer->GameView->ViewportFBO->Bind();
+#endif
 			m_Renderer->Clear();
-
-			for (Layer* layer : m_LayerStack.GetLayerStack()) {
-				layer->OnUpdate();
-			}
 
 
 			if (m_AppTimer.GetElapsedMillis() - UpdateTimer > UpdateTick) {
@@ -114,8 +155,14 @@ namespace RGF {
 			}
 			Frames++;
 
+			for (Layer* layer : m_LayerStack.GetLayerStack()) {
+				layer->OnUpdate();
+			}
+
 			m_Renderer->Start();
-			m_Renderer->Submit(&sprite);
+			for (int i = 0; i < sprites.size(); i++) {
+				m_Renderer->Submit(sprites[i]);
+			}
 			m_Renderer->End();
 			m_Renderer->Render();
 
@@ -137,7 +184,7 @@ namespace RGF {
 
 			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {
 				Time += 1.0f;
-				//RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
+				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
 #ifdef RGF_DISTRIBUTE
 				printf("%d: FPS\t%d: UPS\n", Frames, Updates);
 #endif

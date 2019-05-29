@@ -11,6 +11,8 @@
 
 // Has implementations of both GLRenderer2D and GLBatchRenderer2D.
 
+// TODO: batch renderer renders using GL_TRIANGLES, at some point consider using GL_TRIANGLE_STRIP
+
 namespace RGF {
 	void GLRenderer2D::SetDepthTesting(bool enable) {
 		if (enable) {
@@ -60,9 +62,10 @@ namespace RGF {
 			renderable->GetVao()->Bind();
 			renderable->GetIbo()->Bind();
 			renderable->GetShader()->Bind();
-			renderable->GetShader()->SetUniformMatrix("u_Model", glm::translate(glm::mat4(1.0f), renderable->GetPosition()));
+			renderable->GetShader()->SetUniformMatrix("u_Model",
+				glm::translate(glm::mat4(1.0f), renderable->GetPosition()) * glm::scale(glm::mat4(1.0f), renderable->GetScale()));
 
-			glDrawElements(GL_TRIANGLE_STRIP, renderable->GetIbo()->GetCount(), GL_UNSIGNED_SHORT, nullptr);
+			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_SHORT, nullptr);
 
 			
 			renderable->GetVao()->Unbind();
@@ -131,20 +134,21 @@ namespace RGF {
 
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
-		layout.Push<unsigned char>(4);
+		layout.Push<unsigned char>(4, true);
 		m_Vbo->SetLayout(layout);
 
 		m_Vao->PushBuffer(m_Vbo);
 		m_Vbo->Unbind();
 
 
-		unsigned short indices[RENDERER_INDICIES_SIZE];
-		unsigned short offset = 0;
-		for (unsigned short i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
+		unsigned int indices[RENDERER_INDICIES_SIZE];
+		int offset = 0;
+		for (unsigned int i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
 			indices[i] = offset + 0;
 			indices[i + 1] = offset + 1;
 			indices[i + 2] = offset + 2;
 			indices[i + 3] = offset + 2;
+
 			indices[i + 4] = offset + 3;
 			indices[i + 5] = offset + 0;
 
@@ -172,12 +176,13 @@ namespace RGF {
 		const auto& Scale = renderable->GetScale();
 		const auto& Color = renderable->GetColor();
 
-		unsigned short r = Color.x * 255.0f;
-		unsigned short g = Color.y * 255.0f;
-		unsigned short b = Color.z * 255.0f;
-		unsigned short a = Color.w * 255.0f;
+		unsigned char r = Color.x * 255.0f;
+		unsigned char g = Color.y * 255.0f;
+		unsigned char b = Color.z * 255.0f;
+		unsigned char a = Color.w * 255.0f;
 
 		unsigned int c = a << 24 | b << 16 | g << 8 | r;
+
 		// 1st vertex
 		Buffer->verticies = Pos;
 		Buffer->color = c;
@@ -199,18 +204,17 @@ namespace RGF {
 		Buffer->color = c;
 		Buffer++;
 
-		m_IndexCount += 4;
+		m_IndexCount += 6;
 
 	}
 	void GLBatchRenderer2D::Render() {
 		m_Vao->Bind();
 		m_Ibo->Bind();
 
-		GLCall(glDrawElements(GL_TRIANGLE_STRIP, m_IndexCount, GL_UNSIGNED_SHORT, nullptr));
+		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, nullptr));
 
 
 		m_IndexCount = 0;
-
 	}
 
 

@@ -43,7 +43,7 @@ namespace RGF {
 			void Push<float>(unsigned int count, bool normilized) {
 				// If the context is OpenGL.
 				m_BufferLayouts.push_back({ BufferElement::ConvertBytesToGLType(BufferElement::GLTYPES::Float), 
-					count, false }); // this is only temp...use GL_FLOAT.
+					count, normilized }); // this is only temp...use GL_FLOAT.
 				m_Stride += count * sizeof(float);
 
 
@@ -70,7 +70,7 @@ namespace RGF {
 			void Push<unsigned char>(unsigned int count, bool normilized) {
 				// If the context is OpenGL.
 				m_BufferLayouts.push_back({ BufferElement::ConvertBytesToGLType(BufferElement::GLTYPES::Unsigned_Byte),
-				count, false });
+				count, normilized });
 				m_Stride += count * sizeof(unsigned char);
 			}
 
