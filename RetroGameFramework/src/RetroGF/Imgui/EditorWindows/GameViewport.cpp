@@ -44,7 +44,7 @@ namespace RGF {
 		// The game viewport.
 		ImGui::Begin("Game viewport", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar);
 		const ImVec2& windowscale = ImGui::GetWindowSize();
-		ImGui::Image((void*)ViewportFBO->GetTexture(), { windowscale.x, windowscale.y - 35.0f });
+		ImGui::Image((void*)ViewportFBO->GetTexture(), { windowscale.x, windowscale.y - 35.0f }, { 0, 1 }, {1, 0});
 		ImGui::End();
 
 		ViewportFBO->Unbind();

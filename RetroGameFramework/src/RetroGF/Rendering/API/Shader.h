@@ -24,8 +24,8 @@ namespace RGF {
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
-			virtual void LoadFromSrc(const std::string& filepath) = 0;
-
+			virtual void LoadFromFile(const std::string& filepath) = 0;
+			virtual void LoadFromSrc(const char* data) = 0;
 
 			virtual void SetUniform4f(const std::string& uniformName, const glm::vec4& values) = 0;
 			virtual void SetUniform1i(const std::string& uniformName, const int value) = 0;

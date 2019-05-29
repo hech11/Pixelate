@@ -62,14 +62,9 @@ namespace RGF {
 			renderable->GetVao()->Bind();
 			renderable->GetIbo()->Bind();
 			renderable->GetShader()->Bind();
-			renderable->GetShader()->SetUniformMatrix("u_Model",
-				glm::translate(glm::mat4(1.0f), renderable->GetPosition()) * glm::scale(glm::mat4(1.0f), renderable->GetScale()));
 
-			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_SHORT, nullptr);
+			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_BYTE, nullptr);
 
-			
-			renderable->GetVao()->Unbind();
-			renderable->GetIbo()->Unbind();
 
 			m_RenderQueue.pop_front();
 		}
@@ -134,14 +129,16 @@ namespace RGF {
 
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
+		layout.Push<float>(2);
 		layout.Push<unsigned char>(4, true);
 		m_Vbo->SetLayout(layout);
-
+		
 		m_Vao->PushBuffer(m_Vbo);
 		m_Vbo->Unbind();
 
 
-		unsigned int indices[RENDERER_INDICIES_SIZE];
+		unsigned short indices[RENDERER_INDICIES_SIZE];
+		RGF_CORE_WARN("Indicies are unsigned shorts, This may cause problems. Change to unsigned ints if so.\n");
 		int offset = 0;
 		for (unsigned int i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
 			indices[i] = offset + 0;
@@ -175,6 +172,7 @@ namespace RGF {
 		const auto& Pos = renderable->GetPosition();
 		const auto& Scale = renderable->GetScale();
 		const auto& Color = renderable->GetColor();
+		const auto& Uv = renderable->GetUV();
 
 		unsigned char r = Color.x * 255.0f;
 		unsigned char g = Color.y * 255.0f;
@@ -185,22 +183,26 @@ namespace RGF {
 
 		// 1st vertex
 		Buffer->verticies = Pos;
+		Buffer->uv = Uv[0];
 		Buffer->color = c;
 		Buffer++;
 
 		// 2st vertex
 		Buffer->verticies = { Pos.x, Pos.y + Scale.y, Pos.z };
+		Buffer->uv = Uv[1];
 		Buffer->color = c;
 		Buffer++;
 
 		// 3st vertex
 		Buffer->verticies = { Pos.x + Scale.x, Pos.y + Scale.y, Pos.z };
+		Buffer->uv = Uv[2];
 		Buffer->color = c;
 		Buffer++;
 
 
 		// 4st vertex
 		Buffer->verticies = { Pos.x + Scale.x, Pos.y, Pos.z };
+		Buffer->uv = Uv[3];
 		Buffer->color = c;
 		Buffer++;
 
@@ -211,7 +213,7 @@ namespace RGF {
 		m_Vao->Bind();
 		m_Ibo->Bind();
 
-		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, nullptr));
+		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_SHORT, nullptr));
 
 
 		m_IndexCount = 0;

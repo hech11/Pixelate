@@ -21,6 +21,7 @@
 #include <RetroGF/Rendering/Sprite.h>
 
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
+#include "RetroGF/Rendering/ShaderGenerator.h"
 
 
 namespace RGF {
@@ -54,11 +55,14 @@ namespace RGF {
 		PushOverlay(m_EngineEditorLayer->RenderingProps);
 		PushOverlay(m_EngineEditorLayer->EngineColEditor);
 #endif
+
+		RGF_CORE_MSG("Creating the renderer!\n");
+		m_Renderer->Init();
+
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
 
-		m_Renderer->Init();
 	}
 	Application::~Application() {
 	}
@@ -99,25 +103,29 @@ namespace RGF {
 		unsigned int Frames = 0;
 		unsigned int Updates = 0;
 
+		Texture* test = nullptr;
+		RGF::TextureParameters params;
+		params.Filter = RGF::TextureFilter::Linear;
+		params.Format = RGF::TextureFormat::RGBA;
+		params.Wrap = RGF::TextureWrap::Repeat;
 
 
-		m_Renderer->Init();
+		test = Texture::Create(0, 0, params);
+		test->Bind();
+		test->LoadTexture("res/graphics/sprite.png");
 
 		Shader* shader = nullptr;
-		shader = Shader::Create();
-		shader->LoadFromSrc("res/shader/test.shader");
+		shader = ShaderGenerator::GetInstance()->TexturedShader();
 		shader->Bind();
-		//shader->SetUniformMatrix("u_Proj", glm::ortho(-8.0f, 8.0f, -4.5f, 4.5f, -1.0f, 1.0f));
 
 
-
+		shader->SetUniform1i("u_TextureSampler", 0);
 #if Batchrendering
 		std::vector<BatchedSprite*> sprites;
 #else
 		std::vector<Sprite*> sprites;
 
 #endif
-
 #if 1
 		for (float y = 0.0f; y < 9.0f; y += 0.14f) {
 			for (float x = 0.0f; x < 16.0f; x += 0.14f) {
@@ -127,7 +135,7 @@ namespace RGF {
 #else
 				Sprite
 #endif
-				({ 1-x, 1-y, 0.0f }, { 0.08f, 0.08f, 1.0f }, {Random::GetRandomInRange(0.0f, 1.0f), 0.0f, 1.0f, 1.0f}
+				({ 1-x, 1-y, 0.0f }, { 0.08f, 0.08f, 1.0f }, {Random::GetRandomInRange(1.0f, 1.0f), 0.0f, 1.0f, 1.0f}
 #if !Batchrendering
 				, shader
 #endif
@@ -147,6 +155,7 @@ namespace RGF {
 			m_EngineEditorLayer->GameView->ViewportFBO->Bind();
 #endif
 			m_Renderer->Clear();
+			test->Bind();
 
 
 			if (m_AppTimer.GetElapsedMillis() - UpdateTimer > UpdateTick) {

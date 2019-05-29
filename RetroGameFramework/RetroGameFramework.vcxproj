@@ -329,6 +329,7 @@
     <ClInclude Include="src\RetroGF\Rendering\Renderable.h" />
     <ClInclude Include="src\RetroGF\Rendering\Renderer2D.h" />
     <ClInclude Include="src\RetroGF\Rendering\RenderingContext.h" />
+    <ClInclude Include="src\RetroGF\Rendering\ShaderGenerator.h" />
     <ClInclude Include="src\RetroGF\Rendering\Sprite.h" />
     <ClInclude Include="src\RGFpch.h" />
     <ClInclude Include="src\RetroGF\Window.h" />
@@ -374,6 +375,7 @@
     <ClCompile Include="src\RetroGF\Rendering\API\VertexBufferLayout.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\RenderingContext.cpp" />
+    <ClCompile Include="src\RetroGF\Rendering\ShaderGenerator.cpp" />
     <ClCompile Include="src\RGFpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

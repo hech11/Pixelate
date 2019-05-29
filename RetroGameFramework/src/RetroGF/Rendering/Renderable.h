@@ -18,6 +18,7 @@ namespace RGF {
 	// Data that will be sent to the GPU.
 	struct RGF_API VertexData {
 		glm::vec3 verticies;
+		glm::vec2 uv;
 		unsigned int color;
 	};
 
@@ -27,11 +28,17 @@ namespace RGF {
 			glm::vec3 m_Position;
 			glm::vec3 m_Scale;
 			glm::vec4 m_Color;
+			std::array<glm::vec2, 4> m_UV;
 
 		public :
 			Renderable(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color)
 				: m_Position(position), m_Scale(scale), m_Color(color)
-			{}
+			{
+				m_UV[0] = { 0.0f, 0.0f };
+				m_UV[1] = { 0.0f, 1.0f };
+				m_UV[2] = { 1.0f, 1.0f };
+				m_UV[3] = { 1.0f, 0.0f };
+			}
 
 			virtual ~Renderable() {}
 		public :
@@ -43,6 +50,7 @@ namespace RGF {
 			inline const glm::vec3& GetPosition() const { return m_Position; }
 			inline const glm::vec3& GetScale() const { return m_Scale; }
 			inline const glm::vec4& GetColor () const { return m_Color; }
+			inline const std::array<glm::vec2, 4>& GetUV() const { return m_UV; }
 	};
 
 }

@@ -34,7 +34,7 @@ namespace RGF {
 			return GL_RGB;
 
 		case TextureFormat::RGBA:
-			return GL_RGB;
+			return GL_RGBA;
 		}
 	}
 

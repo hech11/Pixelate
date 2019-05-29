@@ -26,7 +26,7 @@ namespace RGF {
 	}
 
 
-	GLShader::ShaderSource GLShader::PraseShader(const std::string shaderFile) {
+	GLShader::ShaderSource GLShader::m_PraseShader(const std::string shaderFile) {
 		if (!FileSystem::DoesFileExist(shaderFile)) {
 			RGF_CORE_CRIT("File '%s' Does not exist!\n", shaderFile.c_str());
 			__debugbreak();
@@ -58,14 +58,62 @@ namespace RGF {
 		return { ss[0].str(), ss[1].str() };
 	}
 
+	GLShader::ShaderSource GLShader::m_PraseShader(const char* data) {
+		enum class ShaderType {
+			None = -1,
+			Vertex, Fragment
+		};
+		ShaderType type = ShaderType::None;
+		std::string line;
+		std::istringstream file(data);
+		std::stringstream ss[2];
 
-	void GLShader::LoadFromSrc(const std::string& filepath) {
+		while (getline(file, line)) {
+			if (line.find("#shader") != std::string::npos) {
+				if (line.find("vertex") != std::string::npos) {
+					type = ShaderType::Vertex;
+				}
+				else if (line.find("fragment") != std::string::npos) {
+					type = ShaderType::Fragment;
+				}
+			}
+			else {
+				ss[(int)type] << line << "\n";
+			}
+		}
+
+		return { ss[0].str(), ss[1].str() };
+	}
+
+	// TODO: This code is duplication! need to refactor and redeign at some point.
+
+	void GLShader::LoadFromSrc(const char* data) {
+		const auto& program = m_RendererID;
+		ShaderSource source = m_PraseShader(data);
+
+		
+
+		unsigned int vs = m_CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
+		unsigned int fs = m_CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
+
+
+		GLCall(glAttachShader(program, vs));
+		GLCall(glAttachShader(program, fs));
+
+		GLCall(glLinkProgram(program));
+		GLCall(glValidateProgram(program));
+
+		GLCall(glDeleteShader(vs));
+		GLCall(glDeleteShader(fs));
+	}
+
+	void GLShader::LoadFromFile(const std::string& filepath) {
 		m_Filepath = filepath;
 		const auto& program = m_RendererID;
-		ShaderSource source = PraseShader(filepath);
+		ShaderSource source = m_PraseShader(filepath);
 
-		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
-		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
+		unsigned int vs = m_CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
+		unsigned int fs = m_CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
 
 
 		GLCall(glAttachShader(program, vs));
@@ -78,7 +126,7 @@ namespace RGF {
 		GLCall(glDeleteShader(fs));
 	}
 
-	unsigned int GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
+	unsigned int GLShader::m_CreateShader(unsigned int type, const std::string& shaderSource) {
 		unsigned int shader = glCreateShader(type);
 		const char* shdSrc = shaderSource.c_str();
 		
