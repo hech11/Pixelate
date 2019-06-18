@@ -21,6 +21,19 @@ namespace RGF {
 		Default,
 		Batch
 	};
+
+	enum class RGF_API BlendFunc {
+		None = -1,
+		ZERO,
+		ONE,
+		ONE_MINUS_SRC_COLOR,
+		DST_COLOR,
+		ONE_MINUS_DST_COLOR,
+		CONSTANT_COLOR,
+		ONE_MINUS_CONSTANT_COLOR,
+		CONSTANT_ALPHA,
+		ONE_MINUS_CONSTANT_ALPHA
+	};
 	class RGF_API Renderer2D  {		
 
 		public :
@@ -28,6 +41,9 @@ namespace RGF {
 			virtual void SetDepthTesting(bool enable) = 0;
 			virtual void SetStencilTesting(bool enable) = 0;
 			virtual void RenderWireFrame(bool enable) = 0;
+
+			virtual void SetBlend(bool enable) = 0;
+			virtual void SetBlendFunc(BlendFunc& source, BlendFunc& dest) = 0;
 
 
 			virtual void ClearColor(float r, float g, float b) = 0;

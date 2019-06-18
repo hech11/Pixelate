@@ -18,8 +18,8 @@ namespace RGF {
 	// Data that will be sent to the GPU.
 	struct RGF_API VertexData {
 		glm::vec3 verticies;
-		glm::vec2 uv;
 		unsigned int color;
+		glm::vec2 uv;
 	};
 
 

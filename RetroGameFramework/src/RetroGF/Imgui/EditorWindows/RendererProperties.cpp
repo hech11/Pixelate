@@ -24,7 +24,8 @@ namespace RGF {
 	}
 
 	
-
+#define Stringify(x) #x
+#define ImguiRadioBlendFunc(blendfunc, x) if (ImGui::RadioButton(Stringify(blendfunc), x == blendfunc)) { x = blendfunc; }
 	void RendererProperties::OnImguiRender() {
 
 		ImGui::Begin("Renderer Properties");
@@ -37,6 +38,7 @@ namespace RGF {
 
 		static bool depthTest = false;
 		static bool stencilTest = false;
+		static bool enableBlend = false;
 		static bool wireframe = false;
 
 		if (ImGui::Checkbox("Enable Depth Test", &depthTest)) {
@@ -48,8 +50,48 @@ namespace RGF {
 		if (ImGui::Checkbox("Render in wireframe", &wireframe)) {
 			app.GetRenderer().RenderWireFrame(wireframe);
 		}
+		if (ImGui::Checkbox("Enable Blending", &enableBlend)) {
+			app.GetRenderer().SetBlend(enableBlend);
+		}
+		if (enableBlend) {
+			static bool SourceCheckBox[9];
+			static bool DestCheckBox[9];
+			static BlendFunc Src;
+			static BlendFunc Dest;
+			ImGui::Text("Source");
 
+			ImguiRadioBlendFunc(BlendFunc::ZERO, Src);
+			ImguiRadioBlendFunc(BlendFunc::ONE, Src);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_SRC_COLOR, Src);
+			ImguiRadioBlendFunc(BlendFunc::DST_COLOR, Src);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_DST_COLOR, Src);
+			ImguiRadioBlendFunc(BlendFunc::CONSTANT_COLOR, Src);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_COLOR, Src);
+			ImguiRadioBlendFunc(BlendFunc::CONSTANT_ALPHA, Src);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_ALPHA, Src);
+			ImGui::Text("Dest");
+			ImguiRadioBlendFunc(BlendFunc::ZERO, Dest);
+			ImguiRadioBlendFunc(BlendFunc::ONE, Dest);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_SRC_COLOR, Dest);
+			ImguiRadioBlendFunc(BlendFunc::DST_COLOR, Dest);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_DST_COLOR, Dest);
+			ImguiRadioBlendFunc(BlendFunc::CONSTANT_COLOR, Dest);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_COLOR, Dest);
+			ImguiRadioBlendFunc(BlendFunc::CONSTANT_ALPHA, Dest);
+			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_ALPHA, Dest);
+			app.GetRenderer().SetBlendFunc(Src, Dest);
+
+		}
+
+		ImGui::Text("--Camera Properties--");
+		ImGui::DragFloat3("Camera Pos", &app.GetCamera().GetPos().x, .01f);
+		ImGui::DragFloat3("Camera Rot", &app.GetCamera().GetRot().x, .01f);
+		ImGui::DragFloat("Camera angle", &app.GetCamera().GetAngle(), .01f);
+		ImGui::DragFloat3("Camera Scale", &app.GetCamera().GetScale().x, .01f);
+
+		ImGui::ShowDemoWindow((bool*)1);
 		ImGui::End();
+
 	}
 
 

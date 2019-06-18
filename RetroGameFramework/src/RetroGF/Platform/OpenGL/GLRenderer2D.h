@@ -33,6 +33,10 @@ namespace RGF {
 			void RenderWireFrame(bool enable) override;
 
 
+			void SetBlend(bool enable) override;
+			void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
+
+
 			void ClearColor(float r, float g, float b) override;
 			void ClearColor(unsigned char r, unsigned char g, unsigned char b) override;
 
@@ -52,7 +56,7 @@ namespace RGF {
 
 
 		private :
-			std::deque<const Renderable*> m_RenderQueue; // This is temp. need to implement a proper render queue class prehaps?
+			std::deque<const Renderable*> m_RenderQueue; // TODO : This is temp. need to implement a proper render queue class prehaps?
 	};
 
 
@@ -73,6 +77,9 @@ namespace RGF {
 			void SetStencilTesting(bool enable) override;
 			void RenderWireFrame(bool enable) override;
 
+
+			void SetBlend(bool enable) override;
+			void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
 
 			void ClearColor(float r, float g, float b) override;
 			void ClearColor(unsigned char r, unsigned char g, unsigned char b) override;

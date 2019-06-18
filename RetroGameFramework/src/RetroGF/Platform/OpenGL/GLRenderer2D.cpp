@@ -5,6 +5,7 @@
 #include <GLM/glm/gtc/matrix_transform.hpp>
 
 #include "RetroGF/Rendering/Sprite.h"
+#include "RetroGF/Application.h"
 
 #include "GLCommon.h"
 
@@ -14,6 +15,30 @@
 // TODO: batch renderer renders using GL_TRIANGLES, at some point consider using GL_TRIANGLE_STRIP
 
 namespace RGF {
+
+
+	static unsigned int ConvertBlendFunctions(BlendFunc& func) {
+		switch (func) {
+			case BlendFunc::ZERO :
+				return GL_ZERO;
+			case BlendFunc::ONE :
+				return GL_ONE;
+			case BlendFunc::ONE_MINUS_SRC_COLOR:
+				return GL_ONE_MINUS_SRC_COLOR;
+			case BlendFunc::DST_COLOR:
+				return GL_DST_COLOR;
+			case BlendFunc::ONE_MINUS_DST_COLOR:
+				return GL_ONE_MINUS_DST_COLOR;
+			case BlendFunc::CONSTANT_COLOR:
+				return GL_CONSTANT_COLOR;
+			case BlendFunc::ONE_MINUS_CONSTANT_COLOR:
+				return GL_ONE_MINUS_CONSTANT_COLOR;
+			case BlendFunc::CONSTANT_ALPHA:
+				return GL_CONSTANT_ALPHA;
+			case BlendFunc::ONE_MINUS_CONSTANT_ALPHA:
+				return GL_ONE_MINUS_CONSTANT_ALPHA;
+		}
+	}
 	void GLRenderer2D::SetDepthTesting(bool enable) {
 		if (enable) {
 			GLCall(glEnable(GL_DEPTH_TEST));
@@ -32,13 +57,25 @@ namespace RGF {
 	}
 	void GLRenderer2D::RenderWireFrame(bool enable) {
 		if (enable) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 		} else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 		}
 
 	}
 
+	void GLRenderer2D::SetBlend(bool enable) {
+		if (enable) {
+			GLCall(glEnable(GL_BLEND))
+		}
+		else {
+			GLCall(glDisable(GL_BLEND));
+		}
+	}
+
+	void GLRenderer2D::SetBlendFunc(BlendFunc& source, BlendFunc& dest) {
+		GLCall(glBlendFunc(ConvertBlendFunctions(source), ConvertBlendFunctions(dest)));
+	}
 
 
 	void GLRenderer2D::ClearColor(float r, float g, float b) {
@@ -62,6 +99,8 @@ namespace RGF {
 			renderable->GetVao()->Bind();
 			renderable->GetIbo()->Bind();
 			renderable->GetShader()->Bind();
+
+			renderable->GetShader()->SetUniformMatrix("u_View", Application::GetApp().GetCamera().GetView());
 
 			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_BYTE, nullptr);
 
@@ -96,13 +135,26 @@ namespace RGF {
 	
 	void GLBatchRenderer2D::RenderWireFrame(bool enable) {
 		if (enable) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 		} else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 		}
 
 	}
+	
+	void GLBatchRenderer2D::SetBlend(bool enable) {
+		if (enable) {
+			GLCall(glEnable(GL_BLEND))
+		}
+		else {
+			GLCall(glDisable(GL_BLEND));
+		}
+	}
 
+
+	void GLBatchRenderer2D::SetBlendFunc(BlendFunc& source, BlendFunc& dest) {
+		GLCall(glBlendFunc(ConvertBlendFunctions(source), ConvertBlendFunctions(dest)));
+	}
 
 
 	void GLBatchRenderer2D::ClearColor(float r, float g, float b) {
@@ -129,8 +181,8 @@ namespace RGF {
 
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
-		layout.Push<float>(2);
 		layout.Push<unsigned char>(4, true);
+		layout.Push<float>(2);
 		m_Vbo->SetLayout(layout);
 		
 		m_Vao->PushBuffer(m_Vbo);
@@ -183,27 +235,27 @@ namespace RGF {
 
 		// 1st vertex
 		Buffer->verticies = Pos;
-		Buffer->uv = Uv[0];
 		Buffer->color = c;
+		Buffer->uv = Uv[0];
 		Buffer++;
 
 		// 2st vertex
 		Buffer->verticies = { Pos.x, Pos.y + Scale.y, Pos.z };
-		Buffer->uv = Uv[1];
 		Buffer->color = c;
+		Buffer->uv = Uv[1];
 		Buffer++;
 
 		// 3st vertex
 		Buffer->verticies = { Pos.x + Scale.x, Pos.y + Scale.y, Pos.z };
-		Buffer->uv = Uv[2];
 		Buffer->color = c;
+		Buffer->uv = Uv[2];
 		Buffer++;
 
 
 		// 4st vertex
 		Buffer->verticies = { Pos.x + Scale.x, Pos.y, Pos.z };
-		Buffer->uv = Uv[3];
 		Buffer->color = c;
+		Buffer->uv = Uv[3];
 		Buffer++;
 
 		m_IndexCount += 6;

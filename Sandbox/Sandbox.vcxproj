@@ -138,7 +138,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RetroGameFramework\src;$(SolutionDir)RetroGameFramework\vendor\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RetroGameFramework\src;$(SolutionDir)RetroGameFramework\vendor\;$(SolutionDir)RetroGameFramework\vendor\GLFW\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RGF_DEBUG;RGF_PLATFORM_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
@@ -193,7 +193,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)RetroGameFramework\src;$(SolutionDir)RetroGameFramework\vendor\GLFW\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)RetroGameFramework\src;$(SolutionDir)RetroGameFramework\vendor\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RGF_RELEASE;RGF_PLATFORM_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>

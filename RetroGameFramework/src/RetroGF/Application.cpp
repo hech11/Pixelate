@@ -23,12 +23,15 @@
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
 #include "RetroGF/Rendering/ShaderGenerator.h"
 
+#include "RetroGF/Input.h"
+#include "RetroGF/KeyCodes.h"
+
 
 namespace RGF {
 
 
 
-#define Batchrendering 1
+#define Batchrendering 0
 
 	Application* Application::s_Instance = nullptr;
 
@@ -55,6 +58,7 @@ namespace RGF {
 		PushOverlay(m_EngineEditorLayer->RenderingProps);
 		PushOverlay(m_EngineEditorLayer->EngineColEditor);
 #endif
+		m_Camera = std::make_unique<Camera>();
 
 		RGF_CORE_MSG("Creating the renderer!\n");
 		m_Renderer->Init();
@@ -105,7 +109,7 @@ namespace RGF {
 
 		Texture* test = nullptr;
 		RGF::TextureParameters params;
-		params.Filter = RGF::TextureFilter::Linear;
+		params.Filter = RGF::TextureFilter::Nearest;
 		params.Format = RGF::TextureFormat::RGBA;
 		params.Wrap = RGF::TextureWrap::Repeat;
 
@@ -148,7 +152,8 @@ namespace RGF {
 
 
 
-
+		float xpos=0.0f;
+		float ypos = 0.0f;
 		RGF_CORE_MSG("Sprites: %d\n", sprites.size());
 		while (m_IsRunning) {
 #ifndef RGF_DISTRIBUTE
@@ -167,7 +172,20 @@ namespace RGF {
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate();
 			}
+			if (Input::IsKeyDown(RGF_KEY_A)) {
+				xpos-= 0.1f;
+			}else if (Input::IsKeyDown(RGF_KEY_D)) {
+				xpos+=0.1f;
+			}
 
+
+			if (Input::IsKeyDown(RGF_KEY_W)) {
+				ypos-=0.1f;
+			}else if (Input::IsKeyDown(RGF_KEY_S)) {
+				ypos+= 0.1f;
+			}
+			//m_Camera->SetPosition({ xpos, ypos, 0.0f });
+			m_Camera->Update();
 			m_Renderer->Start();
 			for (int i = 0; i < sprites.size(); i++) {
 				m_Renderer->Submit(sprites[i]);

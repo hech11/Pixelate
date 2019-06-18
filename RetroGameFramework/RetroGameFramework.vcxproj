@@ -326,6 +326,7 @@
     <ClInclude Include="src\RetroGF\Rendering\API\VertexArray.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\VertexBuffer.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\VertexBufferLayout.h" />
+    <ClInclude Include="src\RetroGF\Rendering\Camera.h" />
     <ClInclude Include="src\RetroGF\Rendering\Renderable.h" />
     <ClInclude Include="src\RetroGF\Rendering\Renderer2D.h" />
     <ClInclude Include="src\RetroGF\Rendering\RenderingContext.h" />

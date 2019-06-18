@@ -18,7 +18,6 @@ namespace RGF {
 	// TODO: A "LibaryManager" could init GLFW instead of initializing it in "StartUp".
 	// TODO: A "LibaryManager" could shutdown GLFW instead of terminating it in "ShutDown".
 
-	// TODO: Create and replace "RGF_CORE_ERROR" with an RGF_ASSERT.
 
 
 

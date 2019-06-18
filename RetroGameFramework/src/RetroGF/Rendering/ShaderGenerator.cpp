@@ -54,8 +54,8 @@ void main() {
 #version 330 core
 
 layout(location = 0) in vec4 aPos;
-layout(location = 1) in vec2 aUV;
-layout(location = 2) in vec4 aColor;
+layout(location = 1) in vec4 aColor;
+layout(location = 2) in vec2 aUV;
 
 uniform mat4 u_Model = mat4(1.0f);
 uniform mat4 u_View = mat4(1.0f);

@@ -16,7 +16,7 @@
 #include "RetroGF/Imgui/ImguiEngineEditor.h"
 
 #include "RetroGF/Timer.h"
-
+#include "RetroGF/Rendering/Camera.h"
 
 
 
@@ -44,6 +44,7 @@ namespace RGF {
 
 
 			WindowImpl& GetWindow() { return *m_Window; }
+			Camera& GetCamera() { return *m_Camera; }
 			Renderer2D& GetRenderer() { return *m_Renderer; }
 
 			inline static Application& GetApp() { return *s_Instance; };
@@ -52,6 +53,7 @@ namespace RGF {
 
 			std::unique_ptr<WindowImpl> m_Window;
 			std::unique_ptr<Renderer2D> m_Renderer;
+			std::unique_ptr<Camera> m_Camera;
 
 			LayerStack m_LayerStack;
 			Timer m_AppTimer;
