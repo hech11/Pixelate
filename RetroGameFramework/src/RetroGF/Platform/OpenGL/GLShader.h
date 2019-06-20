@@ -43,6 +43,8 @@ namespace RGF {
 			ShaderSource m_PraseShader(const std::string shaderFile);
 			ShaderSource m_PraseShader(const char* data);
 			unsigned int m_CreateShader(unsigned int type, const std::string& shaderSource);
+
+			std::unordered_map<std::string, int> m_CachedUniformLocations;
 	};
 
 }

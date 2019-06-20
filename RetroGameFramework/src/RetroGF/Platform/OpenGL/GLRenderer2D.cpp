@@ -17,16 +17,26 @@
 namespace RGF {
 
 
+	
+
 	static unsigned int ConvertBlendFunctions(BlendFunc& func) {
 		switch (func) {
 			case BlendFunc::ZERO :
 				return GL_ZERO;
 			case BlendFunc::ONE :
 				return GL_ONE;
+			case BlendFunc::SRC_COLOR:
+				return GL_SRC_COLOR;
 			case BlendFunc::ONE_MINUS_SRC_COLOR:
 				return GL_ONE_MINUS_SRC_COLOR;
+			case BlendFunc::SRC_ALPHA:
+				return GL_SRC_ALPHA;
+			case BlendFunc::ONE_MINUS_SRC_ALPHA:
+				return GL_ONE_MINUS_SRC_ALPHA;
 			case BlendFunc::DST_COLOR:
 				return GL_DST_COLOR;
+			case BlendFunc::DST_ALPHA:
+				return GL_DST_ALPHA;
 			case BlendFunc::ONE_MINUS_DST_COLOR:
 				return GL_ONE_MINUS_DST_COLOR;
 			case BlendFunc::CONSTANT_COLOR:
@@ -38,6 +48,8 @@ namespace RGF {
 			case BlendFunc::ONE_MINUS_CONSTANT_ALPHA:
 				return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
+
+
 	}
 	void GLRenderer2D::SetDepthTesting(bool enable) {
 		if (enable) {
@@ -64,7 +76,8 @@ namespace RGF {
 
 	}
 
-	void GLRenderer2D::SetBlend(bool enable) {
+	void GLRenderer2D::SetBlending(bool enable) {
+		m_Blending = enable;
 		if (enable) {
 			GLCall(glEnable(GL_BLEND))
 		}
@@ -75,6 +88,8 @@ namespace RGF {
 
 	void GLRenderer2D::SetBlendFunc(BlendFunc& source, BlendFunc& dest) {
 		GLCall(glBlendFunc(ConvertBlendFunctions(source), ConvertBlendFunctions(dest)));
+		m_SrcFunction = source;
+		m_DestFunction = dest;
 	}
 
 
@@ -142,7 +157,8 @@ namespace RGF {
 
 	}
 	
-	void GLBatchRenderer2D::SetBlend(bool enable) {
+	void GLBatchRenderer2D::SetBlending(bool enable) {
+		m_Blending = enable;
 		if (enable) {
 			GLCall(glEnable(GL_BLEND))
 		}
@@ -154,6 +170,8 @@ namespace RGF {
 
 	void GLBatchRenderer2D::SetBlendFunc(BlendFunc& source, BlendFunc& dest) {
 		GLCall(glBlendFunc(ConvertBlendFunctions(source), ConvertBlendFunctions(dest)));
+		m_SrcFunction = source;
+		m_DestFunction = dest;
 	}
 
 

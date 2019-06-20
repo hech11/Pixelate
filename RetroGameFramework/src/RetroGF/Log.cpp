@@ -41,11 +41,6 @@ namespace RGF {
 
 
 
-
-	/* 
-		TODO: this may be unsafe and there may be a better way to implement this...
-			  may want to change this soon.
-	*/
 	static const std::string GetSystemTime() { // This function is created because the "logger" will print the system's time.
 
 		std::time_t time = std::time(0);

@@ -198,8 +198,7 @@ namespace RGF {
 
 	
 
-	void WindowsWindow::SetVsync(bool enabled) { // Could be a better way to implement this.
-
+	void WindowsWindow::SetVsync(bool enabled) { 
 		if(enabled) {
 			glfwSwapInterval(1);
 		} else {

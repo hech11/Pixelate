@@ -8,7 +8,7 @@
 // This uses the c++ way to load files. Maybe in the future: switch between c and c++ and benchmark.
 
 /*
-	This is also missing features. Such as:
+	TODO: This is also missing features. This need to be redone. Features such as:
 
 	- Read files only as a binary format.
 	- Switch between read files as binary or read as text.

@@ -33,7 +33,7 @@ namespace RGF {
 			void RenderWireFrame(bool enable) override;
 
 
-			void SetBlend(bool enable) override;
+			void SetBlending(bool enable) override;
 			void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
 
 
@@ -78,7 +78,7 @@ namespace RGF {
 			void RenderWireFrame(bool enable) override;
 
 
-			void SetBlend(bool enable) override;
+			void SetBlending(bool enable) override;
 			void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
 
 			void ClearColor(float r, float g, float b) override;

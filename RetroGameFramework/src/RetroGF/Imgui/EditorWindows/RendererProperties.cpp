@@ -25,7 +25,11 @@ namespace RGF {
 
 	
 #define Stringify(x) #x
-#define ImguiRadioBlendFunc(blendfunc, x) if (ImGui::RadioButton(Stringify(blendfunc), x == blendfunc)) { x = blendfunc; }
+#define ImguiRadioBlendFunc(id, src, dest, blendid) ImGui::Text(std::string(id + std::string(" :")).c_str()); ImGui::SameLine();\
+ImGui::RadioButton(std::string("Src###" + std::string(std::to_string((int)blendid))).c_str(), &src, (int)blendid);\
+ImGui::SameLine();\
+ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blendid+15))).c_str(), &dest, (int)blendid);\
+
 	void RendererProperties::OnImguiRender() {
 
 		ImGui::Begin("Renderer Properties");
@@ -40,56 +44,73 @@ namespace RGF {
 		static bool stencilTest = false;
 		static bool enableBlend = false;
 		static bool wireframe = false;
-
-		if (ImGui::Checkbox("Enable Depth Test", &depthTest)) {
-			app.GetRenderer().SetDepthTesting(depthTest);
-		}
-		if(ImGui::Checkbox("Enable Stencil Test", &stencilTest)) {
-			app.GetRenderer().SetStencilTesting(stencilTest);
-		}
 		if (ImGui::Checkbox("Render in wireframe", &wireframe)) {
 			app.GetRenderer().RenderWireFrame(wireframe);
 		}
+	
 		if (ImGui::Checkbox("Enable Blending", &enableBlend)) {
-			app.GetRenderer().SetBlend(enableBlend);
+			app.GetRenderer().SetBlending(enableBlend);
 		}
 		if (enableBlend) {
-			static bool SourceCheckBox[9];
-			static bool DestCheckBox[9];
-			static BlendFunc Src;
-			static BlendFunc Dest;
-			ImGui::Text("Source");
+			static bool openHeader = false;
+			auto childsize = ((openHeader == true) ? ImVec2(300, 300) : ImVec2(300, 40));
+			ImGui::BeginChild("BlendChild", childsize, true);
+			if (ImGui::CollapsingHeader("Blending functions")) {
+				openHeader = true;
+				static int SrcCheckBox = 1;
+				static int DestCheckBox = 0;
+				static BlendFunc Src = BlendFunc::ONE;
+				static BlendFunc Dest = BlendFunc::ZERO;
 
-			ImguiRadioBlendFunc(BlendFunc::ZERO, Src);
-			ImguiRadioBlendFunc(BlendFunc::ONE, Src);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_SRC_COLOR, Src);
-			ImguiRadioBlendFunc(BlendFunc::DST_COLOR, Src);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_DST_COLOR, Src);
-			ImguiRadioBlendFunc(BlendFunc::CONSTANT_COLOR, Src);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_COLOR, Src);
-			ImguiRadioBlendFunc(BlendFunc::CONSTANT_ALPHA, Src);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_ALPHA, Src);
-			ImGui::Text("Dest");
-			ImguiRadioBlendFunc(BlendFunc::ZERO, Dest);
-			ImguiRadioBlendFunc(BlendFunc::ONE, Dest);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_SRC_COLOR, Dest);
-			ImguiRadioBlendFunc(BlendFunc::DST_COLOR, Dest);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_DST_COLOR, Dest);
-			ImguiRadioBlendFunc(BlendFunc::CONSTANT_COLOR, Dest);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_COLOR, Dest);
-			ImguiRadioBlendFunc(BlendFunc::CONSTANT_ALPHA, Dest);
-			ImguiRadioBlendFunc(BlendFunc::ONE_MINUS_CONSTANT_ALPHA, Dest);
-			app.GetRenderer().SetBlendFunc(Src, Dest);
+				ImguiRadioBlendFunc("ZERO",						SrcCheckBox, DestCheckBox, BlendFunc::ZERO);
+				ImguiRadioBlendFunc("ONE",						SrcCheckBox, DestCheckBox, BlendFunc::ONE);
+				ImGui::Spacing();
+				ImguiRadioBlendFunc("SRC_COLOR",				SrcCheckBox, DestCheckBox, BlendFunc::SRC_COLOR);
+				ImguiRadioBlendFunc("ONE_MINUS_SRC_COLOR",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_SRC_COLOR);
+				ImguiRadioBlendFunc("DST_COLOR",				SrcCheckBox, DestCheckBox, BlendFunc::DST_COLOR);
+				ImguiRadioBlendFunc("ONE_MINUS_DST_COLOR",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_DST_COLOR);
+				ImguiRadioBlendFunc("SRC_ALPHA",				SrcCheckBox, DestCheckBox, BlendFunc::SRC_ALPHA);
+				ImguiRadioBlendFunc("ONE_MINUS_SRC_ALPHA",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_SRC_ALPHA);
+				ImguiRadioBlendFunc("DST_ALPHA",				SrcCheckBox, DestCheckBox, BlendFunc::DST_ALPHA);
+				ImguiRadioBlendFunc("ONE_MINUS_DST_ALPHA",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_DST_ALPHA);
+				ImguiRadioBlendFunc("CONSTANT_COLOR",			SrcCheckBox, DestCheckBox, BlendFunc::CONSTANT_COLOR);
+				ImguiRadioBlendFunc("ONE_MINUS_CONSTANT_COLOR",	SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_CONSTANT_COLOR);
+				ImguiRadioBlendFunc("CONSTANT_ALPHA",			SrcCheckBox, DestCheckBox, BlendFunc::CONSTANT_ALPHA);
+				ImguiRadioBlendFunc("ONE_MINUS_CONSTANT_ALPHA",	SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_CONSTANT_ALPHA);
+			
+				for (int i = 0; i < 9; i++) {
+					Src = (BlendFunc)SrcCheckBox;
+					Dest = (BlendFunc)DestCheckBox;
+				}
+				app.GetRenderer().SetBlendFunc(Src, Dest);
 
+			} else {
+				openHeader = false;
+			}
+			ImGui::EndChild();
+				
 		}
 
-		ImGui::Text("--Camera Properties--");
-		ImGui::DragFloat3("Camera Pos", &app.GetCamera().GetPos().x, .01f);
-		ImGui::DragFloat3("Camera Rot", &app.GetCamera().GetRot().x, .01f);
-		ImGui::DragFloat("Camera angle", &app.GetCamera().GetAngle(), .01f);
-		ImGui::DragFloat3("Camera Scale", &app.GetCamera().GetScale().x, .01f);
+		if (ImGui::CollapsingHeader("Tests")) {
+			ImGui::BeginChild("testsChild", { 300, 100 }, true);
+			if (ImGui::Checkbox("Enable Depth Test", &depthTest)) {
+				app.GetRenderer().SetDepthTesting(depthTest);
+			}
+			if (ImGui::Checkbox("Enable Stencil Test", &stencilTest)) {
+				app.GetRenderer().SetStencilTesting(stencilTest);
+			}
+			ImGui::EndChild();
+		}
+		if (ImGui::CollapsingHeader("Camera Properties")) {
+			ImGui::BeginChild("CamChild", {300, 100}, true);
+			ImGui::DragFloat3("Camera Pos", &app.GetCamera().GetPos().x, .01f);
+			ImGui::DragFloat3("Camera Rot", &app.GetCamera().GetRot().x, .01f);
+			ImGui::DragFloat("Camera angle", &app.GetCamera().GetAngle(), .01f);
+			ImGui::DragFloat3("Camera Scale", &app.GetCamera().GetScale().x, .01f);
+			ImGui::EndChild();
+		}
 
-		ImGui::ShowDemoWindow((bool*)1);
+		//ImGui::ShowDemoWindow((bool*)1);
 		ImGui::End();
 
 	}

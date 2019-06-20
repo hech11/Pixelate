@@ -169,12 +169,15 @@ namespace RGF {
 
 
 	int GLShader::m_GetUniformLocation(const std::string& name) {
+
+		if (m_CachedUniformLocations.find(name) != m_CachedUniformLocations.end()) {
+			return m_CachedUniformLocations[name];
+		}
 		int location = glGetUniformLocation(m_RendererID, name.c_str());
 		if (location == -1) {
 			RGF_CORE_WARN("Uniform '%s' does not exist!", name.c_str());
 		}
-
-		//TODO: Cache locations
+		m_CachedUniformLocations[name] = location;
 		return location;
 	}
 

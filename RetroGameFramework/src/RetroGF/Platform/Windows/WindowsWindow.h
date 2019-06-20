@@ -15,10 +15,8 @@
 
 /*
 	TODO: This implementation of "WindowsWindow" uses GLFW for creating the window.
-	At some point I may switch to "Windows.h" instead to create a window and handle events.
+	At some point I may switch to <Windows.h> instead to create a window and handle events.
 */
-
- // TODO: "SetVsync" is the only "attribute" function that is not defined here. I should look into this.
 
 
 struct GLFWwindow;

@@ -26,14 +26,20 @@ namespace RGF {
 		None = -1,
 		ZERO,
 		ONE,
+		SRC_COLOR,
 		ONE_MINUS_SRC_COLOR,
 		DST_COLOR,
 		ONE_MINUS_DST_COLOR,
+		SRC_ALPHA,
+		ONE_MINUS_SRC_ALPHA,
+		DST_ALPHA,
+		ONE_MINUS_DST_ALPHA,
 		CONSTANT_COLOR,
 		ONE_MINUS_CONSTANT_COLOR,
 		CONSTANT_ALPHA,
 		ONE_MINUS_CONSTANT_ALPHA
 	};
+
 	class RGF_API Renderer2D  {		
 
 		public :
@@ -42,8 +48,11 @@ namespace RGF {
 			virtual void SetStencilTesting(bool enable) = 0;
 			virtual void RenderWireFrame(bool enable) = 0;
 
-			virtual void SetBlend(bool enable) = 0;
+			virtual void SetBlending(bool enable) = 0;
 			virtual void SetBlendFunc(BlendFunc& source, BlendFunc& dest) = 0;
+
+			virtual BlendFunc& GetSrcFunc() { return m_SrcFunction; }
+			virtual BlendFunc& GetDestFunc() { return m_DestFunction; }
 
 
 			virtual void ClearColor(float r, float g, float b) = 0;
@@ -65,6 +74,9 @@ namespace RGF {
 
 			static Renderer2D* Create(const RenderingType& type = RenderingType::Batch);
 
+		protected :
+			BlendFunc m_SrcFunction, m_DestFunction;
+			bool m_Blending = false;
 	};
 
 }
