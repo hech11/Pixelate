@@ -7,7 +7,7 @@
 //TODO: i should really add the PCH here.
 
 
-#ifdef RGF_PLATFORM_WINDOWS
+#ifdef RGF_PLATFORM_WINDOWS // TODO: I changed Retro into a static lib. Maybe remove this soon?
 
 	#ifdef RGF_BUILD_DLL
 		#define RGF_API 

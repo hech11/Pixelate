@@ -13,7 +13,7 @@
 #ifdef RGF_PLATFORM_WINDOWS
 
 	
-	#include "RetroGF/Log.h"
+	#include "RetroGF/Utility/Log.h"
 
 
 	int main() {
@@ -23,7 +23,6 @@
 		Logger.Init();
 #endif
 
-		FileSystem FileSys;
 
 		RGF_CORE_MSG("Creating RGF Application...\n");
 		auto App = RGF::CreateApplication();

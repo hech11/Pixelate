@@ -14,8 +14,7 @@
 
 
 #include <GLM/glm/gtc/matrix_transform.hpp>
-#include <RetroGF/FileSystem.h>
-#include <RetroGF/Random.h>
+#include <RetroGF/Utility/Random.h>
 
 #include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/Sprite.h>
@@ -59,7 +58,8 @@ namespace RGF {
 		PushOverlay(m_EngineEditorLayer->EngineColEditor);
 #endif
 		m_Camera = std::make_unique<Camera>();
-
+		RGF_CORE_MSG("Initialising File IO!\n");
+		m_FileIO = std::make_unique<FileIO>();
 		RGF_CORE_MSG("Creating the renderer!\n");
 		m_Renderer->Init();
 

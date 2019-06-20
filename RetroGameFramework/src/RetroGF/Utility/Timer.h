@@ -7,9 +7,8 @@
 
 // Timer is a stopwatch that keeps running when instanciated.
 
+// TODO : Instead of using Chrono.h use the platform header files timer instead.
 namespace RGF {
-	// TODO : Instead of using Chrono.h use the platform header files timer instead.
-	// TODO : May want to create a 'Debug' timer that acts as a stopwatch in functions to measure performance.
 
 	class RGF_API Timer {
 
@@ -37,6 +36,21 @@ namespace RGF {
 			std::chrono::time_point<std::chrono::steady_clock> m_Timer;
 
 
+	};
+
+
+	// This is used in althgorithms. It can give an idea on how much time an althgorithm takes to be executed.
+	class RGF_API DebugStopwatch {
+		public :
+			DebugStopwatch() {
+				m_Timer.Reset();
+			}
+			~DebugStopwatch() {
+				float time = m_Timer.GetElapsedMillis();
+				RGF_CORE_MSG("[DebugStopwatch]: Took '%s' milliseconds to complete althgorithm!", time);
+			}
+		private :
+			Timer m_Timer;
 	};
 
 }

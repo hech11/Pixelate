@@ -4,10 +4,13 @@
 
 #include "RetroGF/Application.h"
 
-#include "RetroGF/FileSystem.h"
-#include "RetroGF/Random.h"
-#include "RetroGF/Input.h"
+#include "RetroGF/Utility/File.h"
+#include "RetroGF/Utility/Random.h"
+#include "RetroGF/Utility/Timer.h"
 
+
+
+#include "RetroGF/Input.h"
 #include "RetroGF/KeyCodes.h"
 #include "RetroGF/MouseButtonCodes.h"
 

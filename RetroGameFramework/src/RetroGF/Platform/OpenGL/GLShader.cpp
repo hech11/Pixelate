@@ -4,7 +4,7 @@
 #include <GLAD/include/glad.h>
 
 #include <glm/glm/gtc/type_ptr.hpp>
-#include "RetroGF/FileSystem.h"
+#include "RetroGF/Application.h"
 
 #include "GLCommon.h"
 
@@ -27,7 +27,7 @@ namespace RGF {
 
 
 	GLShader::ShaderSource GLShader::m_PraseShader(const std::string shaderFile) {
-		if (!FileSystem::DoesFileExist(shaderFile)) {
+		if (!Application::GetApp().GetFileIO().DoesFileExist(shaderFile)) {
 			RGF_CORE_CRIT("File '%s' Does not exist!\n", shaderFile.c_str());
 			__debugbreak();
 		}

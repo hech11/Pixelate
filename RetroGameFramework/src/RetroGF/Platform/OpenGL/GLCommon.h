@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF/Log.h"
+#include "RetroGF/Utility/Log.h"
 #include "RetroGF/Core.h"
 #include <GLAD/include/glad.h>
 
