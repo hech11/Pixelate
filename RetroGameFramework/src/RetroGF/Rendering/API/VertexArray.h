@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VertexBuffer.h"
+#include "Buffer.h"
 #include "RetroGF/Core.h"
 
 
@@ -14,14 +14,22 @@ namespace RGF {
 	class RGF_API VertexArray {
 
 		public :
-			virtual void PushBuffer(RGF::VertexBuffer* buffer) = 0;
+
+			virtual ~VertexArray() {}
+
+
+			virtual void PushVertexBuffer(const std::shared_ptr<RGF::VertexBuffer>& buffer) = 0;
+			virtual void PushIndexBuffer(const std::shared_ptr<RGF::IndexBuffer>& buffer) = 0;
 
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
-			virtual void Draw(unsigned int count) = 0;
+			virtual const std::vector<std::shared_ptr<RGF::VertexBuffer>>& GetVbos() const = 0;
+			virtual const std::vector<std::shared_ptr<RGF::IndexBuffer>>& GetIbos() const = 0;
 
+		public :
 			static VertexArray* Create();
+
 	};
 
 }

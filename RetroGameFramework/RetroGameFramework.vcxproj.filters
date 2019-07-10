@@ -87,18 +87,6 @@
     <ClInclude Include="src\RetroGF\MouseButtonCodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLVertexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\API\VertexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\API\IndexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RetroGF\Rendering\API\VertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -186,6 +174,12 @@
     <ClInclude Include="src\RetroGF\Utility\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RetroGF\Application.cpp">
@@ -227,12 +221,6 @@
     <ClCompile Include="src\RetroGF\Platform\Windows\WindowsInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLVertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLIndexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLVertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -252,12 +240,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRenderingContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RetroGF\Rendering\API\IndexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RetroGF\Rendering\API\VertexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Rendering\API\VertexArray.cpp">
@@ -300,6 +282,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Utility\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

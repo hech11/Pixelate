@@ -9,6 +9,7 @@
 
 #include "GLCommon.h"
 
+#include "GLVertexArray.h"
 
 // Has implementations of both GLRenderer2D and GLBatchRenderer2D.
 
@@ -192,7 +193,7 @@ namespace RGF {
 		m_Vao = new GLVertexArray;
 		m_Vao->Bind();
 		
-		m_Vbo = new GLVertexBuffer(VertexBufferUsage::Dynamic);
+		m_Vbo.reset(VertexBuffer::Create());
 
 		m_Vbo->Bind();
 		m_Vbo->Resize(RENDERER_BUFFER_SIZE);
@@ -203,7 +204,7 @@ namespace RGF {
 		layout.Push<float>(2);
 		m_Vbo->SetLayout(layout);
 		
-		m_Vao->PushBuffer(m_Vbo);
+		m_Vao->PushVertexBuffer(m_Vbo);
 		m_Vbo->Unbind();
 
 
@@ -222,12 +223,10 @@ namespace RGF {
 			offset += 4;
 		}
 
-		m_Ibo = new GLIndexBuffer(indices, RENDERER_INDICIES_SIZE);
+		m_Ibo.reset(IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE));
 		m_Vao->Unbind();
 	}
 	void GLBatchRenderer2D::ShutDown() {
-		delete m_Vbo;
-		delete m_Ibo;
 		delete m_Vao;
 	}
 

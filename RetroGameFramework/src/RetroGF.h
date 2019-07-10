@@ -37,8 +37,7 @@
 
 
 // Rendering.
-#include "RetroGF/Rendering/API/VertexBuffer.h"
-#include "RetroGF/Rendering/API/IndexBuffer.h"
+#include "RetroGF/Rendering/API/Buffer.h"
 #include "RetroGF/Rendering/API/VertexArray.h"
 #include "RetroGF/Rendering/API/VertexBufferLayout.h"
 #include "RetroGF/Rendering/API/FrameBuffer.h"

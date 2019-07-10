@@ -14,8 +14,18 @@ namespace RGF {
 		GLCall(glDeleteVertexArrays(1, &m_RendererID));
 	}
 
-	void GLVertexArray::PushBuffer(RGF::VertexBuffer* buffer) {
-		m_Buffers.push_back(buffer);
+	void GLVertexArray::PushVertexBuffer(const std::shared_ptr<RGF::VertexBuffer>& buffer) {
+		GLCall(glBindVertexArray(m_RendererID));
+		buffer->Bind();
+		
+		m_Vbos.push_back(buffer);
+	}
+
+	void GLVertexArray::PushIndexBuffer(const std::shared_ptr<RGF::IndexBuffer>& buffer) {
+		GLCall(glBindVertexArray(m_RendererID));
+		buffer->Bind();
+
+		m_Ibos.push_back(buffer);
 	}
 
 	void GLVertexArray::Bind() const {
@@ -25,7 +35,5 @@ namespace RGF {
 		GLCall(glBindVertexArray(0));
 	}
 
-	void GLVertexArray::Draw(unsigned int count) {
-		GLCall(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, NULL));
-	}
+
 }

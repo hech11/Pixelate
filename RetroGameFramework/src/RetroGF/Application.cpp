@@ -4,9 +4,8 @@
 
 #include "RetroGF/Platform/Windows/WindowsWindow.h"
 
-#include <RetroGF/Rendering/API/VertexBuffer.h>
+#include <RetroGF/Rendering/API/Buffer.h>
 #include <RetroGF/Rendering/API/VertexArray.h>
-#include <RetroGF/Rendering/API/IndexBuffer.h>
 #include <RetroGF/Rendering/API/VertexBufferLayout.h>
 #include <RetroGF/Rendering/API/Shader.h>
 #include <RetroGF/Rendering/API/Texture.h>

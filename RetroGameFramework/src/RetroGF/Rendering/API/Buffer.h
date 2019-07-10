@@ -16,9 +16,12 @@ namespace RGF {
 		Dynamic
 	};
 
+
+
+
+
 	class RGF_API VertexBuffer {
 		public :
-			
 
 			virtual void SetData(unsigned int size, const void* data) = 0;
 			virtual void Resize(unsigned int size) = 0;
@@ -29,6 +32,7 @@ namespace RGF {
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
+		public :
 			static VertexBuffer* Create(VertexBufferUsage usage = VertexBufferUsage::Static);
 	};
 
@@ -37,14 +41,13 @@ namespace RGF {
 
 		public :
 
-			virtual ~IndexBuffer(){}
-
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
 
 			virtual unsigned int GetCount() const = 0;
 
+		public :
 			static IndexBuffer* Create(unsigned int* data, unsigned count);
 			static IndexBuffer* Create(unsigned short* data, unsigned count);
 			static IndexBuffer* Create(unsigned char* data, unsigned count);

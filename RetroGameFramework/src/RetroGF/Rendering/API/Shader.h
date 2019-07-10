@@ -5,7 +5,6 @@
 #include "GLM/glm/glm.hpp"
 
 // Shader interface.
-
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
 
 namespace RGF {
@@ -30,6 +29,8 @@ namespace RGF {
 			virtual void SetUniform4f(const std::string& uniformName, const glm::vec4& values) = 0;
 			virtual void SetUniform1i(const std::string& uniformName, const int value) = 0;
 			virtual void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) = 0;
+
+
 		public :
 			static Shader* Create();
 

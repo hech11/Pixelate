@@ -41,15 +41,15 @@ namespace RGF {
 				};
 
 				m_VertexArray = VertexArray::Create();
-				VertexBuffer* vbo = nullptr;
-				vbo = VertexBuffer::Create();
+				std::shared_ptr<VertexBuffer> vbo = nullptr;
+				vbo = std::make_shared<VertexBuffer>(VertexBuffer::Create());
 				VertexBufferLayout layout;
 
 				m_VertexArray->Bind();
 				vbo->Bind();
 
 				vbo->SetData(sizeof(vertex), vertex);
-				m_VertexArray->PushBuffer(vbo);
+				m_VertexArray->PushVertexBuffer(vbo);
 
 				m_IndexBuffer = IndexBuffer::Create(indicies, 6);
 				m_IndexBuffer->Bind();
@@ -63,7 +63,6 @@ namespace RGF {
 				m_IndexBuffer->Bind();
 
 				vbo->SetLayout(layout);
-				delete vbo;
 
 			}
 

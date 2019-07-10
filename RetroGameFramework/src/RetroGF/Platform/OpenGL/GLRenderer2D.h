@@ -4,11 +4,6 @@
 #include "RetroGF/Rendering/Renderer2D.h"
 
 
-#include "RetroGF/Platform/OpenGL/GLVertexBuffer.h"
-#include "RetroGF/Platform/OpenGL/GLVertexArray.h"
-#include "RetroGF/Platform/OpenGL/GLIndexBuffer.h"
-
-
 
 #include "RGFpch.h"
 
@@ -97,9 +92,9 @@ namespace RGF {
 			void ShutDown() override;
 
 		private:
-			GLVertexArray* m_Vao;
-			GLVertexBuffer* m_Vbo;
-			GLIndexBuffer* m_Ibo;
+			VertexArray* m_Vao;
+			std::shared_ptr<VertexBuffer> m_Vbo;
+			std::shared_ptr<IndexBuffer> m_Ibo;
 			VertexData* Buffer;
 			unsigned int m_IndexCount = 0;
 	};

@@ -40,9 +40,9 @@ namespace RGF {
 		TextureParameters(){}
 
 
-		TextureFormat Format;
-		TextureFilter Filter;
-		TextureWrap Wrap;
+		TextureFormat Format = TextureFormat::RGBA;
+		TextureFilter Filter = TextureFilter::Nearest;
+		TextureWrap Wrap = TextureWrap::Clamp_To_Edge;
 
 	};
 
@@ -67,7 +67,9 @@ namespace RGF {
 			inline int GetHeight() const { return m_Height; }
 			inline int GetBPP() const { return m_BPP; }
 
+		public :
 			static Texture* Create(unsigned int width, unsigned int height, TextureParameters params);
+
 		protected :
 			TextureParameters m_Params;
 			int m_Width, m_Height, m_BPP;

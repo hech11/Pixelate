@@ -15,10 +15,6 @@ namespace RGF {
 
 		public :
 
-			//TODO: width and height are not actually used...
-			static FrameBuffer* Create(unsigned int width, unsigned int height); 
-
-
 			virtual void Clear() const = 0;
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
@@ -28,6 +24,12 @@ namespace RGF {
 
 			inline virtual unsigned int GetTexture() const = 0;
 			inline virtual void SetClearColor(const glm::vec4& color) = 0;
+
+
+		public :
+			//TODO: width and height are not actually used...
+			static FrameBuffer* Create(unsigned int width, unsigned int height);
+
 
 	};
 
