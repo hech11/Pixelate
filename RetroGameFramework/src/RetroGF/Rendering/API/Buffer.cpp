@@ -7,14 +7,16 @@
 
 namespace RGF {
 
+
+
+
 	// ------- Vertex buffer -------\\
 
-
-	VertexBuffer* VertexBuffer::Create(RGF::VertexBufferUsage usage) {
+	VertexBuffer* VertexBuffer::Create(unsigned int size, const void* data, BufferUsage usage) {
 
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLVertexBuffer(usage);
+				return new GLVertexBuffer(size, data, usage);
 		}
 	}
 
@@ -23,24 +25,26 @@ namespace RGF {
 	
 	// ------- Index buffer -------\\
 
-	IndexBuffer* IndexBuffer::Create(unsigned int* data, unsigned count) {
+	IndexBuffer* IndexBuffer::Create(unsigned int* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
 				return new GLIndexBuffer(data, count);
 		}
 	}
-	IndexBuffer* IndexBuffer::Create(unsigned short* data, unsigned count) {
+	IndexBuffer* IndexBuffer::Create(unsigned short* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
 				return new GLIndexBuffer(data, count);
 		}
 	}
-	IndexBuffer* IndexBuffer::Create(unsigned char* data, unsigned count) {
+	IndexBuffer* IndexBuffer::Create(unsigned char* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
 				return new GLIndexBuffer(data, count);
 		}
 	}
 
+
+	
 
 }

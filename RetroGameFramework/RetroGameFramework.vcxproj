@@ -323,7 +323,6 @@
     <ClInclude Include="src\RetroGF\Rendering\API\Texture.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\VertexArray.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\Buffer.h" />
-    <ClInclude Include="src\RetroGF\Rendering\API\VertexBufferLayout.h" />
     <ClInclude Include="src\RetroGF\Rendering\Camera.h" />
     <ClInclude Include="src\RetroGF\Rendering\Renderable.h" />
     <ClInclude Include="src\RetroGF\Rendering\Renderer2D.h" />
@@ -368,7 +367,6 @@
     <ClCompile Include="src\RetroGF\Rendering\API\Texture.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\API\VertexArray.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\API\Buffer.cpp" />
-    <ClCompile Include="src\RetroGF\Rendering\API\VertexBufferLayout.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\Renderer2D.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\RenderingContext.cpp" />
     <ClCompile Include="src\RetroGF\Rendering\ShaderGenerator.cpp" />

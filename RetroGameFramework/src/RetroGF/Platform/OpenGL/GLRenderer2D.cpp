@@ -190,18 +190,26 @@ namespace RGF {
 
 
 	void GLBatchRenderer2D::Init() {
-		m_Vao = new GLVertexArray;
+		m_Vao = std::make_shared<GLVertexArray>();
 		m_Vao->Bind();
 		
-		m_Vbo.reset(VertexBuffer::Create());
-
+		m_Vbo = std::make_shared<GLVertexBuffer>(BufferUsage::Dynamic);
 		m_Vbo->Bind();
+
+
 		m_Vbo->Resize(RENDERER_BUFFER_SIZE);
 
-		VertexBufferLayout layout;
-		layout.Push<float>(3);
-		layout.Push<unsigned char>(4, true);
-		layout.Push<float>(2);
+		BufferLayout layout = 
+		{
+			{ BufferLayoutTypes::Float4, "aPos"},
+			{ BufferLayoutTypes::Char4, "aColor"},
+			{ BufferLayoutTypes::Float4, "aTexCoords"},
+
+		};
+
+
+
+
 		m_Vbo->SetLayout(layout);
 		
 		m_Vao->PushVertexBuffer(m_Vbo);
@@ -211,6 +219,7 @@ namespace RGF {
 		unsigned short indices[RENDERER_INDICIES_SIZE];
 		RGF_CORE_WARN("Indicies are unsigned shorts, This may cause problems. Change to unsigned ints if so.\n");
 		int offset = 0;
+
 		for (unsigned int i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
 			indices[i] = offset + 0;
 			indices[i + 1] = offset + 1;
@@ -223,11 +232,12 @@ namespace RGF {
 			offset += 4;
 		}
 
-		m_Ibo.reset(IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE));
+		m_Ibo = std::make_shared<GLIndexBuffer>(indices, RENDERER_INDICIES_SIZE);
 		m_Vao->Unbind();
 	}
+
 	void GLBatchRenderer2D::ShutDown() {
-		delete m_Vao;
+
 	}
 
 

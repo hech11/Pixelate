@@ -1,19 +1,119 @@
 #pragma once
 
 #include "RetroGF/Core.h"
-#include "RetroGF/Rendering/API/VertexBufferLayout.h"
-
-
 
 // VertexBuffer and IndexBuffer interface.
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
 
 
 namespace RGF {
-	enum class VertexBufferUsage {
-		None = 0,
+
+
+
+	enum class BufferUsage {
+		None = -1,
 		Static,
 		Dynamic
+	};
+
+	extern unsigned int GetBufferPlatformUsage(BufferUsage usage);
+
+	enum class BufferLayoutTypes
+	{
+		None = -1,
+		Float,
+		Float2,
+		Float3,
+		Float4,
+		Int,
+		Int2,
+		Int3,
+		Int4,
+		Short2,
+		Short3,
+		Short4,
+		Char2,
+		Char3,
+		Char4,
+		Mat4
+	};
+
+
+	static unsigned int BufferLayoutDataTypeSize(BufferLayoutTypes type)
+	{
+		switch (type)
+		{
+			case BufferLayoutTypes::Float:   return  4;
+			case BufferLayoutTypes::Float2:   return 4 * 2;
+			case BufferLayoutTypes::Float3:   return 4 * 3;
+			case BufferLayoutTypes::Float4:   return 4 * 4;
+			case BufferLayoutTypes::Mat4:     return 4 * 4 * 4;
+			case BufferLayoutTypes::Int:     return  4;
+			case BufferLayoutTypes::Int2:     return 4 * 2;
+			case BufferLayoutTypes::Int3:     return 4 * 3;
+			case BufferLayoutTypes::Int4:     return 4 * 4;
+		}
+
+		RGF_ASSERT(false, "Unknown Buffer layout data type!");
+		return 0;
+	}
+
+
+
+	struct RGF_API BufferElement {
+		std::string name; // TODO: Remove this in final builds.
+		BufferLayoutTypes type;
+		unsigned int count, offset, size;
+		bool normilized;
+
+		BufferElement(BufferLayoutTypes dataType, const std::string& dName, bool dnormilized = false)
+			: name(dName), type(dataType), size(BufferLayoutDataTypeSize(dataType)), offset(0), normilized(dnormilized)
+		{
+
+		}
+
+	};
+
+
+
+	
+	class RGF_API BufferLayout {
+
+		public :
+			BufferLayout(const std::initializer_list<BufferElement>& elements) 
+			 : m_Elements(elements)
+			{
+				CalculateStrideAndOffset();
+			}
+
+			BufferLayout() {}
+
+			void CalculateStrideAndOffset() {
+				unsigned int offset = 0;
+				m_Stride = 0;
+
+				for (auto& elements : m_Elements) {
+
+					elements.offset = offset;
+					offset += elements.size;
+					m_Stride += elements.size;
+				}
+			}
+
+
+			inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
+			inline unsigned int GetStride() const { return m_Stride; }
+
+
+			std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
+			std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
+			std::vector<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
+			std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
+
+		private :
+			std::vector<BufferElement> m_Elements;
+			unsigned int m_Stride = 0;
+			unsigned int m_Offset = 0;
 	};
 
 
@@ -22,35 +122,53 @@ namespace RGF {
 
 	class RGF_API VertexBuffer {
 		public :
+			virtual ~VertexBuffer() {}
 
-			virtual void SetData(unsigned int size, const void* data) = 0;
+			virtual void SetData(const void* data) = 0;
 			virtual void Resize(unsigned int size) = 0;
-			virtual void SetLayout(const RGF::VertexBufferLayout& layout) = 0;
 
+			virtual void SetLayout(const RGF::BufferLayout& layout) = 0;
 
 
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
+			inline BufferLayout GetLayout() const { return m_Layout; }
+			
 		public :
-			static VertexBuffer* Create(VertexBufferUsage usage = VertexBufferUsage::Static);
+			static VertexBuffer* Create(unsigned int size, const void* data, BufferUsage usage = BufferUsage::Static);
+
+
+		protected :
+			unsigned int m_Size;
+			BufferUsage m_Usage;
+			BufferLayout m_Layout;
+
 	};
+
+
 
 
 	class RGF_API IndexBuffer {
 
 		public :
 
+			virtual ~IndexBuffer() {}
+
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
 
-			virtual unsigned int GetCount() const = 0;
+			virtual unsigned int GetCount() const final { return m_Count; }
 
 		public :
-			static IndexBuffer* Create(unsigned int* data, unsigned count);
-			static IndexBuffer* Create(unsigned short* data, unsigned count);
-			static IndexBuffer* Create(unsigned char* data, unsigned count);
+			static IndexBuffer* Create(unsigned int* data, unsigned int count);
+			static IndexBuffer* Create(unsigned short* data, unsigned int count);
+			static IndexBuffer* Create(unsigned char* data, unsigned int count);
+
+
+		protected :
+			unsigned int m_Count;
 	};
 
 
