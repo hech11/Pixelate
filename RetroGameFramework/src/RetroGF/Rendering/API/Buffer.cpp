@@ -21,7 +21,6 @@ namespace RGF {
 	}
 
 
-
 	
 	// ------- Index buffer -------\\
 

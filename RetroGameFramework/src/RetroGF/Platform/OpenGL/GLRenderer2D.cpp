@@ -190,20 +190,18 @@ namespace RGF {
 
 
 	void GLBatchRenderer2D::Init() {
-		m_Vao = std::make_shared<GLVertexArray>();
+		m_Vao = VertexArray::Create();
 		m_Vao->Bind();
 		
-		m_Vbo = std::make_shared<GLVertexBuffer>(BufferUsage::Dynamic);
+		m_Vbo = VertexBuffer::Create(RENDERER_BUFFER_SIZE, nullptr, BufferUsage::Dynamic);
 		m_Vbo->Bind();
 
 
-		m_Vbo->Resize(RENDERER_BUFFER_SIZE);
-
 		BufferLayout layout = 
 		{
-			{ BufferLayoutTypes::Float4, "aPos"},
-			{ BufferLayoutTypes::Char4, "aColor"},
-			{ BufferLayoutTypes::Float4, "aTexCoords"},
+			{ BufferLayoutTypes::Float2, "aPos"},
+			{ BufferLayoutTypes::Char4, "aColor", true},
+			{ BufferLayoutTypes::Float2, "aTexCoords"},
 
 		};
 
@@ -212,7 +210,7 @@ namespace RGF {
 
 		m_Vbo->SetLayout(layout);
 		
-		m_Vao->PushVertexBuffer(m_Vbo);
+		m_Vao->PushVertexBuffer(*m_Vbo);
 		m_Vbo->Unbind();
 
 
@@ -232,12 +230,14 @@ namespace RGF {
 			offset += 4;
 		}
 
-		m_Ibo = std::make_shared<GLIndexBuffer>(indices, RENDERER_INDICIES_SIZE);
+		m_Ibo = IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE);
 		m_Vao->Unbind();
 	}
 
 	void GLBatchRenderer2D::ShutDown() {
-
+		delete m_Vbo;
+		delete m_Vao;
+		delete m_Ibo;
 	}
 
 

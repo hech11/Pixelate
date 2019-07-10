@@ -95,9 +95,9 @@ namespace RGF {
 			void ShutDown() override;
 
 		private:
-			std::shared_ptr<GLVertexArray> m_Vao;
-			std::shared_ptr<GLVertexBuffer> m_Vbo;
-			std::shared_ptr<GLIndexBuffer> m_Ibo;
+			VertexArray* m_Vao;
+			VertexBuffer* m_Vbo;
+			IndexBuffer* m_Ibo;
 
 
 			VertexData* Buffer;

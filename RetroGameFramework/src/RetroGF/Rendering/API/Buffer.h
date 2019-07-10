@@ -32,6 +32,7 @@ namespace RGF {
 		Short2,
 		Short3,
 		Short4,
+		Char,
 		Char2,
 		Char3,
 		Char4,
@@ -43,6 +44,11 @@ namespace RGF {
 	{
 		switch (type)
 		{
+
+			case BufferLayoutTypes::Char: return 1;
+			case BufferLayoutTypes::Char2: return 2;
+			case BufferLayoutTypes::Char3: return 3;
+			case BufferLayoutTypes::Char4: return 4;
 			case BufferLayoutTypes::Float:   return  4;
 			case BufferLayoutTypes::Float2:   return 4 * 2;
 			case BufferLayoutTypes::Float3:   return 4 * 3;
@@ -71,6 +77,25 @@ namespace RGF {
 		{
 
 		}
+
+
+
+		unsigned int GetComponentCount() const
+		{
+			switch (type)
+			{
+				case BufferLayoutTypes::Float:   return 1;
+				case BufferLayoutTypes::Float2:  return 2;
+				case BufferLayoutTypes::Float3:  return 3;
+				case BufferLayoutTypes::Float4:  return 4;
+				case BufferLayoutTypes::Mat4:    return 4 * 4;
+				case BufferLayoutTypes::Int:     return 1;
+				case BufferLayoutTypes::Int2:    return 2;
+				case BufferLayoutTypes::Int3:    return 3;
+				case BufferLayoutTypes::Int4:    return 4;
+			}
+		}
+
 
 	};
 
@@ -113,7 +138,7 @@ namespace RGF {
 		private :
 			std::vector<BufferElement> m_Elements;
 			unsigned int m_Stride = 0;
-			unsigned int m_Offset = 0;
+			
 	};
 
 
@@ -122,7 +147,8 @@ namespace RGF {
 
 	class RGF_API VertexBuffer {
 		public :
-			virtual ~VertexBuffer() {}
+
+			virtual ~VertexBuffer() = default;
 
 			virtual void SetData(const void* data) = 0;
 			virtual void Resize(unsigned int size) = 0;
@@ -133,16 +159,13 @@ namespace RGF {
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
-			inline BufferLayout GetLayout() const { return m_Layout; }
+			virtual const BufferLayout& GetLayout() const = 0;
+			virtual BufferLayout& GetLayout() = 0;
 			
 		public :
 			static VertexBuffer* Create(unsigned int size, const void* data, BufferUsage usage = BufferUsage::Static);
 
-
-		protected :
-			unsigned int m_Size;
-			BufferUsage m_Usage;
-			BufferLayout m_Layout;
+;
 
 	};
 
@@ -153,7 +176,7 @@ namespace RGF {
 
 		public :
 
-			virtual ~IndexBuffer() {}
+			virtual ~IndexBuffer() = default;
 
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;

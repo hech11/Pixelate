@@ -40,23 +40,26 @@ namespace RGF {
 					2, 3, 0
 				};
 
-				m_VertexArray = VertexArray::Create();
-				std::shared_ptr<VertexBuffer> vbo = nullptr;
-				vbo = std::make_shared<VertexBuffer>(VertexBuffer::Create(sizeof(vertex), vertex));
 
 
-				BufferLayout layout = 
+				BufferLayout layout =
 				{
 					{BufferLayoutTypes::Float2, "aPos"},
 					{BufferLayoutTypes::Float2, "aColor"},
 					{BufferLayoutTypes::Float2, "aTexCoords"},
 				};
 
+				m_VertexArray = VertexArray::Create();
+				VertexBuffer* vbo = VertexBuffer::Create(sizeof(vertex), vertex);
+
+
 				m_VertexArray->Bind();
 				vbo->Bind();
 
 				vbo->SetData(vertex);
-				m_VertexArray->PushVertexBuffer(vbo);
+				vbo->SetLayout(layout);
+
+				m_VertexArray->PushVertexBuffer(*vbo);
 
 				m_IndexBuffer = IndexBuffer::Create(indicies, 6);
 				m_IndexBuffer->Bind();
@@ -66,7 +69,6 @@ namespace RGF {
 				m_VertexArray->Bind();
 				m_IndexBuffer->Bind();
 
-				vbo->SetLayout(layout);
 
 			}
 

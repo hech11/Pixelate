@@ -9,16 +9,21 @@ namespace RGF {
 	static unsigned int BufferLayoutDataTypeToOpenGLType(BufferLayoutTypes type) 
 	{
 		switch(type) {
-			case BufferLayoutTypes::Char2:	return GL_UNSIGNED_BYTE;
-			case BufferLayoutTypes::Char3:	return GL_UNSIGNED_BYTE;
-			case BufferLayoutTypes::Char4:	return GL_UNSIGNED_BYTE;
-			case BufferLayoutTypes::Short2: return GL_UNSIGNED_SHORT;
-			case BufferLayoutTypes::Short3: return GL_UNSIGNED_SHORT;
-			case BufferLayoutTypes::Short4: return GL_UNSIGNED_SHORT;
-			case BufferLayoutTypes::Int2:	return GL_UNSIGNED_INT;
-			case BufferLayoutTypes::Int3:	return GL_UNSIGNED_INT;
-			case BufferLayoutTypes::Int4:	return GL_UNSIGNED_INT;
+			case BufferLayoutTypes::Char:	return GL_BYTE;
+			case BufferLayoutTypes::Char2:	return GL_BYTE;
+			case BufferLayoutTypes::Char3:	return GL_BYTE;
+			case BufferLayoutTypes::Char4:	return GL_BYTE;
+			case BufferLayoutTypes::Short2: return GL_SHORT;
+			case BufferLayoutTypes::Short3: return GL_SHORT;
+			case BufferLayoutTypes::Short4: return GL_SHORT;
+			case BufferLayoutTypes::Int:	return GL_INT;
+			case BufferLayoutTypes::Int2:	return GL_INT;
+			case BufferLayoutTypes::Int3:	return GL_INT;
+			case BufferLayoutTypes::Int4:	return GL_INT;
 			case BufferLayoutTypes::Float4: return GL_FLOAT;
+			case BufferLayoutTypes::Float3: return GL_FLOAT;
+			case BufferLayoutTypes::Float2: return GL_FLOAT;
+			case BufferLayoutTypes::Float : return GL_FLOAT;
 			case BufferLayoutTypes::Mat4:	return GL_FLOAT_MAT4x3;
 		}
 
@@ -34,37 +39,37 @@ namespace RGF {
 		GLCall(glDeleteVertexArrays(1, &m_RendererID));
 	}
 
-	void GLVertexArray::PushVertexBuffer(const std::shared_ptr<RGF::VertexBuffer>& buffer) {
+	void GLVertexArray::PushVertexBuffer(RGF::VertexBuffer& buffer) {
+		RGF_ASSERT(buffer.GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+
 		GLCall(glBindVertexArray(m_RendererID));
-		buffer->Bind();
+		buffer.Bind();
 		
 
-		uint32_t index = 0;
-		const auto& layout = buffer->GetLayout();
-
+		unsigned int index = 0;
+		const auto& layout = buffer.GetLayout();
 		for (const auto& element : layout)
 		{
-			GLCall(glEnableVertexAttribArray(index));
-			GLCall(glVertexAttribPointer(index, 
-				element.count,
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index,
+				element.GetComponentCount(),
 				BufferLayoutDataTypeToOpenGLType(element.type),
-				element.normilized ? GL_TRUE : GL_FALSE,
+				(element.normilized ? GL_TRUE : GL_FALSE),
 				layout.GetStride(),
-				(const void*)element.offset));
-
-
+				(const void*)element.offset);
 			index++;
 		}
 
-
-		m_Vbos.push_back(buffer);
+		m_Vbos.push_back(&buffer);
 	}
 
-	void GLVertexArray::PushIndexBuffer(const std::shared_ptr<RGF::IndexBuffer>& buffer) {
-		GLCall(glBindVertexArray(m_RendererID));
-		buffer->Bind();
 
-		m_Ibos.push_back(buffer);
+	void GLVertexArray::PushIndexBuffer(RGF::IndexBuffer& buffer) {
+		GLCall(glBindVertexArray(m_RendererID));
+		buffer.Bind();
+
+
+		m_Ibo = &buffer;
 	}
 
 	void GLVertexArray::Bind() const {
