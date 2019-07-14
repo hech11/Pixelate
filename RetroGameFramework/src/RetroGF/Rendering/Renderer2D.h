@@ -3,6 +3,8 @@
 #include "RetroGF/Core.h"
 #include "RetroGF/Rendering/Renderable.h"
 
+#include "RetroGF/Rendering/Camera.h"
+
 
 // Renderer2D interface.
 
@@ -43,7 +45,7 @@ namespace RGF {
 	class RGF_API Renderer2D  {		
 
 		public :
-		
+
 			virtual void SetDepthTesting(bool enable) = 0;
 			virtual void SetStencilTesting(bool enable) = 0;
 			virtual void RenderWireFrame(bool enable) = 0;
@@ -63,7 +65,7 @@ namespace RGF {
 			virtual void Submit(const Renderable* renderable) = 0;
 			virtual void Render() = 0;
 
-			virtual void Start() = 0;
+			virtual void Start(const RGF::Camera& camera, RGF::Shader* shader) = 0;
 			virtual void End() = 0;
 
 
@@ -77,6 +79,14 @@ namespace RGF {
 		protected :
 			BlendFunc m_SrcFunction, m_DestFunction;
 			bool m_Blending = false;
+
+			struct SceneData {
+				Camera CurrentCamera;
+				Shader* CurrentShader; // TODO: This should be replaced by a material system.
+			};
+
+
+			SceneData m_SceneData;
 	};
 
 }

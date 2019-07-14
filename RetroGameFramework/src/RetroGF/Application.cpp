@@ -28,7 +28,7 @@ namespace RGF {
 
 
 
-#define Batchrendering 1
+#define Batchrendering 0
 
 	Application* Application::s_Instance = nullptr;
 
@@ -105,60 +105,17 @@ namespace RGF {
 		unsigned int Frames = 0;
 		unsigned int Updates = 0;
 
-		Texture* test = nullptr;
-		RGF::TextureParameters params;
-		params.Filter = RGF::TextureFilter::Nearest;
-		params.Format = RGF::TextureFormat::RGBA;
-		params.Wrap = RGF::TextureWrap::Repeat;
 
-
-		test = Texture::Create(0, 0, params);
-		test->Bind();
-		test->LoadTexture("res/graphics/sprite.png");
-
-		Shader* shader = nullptr;
-		shader = ShaderGenerator::GetInstance()->TexturedShader();
-		shader->Bind();
-
-
-		shader->SetUniform1i("u_TextureSampler", 0);
-#if Batchrendering
-		std::vector<BatchedSprite*> sprites;
-#else
-		std::vector<Sprite*> sprites;
-
-#endif
-#if 1
-		for (float y = 0.0f; y < 9.0f; y += 0.14f) {
-			for (float x = 0.0f; x < 16.0f; x += 0.14f) {
-			sprites.push_back(new
-#if Batchrendering
-				BatchedSprite
-#else
-				Sprite
-#endif
-				({ 1-x, 1-y, 0.0f }, { 0.08f, 0.08f, 1.0f }, {Random::GetRandomInRange(1.0f, 1.0f), 0.0f, 1.0f, 1.0f}
-#if !Batchrendering
-				, shader
-#endif
-
-				));
-		}
-	}
-
-#endif
 
 
 
 		float xpos=0.0f;
 		float ypos = 0.0f;
-		RGF_CORE_MSG("Sprites: %d\n", sprites.size());
 		while (m_IsRunning) {
 #ifndef RGF_DISTRIBUTE
 			m_EngineEditorLayer->GameView->ViewportFBO->Bind();
 #endif
 			m_Renderer->Clear();
-			test->Bind();
 
 
 			if (m_AppTimer.GetElapsedMillis() - UpdateTimer > UpdateTick) {
@@ -168,29 +125,21 @@ namespace RGF {
 			Frames++;
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
-				layer->OnUpdate();
+				layer->OnUpdate(0.0f);
 			}
 			if (Input::IsKeyDown(RGF_KEY_A)) {
-				xpos-= 0.1f;
+				xpos -= 0.1f;
 			}else if (Input::IsKeyDown(RGF_KEY_D)) {
-				xpos+=0.1f;
+				xpos += 0.1f;
 			}
 
 
 			if (Input::IsKeyDown(RGF_KEY_W)) {
-				ypos-=0.1f;
+				ypos -= 0.1f;
 			}else if (Input::IsKeyDown(RGF_KEY_S)) {
-				ypos+= 0.1f;
+				ypos += 0.1f;
 			}
-			//m_Camera->SetPosition({ xpos, ypos, 0.0f });
-			m_Camera->Update();
-			m_Renderer->Start();
-			for (int i = 0; i < sprites.size(); i++) {
-				m_Renderer->Submit(sprites[i]);
-			}
-			m_Renderer->End();
-			m_Renderer->Render();
-
+			m_Camera->SetPosition({ xpos, ypos, 0.0f });
 
 			
 #ifndef RGF_DISTRIBUTE

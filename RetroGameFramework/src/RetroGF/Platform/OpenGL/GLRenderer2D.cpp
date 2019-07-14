@@ -105,6 +105,13 @@ namespace RGF {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
 
+
+	void GLRenderer2D::Start(const RGF::Camera& camera, RGF::Shader* shader) {
+		m_SceneData.CurrentCamera = camera;
+		m_SceneData.CurrentShader = shader;
+	}
+
+
 	void GLRenderer2D::Submit(const Renderable* renderable) {
 		m_RenderQueue.push_back(renderable);
 	}
@@ -116,7 +123,7 @@ namespace RGF {
 			renderable->GetIbo()->Bind();
 			renderable->GetShader()->Bind();
 
-			renderable->GetShader()->SetUniformMatrix("u_View", Application::GetApp().GetCamera().GetView());
+			renderable->GetShader()->SetUniformMatrix("u_View", m_SceneData.CurrentCamera.GetViewMatrix());
 
 			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_BYTE, nullptr);
 
@@ -233,6 +240,7 @@ namespace RGF {
 
 		m_Ibo = IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE);
 		m_Vao->Unbind();
+
 	}
 
 	void GLBatchRenderer2D::ShutDown() {
@@ -242,9 +250,11 @@ namespace RGF {
 	}
 
 
-	void GLBatchRenderer2D::Start() {
+	void GLBatchRenderer2D::Start(const RGF::Camera& camera, RGF::Shader* shader) {
+		m_SceneData.CurrentCamera = camera;
+		m_SceneData.CurrentShader = shader;
 		m_Vbo->Bind();
-		GLCall(Buffer = (VertexData*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+		GLCall(Buffer = (VertexData*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY))
 	}
 
 	void GLBatchRenderer2D::Submit(const Renderable* renderable) {
@@ -253,6 +263,7 @@ namespace RGF {
 		const auto& Scale = renderable->GetScale();
 		const auto& Color = renderable->GetColor();
 		const auto& Uv = renderable->GetUV();
+
 
 		unsigned char r = Color.x * 255.0f;
 		unsigned char g = Color.y * 255.0f;
@@ -293,8 +304,9 @@ namespace RGF {
 		m_Vao->Bind();
 		m_Ibo->Bind();
 
-		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_SHORT, nullptr));
+		m_SceneData.CurrentShader->SetUniformMatrix("u_View", m_SceneData.CurrentCamera.GetViewMatrix());
 
+		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_SHORT, nullptr));
 
 		m_IndexCount = 0;
 	}

@@ -20,7 +20,7 @@ namespace RGF {
 			~RendererProperties() {}
 
 
-			virtual void OnUpdate() override {}
+			virtual void OnUpdate(float dt) override {}
 			virtual void OnEvent(Event& e) override {}
 
 			virtual void Init() override;

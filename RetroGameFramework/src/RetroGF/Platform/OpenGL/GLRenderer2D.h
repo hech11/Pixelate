@@ -44,17 +44,18 @@ namespace RGF {
 			void Submit(const Renderable* renderable) override;
 			void Render() override;
 
-			void Start() override{}
+			void Start(const RGF::Camera& camera, RGF::Shader* shader) override;
 			void End() override{}
 
 
 			void Init() override{}
 			void ShutDown() override{}
 
-
-
+			
 		private :
 			std::deque<const Renderable*> m_RenderQueue; // TODO : This is temp. need to implement a proper render queue class prehaps?
+
+		
 	};
 
 
@@ -87,7 +88,7 @@ namespace RGF {
 			void Submit(const Renderable* renderable) override;
 			void Render() override;
 
-			void Start() override;
+			void Start(const RGF::Camera& camera, RGF::Shader* shader) override;
 			void End() override;
 
 

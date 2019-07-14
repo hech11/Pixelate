@@ -109,6 +109,8 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 			ImGui::DragFloat3("Camera Scale", &app.GetCamera().GetScale().x, .01f);
 			ImGui::EndChild();
 		}
+		app.GetCamera().SetPosition({ app.GetCamera().GetPos().x, app.GetCamera().GetPos().y, 0.0f });
+
 
 		//ImGui::ShowDemoWindow((bool*)1);
 		ImGui::End();
