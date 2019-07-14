@@ -100,7 +100,7 @@ namespace RGF {
 			IndexBuffer* m_Ibo;
 
 
-			VertexData* Buffer;
+			VertexData* Buffer = nullptr;
 			unsigned int m_IndexCount = 0;
 	};
 

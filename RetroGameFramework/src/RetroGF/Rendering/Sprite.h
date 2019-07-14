@@ -44,8 +44,8 @@ namespace RGF {
 
 				BufferLayout layout =
 				{
-					{BufferLayoutTypes::Float2, "aPos"},
-					{BufferLayoutTypes::Float2, "aColor"},
+					{BufferLayoutTypes::Float3, "aPos"},
+					{BufferLayoutTypes::Float4, "aColor"},
 					{BufferLayoutTypes::Float2, "aTexCoords"},
 				};
 

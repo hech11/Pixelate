@@ -28,7 +28,7 @@ namespace RGF {
 
 
 
-#define Batchrendering 0
+#define Batchrendering 1
 
 	Application* Application::s_Instance = nullptr;
 

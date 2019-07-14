@@ -75,7 +75,7 @@ namespace RGF {
 		BufferElement(BufferLayoutTypes dataType, const std::string& dName, bool dnormilized = false)
 			: name(dName), type(dataType), size(BufferLayoutDataTypeSize(dataType)), offset(0), normilized(dnormilized)
 		{
-
+			count = GetComponentCount();
 		}
 
 

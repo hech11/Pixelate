@@ -195,11 +195,12 @@ namespace RGF {
 		
 		m_Vbo = VertexBuffer::Create(RENDERER_BUFFER_SIZE, nullptr, BufferUsage::Dynamic);
 		m_Vbo->Bind();
+		m_Vbo->SetData(nullptr);
 
 
 		BufferLayout layout = 
 		{
-			{ BufferLayoutTypes::Float2, "aPos"},
+			{ BufferLayoutTypes::Float3, "aPos"},
 			{ BufferLayoutTypes::Char4, "aColor", true},
 			{ BufferLayoutTypes::Float2, "aTexCoords"},
 

@@ -22,7 +22,7 @@ namespace RGF {
 
 	// ------- Vertex buffer -------\\
 
-	GLVertexBuffer::GLVertexBuffer(unsigned int size, const void* data, BufferUsage usage) {
+	GLVertexBuffer::GLVertexBuffer(unsigned int size, const void* data, BufferUsage usage) : m_Size(size) {
 		m_Usage = usage;
 		GLCall(glGenBuffers(1, &m_RendererID));
 	}
