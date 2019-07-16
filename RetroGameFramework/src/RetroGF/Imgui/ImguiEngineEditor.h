@@ -17,9 +17,11 @@ namespace RGF {
 	class RGF_API ImguiEngineEditor : public Layer {
 
 		public :
-			ImguiEngineEditor() : Layer("Imgui Layer") {}
+			ImguiEngineEditor();
+
 			~ImguiEngineEditor() {}
 
+			static ImguiEngineEditor& GetEditor() { return *s_Instance; }
 
 			virtual void OnUpdate(float dt) override {}
 			virtual void OnEvent(Event& e) override {}
@@ -31,9 +33,21 @@ namespace RGF {
 			void Start();
 			void End();
 
-			GameViewport* GameView;
-			RendererProperties* RenderingProps;
-			ColorStyleEditor* EngineColEditor;
+
+			GameViewport& GetGameViewport() { return *m_GameView; }
+			RendererProperties& GetRenderingProps() { return *m_RenderingProps; }
+			ColorStyleEditor& GetStyleEditor() { return *m_EngineColEditor; }
+
+
+
+		private :
+			GameViewport* m_GameView;
+			RendererProperties* m_RenderingProps;
+			ColorStyleEditor* m_EngineColEditor;
+
+
+			static ImguiEngineEditor* s_Instance;
+
 	};
 
 }

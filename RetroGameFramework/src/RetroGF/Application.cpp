@@ -18,7 +18,6 @@
 #include <RetroGF/Rendering/Sprite.h>
 
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
-#include "RetroGF/Rendering/ShaderGenerator.h"
 
 #include "RetroGF/Input.h"
 #include "RetroGF/KeyCodes.h"
@@ -35,6 +34,8 @@ namespace RGF {
 	Application::Application() {
 		s_Instance = this;
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
+
+		m_ShaderManager = std::make_unique<ShaderManager>();
 #if Batchrendering 
 		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
 #else
@@ -46,15 +47,10 @@ namespace RGF {
 
 
 #ifndef RGF_DISTRIBUTE
-		// These are deleted by the layerstack.
-		m_ImguiLayer = new ImguiLayer();
-		m_EngineEditorLayer = new ImguiEngineEditor();
-		PushOverlay(m_ImguiLayer);
-		PushOverlay(m_EngineEditorLayer);
-		PushOverlay(m_EngineEditorLayer->GameView);
-		PushOverlay(m_EngineEditorLayer->RenderingProps);
-		PushOverlay(m_EngineEditorLayer->EngineColEditor);
+		m_EngineEditorLayer = new ImguiEngineEditor;
 #endif
+
+
 		m_Camera = std::make_unique<Camera>();
 		RGF_CORE_MSG("Initialising File IO!\n");
 		m_FileIO = std::make_unique<FileIO>();
@@ -64,6 +60,9 @@ namespace RGF {
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
+
+		m_ShaderManager->Add(ShaderGenerator::GetInstance()->DefaultShader(), "Default Shader");
+		m_ShaderManager->Add(ShaderGenerator::GetInstance()->TexturedShader(), "Textured Shader");
 
 	}
 	Application::~Application() {
@@ -109,11 +108,9 @@ namespace RGF {
 
 
 
-		float xpos=0.0f;
-		float ypos = 0.0f;
 		while (m_IsRunning) {
 #ifndef RGF_DISTRIBUTE
-			m_EngineEditorLayer->GameView->ViewportFBO->Bind();
+			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Bind();
 #endif
 			m_Renderer->Clear();
 
@@ -127,30 +124,17 @@ namespace RGF {
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate(0.0f);
 			}
-			if (Input::IsKeyDown(RGF_KEY_A)) {
-				xpos -= 0.1f;
-			}else if (Input::IsKeyDown(RGF_KEY_D)) {
-				xpos += 0.1f;
-			}
-
-
-			if (Input::IsKeyDown(RGF_KEY_W)) {
-				ypos -= 0.1f;
-			}else if (Input::IsKeyDown(RGF_KEY_S)) {
-				ypos += 0.1f;
-			}
-			m_Camera->SetPosition({ xpos, ypos, 0.0f });
 
 			
 #ifndef RGF_DISTRIBUTE
-			m_EngineEditorLayer->GameView->ViewportFBO->Unbind();
-			m_EngineEditorLayer->GameView->ViewportFBO->Clear();
+			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Unbind();
+			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Clear();
 
-			m_ImguiLayer->Start();
+			m_EngineEditorLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnImguiRender();
 			}
-			m_ImguiLayer->End();
+			m_EngineEditorLayer->End();
 #endif
 
 

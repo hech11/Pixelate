@@ -80,7 +80,7 @@ namespace RGF {
 	void GLRenderer2D::SetBlending(bool enable) {
 		m_Blending = enable;
 		if (enable) {
-			GLCall(glEnable(GL_BLEND))
+			GLCall(glEnable(GL_BLEND));
 		}
 		else {
 			GLCall(glDisable(GL_BLEND));
@@ -106,24 +106,25 @@ namespace RGF {
 	}
 
 
-	void GLRenderer2D::Start(const RGF::Camera& camera, RGF::Shader* shader) {
+	void GLRenderer2D::Start(RGF::Camera* camera, RGF::Shader* shader) {
 		m_SceneData.CurrentCamera = camera;
 		m_SceneData.CurrentShader = shader;
 	}
 
 
 	void GLRenderer2D::Submit(const Renderable* renderable) {
+
 		m_RenderQueue.push_back(renderable);
 	}
 	void GLRenderer2D::Render() {
+
 		while (!m_RenderQueue.empty()) {
 			const auto& renderable = m_RenderQueue.front();
-
 			renderable->GetVao()->Bind();
 			renderable->GetIbo()->Bind();
 			renderable->GetShader()->Bind();
 
-			renderable->GetShader()->SetUniformMatrix("u_View", m_SceneData.CurrentCamera.GetViewMatrix());
+			renderable->GetShader()->SetUniformMatrix("u_View", m_SceneData.CurrentCamera->GetViewMatrix());
 
 			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_BYTE, nullptr);
 
@@ -168,7 +169,7 @@ namespace RGF {
 	void GLBatchRenderer2D::SetBlending(bool enable) {
 		m_Blending = enable;
 		if (enable) {
-			GLCall(glEnable(GL_BLEND))
+			GLCall(glEnable(GL_BLEND));
 		}
 		else {
 			GLCall(glDisable(GL_BLEND));
@@ -200,8 +201,9 @@ namespace RGF {
 		m_Vao = VertexArray::Create();
 		m_Vao->Bind();
 		
-		m_Vbo = VertexBuffer::Create(RENDERER_BUFFER_SIZE, nullptr, BufferUsage::Dynamic);
+		m_Vbo = VertexBuffer::Create(BufferUsage::Dynamic);
 		m_Vbo->Bind();
+		m_Vbo->Resize(RENDERER_BUFFER_SIZE);
 		m_Vbo->SetData(nullptr);
 
 
@@ -250,11 +252,13 @@ namespace RGF {
 	}
 
 
-	void GLBatchRenderer2D::Start(const RGF::Camera& camera, RGF::Shader* shader) {
+	void GLBatchRenderer2D::Start(RGF::Camera* camera, RGF::Shader* shader) {
 		m_SceneData.CurrentCamera = camera;
 		m_SceneData.CurrentShader = shader;
+
+
 		m_Vbo->Bind();
-		GLCall(Buffer = (VertexData*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY))
+		GLCall(Buffer = (VertexData*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
 	}
 
 	void GLBatchRenderer2D::Submit(const Renderable* renderable) {
@@ -304,7 +308,7 @@ namespace RGF {
 		m_Vao->Bind();
 		m_Ibo->Bind();
 
-		m_SceneData.CurrentShader->SetUniformMatrix("u_View", m_SceneData.CurrentCamera.GetViewMatrix());
+		m_SceneData.CurrentShader->SetUniformMatrix("u_View", m_SceneData.CurrentCamera->GetViewMatrix());
 
 		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_SHORT, nullptr));
 

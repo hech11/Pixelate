@@ -163,7 +163,7 @@ namespace RGF {
 			virtual BufferLayout& GetLayout() = 0;
 			
 		public :
-			static VertexBuffer* Create(unsigned int size, const void* data, BufferUsage usage = BufferUsage::Static);
+			static VertexBuffer* Create(BufferUsage usage = BufferUsage::Static);
 
 ;
 

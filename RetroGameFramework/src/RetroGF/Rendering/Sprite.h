@@ -50,16 +50,20 @@ namespace RGF {
 				};
 
 				m_VertexArray = VertexArray::Create();
-				VertexBuffer* vbo = VertexBuffer::Create(sizeof(vertex), vertex);
-
-
 				m_VertexArray->Bind();
-				vbo->Bind();
 
-				vbo->SetData(vertex);
-				vbo->SetLayout(layout);
+				m_VertexBuffer = VertexBuffer::Create();
+				m_VertexBuffer->Bind();
+				m_VertexBuffer->Resize(sizeof(vertex));
 
-				m_VertexArray->PushVertexBuffer(*vbo);
+
+
+
+
+				m_VertexBuffer->SetData(vertex);
+				m_VertexBuffer->SetLayout(layout);
+
+				m_VertexArray->PushVertexBuffer(*m_VertexBuffer);
 
 				m_IndexBuffer = IndexBuffer::Create(indicies, 6);
 				m_IndexBuffer->Bind();
@@ -73,6 +77,7 @@ namespace RGF {
 			}
 
 			~Sprite() {
+				delete m_VertexBuffer;
 				delete m_VertexArray;
 				delete m_IndexBuffer;
 			}
@@ -84,6 +89,7 @@ namespace RGF {
 
 		private :
 			VertexArray* m_VertexArray;
+			VertexBuffer* m_VertexBuffer;
 			IndexBuffer* m_IndexBuffer;
 			Shader* m_Shader;
 	};

@@ -10,7 +10,7 @@ namespace RGF {
 
 	class RGF_API GLVertexBuffer : public VertexBuffer {
 		public :
-			GLVertexBuffer(unsigned int size, const void* data, BufferUsage usage = BufferUsage::Static);
+			GLVertexBuffer(BufferUsage usage = BufferUsage::Static);
 			virtual ~GLVertexBuffer();
 
 

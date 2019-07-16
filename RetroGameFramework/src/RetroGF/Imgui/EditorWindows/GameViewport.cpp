@@ -42,18 +42,27 @@ namespace RGF {
 
 	void GameViewport::OnImguiRender() {
 		// The game viewport.
+		auto& Window = Application::GetApp().GetWindow();
+
+
 		ImGui::Begin("Game viewport", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar);
+		const auto gameviewportWindowPos = ImGui::GetWindowPos();
+		const auto gameviewportWindowScale = ImGui::GetWindowSize();
+
 		const ImVec2& windowscale = ImGui::GetWindowSize();
 		ImGui::Image((void*)ViewportFBO->GetTexture(), { windowscale.x, windowscale.y - 35.0f }, { 0, 1 }, {1, 0});
 		ImGui::End();
 
 		ViewportFBO->Unbind();
 
-
 		// Properties window.
-		ImGui::Begin("Props", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Begin("Props", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoDocking
+			| ImGuiWindowFlags_::ImGuiWindowFlags_NoMove);
+		const auto propsWindowScale = ImGui::GetWindowSize();
 
-		auto & Window = Application::GetApp().GetWindow();
+		ImGui::SetWindowPos({ gameviewportWindowPos.x + gameviewportWindowScale.x - propsWindowScale.x - 25.0f, gameviewportWindowPos.y + 50.0f });
+		width = gameviewportWindowScale.x;
+		height = gameviewportWindowScale.y;
 
 		ImGui::Text("FPS: %.1f(%.1f)", ImGui::GetIO().Framerate, (1.0f / ImGui::GetIO().Framerate * 1000.0f));
 		ImGui::Text("Window Pos: %d,%d", Window.GetXPos(), Window.GetYPos());
@@ -65,8 +74,6 @@ namespace RGF {
 		ImGui::Text("Version: %s", Application::GetApp().GetWindow().GetContext()->GetVersion().c_str());
 
 		ImGui::End();
-
-
 	}
 
 

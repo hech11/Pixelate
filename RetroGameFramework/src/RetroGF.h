@@ -48,7 +48,6 @@
 #include "RetroGF/Rendering/Renderable.h"
 #include "RetroGF/Rendering/Sprite.h"
 #include "RetroGF/Rendering/Camera.h"
-#include "RetroGF/Rendering/ShaderGenerator.h"
 
 #include "RetroGF/Rendering/Renderer2D.h"
 

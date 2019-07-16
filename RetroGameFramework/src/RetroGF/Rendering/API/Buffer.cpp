@@ -12,11 +12,11 @@ namespace RGF {
 
 	// ------- Vertex buffer -------\\
 
-	VertexBuffer* VertexBuffer::Create(unsigned int size, const void* data, BufferUsage usage) {
+	VertexBuffer* VertexBuffer::Create(BufferUsage usage) {
 
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLVertexBuffer(size, data, usage);
+				return new GLVertexBuffer(usage);
 		}
 	}
 

@@ -34,6 +34,7 @@ namespace RGF {
 
 
 			FrameBuffer* ViewportFBO;
+			unsigned int width, height;
 	};
 }
 #endif

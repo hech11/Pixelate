@@ -65,7 +65,7 @@ namespace RGF {
 			virtual void Submit(const Renderable* renderable) = 0;
 			virtual void Render() = 0;
 
-			virtual void Start(const RGF::Camera& camera, RGF::Shader* shader) = 0;
+			virtual void Start(RGF::Camera* camera, RGF::Shader* shader) = 0;
 			virtual void End() = 0;
 
 
@@ -81,7 +81,7 @@ namespace RGF {
 			bool m_Blending = false;
 
 			struct SceneData {
-				Camera CurrentCamera;
+				Camera* CurrentCamera;
 				Shader* CurrentShader; // TODO: This should be replaced by a material system.
 			};
 

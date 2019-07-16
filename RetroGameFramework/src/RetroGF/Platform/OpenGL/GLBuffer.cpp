@@ -22,7 +22,7 @@ namespace RGF {
 
 	// ------- Vertex buffer -------\\
 
-	GLVertexBuffer::GLVertexBuffer(unsigned int size, const void* data, BufferUsage usage) : m_Size(size) {
+	GLVertexBuffer::GLVertexBuffer(BufferUsage usage) {
 		m_Usage = usage;
 		GLCall(glGenBuffers(1, &m_RendererID));
 	}
@@ -40,6 +40,8 @@ namespace RGF {
 
 
 	void GLVertexBuffer::SetData(const void* data) {
+		if(!m_Size) RGF_CORE_WARN("VertexBuffer's size is set to 0!\n");
+
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 		GLCall(glBufferData(GL_ARRAY_BUFFER, m_Size, data, GetBufferPlatformUsage(m_Usage)));
 	}

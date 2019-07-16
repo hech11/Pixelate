@@ -7,6 +7,7 @@ class ExampleLayer : public RGF::Layer {
 	RGF::Shader* shader = nullptr;
 	RGF::Texture* test = nullptr;
 
+#define Batchrendering 0
 
 #if Batchrendering
 	std::vector<RGF::BatchedSprite*> sprites;
@@ -43,7 +44,7 @@ class ExampleLayer : public RGF::Layer {
 #if 1
 			for (float y = 0.0f; y < 9.0f; y += 0.14f) {
 				for (float x = 0.0f; x < 16.0f; x += 0.14f) {
-					sprites.push_back(new
+					sprites.push_back( new
 #if Batchrendering
 						BatchedSprite
 #else
@@ -69,9 +70,9 @@ class ExampleLayer : public RGF::Layer {
 			test->Bind();
 
 
-			RGF::Application::GetApp().GetRenderer().Start(RGF::Application::GetApp().GetCamera(), shader);
+			RGF::Application::GetApp().GetRenderer().Start(&RGF::Application::GetApp().GetCamera(), shader);
 			for (unsigned int i = 0; i < sprites.size(); i++) {
-				RGF::Application::GetApp().GetRenderer().Submit(sprites[i]);
+//				RGF::Application::GetApp().GetRenderer().Submit(sprites[i]);
 			}
 			RGF::Application::GetApp().GetRenderer().End();
 			RGF::Application::GetApp().GetRenderer().Render();

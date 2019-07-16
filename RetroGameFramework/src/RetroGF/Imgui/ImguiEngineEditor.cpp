@@ -23,18 +23,85 @@
 
 namespace RGF {
 
+
+	ImguiEngineEditor* ImguiEngineEditor::s_Instance = nullptr;
+
+	ImguiEngineEditor::ImguiEngineEditor() : Layer("EngineEditor") {
+		Application::GetApp().PushOverlay(this);
+		Application::GetApp().PushOverlay(m_GameView);
+		Application::GetApp().PushOverlay(m_RenderingProps);
+		Application::GetApp().PushOverlay(m_EngineColEditor);
+
+	}
 	void ImguiEngineEditor::Init()  {
-		GameView = new GameViewport;
-		RenderingProps = new RendererProperties;
-		EngineColEditor = new ColorStyleEditor;
+
+		s_Instance = this;
+
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_::ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_::ImGuiConfigFlags_NavEnableGamepad;
+		io.ConfigFlags |= ImGuiConfigFlags_::ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_::ImGuiConfigFlags_ViewportsEnable;
+
+		ImGui::StyleColorsDark();
+
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_::ImGuiConfigFlags_ViewportsEnable) {
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
+		Application& app = Application::GetApp();
+		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+
+
+		ImGui_ImplOpenGL3_Init("#version 400");
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+
+
+
+
+
+		m_GameView = new GameViewport;
+		m_RenderingProps = new RendererProperties;
+		m_EngineColEditor = new ColorStyleEditor;
+
+		
+
+
 	}
 	void ImguiEngineEditor::ShutDown() {
+
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	void ImguiEngineEditor::Start() {
-		
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 	}
 	void ImguiEngineEditor::End() {
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		Application& app = Application::GetApp();
+		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		if (io.ConfigFlags & ImGuiConfigFlags_::ImGuiConfigFlags_ViewportsEnable) {
+			GLFWwindow* context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(context);
+
+		}
 
 	}
 
@@ -84,7 +151,7 @@ namespace RGF {
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Themes")) {
-				EngineColEditor->IsOpen = !EngineColEditor->IsOpen;
+				m_EngineColEditor->IsOpen = !m_EngineColEditor->IsOpen;
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Close")) {

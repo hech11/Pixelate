@@ -12,13 +12,11 @@
 
 
 #include "RetroGF/LayerStack.h"
-#include "RetroGF/Imgui/ImguiLayer.h"
 #include "RetroGF/Imgui/ImguiEngineEditor.h"
 
 #include "RetroGF/Utility/Timer.h"
 #include "RetroGF/Rendering/Camera.h"
 #include "RetroGF/Utility/File.h"
-
 
 
 // This would be inherited from another class from CLIENT side.
@@ -29,7 +27,10 @@
 
 namespace RGF {
 
+
+
 	class Renderer2D;
+	class ShaderManager;
 	class RGF_API Application {
 
 		public :
@@ -48,6 +49,11 @@ namespace RGF {
 			Camera& GetCamera() { return *m_Camera; }
 			Renderer2D& GetRenderer() { return *m_Renderer; }
 			FileIO& GetFileIO() { return *m_FileIO; }
+			ShaderManager& GetShaderManager() { return *m_ShaderManager; }
+
+#ifndef RGF_DISTRIBUTE
+			ImguiEngineEditor& GetEngineEditor() { return *m_EngineEditorLayer; }
+#endif
 
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
@@ -57,17 +63,18 @@ namespace RGF {
 			std::unique_ptr<Renderer2D> m_Renderer;
 			std::unique_ptr<Camera> m_Camera;
 			std::unique_ptr<FileIO> m_FileIO;
+			std::unique_ptr<ShaderManager> m_ShaderManager;
+
+#ifndef RGF_DISTRIBUTE
+			ImguiEngineEditor* m_EngineEditorLayer;
+#endif
+
 
 			LayerStack m_LayerStack;
 			Timer m_AppTimer;
 
 
 			bool m_IsRunning = true;
-#ifndef RGF_DISTRIBUTE
-		private :
-			ImguiLayer* m_ImguiLayer;
-			ImguiEngineEditor* m_EngineEditorLayer;
-#endif
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);

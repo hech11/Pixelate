@@ -30,6 +30,10 @@ ImGui::RadioButton(std::string("Src###" + std::string(std::to_string((int)blendi
 ImGui::SameLine();\
 ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blendid+15))).c_str(), &dest, (int)blendid);\
 
+
+
+
+
 	void RendererProperties::OnImguiRender() {
 
 		ImGui::Begin("Renderer Properties");
@@ -114,6 +118,35 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 
 		//ImGui::ShowDemoWindow((bool*)1);
 		ImGui::End();
+
+
+
+
+
+
+
+
+		ImGui::Begin("Shader Manager");
+
+		const auto& shaderIndexes = app.GetShaderManager().GetShaderIndex();
+		if (!shaderIndexes.empty()) {
+			for (unsigned int i = 0; i < shaderIndexes.size(); i++) {
+				std::string label = "Delete###" + std::to_string(i);
+				bool deleted = ImGui::Button(label.c_str());
+				ImGui::SameLine();
+				ImGui::Text("Shader: '%s' at location '%d'", shaderIndexes[i].first.c_str(), i);
+				if (deleted)
+					app.GetShaderManager().Delete(i);
+			}
+		} else {
+			ImGui::Text("No Shaders addded to the shader manager!");
+
+		}
+
+		ImGui::End();
+
+
+
 
 	}
 
