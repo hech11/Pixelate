@@ -2,6 +2,7 @@
 
 #include "RetroGF/Core.h"
 #include "RetroGF/Rendering/Renderable.h"
+#include "RetroGF/Rendering/Material.h"
 
 #include "RetroGF/Rendering/Camera.h"
 
@@ -15,6 +16,7 @@
 // The API equivlent contains a normal Renderer2D and BatchedRenderer2D.
 
 // Both renderers should be implemented on CORE side.
+
 
 namespace RGF {
 
@@ -65,7 +67,7 @@ namespace RGF {
 			virtual void Submit(const Renderable* renderable) = 0;
 			virtual void Render() = 0;
 
-			virtual void Start(RGF::Camera* camera, RGF::Shader* shader) = 0;
+			virtual void Start(RGF::Camera* camera) = 0;
 			virtual void End() = 0;
 
 
@@ -81,8 +83,8 @@ namespace RGF {
 			bool m_Blending = false;
 
 			struct SceneData {
-				Camera* CurrentCamera;
-				Shader* CurrentShader; // TODO: This should be replaced by a material system.
+				glm::mat4 ViewProjectionMatrix;
+				std::vector<Material*> mats;
 			};
 
 

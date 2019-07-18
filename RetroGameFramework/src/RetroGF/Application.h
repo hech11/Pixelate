@@ -3,7 +3,7 @@
 #include "RetroGF/Core.h"
 #include "RetroGF/Window.h"
 
-
+#include "RetroGF/Rendering/Material.h"
 
 #include "RetroGF/Events/Event.h"
 #include "RetroGF/Events/KeyEvents.h"
@@ -31,6 +31,8 @@ namespace RGF {
 
 	class Renderer2D;
 	class ShaderManager;
+	class MaterialManager;
+
 	class RGF_API Application {
 
 		public :
@@ -50,6 +52,7 @@ namespace RGF {
 			Renderer2D& GetRenderer() { return *m_Renderer; }
 			FileIO& GetFileIO() { return *m_FileIO; }
 			ShaderManager& GetShaderManager() { return *m_ShaderManager; }
+			MaterialManager& GetMaterialManager() { return *m_MaterialManager; }
 
 #ifndef RGF_DISTRIBUTE
 			ImguiEngineEditor& GetEngineEditor() { return *m_EngineEditorLayer; }
@@ -64,6 +67,7 @@ namespace RGF {
 			std::unique_ptr<Camera> m_Camera;
 			std::unique_ptr<FileIO> m_FileIO;
 			std::unique_ptr<ShaderManager> m_ShaderManager;
+			std::unique_ptr<MaterialManager> m_MaterialManager;
 
 #ifndef RGF_DISTRIBUTE
 			ImguiEngineEditor* m_EngineEditorLayer;

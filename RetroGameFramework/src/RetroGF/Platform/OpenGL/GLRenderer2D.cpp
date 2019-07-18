@@ -106,14 +106,12 @@ namespace RGF {
 	}
 
 
-	void GLRenderer2D::Start(RGF::Camera* camera, RGF::Shader* shader) {
-		m_SceneData.CurrentCamera = camera;
-		m_SceneData.CurrentShader = shader;
+	void GLRenderer2D::Start(RGF::Camera* camera) {
+		m_SceneData.ViewProjectionMatrix = camera->GetViewMatrix();
 	}
 
 
 	void GLRenderer2D::Submit(const Renderable* renderable) {
-
 		m_RenderQueue.push_back(renderable);
 	}
 	void GLRenderer2D::Render() {
@@ -121,15 +119,18 @@ namespace RGF {
 		while (!m_RenderQueue.empty()) {
 			const auto& renderable = m_RenderQueue.front();
 			renderable->GetVao()->Bind();
-			renderable->GetIbo()->Bind();
-			renderable->GetShader()->Bind();
 
-			renderable->GetShader()->SetUniformMatrix("u_View", m_SceneData.CurrentCamera->GetViewMatrix());
+			
+			Application::GetApp().GetMaterialManager().SetUniforms(renderable->GetMaterial());
+
+			renderable->GetMaterial()->SetUniformMat4("u_View", m_SceneData.ViewProjectionMatrix);
+
 
 			glDrawElements(GL_TRIANGLES, renderable->GetIbo()->GetCount(), GL_UNSIGNED_BYTE, nullptr);
 
 
 			m_RenderQueue.pop_front();
+
 		}
 
 	}
@@ -252,9 +253,8 @@ namespace RGF {
 	}
 
 
-	void GLBatchRenderer2D::Start(RGF::Camera* camera, RGF::Shader* shader) {
-		m_SceneData.CurrentCamera = camera;
-		m_SceneData.CurrentShader = shader;
+	void GLBatchRenderer2D::Start(RGF::Camera* camera) {
+		m_SceneData.ViewProjectionMatrix = camera->GetViewMatrix();
 
 
 		m_Vbo->Bind();
@@ -307,8 +307,6 @@ namespace RGF {
 	void GLBatchRenderer2D::Render() {
 		m_Vao->Bind();
 		m_Ibo->Bind();
-
-		m_SceneData.CurrentShader->SetUniformMatrix("u_View", m_SceneData.CurrentCamera->GetViewMatrix());
 
 		GLCall(glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_SHORT, nullptr));
 

@@ -168,8 +168,7 @@ namespace RGF {
 	}
 
 
-	int GLShader::m_GetUniformLocation(const std::string& name) {
-
+	int GLShader::GetUniformLocation(const std::string& name) {
 		if (m_CachedUniformLocations.find(name) != m_CachedUniformLocations.end()) {
 			return m_CachedUniformLocations[name];
 		}
@@ -183,16 +182,20 @@ namespace RGF {
 
 
 	void GLShader::SetUniform4f(const std::string& uniformName, const glm::vec4& values) {
-		glUniform4f(m_GetUniformLocation(uniformName), values.x, values.y, values.z, values.w);
+		glUniform4f(GetUniformLocation(uniformName), values.x, values.y, values.z, values.w);
+
 	}
 
 	void GLShader::SetUniform1i(const std::string& uniformName, const int value) {
-		glUniform1i(m_GetUniformLocation(uniformName), value);
+		glUniform1i(GetUniformLocation(uniformName), value);
+		
 	}
 
 
 	void GLShader::SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) {
-		glUniformMatrix4fv(m_GetUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
+		glUniformMatrix4fv(GetUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
+
+		//m_Uniforms.push_back({ uniformName, ShaderUnifromType::Mat4, location });
 	}
 
 }

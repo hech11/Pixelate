@@ -24,8 +24,8 @@ namespace RGF {
 	class RGF_API Sprite : public Renderable {
 
 		public :
-			Sprite(glm::vec3 position, glm::vec3 scale, glm::vec4 color, Shader* shader) 
-				: Renderable(position, scale, color), m_Shader(shader)
+			Sprite(glm::vec3 position, glm::vec3 scale, glm::vec4 color, Material* material) 
+				: Renderable(position, scale, color), m_Material(material)
 			{
 
 
@@ -85,13 +85,13 @@ namespace RGF {
 
 			inline const VertexArray* GetVao() const override { return m_VertexArray; }
 			inline const IndexBuffer* GetIbo() const override { return m_IndexBuffer; }
-			inline Shader* GetShader() const override { return m_Shader; }
+			inline Material* GetMaterial() const override { return m_Material; }
 
 		private :
 			VertexArray* m_VertexArray;
 			VertexBuffer* m_VertexBuffer;
 			IndexBuffer* m_IndexBuffer;
-			Shader* m_Shader;
+			Material* m_Material;
 	};
 
 

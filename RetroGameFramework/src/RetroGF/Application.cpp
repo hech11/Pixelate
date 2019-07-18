@@ -7,6 +7,7 @@
 #include <RetroGF/Rendering/API/Buffer.h>
 #include <RetroGF/Rendering/API/VertexArray.h>
 #include <RetroGF/Rendering/API/Shader.h>
+#include <RetroGF/Rendering/Material.h>
 #include <RetroGF/Rendering/API/Texture.h>
 #include <RetroGF/Rendering/API/FrameBuffer.h>
 
@@ -36,6 +37,8 @@ namespace RGF {
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
 
 		m_ShaderManager = std::make_unique<ShaderManager>();
+		m_MaterialManager = std::make_unique<MaterialManager>();
+
 #if Batchrendering 
 		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
 #else
@@ -60,9 +63,6 @@ namespace RGF {
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
-
-		m_ShaderManager->Add(ShaderGenerator::GetInstance()->DefaultShader(), "Default Shader");
-		m_ShaderManager->Add(ShaderGenerator::GetInstance()->TexturedShader(), "Textured Shader");
 
 	}
 	Application::~Application() {

@@ -4,8 +4,7 @@
 
 #include "RetroGF/Rendering/API/Buffer.h"
 #include "RetroGF/Rendering/API/VertexArray.h"
-#include "RetroGF/Rendering/API/Shader.h"
-
+#include "RetroGF/Rendering/Material.h"
 
 #include "RetroGF/Core.h"
 
@@ -43,7 +42,7 @@ namespace RGF {
 		public :
 			virtual inline const VertexArray* GetVao() const { return nullptr; }
 			virtual inline const IndexBuffer* GetIbo() const { return nullptr; }
-			virtual inline Shader* GetShader() const { return nullptr; };
+			virtual inline Material* GetMaterial() const { return nullptr; };
 
 
 			inline const glm::vec3& GetPosition() const { return m_Position; }

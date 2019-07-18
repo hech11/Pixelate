@@ -44,7 +44,7 @@ namespace RGF {
 			void Submit(const Renderable* renderable) override;
 			void Render() override;
 
-			void Start(RGF::Camera* camera, RGF::Shader* shader) override;
+			void Start(RGF::Camera* camera) override;
 			void End() override{}
 
 
@@ -88,7 +88,7 @@ namespace RGF {
 			void Submit(const Renderable* renderable) override;
 			void Render() override;
 
-			void Start(RGF::Camera* camera, RGF::Shader* shader) override;
+			void Start(RGF::Camera* camera) override;
 			void End() override;
 
 

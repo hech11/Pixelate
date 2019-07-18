@@ -33,13 +33,13 @@ namespace RGF {
 			void SetUniform1i(const std::string& uniformName, const int value) override;
 			void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) override;
 
+			int GetUniformLocation(const std::string& name) override;
 
 		private :
 			unsigned int m_RendererID;
 
 			std::string m_Filepath;
 		private :
-			int m_GetUniformLocation(const std::string& name);
 			ShaderSource m_PraseShader(const std::string shaderFile);
 			ShaderSource m_PraseShader(const char* data);
 			unsigned int m_CreateShader(unsigned int type, const std::string& shaderSource);

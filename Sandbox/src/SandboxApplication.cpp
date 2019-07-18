@@ -1,5 +1,9 @@
 #include <RetroGF.h>
 
+#include "IMGUI/imgui.h"
+
+#include "RetroGF/Rendering/Material.h"
+
 // An example application using RGF
 
 // A example layer.
@@ -7,10 +11,26 @@ class ExampleLayer : public RGF::Layer {
 	RGF::Shader* shader = nullptr;
 	RGF::Texture* test = nullptr;
 
+	glm::mat4 modelMat;
+	glm::vec2 pos;
+	glm::vec2 pos2;
+
+	RGF::Material* mat;
+	RGF::Material* mat2;
+
+
+
+#define LotsOfSprites 0
 #define Batchrendering 0
+
+#if LotsOfSprites
 
 #if Batchrendering
 	std::vector<RGF::BatchedSprite*> sprites;
+#else
+	std::vector<RGF::Sprite*> sprites;
+
+#endif
 #else
 	std::vector<RGF::Sprite*> sprites;
 
@@ -34,14 +54,22 @@ class ExampleLayer : public RGF::Layer {
 			test->LoadTexture("res/graphics/sprite.png");
 
 			shader = ShaderGenerator::GetInstance()->TexturedShader();
-			shader->Bind();
+			mat = new Material("Test Material", Application::GetApp().GetShaderManager().GetShaderIndex()[0].Shader);
+			mat->AddUniform(new ShaderUniformInt("a", ShaderUnifromType::Int, 0));
+
+			mat2 = new Material("Test Material2", Application::GetApp().GetShaderManager().GetShaderIndex()[0].Shader);
+			mat2->AddUniform(new ShaderUniformInt("a", ShaderUnifromType::Int, 0));
 
 
-			shader->SetUniform1i("u_TextureSampler", 0);
+			Application::GetApp().GetMaterialManager().AddMaterial(*mat);
+			Application::GetApp().GetMaterialManager().AddMaterial(*mat2);
+
+
+			mat->GetShader()->Bind();
 
 
 
-#if 1
+#if LotsOfSprites
 			for (float y = 0.0f; y < 9.0f; y += 0.14f) {
 				for (float x = 0.0f; x < 16.0f; x += 0.14f) {
 					sprites.push_back( new
@@ -59,9 +87,16 @@ class ExampleLayer : public RGF::Layer {
 				}
 			}
 
+			RGF_MSG("Sprites: %d\n", sprites.size());
+
+#else
+
+			sprites.push_back(new Sprite({ -1.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f }, { 1.0f, 1.0f, 1.0f, 1.0f }, mat));
+			sprites.push_back(new Sprite({ 0.0f, 0.0f, 0.0f }, { 0.2f, 0.2f, 0.2f }, { 1.0f, 1.0f, 1.0f, 1.0f }, mat2));
+			
+
 #endif
 
-			RGF_MSG("Sprites: %d\n", sprites.size());
 
 		}
 		void ShutDown() override { }
@@ -70,10 +105,13 @@ class ExampleLayer : public RGF::Layer {
 			test->Bind();
 
 
-			RGF::Application::GetApp().GetRenderer().Start(&RGF::Application::GetApp().GetCamera(), shader);
+			
+			RGF::Application::GetApp().GetRenderer().Start(&RGF::Application::GetApp().GetCamera());
+
 			for (unsigned int i = 0; i < sprites.size(); i++) {
-//				RGF::Application::GetApp().GetRenderer().Submit(sprites[i]);
+				RGF::Application::GetApp().GetRenderer().Submit(sprites[i]);
 			}
+
 			RGF::Application::GetApp().GetRenderer().End();
 			RGF::Application::GetApp().GetRenderer().Render();
 
@@ -84,6 +122,11 @@ class ExampleLayer : public RGF::Layer {
 		void OnEvent(RGF::Event& e) override {}
 
 		void OnImguiRender() override { 
+			ImGui::SliderFloat2("posSprite1", &pos.x, -5.0f, 10.0f);
+			ImGui::SliderFloat2("posSprite2", &pos2.x, -5.0f, 10.0f);
+
+			
+
 		}
 
 

@@ -3,12 +3,17 @@
 
 #include "RetroGF/Platform/OpenGL/GLShader.h"
 #include "RetroGF/Rendering/RenderingContext.h"
+#include "RetroGF/Application.h"
 
 namespace RGF {
 
 
 
 	// ---- Shader ---- //
+	Shader::Shader() {
+		Application::GetApp().GetShaderManager().Add(this, "Shader");
+	}
+
 	Shader* Shader::Create() {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
@@ -95,7 +100,7 @@ void main() {
 
 out vec4 Color;
 uniform sampler2D u_TextureSampler;
-
+uniform int a = 1;
 in DATA {
 	vec4 position;
 	vec4 color;
@@ -103,7 +108,11 @@ in DATA {
 } fs_in;
 
 void main() {
-	Color = texture2D(u_TextureSampler, fs_in.uv);
+	if(a == 0){
+		Color = texture2D(u_TextureSampler, fs_in.uv);
+	} else if(a == 1){
+		Color = vec4(1.0f, 0.6f, 1.0f, 1.0f);
+	}
 }
 	)";
 	

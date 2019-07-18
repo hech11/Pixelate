@@ -131,12 +131,7 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 		const auto& shaderIndexes = app.GetShaderManager().GetShaderIndex();
 		if (!shaderIndexes.empty()) {
 			for (unsigned int i = 0; i < shaderIndexes.size(); i++) {
-				std::string label = "Delete###" + std::to_string(i);
-				bool deleted = ImGui::Button(label.c_str());
-				ImGui::SameLine();
-				ImGui::Text("Shader: '%s' at location '%d'", shaderIndexes[i].first.c_str(), i);
-				if (deleted)
-					app.GetShaderManager().Delete(i);
+				ImGui::Text("Shader: '%s' at location '%d'", shaderIndexes[i].Name.c_str(), i);
 			}
 		} else {
 			ImGui::Text("No Shaders addded to the shader manager!");
@@ -144,6 +139,33 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 		}
 
 		ImGui::End();
+
+
+		ImGui::Begin("Material Manager");
+
+		auto& materialIndexes = app.GetMaterialManager().GetMaterialList();
+		for (unsigned int i = 0; i < materialIndexes.size(); i++) {
+			ImGui::Text("Material : %s", materialIndexes[i].GetName().c_str());
+			
+			auto& currentMatUniforms = materialIndexes[i].GetUniforms();
+			for (unsigned int j = 0; j < currentMatUniforms.size(); j++) {
+				ImGui::Text("Uniform : '%s' (location: %d)", currentMatUniforms[j]->Name.c_str(), currentMatUniforms[j]->Location);
+
+				switch(currentMatUniforms[j]->Type) {
+					case ShaderUnifromType::Int:
+						ImGui::SameLine(); 
+						std::string id = std::to_string(i) + std::to_string(j);
+						ImGui::SliderInt(id.c_str(), currentMatUniforms[j]->GetIntData(), 0, 100);
+						materialIndexes[i].SetUniform1i(currentMatUniforms[j]->Name, *currentMatUniforms[j]->GetIntData());
+						break;
+
+				}
+
+			}
+		}
+
+		ImGui::End();
+
 
 
 

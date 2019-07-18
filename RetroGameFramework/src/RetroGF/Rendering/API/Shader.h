@@ -8,12 +8,64 @@
 // Shader interface.
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
 
+
+// TODO : Shader and Material do not support UBO's! At some point i need to implement this!
+
 namespace RGF {
+
+
+	enum class ShaderUnifromType {
+		None = -1,
+		Float4,
+		Float3,
+		Float2,
+		Float,
+		Char4,
+		Char3,
+		Char2,
+		Char,
+		Int4,
+		Int3,
+		Int2,
+		Int,
+		Mat4
+	};
+
+
+	struct ShaderUniform {
+
+		std::string Name;
+		ShaderUnifromType Type;
+		int Location = -1;
+
+		ShaderUniform(const std::string& name, const ShaderUnifromType& type)
+			: Name(name), Type(type)
+		{
+		}
+		virtual int* GetIntData() { return nullptr; }
+
+	};
+
+
+
+	class ShaderUniformInt : public ShaderUniform {
+		public :
+			ShaderUniformInt(const std::string& name, const ShaderUnifromType& type, int data)
+				: ShaderUniform(name, type), m_Data(data)
+			{
+			}
+
+
+			int* GetIntData() override { return &m_Data; }
+		private :
+			int m_Data = 0;
+	};
+
 
 	class RGF_API Shader {
 
 		public :
-			Shader(){}
+			Shader();
 			virtual ~Shader(){}
 
 
@@ -31,8 +83,12 @@ namespace RGF {
 			virtual void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) = 0;
 
 
+			virtual int GetUniformLocation(const std::string& name) = 0;
+
+
 		public :
 			static Shader* Create();
+
 
 	};
 	
@@ -50,15 +106,23 @@ namespace RGF {
 			static ShaderGenerator* s_Instance;
 	};
 
+
+
 	class RGF_API ShaderManager {
 
 
 		public :
 			ShaderManager() {}
 
+			struct ShaderIndexData {
+				std::string Name;
+				RGF::Shader* Shader;
+
+			};
+
 			~ShaderManager() {
 				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
-					delete m_ShaderIndex[i].second;
+					delete m_ShaderIndex[i].Shader;
 				}
 
 			}
@@ -70,7 +134,8 @@ namespace RGF {
 
 			void Delete(const std::string& name) {
 				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
-					if (m_ShaderIndex[i].first == name) {
+					if (m_ShaderIndex[i].Name == name) {
+						delete m_ShaderIndex[i].Shader;
 						m_ShaderIndex.erase(m_ShaderIndex.begin() + i);
 						break;
 					}
@@ -79,13 +144,15 @@ namespace RGF {
 			}
 
 			void Delete(unsigned int index) {
+				delete m_ShaderIndex[index].Shader;
 				m_ShaderIndex.erase(m_ShaderIndex.begin() + index);
 			}
 
 
 			void Delete(RGF::Shader* shader) {
 				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
-					if (m_ShaderIndex[i].second == shader) {
+					if (m_ShaderIndex[i].Shader == shader) {
+						delete m_ShaderIndex[i].Shader;
 						m_ShaderIndex.erase(m_ShaderIndex.begin() + i);
 						break;
 					}
@@ -93,10 +160,25 @@ namespace RGF {
 
 			}
 
-		std::vector<std::pair<std::string, RGF::Shader*>>& GetShaderIndex() { return m_ShaderIndex; }
+
+			RGF::Shader* Find(RGF::Shader* shader) {
+				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
+					if (shader == m_ShaderIndex[i].Shader)
+						return m_ShaderIndex[i].Shader;
+				}
+			}
+
+
+			std::string& Find(const std::string& name) {
+				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
+					if (name == m_ShaderIndex[i].Name)
+						return m_ShaderIndex[i].Name;
+				}
+			}
+			std::vector<ShaderIndexData>& GetShaderIndex() { return m_ShaderIndex; }
 
 
 		private :
-			std::vector<std::pair<std::string, RGF::Shader*>> m_ShaderIndex;
+			std::vector<ShaderIndexData> m_ShaderIndex;
 	};
 }

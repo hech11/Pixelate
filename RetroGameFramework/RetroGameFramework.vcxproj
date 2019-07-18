@@ -303,6 +303,7 @@
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLVertexArray.h" />
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLBuffer.h" />
     <ClInclude Include="src\RetroGF\Platform\Windows\WindowsInput.h" />
+    <ClInclude Include="src\RetroGF\Rendering\Material.h" />
     <ClInclude Include="src\RetroGF\Utility\Random.h" />
     <ClInclude Include="src\RetroGF.h" />
     <ClInclude Include="src\RetroGF\Application.h" />
