@@ -27,7 +27,7 @@ namespace RGF {
 			void MoveFileLocation(const std::string& sourceFilepath, const std::string& destinationFilepath);
 			void RemoveFile(const std::string& filepath);
 
-			const char* ReadFromStorage(const std::string& filepath);
+			std::string ReadFromStorage(const std::string& filepath);
 
 
 			bool DoesFileExist(const std::string& filepath) const;

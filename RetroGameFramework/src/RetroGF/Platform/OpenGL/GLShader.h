@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF/Rendering/API/Shader.h"
+#include "RetroGF/Rendering/API/Shader/Shader.h"
 
 // OpenGL's implementation of 'Shader.h'
 
@@ -21,7 +21,6 @@ namespace RGF {
 			void ShutDown() override;
 
 
-
 			void Bind() const override;
 			void Unbind() const override;
 
@@ -39,12 +38,13 @@ namespace RGF {
 			unsigned int m_RendererID;
 
 			std::string m_Filepath;
-		private :
-			ShaderSource m_PraseShader(const std::string shaderFile);
-			ShaderSource m_PraseShader(const char* data);
-			unsigned int m_CreateShader(unsigned int type, const std::string& shaderSource);
-
 			std::unordered_map<std::string, int> m_CachedUniformLocations;
+
+		private :
+			ShaderSource PraseShader(const std::string& shaderFile);
+			ShaderSource PraseShader(const char* data);
+			unsigned int CreateShader(unsigned int type, const std::string& shaderSource);
+
 	};
 
 }

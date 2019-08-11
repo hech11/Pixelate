@@ -32,23 +32,50 @@ namespace RGF {
 			Renderable(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color)
 				: m_Position(position), m_Scale(scale), m_Color(color)
 			{
-				m_UV[0] = { 0.0f, 0.0f };
-				m_UV[1] = { 0.0f, 1.0f };
-				m_UV[2] = { 1.0f, 1.0f };
-				m_UV[3] = { 1.0f, 0.0f };
+				m_UV[0] = { 0.0f, 0.0f }; // -- bottom left
+				m_UV[1] = { 1.0f, 0.0f }; // -- bottom right
+				m_UV[2] = { 1.0f, 1.0f }; // -- top right
+				m_UV[3] = { 0.0f, 1.0f }; // -- top left
 			}
 
 			virtual ~Renderable() {}
 		public :
-			virtual inline const VertexArray* GetVao() const { return nullptr; }
-			virtual inline const IndexBuffer* GetIbo() const { return nullptr; }
-			virtual inline Material* GetMaterial() const { return nullptr; };
 
 
 			inline const glm::vec3& GetPosition() const { return m_Position; }
 			inline const glm::vec3& GetScale() const { return m_Scale; }
 			inline const glm::vec4& GetColor () const { return m_Color; }
 			inline const std::array<glm::vec2, 4>& GetUV() const { return m_UV; }
+
+			inline glm::vec3& GetPosition()  { return m_Position; }
+			inline glm::vec3& GetScale() { return m_Scale; }
+			inline glm::vec4& GetColor() { return m_Color; }
+			inline std::array<glm::vec2, 4> & GetUV() { return m_UV; }
+
+			void SetPosition(const glm::vec3& pos) { m_Position = pos; }
+			void SetScale(const glm::vec3& scale) { m_Scale = scale; }
+			void SetColor(const glm::vec4& color) { m_Color = color; }
+
+			// TEMP: This only works with OPENGL
+			void SetUV(const glm::i32vec4& UVTexCoords, const glm::vec2& textureDimensions) { 
+
+				const float xo = (UVTexCoords.x / textureDimensions.x);
+				const float yo = (UVTexCoords.y / textureDimensions.y);
+
+				const float uo = (UVTexCoords.z / textureDimensions.x);
+				const float vo = (UVTexCoords.w / textureDimensions.y);
+
+				const float xu = xo + uo;
+				const float yv = yo + vo;
+
+
+				m_UV[0] = { xo, 1.0f - yv }; // -- bottom left
+				m_UV[1] = { xu, 1.0f - yv }; // -- bottom right
+				m_UV[2] = { xu, 1.0f - yo }; // -- top right
+				m_UV[3] = { xo, 1.0f - yo }; // -- top left
+			}
+			void SetUV(const std::array<glm::vec2, 4>& uv) { m_UV = uv; }
+
 	};
 
 }

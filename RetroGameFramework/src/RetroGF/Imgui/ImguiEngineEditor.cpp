@@ -31,6 +31,7 @@ namespace RGF {
 		Application::GetApp().PushOverlay(m_GameView);
 		Application::GetApp().PushOverlay(m_RenderingProps);
 		Application::GetApp().PushOverlay(m_EngineColEditor);
+		Application::GetApp().PushOverlay(m_AssetInspector);
 
 	}
 	void ImguiEngineEditor::Init()  {
@@ -67,7 +68,7 @@ namespace RGF {
 		m_GameView = new GameViewport;
 		m_RenderingProps = new RendererProperties;
 		m_EngineColEditor = new ColorStyleEditor;
-
+		m_AssetInspector = new AssetInspector;
 		
 
 

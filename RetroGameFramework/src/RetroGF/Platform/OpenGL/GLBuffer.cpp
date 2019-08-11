@@ -67,20 +67,21 @@ namespace RGF {
 
 	// ------- Index buffer -------\\
 
-	GLIndexBuffer::GLIndexBuffer(unsigned int* data, unsigned int count) {
-		m_Count = count;
+	GLIndexBuffer::GLIndexBuffer(unsigned int* data, unsigned int count) : m_Count(count), m_Type(GL_UNSIGNED_INT)
+	{
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
 	}
-	GLIndexBuffer::GLIndexBuffer(unsigned short* data, unsigned int count) {
-		m_Count = count;
+	GLIndexBuffer::GLIndexBuffer(unsigned short* data, unsigned int count) : m_Count(count), m_Type(GL_UNSIGNED_SHORT) 
+	{
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned short), data, GL_STATIC_DRAW));
 	}
-	GLIndexBuffer::GLIndexBuffer(unsigned char* data, unsigned int count) {
-		m_Count = count;
+	GLIndexBuffer::GLIndexBuffer(unsigned char* data, unsigned int count) : m_Count(count), m_Type(GL_UNSIGNED_BYTE) 
+	{
+
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned char), data, GL_STATIC_DRAW));

@@ -48,12 +48,21 @@ namespace RGF {
 
 			virtual ~GLIndexBuffer();
 
+
+
+			unsigned int GetCount() const { return m_Count; };
+			unsigned int GetType() const { return m_Type; };
+
+
 			virtual void Bind() const override;
 			virtual void Unbind() const override;
 
 
 		private :
 			unsigned int m_RendererID;
+
+			unsigned int m_Count;
+			unsigned int m_Type;
 	};
 
 }

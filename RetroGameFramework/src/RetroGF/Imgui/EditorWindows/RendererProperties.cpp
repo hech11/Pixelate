@@ -11,6 +11,7 @@
 
 #include "RetroGF/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
+#include "RetroGF\Rendering\RenderCommand.h"
 
 
 
@@ -36,24 +37,25 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 
 	void RendererProperties::OnImguiRender() {
 
-		ImGui::Begin("Renderer Properties");
+		ImGui::Begin("Renderer Command");
 
 		Application& app = Application::GetApp();
 
 		static float rgbClear[3] = { 0, 0, 0 };
 		ImGui::ColorEdit3("Clear Color", rgbClear);
-		app.GetRenderer().ClearColor(rgbClear[0], rgbClear[1], rgbClear[2]);
+		RenderCommand::SetClearColor(rgbClear[0], rgbClear[1], rgbClear[2], 1.0f);
 
 		static bool depthTest = false;
 		static bool stencilTest = false;
 		static bool enableBlend = false;
 		static bool wireframe = false;
 		if (ImGui::Checkbox("Render in wireframe", &wireframe)) {
-			app.GetRenderer().RenderWireFrame(wireframe);
+			RenderCommand::RenderWireFrame(wireframe);
 		}
 	
 		if (ImGui::Checkbox("Enable Blending", &enableBlend)) {
-			app.GetRenderer().SetBlending(enableBlend);
+			RenderCommand::SetBlending(wireframe);
+
 		}
 		if (enableBlend) {
 			static bool openHeader = false;
@@ -63,30 +65,30 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 				openHeader = true;
 				static int SrcCheckBox = 1;
 				static int DestCheckBox = 0;
-				static BlendFunc Src = BlendFunc::ONE;
-				static BlendFunc Dest = BlendFunc::ZERO;
+				static RendererAPI::BlendFunc Src = RendererAPI::BlendFunc::ONE;
+				static RendererAPI::BlendFunc Dest = RendererAPI::BlendFunc::ZERO;
 
-				ImguiRadioBlendFunc("ZERO",						SrcCheckBox, DestCheckBox, BlendFunc::ZERO);
-				ImguiRadioBlendFunc("ONE",						SrcCheckBox, DestCheckBox, BlendFunc::ONE);
+				ImguiRadioBlendFunc("ZERO",						SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ZERO);
+				ImguiRadioBlendFunc("ONE",						SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE);
 				ImGui::Spacing();
-				ImguiRadioBlendFunc("SRC_COLOR",				SrcCheckBox, DestCheckBox, BlendFunc::SRC_COLOR);
-				ImguiRadioBlendFunc("ONE_MINUS_SRC_COLOR",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_SRC_COLOR);
-				ImguiRadioBlendFunc("DST_COLOR",				SrcCheckBox, DestCheckBox, BlendFunc::DST_COLOR);
-				ImguiRadioBlendFunc("ONE_MINUS_DST_COLOR",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_DST_COLOR);
-				ImguiRadioBlendFunc("SRC_ALPHA",				SrcCheckBox, DestCheckBox, BlendFunc::SRC_ALPHA);
-				ImguiRadioBlendFunc("ONE_MINUS_SRC_ALPHA",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_SRC_ALPHA);
-				ImguiRadioBlendFunc("DST_ALPHA",				SrcCheckBox, DestCheckBox, BlendFunc::DST_ALPHA);
-				ImguiRadioBlendFunc("ONE_MINUS_DST_ALPHA",		SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_DST_ALPHA);
-				ImguiRadioBlendFunc("CONSTANT_COLOR",			SrcCheckBox, DestCheckBox, BlendFunc::CONSTANT_COLOR);
-				ImguiRadioBlendFunc("ONE_MINUS_CONSTANT_COLOR",	SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_CONSTANT_COLOR);
-				ImguiRadioBlendFunc("CONSTANT_ALPHA",			SrcCheckBox, DestCheckBox, BlendFunc::CONSTANT_ALPHA);
-				ImguiRadioBlendFunc("ONE_MINUS_CONSTANT_ALPHA",	SrcCheckBox, DestCheckBox, BlendFunc::ONE_MINUS_CONSTANT_ALPHA);
+				ImguiRadioBlendFunc("SRC_COLOR",				SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::SRC_COLOR);
+				ImguiRadioBlendFunc("ONE_MINUS_SRC_COLOR",		SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE_MINUS_SRC_COLOR);
+				ImguiRadioBlendFunc("DST_COLOR",				SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::DST_COLOR);
+				ImguiRadioBlendFunc("ONE_MINUS_DST_COLOR",		SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE_MINUS_DST_COLOR);
+				ImguiRadioBlendFunc("SRC_ALPHA",				SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::SRC_ALPHA);
+				ImguiRadioBlendFunc("ONE_MINUS_SRC_ALPHA",		SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE_MINUS_SRC_ALPHA);
+				ImguiRadioBlendFunc("DST_ALPHA",				SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::DST_ALPHA);
+				ImguiRadioBlendFunc("ONE_MINUS_DST_ALPHA",		SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE_MINUS_DST_ALPHA);
+				ImguiRadioBlendFunc("CONSTANT_COLOR",			SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::CONSTANT_COLOR);
+				ImguiRadioBlendFunc("ONE_MINUS_CONSTANT_COLOR",	SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE_MINUS_CONSTANT_COLOR);
+				ImguiRadioBlendFunc("CONSTANT_ALPHA",			SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::CONSTANT_ALPHA);
+				ImguiRadioBlendFunc("ONE_MINUS_CONSTANT_ALPHA",	SrcCheckBox, DestCheckBox, RendererAPI::BlendFunc::ONE_MINUS_CONSTANT_ALPHA);
 			
 				for (int i = 0; i < 9; i++) {
-					Src = (BlendFunc)SrcCheckBox;
-					Dest = (BlendFunc)DestCheckBox;
+					Src = (RendererAPI::BlendFunc)SrcCheckBox;
+					Dest = (RendererAPI::BlendFunc)DestCheckBox;
 				}
-				app.GetRenderer().SetBlendFunc(Src, Dest);
+				RenderCommand::SetBlendFunc(Src, Dest);
 
 			} else {
 				openHeader = false;
@@ -98,17 +100,17 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 		if (ImGui::CollapsingHeader("Tests")) {
 			ImGui::BeginChild("testsChild", { 300, 100 }, true);
 			if (ImGui::Checkbox("Enable Depth Test", &depthTest)) {
-				app.GetRenderer().SetDepthTesting(depthTest);
+				RenderCommand::SetDepthTesting(depthTest);
 			}
 			if (ImGui::Checkbox("Enable Stencil Test", &stencilTest)) {
-				app.GetRenderer().SetStencilTesting(stencilTest);
+				RenderCommand::SetStencilTesting(stencilTest);
 			}
 			ImGui::EndChild();
 		}
 		if (ImGui::CollapsingHeader("Camera Properties")) {
 			ImGui::BeginChild("CamChild", {300, 100}, true);
 			ImGui::DragFloat3("Camera Pos", &app.GetCamera().GetPos().x, .01f);
-			ImGui::DragFloat3("Camera Rot", &app.GetCamera().GetRot().x, .01f);
+			ImGui::DragFloat("Camera Rot", &app.GetCamera().GetRot(), .01f);
 			ImGui::DragFloat("Camera angle", &app.GetCamera().GetAngle(), .01f);
 			ImGui::DragFloat3("Camera Scale", &app.GetCamera().GetScale().x, .01f);
 			ImGui::EndChild();
@@ -128,7 +130,7 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 
 		ImGui::Begin("Shader Manager");
 
-		const auto& shaderIndexes = app.GetShaderManager().GetShaderIndex();
+		const auto& shaderIndexes = Renderer2D::GetShaderManager().GetShaderIndex();
 		if (!shaderIndexes.empty()) {
 			for (unsigned int i = 0; i < shaderIndexes.size(); i++) {
 				ImGui::Text("Shader: '%s' at location '%d'", shaderIndexes[i].Name.c_str(), i);
@@ -143,7 +145,7 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 
 		ImGui::Begin("Material Manager");
 
-		auto& materialIndexes = app.GetMaterialManager().GetMaterialList();
+		auto& materialIndexes = Renderer2D::GetMaterialManager().GetMaterialList();
 		for (unsigned int i = 0; i < materialIndexes.size(); i++) {
 			ImGui::Text("Material : %s", materialIndexes[i].GetName().c_str());
 			
@@ -156,7 +158,7 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 						ImGui::SameLine(); 
 						std::string id = std::to_string(i) + std::to_string(j);
 						ImGui::SliderInt(id.c_str(), currentMatUniforms[j]->GetIntData(), 0, 100);
-						materialIndexes[i].SetUniform1i(currentMatUniforms[j]->Name, *currentMatUniforms[j]->GetIntData());
+						materialIndexes[i].GetShader()->SetUniform1i(currentMatUniforms[j]->Name, *currentMatUniforms[j]->GetIntData());
 						break;
 
 				}

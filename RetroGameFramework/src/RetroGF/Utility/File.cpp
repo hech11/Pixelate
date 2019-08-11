@@ -50,25 +50,28 @@ namespace RGF {
 	}
 
 
-	const char* FileIO::ReadFromStorage(const std::string& filepath) {
+	std::string FileIO::ReadFromStorage(const std::string& filepath) {
+		std::string line;
+
 		if (!DoesFileExist(filepath)) {
-			return "File does not exist!";
+			RGF_CORE_ERROR("File at \"%s\" does not exist!", filepath.c_str());
+			line = "Error";
+			return line;
 		}
 
-		std::fstream file(filepath);
-		std::string line;
+		std::ifstream file(filepath, std::ios::binary);
 		std::stringstream ss;
 
 		while (getline(file, line)) {
-			ss << line;
+			ss << line << '\n';
 		}
 
-		return ss.str().c_str();
+
+		return ss.str();
 	}
 
 	bool FileIO::DoesFileExist(const std::string& filepath) const {
-		std::fstream stream(filepath);
-		RGF_CORE_WARN("File at '%s' does not exist!\n", filepath.c_str());
+		std::ifstream stream(filepath, std::ios::binary);
 		return !stream.fail();
 	}
 

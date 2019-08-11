@@ -6,7 +6,6 @@
 
 #include <RetroGF/Rendering/API/Buffer.h>
 #include <RetroGF/Rendering/API/VertexArray.h>
-#include <RetroGF/Rendering/API/Shader.h>
 #include <RetroGF/Rendering/Material.h>
 #include <RetroGF/Rendering/API/Texture.h>
 #include <RetroGF/Rendering/API/FrameBuffer.h>
@@ -16,6 +15,7 @@
 #include <RetroGF/Utility/Random.h>
 
 #include <RetroGF/Rendering/Renderer2D.h>
+#include <RetroGF\Rendering\RenderCommand.h>
 #include <RetroGF/Rendering/Sprite.h>
 
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
@@ -28,7 +28,6 @@ namespace RGF {
 
 
 
-#define Batchrendering 0
 
 	Application* Application::s_Instance = nullptr;
 
@@ -36,29 +35,20 @@ namespace RGF {
 		s_Instance = this;
 		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
 
-		m_ShaderManager = std::make_unique<ShaderManager>();
-		m_MaterialManager = std::make_unique<MaterialManager>();
-
-#if Batchrendering 
-		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Batch));
-#else
-		m_Renderer = std::unique_ptr<RGF::Renderer2D>(RGF::Renderer2D::Create(RenderingType::Default));
-#endif
-
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-
 
 #ifndef RGF_DISTRIBUTE
 		m_EngineEditorLayer = new ImguiEngineEditor;
 #endif
 
 
-		m_Camera = std::make_unique<Camera>();
+		m_Camera = std::make_unique<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
 		RGF_CORE_MSG("Initialising File IO!\n");
 		m_FileIO = std::make_unique<FileIO>();
 		RGF_CORE_MSG("Creating the renderer!\n");
-		m_Renderer->Init();
+		Renderer2D::Init();
+
 
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
@@ -66,6 +56,7 @@ namespace RGF {
 
 	}
 	Application::~Application() {
+		Renderer2D::ShutDown();
 	}
 
 
@@ -97,6 +88,8 @@ namespace RGF {
 
 
 	void Application::Run() {
+
+		//TODO: Need to refactor the game loop for a better FPS counter
 		float FPS = 60.0f;
 		float Time = 0.0f;
 		float UpdateTimer = 0.0f;
@@ -104,25 +97,27 @@ namespace RGF {
 		unsigned int Frames = 0;
 		unsigned int Updates = 0;
 
-
-
-
+		float LastTime = 0.0f;
 
 		while (m_IsRunning) {
 #ifndef RGF_DISTRIBUTE
 			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Bind();
 #endif
-			m_Renderer->Clear();
+			RenderCommand::Clear();
+
+			float time = m_AppTimer.GetElapsedMillis();
+			float timeStep = time - LastTime;
+			LastTime = time;
 
 
-			if (m_AppTimer.GetElapsedMillis() - UpdateTimer > UpdateTick) {
+			if (m_AppTimer.GetElapsedSeconds() - UpdateTimer > UpdateTick) {
 				Updates++;
 				UpdateTimer += UpdateTick;
 			}
 			Frames++;
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
-				layer->OnUpdate(0.0f);
+				layer->OnUpdate(timeStep);
 			}
 
 			
@@ -140,7 +135,7 @@ namespace RGF {
 
 			m_Window->OnUpdate();
 
-			if (m_AppTimer.GetElapsedMillis() - Time > 1.0f) {
+			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
 				Time += 1.0f;
 				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
 #ifdef RGF_DISTRIBUTE

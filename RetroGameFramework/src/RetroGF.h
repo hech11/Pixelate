@@ -41,13 +41,15 @@
 #include "RetroGF/Rendering/API/VertexArray.h"
 #include "RetroGF/Rendering/API/FrameBuffer.h"
 
-#include "RetroGF/Rendering/API/Shader.h"
+#include "RetroGF/Rendering/API/Shader/ShaderGenerator.h"
+#include "RetroGF/Rendering/API/Shader/ShaderManager.h"
+#include "RetroGF/Rendering/API/Shader/ShaderUniforms.h"
 #include "RetroGF/Rendering/API/Texture.h"
 
 #include "RetroGF/Rendering/RenderingContext.h"
 #include "RetroGF/Rendering/Renderable.h"
 #include "RetroGF/Rendering/Sprite.h"
-#include "RetroGF/Rendering/Camera.h"
+#include "RetroGF/Rendering/OrthographicCamera.h"
 
 #include "RetroGF/Rendering/Renderer2D.h"
 

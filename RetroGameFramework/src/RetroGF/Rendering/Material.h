@@ -1,8 +1,11 @@
 #pragma once
 
 #include "RGFpch.h"
-#include "API/Shader.h"
+#include "RetroGF/Rendering/API/Shader/Shader.h"
+#include "RetroGF/Rendering/API/Shader/ShaderUniforms.h"
 
+
+// TODO: This needs to be redeigned!  : Materials and shaderuniforms!
 
 namespace RGF {
 
@@ -10,43 +13,22 @@ namespace RGF {
 
 		public:	
 	
-			Material(const std::string& name, Shader* shader) : m_Name(name), m_Shader(shader) {}
-	
-	
-	
-			void AddUniform(ShaderUniform* uniform) {
+			Material(RGF::Shader* shader, const std::string name) : m_Shader(shader), m_Name(name)
+			
+			{
+				
+			}
+
+			void AddUniforms(ShaderUniform* uniform) {
 				uniform->Location = m_Shader->GetUniformLocation(uniform->Name);
 				m_Uniforms.push_back(uniform);
 			}
 	
 	
-			void DeleteUniform(const std::string& name) { 
-				for (unsigned int i = 0; i < m_Uniforms.size(); i++) {
-					if (m_Uniforms[i]->Name == name) {
-						m_Uniforms.erase(m_Uniforms.begin() + i);
-						break;
-					}
-				}
-			}
-	
-	
-			void SetUniform4f(const std::string& uniformName, const glm::vec4& values) {
-				m_Shader->Bind();
-				m_Shader->SetUniform4f(uniformName, values);
-			}
-			void SetUniform1i(const std::string& uniformName, int value) {
-				m_Shader->Bind();
-				m_Shader->SetUniform1i(uniformName, value);
-			}
-			void SetUniformMat4(const std::string& uniformName, const glm::mat4& value) {
-				m_Shader->Bind();
-				m_Shader->SetUniformMatrix(uniformName, value);
-			}
-
 			void SetName(const std::string& name) { m_Name = name; }
 			inline const std::string& GetName() const { return m_Name; }
-
 			void SetShader(Shader* shader) { 
+
 				if (m_Shader != nullptr) delete m_Shader;
 				m_Shader = shader; 
 			}
@@ -55,9 +37,9 @@ namespace RGF {
 
 			inline std::vector<ShaderUniform*>& GetUniforms() { return m_Uniforms; }
 		private:
+			Shader* m_Shader = nullptr;
 			std::string m_Name;
 			std::vector<ShaderUniform*> m_Uniforms;
-			Shader* m_Shader;
 
 
 	};
@@ -76,7 +58,7 @@ namespace RGF {
 				mat->GetShader()->Bind();
 				switch (mat->GetUniforms()[0]->Type) {
 					case ShaderUnifromType::Int :
-						mat->SetUniform1i(mat->GetUniforms()[0]->Name, *mat->GetUniforms()[0]->GetIntData());
+						mat->GetShader()->SetUniform1i(mat->GetUniforms()[0]->Name, *mat->GetUniforms()[0]->GetIntData());
 				}
 			}
 

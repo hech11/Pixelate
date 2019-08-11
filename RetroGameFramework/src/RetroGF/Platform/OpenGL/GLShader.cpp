@@ -26,39 +26,27 @@ namespace RGF {
 	}
 
 
-	GLShader::ShaderSource GLShader::m_PraseShader(const std::string shaderFile) {
-		if (!Application::GetApp().GetFileIO().DoesFileExist(shaderFile)) {
-			RGF_CORE_CRIT("File '%s' Does not exist!\n", shaderFile.c_str());
-			__debugbreak();
-		}
-		enum class ShaderType {
-			None = -1,
-			Vertex, Fragment
-		};
-		ShaderType type = ShaderType::None;
-
-
-		std::ifstream file(shaderFile);
-		std::string line;
-		std::stringstream ss[2];
-
-		while (getline(file, line)) {
-			if (line.find("#shader") != std::string::npos) {
-				if (line.find("vertex") != std::string::npos) {
-					type = ShaderType::Vertex;
-				} else if (line.find("fragment") != std::string::npos) {
-					type = ShaderType::Fragment;
-				}
-			}
-			else {
-				ss[(int)type] << line << "\n";
-			}
-		}
-
-		return { ss[0].str(), ss[1].str() };
+	void GLShader::Bind() const {
+		GLCall(glUseProgram(m_RendererID));
+	}
+	void GLShader::Unbind() const {
+		GLCall(glUseProgram(0));
 	}
 
-	GLShader::ShaderSource GLShader::m_PraseShader(const char* data) {
+
+	void GLShader::ShutDown() {
+		GLCall(glDeleteProgram(m_RendererID));
+	}
+
+	GLShader::ShaderSource GLShader::PraseShader(const std::string& shaderFile) {
+		std::string data = Application::GetApp().GetFileIO().ReadFromStorage(shaderFile);
+		if (data == "Error") {
+			RGF_ASSERT(false, "Cannot find shader!\n");
+		}
+		return PraseShader(data.c_str());
+	}
+
+	GLShader::ShaderSource GLShader::PraseShader(const char* data) {
 		enum class ShaderType {
 			None = -1,
 			Vertex, Fragment
@@ -89,12 +77,12 @@ namespace RGF {
 
 	void GLShader::LoadFromSrc(const char* data) {
 		const auto& program = m_RendererID;
-		ShaderSource source = m_PraseShader(data);
+		ShaderSource source = PraseShader(data);
 
 		
 
-		unsigned int vs = m_CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
-		unsigned int fs = m_CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
+		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
+		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
 
 
 		GLCall(glAttachShader(program, vs));
@@ -110,10 +98,10 @@ namespace RGF {
 	void GLShader::LoadFromFile(const std::string& filepath) {
 		m_Filepath = filepath;
 		const auto& program = m_RendererID;
-		ShaderSource source = m_PraseShader(filepath);
+		ShaderSource source = PraseShader(filepath);
 
-		unsigned int vs = m_CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
-		unsigned int fs = m_CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
+		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
+		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
 
 
 		GLCall(glAttachShader(program, vs));
@@ -126,7 +114,7 @@ namespace RGF {
 		GLCall(glDeleteShader(fs));
 	}
 
-	unsigned int GLShader::m_CreateShader(unsigned int type, const std::string& shaderSource) {
+	unsigned int GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
 		unsigned int shader = glCreateShader(type);
 		const char* shdSrc = shaderSource.c_str();
 		
@@ -155,17 +143,7 @@ namespace RGF {
 
 
 
-	void GLShader::Bind() const {
-		GLCall(glUseProgram(m_RendererID));
-	}
-	void GLShader::Unbind() const {
-		GLCall(glUseProgram(0));
-	}
-
-
-	void GLShader::ShutDown() {
-		GLCall(glDeleteProgram(m_RendererID));
-	}
+	
 
 
 	int GLShader::GetUniformLocation(const std::string& name) {

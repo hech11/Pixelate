@@ -102,9 +102,6 @@
     <ClInclude Include="src\RetroGF\Rendering\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -147,9 +144,6 @@
     <ClInclude Include="src\RetroGF\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RetroGF\Utility\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,10 +162,34 @@
     <ClInclude Include="src\RetroGF\Platform\OpenGL\GLBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\API\Shader.h">
+    <ClInclude Include="src\RetroGF\Rendering\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RetroGF\Rendering\Material.h">
+    <ClInclude Include="src\RetroGF\Rendering\OrthographicCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\Shader\ShaderUniforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\Shader\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\Shader\ShaderManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\API\Shader\ShaderGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\RenderCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Rendering\RendererAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Platform\OpenGL\GLRendererAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RetroGF\Imgui\EditorWindows\AssetInspector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -219,9 +237,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Rendering\Renderer2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRenderer2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\RetroGF\Rendering\RenderingContext.cpp">
@@ -272,7 +287,25 @@
     <ClCompile Include="src\RetroGF\Platform\OpenGL\GLBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\RetroGF\Rendering\API\Shader.cpp">
+    <ClCompile Include="src\RetroGF\Rendering\OrthographicCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\Shader\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\API\Shader\ShaderGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\RenderCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Platform\OpenGL\GLRendererAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Imgui\EditorWindows\AssetInspector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RetroGF\Rendering\Sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

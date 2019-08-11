@@ -182,16 +182,14 @@ namespace RGF {
 			virtual void Unbind() const = 0;
 
 
-			virtual unsigned int GetCount() const final { return m_Count; }
+			virtual unsigned int GetCount() const = 0;
+			virtual unsigned int GetType() const = 0;
 
 		public :
 			static IndexBuffer* Create(unsigned int* data, unsigned int count);
 			static IndexBuffer* Create(unsigned short* data, unsigned int count);
 			static IndexBuffer* Create(unsigned char* data, unsigned int count);
-
-
-		protected :
-			unsigned int m_Count;
+			
 	};
 
 
