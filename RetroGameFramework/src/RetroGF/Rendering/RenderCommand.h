@@ -39,7 +39,7 @@ namespace RGF {
 			inline static void* MapBuffer(bool enable) { return s_API->MapBuffer(enable); }
 
 
-			inline static void DrawElements(VertexArray* vao) { return s_API->DrawElements(vao); }
+			inline static void DrawElements(const Ref<VertexArray>& vao) { return s_API->DrawElements(vao); }
 
 
 		private :

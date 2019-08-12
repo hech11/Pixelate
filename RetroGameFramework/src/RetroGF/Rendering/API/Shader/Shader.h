@@ -41,7 +41,7 @@ namespace RGF {
 
 
 		public :
-			static Shader* Create();
+			static Ref<Shader> Create();
 
 
 	};

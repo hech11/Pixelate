@@ -12,11 +12,11 @@ namespace RGF {
 
 	// ------- Vertex buffer -------\\
 
-	VertexBuffer* VertexBuffer::Create(BufferUsage usage) {
+	Ref<VertexBuffer> VertexBuffer::Create(BufferUsage usage) {
 
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLVertexBuffer(usage);
+				return std::make_shared<GLVertexBuffer>(usage);
 		}
 	}
 
@@ -24,22 +24,22 @@ namespace RGF {
 	
 	// ------- Index buffer -------\\
 
-	IndexBuffer* IndexBuffer::Create(unsigned int* data, unsigned int count) {
+	Ref<IndexBuffer> IndexBuffer::Create(unsigned int* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLIndexBuffer(data, count);
+				return std::make_shared<GLIndexBuffer>(data, count);
 		}
 	}
-	IndexBuffer* IndexBuffer::Create(unsigned short* data, unsigned int count) {
+	Ref<IndexBuffer> IndexBuffer::Create(unsigned short* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLIndexBuffer(data, count);
+				return std::make_shared<GLIndexBuffer>(data, count);
 		}
 	}
-	IndexBuffer* IndexBuffer::Create(unsigned char* data, unsigned int count) {
+	Ref<IndexBuffer> IndexBuffer::Create(unsigned char* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLIndexBuffer(data, count);
+				return std::make_shared<GLIndexBuffer>(data, count);
 		}
 	}
 

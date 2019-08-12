@@ -17,11 +17,11 @@ namespace RGF {
 			~GLVertexArray();
 
 
-			void PushVertexBuffer(RGF::VertexBuffer& buffer) override;
-			void PushIndexBuffer(RGF::IndexBuffer& buffer) override;
+			void PushVertexBuffer(const Ref<RGF::VertexBuffer>& buffer) override;
+			void PushIndexBuffer(const Ref<RGF::IndexBuffer>& buffer) override;
 
 
-			virtual const std::vector<RGF::VertexBuffer*>& GetVbos() const override { return m_Vbos; }
+			virtual const std::vector<Ref<RGF::VertexBuffer>>& GetVbos() const override { return m_Vbos; }
 			virtual const RGF::IndexBuffer& GetIbos() const override { return *m_Ibo; }
 
 
@@ -31,8 +31,8 @@ namespace RGF {
 		private :
 			unsigned int m_RendererID;
 
-			std::vector<RGF::VertexBuffer*> m_Vbos;
-			RGF::IndexBuffer* m_Ibo;
+			std::vector<Ref<RGF::VertexBuffer>> m_Vbos;
+			Ref<RGF::IndexBuffer> m_Ibo;
 	};
 
 }

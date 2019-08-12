@@ -39,15 +39,15 @@ namespace RGF {
 		GLCall(glDeleteVertexArrays(1, &m_RendererID));
 	}
 
-	void GLVertexArray::PushVertexBuffer(RGF::VertexBuffer& buffer) {
-		RGF_ASSERT(buffer.GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+	void GLVertexArray::PushVertexBuffer(const Ref<RGF::VertexBuffer>& buffer) {
+		RGF_ASSERT(buffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		GLCall(glBindVertexArray(m_RendererID));
-		buffer.Bind();
+		buffer->Bind();
 		
 
 		unsigned int index = 0;
-		const auto& layout = buffer.GetLayout();
+		const auto& layout = buffer->GetLayout();
 		for (const auto& element : layout)
 		{
 			glEnableVertexAttribArray(index);
@@ -60,16 +60,16 @@ namespace RGF {
 			index++;
 		}
 
-		m_Vbos.push_back(&buffer);
+		m_Vbos.push_back(buffer);
 	}
 
 
-	void GLVertexArray::PushIndexBuffer(RGF::IndexBuffer& buffer) {
+	void GLVertexArray::PushIndexBuffer(const Ref<RGF::IndexBuffer>& buffer) {
 		GLCall(glBindVertexArray(m_RendererID));
-		buffer.Bind();
+		buffer->Bind();
 
 
-		m_Ibo = &buffer;
+		m_Ibo = buffer;
 	}
 
 	void GLVertexArray::Bind() const {

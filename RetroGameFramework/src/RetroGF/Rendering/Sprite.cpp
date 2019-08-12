@@ -10,7 +10,7 @@ namespace RGF {
 	Sprite::Sprite(glm::vec3 position, glm::vec3 scale, glm::vec4 color)
 		: Renderable(position, scale, color)
 	{
-		Application::GetApp().GetEngineEditor().GetAssetInspector().PushSprite(this);
+
 	}
 
 

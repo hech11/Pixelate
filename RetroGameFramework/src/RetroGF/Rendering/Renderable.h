@@ -23,9 +23,9 @@ namespace RGF {
 
 	class RGF_API Renderable {
 		protected :
-			glm::vec3 m_Position;
-			glm::vec3 m_Scale;
-			glm::vec4 m_Color;
+			glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
+			glm::vec3 m_Scale = { 1.0f, 1.0f, 1.0f };
+			glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 			std::array<glm::vec2, 4> m_UV;
 
 		public :

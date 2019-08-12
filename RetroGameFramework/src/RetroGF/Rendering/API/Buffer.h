@@ -163,7 +163,7 @@ namespace RGF {
 			virtual BufferLayout& GetLayout() = 0;
 			
 		public :
-			static VertexBuffer* Create(BufferUsage usage = BufferUsage::Static);
+			static Ref<VertexBuffer> Create(BufferUsage usage = BufferUsage::Static);
 
 ;
 
@@ -186,9 +186,9 @@ namespace RGF {
 			virtual unsigned int GetType() const = 0;
 
 		public :
-			static IndexBuffer* Create(unsigned int* data, unsigned int count);
-			static IndexBuffer* Create(unsigned short* data, unsigned int count);
-			static IndexBuffer* Create(unsigned char* data, unsigned int count);
+			static Ref<IndexBuffer> Create(unsigned int* data, unsigned int count);
+			static Ref<IndexBuffer> Create(unsigned short* data, unsigned int count);
+			static Ref<IndexBuffer> Create(unsigned char* data, unsigned int count);
 			
 	};
 

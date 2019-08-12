@@ -15,7 +15,7 @@ namespace RGF {
 			ShaderGenerator();
 			~ShaderGenerator();
 
-			Shader* DefaultShader();
+			Ref<Shader> DefaultShader();
 
 		private:
 			static ShaderGenerator* s_Instance;

@@ -60,12 +60,12 @@ namespace RGF {
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			static Application* s_Instance;
-			std::unique_ptr<WindowImpl> m_Window;
+			Scoped<WindowImpl> m_Window;
 
 			// TODO: This is temp, may need to refactor some of these components / systems
 
-			std::unique_ptr<OrthographicCamera> m_Camera;
-			std::unique_ptr<FileIO> m_FileIO;
+			Scoped<OrthographicCamera> m_Camera;
+			Scoped<FileIO> m_FileIO;
 			
 
 #ifndef RGF_DISTRIBUTE

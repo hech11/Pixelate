@@ -7,21 +7,23 @@
 
 namespace RGF {
 
-	Renderer2D::SceneData* Renderer2D::m_SceneData = new Renderer2D::SceneData;
-
-	VertexArray* Renderer2D::m_Vao = nullptr;
-	VertexBuffer* Renderer2D::m_Vbo = nullptr;
-	IndexBuffer* Renderer2D::m_Ibo = nullptr;
+	Renderer2D::SceneData* Renderer2D::m_SceneData = nullptr;
 
 
 	VertexData* Renderer2D::Buffer = nullptr;
 	unsigned int Renderer2D::m_IndexCount = 0;
 
+	Ref<VertexArray> Renderer2D::m_Vao = nullptr;
+	Ref<VertexBuffer> Renderer2D::m_Vbo = nullptr;
+	Ref<IndexBuffer> Renderer2D::m_Ibo = nullptr;
 
-	std::unique_ptr<MaterialManager> Renderer2D::s_MatManager = std::make_unique<MaterialManager>();
-	std::unique_ptr<ShaderManager> Renderer2D::s_ShaderManager = std::make_unique<ShaderManager>();
+	
+	Scoped<MaterialManager> Renderer2D::s_MatManager = std::make_unique<MaterialManager>();
+	Scoped<ShaderManager> Renderer2D::s_ShaderManager = std::make_unique<ShaderManager>();
+
 
 	void Renderer2D::Init() {
+		m_SceneData = new SceneData;
 		m_Vao = VertexArray::Create();
 		m_Vao->Bind();
 		
@@ -44,7 +46,7 @@ namespace RGF {
 
 		m_Vbo->SetLayout(layout);
 		
-		m_Vao->PushVertexBuffer(*m_Vbo);
+		m_Vao->PushVertexBuffer(m_Vbo);
 		m_Vbo->Unbind();
 
 
@@ -65,7 +67,7 @@ namespace RGF {
 		}
 
 		m_Ibo = IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE);
-		m_Vao->PushIndexBuffer(*m_Ibo);
+		m_Vao->PushIndexBuffer(m_Ibo);
 		m_Vao->Unbind();
 	}
 
@@ -81,7 +83,7 @@ namespace RGF {
 		m_Vbo->Unbind();
 	}
 
-	void Renderer2D::Submit(const Renderable* renderable, Shader* currentShader) {
+	void Renderer2D::Submit(const Ref<Renderable>& renderable, const Ref<Shader>& currentShader) {
 
 		const auto& Pos = renderable->GetPosition();
 		const auto& Scale = renderable->GetScale();

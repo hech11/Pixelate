@@ -99,7 +99,7 @@ namespace RGF {
 			return nullptr;
 		}
 	}
-	void GLRendererAPI::DrawElements(VertexArray* vao) {
+	void GLRendererAPI::DrawElements(const Ref<VertexArray>& vao) {
 		glDrawElements(GL_TRIANGLES, vao->GetIbos().GetCount(), vao->GetIbos().GetType(), nullptr);
 	}
 

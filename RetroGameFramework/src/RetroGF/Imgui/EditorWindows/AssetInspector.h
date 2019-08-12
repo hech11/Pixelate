@@ -25,11 +25,11 @@ namespace RGF {
 			virtual void ShutDown() override;
 			virtual void OnImguiRender() override;
 
-			void PushSprite(Sprite* sprite);
+			void PushSprite(const Ref<Sprite>& sprite);
 
 		private :
 			//TODO: This is temp
-			std::vector<Sprite*> m_Sprites;
+			std::vector<Ref<Sprite>> m_Sprites;
 	};
 
 }

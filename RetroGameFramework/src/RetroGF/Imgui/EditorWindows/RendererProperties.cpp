@@ -147,9 +147,9 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 
 		auto& materialIndexes = Renderer2D::GetMaterialManager().GetMaterialList();
 		for (unsigned int i = 0; i < materialIndexes.size(); i++) {
-			ImGui::Text("Material : %s", materialIndexes[i].GetName().c_str());
+			ImGui::Text("Material : %s", materialIndexes[i]->GetName().c_str());
 			
-			auto& currentMatUniforms = materialIndexes[i].GetUniforms();
+			auto& currentMatUniforms = materialIndexes[i]->GetUniforms();
 			for (unsigned int j = 0; j < currentMatUniforms.size(); j++) {
 				ImGui::Text("Uniform : '%s' (location: %d)", currentMatUniforms[j]->Name.c_str(), currentMatUniforms[j]->Location);
 
@@ -158,7 +158,7 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 						ImGui::SameLine(); 
 						std::string id = std::to_string(i) + std::to_string(j);
 						ImGui::SliderInt(id.c_str(), currentMatUniforms[j]->GetIntData(), 0, 100);
-						materialIndexes[i].GetShader()->SetUniform1i(currentMatUniforms[j]->Name, *currentMatUniforms[j]->GetIntData());
+						materialIndexes[i]->GetShader()->SetUniform1i(currentMatUniforms[j]->Name, *currentMatUniforms[j]->GetIntData());
 						break;
 
 				}

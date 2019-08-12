@@ -12,18 +12,15 @@ namespace RGF {
 	
 			struct ShaderIndexData {
 				std::string Name;
-				RGF::Shader* Shader;
+				Ref<RGF::Shader> Shader;
 	
 			};
 	
 			~ShaderManager() {
-				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
-					delete m_ShaderIndex[i].Shader;
-				}
-	
+
 			}
 	
-			void Add(Shader* shader, const std::string& name) {
+			void Add(const Ref<Shader>& shader, const std::string& name) {
 				m_ShaderIndex.push_back({ name, shader });
 			}
 	
@@ -31,7 +28,6 @@ namespace RGF {
 			void Delete(const std::string& name) {
 				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
 					if (m_ShaderIndex[i].Name == name) {
-						delete m_ShaderIndex[i].Shader;
 						m_ShaderIndex.erase(m_ShaderIndex.begin() + i);
 						break;
 					}
@@ -40,15 +36,13 @@ namespace RGF {
 			}
 	
 			void Delete(unsigned int index) {
-				delete m_ShaderIndex[index].Shader;
 				m_ShaderIndex.erase(m_ShaderIndex.begin() + index);
 			}
 	
 	
-			void Delete(RGF::Shader* shader) {
+			void Delete(const Ref<RGF::Shader>& shader) {
 				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
 					if (m_ShaderIndex[i].Shader == shader) {
-						delete m_ShaderIndex[i].Shader;
 						m_ShaderIndex.erase(m_ShaderIndex.begin() + i);
 						break;
 					}
@@ -57,7 +51,7 @@ namespace RGF {
 			}
 	
 	
-			RGF::Shader* Find(RGF::Shader* shader) {
+			Ref<RGF::Shader>& Find(const Ref<RGF::Shader>& shader) {
 				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
 					if (shader == m_ShaderIndex[i].Shader)
 						return m_ShaderIndex[i].Shader;

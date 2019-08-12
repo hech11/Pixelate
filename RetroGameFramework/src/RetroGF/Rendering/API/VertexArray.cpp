@@ -7,10 +7,10 @@
 namespace RGF {
 
 
-	VertexArray* VertexArray::Create() {
+	Ref<VertexArray> VertexArray::Create() {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLVertexArray;
+				return std::make_shared<GLVertexArray>();
 			}
 
 	}

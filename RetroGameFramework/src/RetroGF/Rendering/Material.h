@@ -13,33 +13,41 @@ namespace RGF {
 
 		public:	
 	
-			Material(RGF::Shader* shader, const std::string name) : m_Shader(shader), m_Name(name)
+			Material(const Ref<RGF::Shader>& shader, const std::string& name) : m_Shader(shader), m_Name(name)
 			
 			{
 				
 			}
 
+			~Material() 
+			{
+				WeakRef<Shader> s = m_Shader;
+				RGF_ASSERT(!s.expired(), "Shader has been deleted!");
+			}
+
 			void AddUniforms(ShaderUniform* uniform) {
-				uniform->Location = m_Shader->GetUniformLocation(uniform->Name);
-				m_Uniforms.push_back(uniform);
+				Ref<ShaderUniform> Uni;
+				Uni.reset(uniform);
+
+				Uni->Location = m_Shader->GetUniformLocation(Uni->Name);
+				m_Uniforms.push_back(Uni);
 			}
 	
 	
 			void SetName(const std::string& name) { m_Name = name; }
 			inline const std::string& GetName() const { return m_Name; }
-			void SetShader(Shader* shader) { 
-
-				if (m_Shader != nullptr) delete m_Shader;
+			void SetShader(const Ref<Shader>& shader) {
+				if (m_Shader != nullptr) m_Shader.reset();
 				m_Shader = shader; 
 			}
-			inline RGF::Shader* GetShader() { return m_Shader; }
+			inline Ref<Shader>& GetShader() { return m_Shader; }
 
 
-			inline std::vector<ShaderUniform*>& GetUniforms() { return m_Uniforms; }
+			inline std::vector<Ref<ShaderUniform>>& GetUniforms() { return m_Uniforms; }
 		private:
-			Shader* m_Shader = nullptr;
+			Ref<Shader> m_Shader;
 			std::string m_Name;
-			std::vector<ShaderUniform*> m_Uniforms;
+			std::vector<Ref<ShaderUniform>> m_Uniforms;
 
 
 	};
@@ -48,12 +56,12 @@ namespace RGF {
 		public :
 
 			//TODO : decide if mats should be stored on the heap
-			inline std::vector<Material>& GetMaterialList() { return m_Materials; }
+			inline std::vector<Ref<Material>>& GetMaterialList() { return m_Materials; }
 
-			void AddMaterial(const Material& mat) { m_Materials.push_back(mat); }
+			void AddMaterial(const Ref<Material>& mat) { m_Materials.push_back(mat); }
 			void DeleteMaterial(unsigned int index) { m_Materials.erase(m_Materials.begin() + index); }
 
-			void SetUniforms(Material* mat) {
+			void SetUniforms(Ref<Material> mat) {
 
 				mat->GetShader()->Bind();
 				switch (mat->GetUniforms()[0]->Type) {
@@ -64,7 +72,7 @@ namespace RGF {
 
 
 		private :
-			std::vector<Material> m_Materials;
+			std::vector<Ref<Material>> m_Materials;
 	};
 
 }

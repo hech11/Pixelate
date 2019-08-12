@@ -68,7 +68,7 @@ namespace RGF {
 			inline int GetBPP() const { return m_BPP; }
 
 		public :
-			static Texture* Create(unsigned int width, unsigned int height, TextureParameters params);
+			static Ref<Texture> Create(unsigned int width, unsigned int height, TextureParameters params);
 
 		protected :
 			TextureParameters m_Params;

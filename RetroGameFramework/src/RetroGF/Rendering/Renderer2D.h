@@ -33,17 +33,13 @@ namespace RGF {
 			static void Init();
 
 			static void ShutDown() {
-				delete m_Vao;
-				delete m_Vbo;
-				delete m_Ibo;
-
 			}
 			
 			static void Start(RGF::OrthographicCamera* camera);
 			static void End();
 
 
-			static void Submit(const Renderable* renderable, Shader* currentShader);
+			static void Submit(const Ref<Renderable>& renderable, const Ref<Shader>& currentShader);
 			static void Render();
 
 			static MaterialManager& GetMaterialManager() { return *s_MatManager; }
@@ -57,17 +53,17 @@ namespace RGF {
 
 			static SceneData* m_SceneData;
 
-			static VertexArray* m_Vao;
-			static VertexBuffer* m_Vbo;
-			static IndexBuffer* m_Ibo;
+			static Ref<VertexArray> m_Vao;
+			static Ref<VertexBuffer> m_Vbo;
+			static Ref<IndexBuffer> m_Ibo;
 
 
 			static VertexData* Buffer;
 			static unsigned int m_IndexCount;
 
 
-			static std::unique_ptr<MaterialManager> s_MatManager;
-			static std::unique_ptr<ShaderManager> s_ShaderManager;
+			static Scoped<MaterialManager> s_MatManager;
+			static Scoped<ShaderManager> s_ShaderManager;
 	};
 
 }

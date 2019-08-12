@@ -71,9 +71,8 @@ void main() {
 	}
 
 
-	Shader* ShaderGenerator::DefaultShader() {
-		Shader* shader = nullptr;
-		shader = Shader::Create();
+	Ref<Shader> ShaderGenerator::DefaultShader() {
+		Ref<Shader> shader = Shader::Create();
 		shader->LoadFromSrc(s_DefaultShader);
 		return shader;
 	}

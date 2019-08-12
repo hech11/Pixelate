@@ -10,13 +10,12 @@ namespace RGF {
 
 	
 	Shader::Shader() {
-		Renderer2D::GetShaderManager().Add(this, "Shader");
 	}
 
-	Shader* Shader::Create() {
+	Ref<Shader> Shader::Create() {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return new GLShader;
+				return std::make_shared<GLShader>();
 			}
 
 	}

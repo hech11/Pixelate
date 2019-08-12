@@ -25,7 +25,7 @@ namespace RGF {
 
 
 			void* MapBuffer(bool enable) override;
-			void DrawElements(VertexArray* vao) override;
+			void DrawElements(const Ref<VertexArray>& vao) override;
 
 
 		private :

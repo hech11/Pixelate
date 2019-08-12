@@ -4,8 +4,7 @@
 
 // Common marcos that are used when developing RGF.
 
-//TODO: i should really add the PCH here.
-
+#include <memory>
 
 #ifdef RGF_PLATFORM_WINDOWS // TODO: I changed Retro into a static lib. Maybe remove this soon?
 
@@ -19,3 +18,16 @@
 #endif
 
 
+namespace RGF {
+
+	template<typename T>
+	using Scoped = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+	template<typename T>
+	using WeakRef = std::weak_ptr<T>;
+
+
+}

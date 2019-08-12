@@ -33,7 +33,7 @@ namespace RGF {
 
 	Application::Application() {
 		s_Instance = this;
-		m_Window = std::unique_ptr<WindowImpl>(WindowImpl::Create({960,540}));
+		m_Window = Scoped<WindowImpl>(WindowImpl::Create({960,540}));
 
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
