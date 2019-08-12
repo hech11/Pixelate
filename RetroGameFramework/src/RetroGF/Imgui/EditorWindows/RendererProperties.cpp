@@ -49,6 +49,8 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 		static bool stencilTest = false;
 		static bool enableBlend = false;
 		static bool wireframe = false;
+
+
 		if (ImGui::Checkbox("Render in wireframe", &wireframe)) {
 			RenderCommand::RenderWireFrame(wireframe);
 		}
@@ -123,46 +125,117 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 
 
 
-
-
-
-
-
-		ImGui::Begin("Shader Manager");
-
-		const auto& shaderIndexes = Renderer2D::GetShaderManager().GetShaderIndex();
-		if (!shaderIndexes.empty()) {
-			for (unsigned int i = 0; i < shaderIndexes.size(); i++) {
-				ImGui::Text("Shader: '%s' at location '%d'", shaderIndexes[i].Name.c_str(), i);
-			}
-		} else {
-			ImGui::Text("No Shaders addded to the shader manager!");
-
-		}
-
-		ImGui::End();
-
-
 		ImGui::Begin("Material Manager");
 
 		auto& materialIndexes = Renderer2D::GetMaterialManager().GetMaterialList();
+		const auto& shaderIndexes = Renderer2D::GetShaderManager().GetShaderIndex();
+
+		
 		for (unsigned int i = 0; i < materialIndexes.size(); i++) {
-			ImGui::Text("Material : %s", materialIndexes[i]->GetName().c_str());
-			
-			auto& currentMatUniforms = materialIndexes[i]->GetUniforms();
-			for (unsigned int j = 0; j < currentMatUniforms.size(); j++) {
-				ImGui::Text("Uniform : '%s' (location: %d)", currentMatUniforms[j]->Name.c_str(), currentMatUniforms[j]->Location);
 
-				switch(currentMatUniforms[j]->Type) {
-					case ShaderUnifromType::Int:
-						ImGui::SameLine(); 
-						std::string id = std::to_string(i) + std::to_string(j);
-						ImGui::SliderInt(id.c_str(), currentMatUniforms[j]->GetIntData(), 0, 100);
-						materialIndexes[i]->GetShader()->SetUniform1i(currentMatUniforms[j]->Name, *currentMatUniforms[j]->GetIntData());
-						break;
+			std::string collaspHeader = "Material: " + materialIndexes[i]->GetName();
+			if (ImGui::CollapsingHeader(collaspHeader.c_str())) {
 
+
+				if (!shaderIndexes.empty()) {
+					for (unsigned int i = 0; i < shaderIndexes.size(); i++) {
+						ImGui::Text("Shader: '%s' at location '%d'", shaderIndexes[i].Name.c_str(), i);
+					}
+				} else {
+					ImGui::Text("No Shaders addded to the shader manager!");
 				}
 
+
+
+				auto& currentMatUniforms = materialIndexes[i]->GetUniforms();
+				auto& currentMat = materialIndexes[i];
+
+
+				for (unsigned int j = 0; j < currentMatUniforms.size(); j++) {
+					ImGui::Text("Uniform : '%s' (location: %d)", currentMatUniforms[j]->Name.c_str(), currentMatUniforms[j]->Location);
+
+					std::string id = std::to_string(i) + std::to_string(j);
+
+					const auto& mat = currentMat;
+					const auto& uniform = currentMatUniforms[j];
+					switch (currentMatUniforms[j]->Type) {
+
+
+						case ShaderUnifromType::Int:
+							ImGui::SliderInt(id.c_str(), (int*)uniform->ReturnData(), 0, 100);
+							break;
+
+
+						case ShaderUnifromType::Int2:
+						{
+							auto& value = *(glm::i32vec2*)uniform->ReturnData();
+							ImGui::SliderInt2(id.c_str(), &value.x, 0, 100);
+							break;
+
+						}
+
+
+						case ShaderUnifromType::Int3:
+						{
+							auto& value = *(glm::i32vec3*)uniform->ReturnData();
+							ImGui::SliderInt3(id.c_str(), &value.x, 0, 100);
+							break;
+
+						}
+
+
+
+						case ShaderUnifromType::Int4:
+						{
+							auto& value = *(glm::i32vec4*)uniform->ReturnData();
+							ImGui::SliderInt4(id.c_str(), &value.x, 0, 100);
+							break;
+						}
+
+						case ShaderUnifromType::Float:
+						{
+							auto& value = *(float*)uniform->ReturnData();
+							ImGui::SliderFloat(id.c_str(), (float*)uniform->ReturnData(), -100, 100);
+							break;
+						}
+
+						case ShaderUnifromType::Float2:
+						{
+							auto& value = *(glm::vec2*)uniform->ReturnData();
+							ImGui::SliderFloat2(id.c_str(), &value.x, -100, 100);
+							break;
+						}
+
+
+
+						case ShaderUnifromType::Float3:
+						{
+							auto& value = *(glm::vec3*)uniform->ReturnData();
+							ImGui::SliderFloat3(id.c_str(), &value.x, -100, 100);
+							break;
+						}
+
+
+
+						case ShaderUnifromType::Float4:
+						{
+							auto& value = *(glm::vec4*)uniform->ReturnData();
+							ImGui::SliderFloat4(id.c_str(), &value.x, -100, 100);
+							break;
+						}
+
+
+						case ShaderUnifromType::Mat4:
+							break;
+
+
+					}
+
+					Renderer2D::GetMaterialManager().SumbitUniforms(currentMat, currentMatUniforms[j]);
+					ImGui::Separator();
+				}
+			
+			
 			}
 		}
 

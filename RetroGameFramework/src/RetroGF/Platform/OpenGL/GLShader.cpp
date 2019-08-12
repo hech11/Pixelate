@@ -159,14 +159,73 @@ namespace RGF {
 	}
 
 
+
+	void GLShader::SetUniform1f(const std::string& uniformName, const float value) {
+		glUniform1f(GetUniformLocation(uniformName), value);
+	}
+
+
+	void GLShader::SetUniform2f(const std::string& uniformName, const glm::vec2& values) {
+		glUniform2f(GetUniformLocation(uniformName), values.x, values.y);
+	}
+
+
+	void GLShader::SetUniform3f(const std::string& uniformName, const glm::vec3& values) {
+		glUniform3f(GetUniformLocation(uniformName), values.x, values.y, values.z);
+	}
+
 	void GLShader::SetUniform4f(const std::string& uniformName, const glm::vec4& values) {
 		glUniform4f(GetUniformLocation(uniformName), values.x, values.y, values.z, values.w);
-
 	}
+
+
 
 	void GLShader::SetUniform1i(const std::string& uniformName, const int value) {
 		glUniform1i(GetUniformLocation(uniformName), value);
 		
+	}
+
+
+	void GLShader::SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) {
+		glUniform2i(GetUniformLocation(uniformName), values.x, values.y);
+
+	}
+
+
+	void GLShader::SetUniform3i(const std::string& uniformName, const glm::i32vec3& values) {
+		glUniform3i(GetUniformLocation(uniformName), values.x, values.y, values.z);
+
+	}
+
+
+	void GLShader::SetUniform4i(const std::string& uniformName, const glm::i32vec4& values) {
+		glUniform4i(GetUniformLocation(uniformName), values.x, values.y, values.z, values.z);
+
+	}
+
+
+
+	void GLShader::SetUniform1i(const std::string& uniformName, const char value) {
+		glUniform1i(GetUniformLocation(uniformName), value);
+
+	}
+
+
+	void GLShader::SetUniform2i(const std::string& uniformName, const glm::i8vec2& values) {
+		glUniform2i(GetUniformLocation(uniformName), values.x, values.y);
+
+	}
+
+
+	void GLShader::SetUniform3i(const std::string& uniformName, const glm::i8vec3& values) {
+		glUniform3i(GetUniformLocation(uniformName), values.x, values.y, values.z);
+
+	}
+
+
+	void GLShader::SetUniform4i(const std::string& uniformName, const glm::i8vec4& values) {
+		glUniform4i(GetUniformLocation(uniformName), values.x, values.y, values.z, values.z);
+
 	}
 
 

@@ -61,12 +61,84 @@ namespace RGF {
 			void AddMaterial(const Ref<Material>& mat) { m_Materials.push_back(mat); }
 			void DeleteMaterial(unsigned int index) { m_Materials.erase(m_Materials.begin() + index); }
 
-			void SetUniforms(Ref<Material> mat) {
 
-				mat->GetShader()->Bind();
-				switch (mat->GetUniforms()[0]->Type) {
+
+
+			void SumbitUniforms(const Ref<Material>& mat, const Ref<ShaderUniform>& uniform) 
+			{
+				switch (uniform->Type) {
 					case ShaderUnifromType::Int :
-						mat->GetShader()->SetUniform1i(mat->GetUniforms()[0]->Name, *mat->GetUniforms()[0]->GetIntData());
+						mat->GetShader()->SetUniform1i(uniform->Name, *(int*)uniform->ReturnData());
+						break;
+
+
+					case ShaderUnifromType::Int2:
+						mat->GetShader()->SetUniform2i(uniform->Name, *(glm::i32vec2*)uniform->ReturnData());
+						break;
+
+
+					case ShaderUnifromType::Int3:
+						mat->GetShader()->SetUniform3i(uniform->Name, *(glm::i32vec3*)uniform->ReturnData());
+						break;
+
+
+
+					case ShaderUnifromType::Int4:
+						mat->GetShader()->SetUniform4i(uniform->Name, *(glm::i32vec4*)uniform->ReturnData());
+						break;
+
+
+
+					case ShaderUnifromType::Char:
+						mat->GetShader()->SetUniform1i(uniform->Name, *(char*)uniform->ReturnData());
+						break;
+
+
+
+					case ShaderUnifromType::Char2:
+						mat->GetShader()->SetUniform2i(uniform->Name, *(glm::i8vec2*)uniform->ReturnData());
+						break;
+
+
+
+
+					case ShaderUnifromType::Char3:
+						mat->GetShader()->SetUniform3i(uniform->Name, *(glm::i8vec3*)uniform->ReturnData());
+						break;
+
+
+
+
+					case ShaderUnifromType::Char4:
+						mat->GetShader()->SetUniform4i(uniform->Name, *(glm::i8vec4*)uniform->ReturnData());
+						break;
+
+
+
+					case ShaderUnifromType::Float:
+						mat->GetShader()->SetUniform1f(uniform->Name, *(float*)uniform->ReturnData());
+						break;
+
+					case ShaderUnifromType::Float2:
+						mat->GetShader()->SetUniform2f(uniform->Name, *(glm::vec2*)uniform->ReturnData());
+						break;
+
+
+
+					case ShaderUnifromType::Float3:
+						mat->GetShader()->SetUniform3f(uniform->Name, *(glm::vec3*)uniform->ReturnData());
+						break;
+
+
+
+					case ShaderUnifromType::Float4:
+						mat->GetShader()->SetUniform4f(uniform->Name, *(glm::vec4*)uniform->ReturnData());
+						break;
+
+
+					case ShaderUnifromType::Mat4:
+						mat->GetShader()->SetUniformMatrix(uniform->Name, *(glm::mat4*)uniform->ReturnData());
+						break;
 				}
 			}
 

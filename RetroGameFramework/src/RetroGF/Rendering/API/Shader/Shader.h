@@ -31,8 +31,24 @@ namespace RGF {
 			virtual void LoadFromFile(const std::string& filepath) = 0;
 			virtual void LoadFromSrc(const char* data) = 0;
 
+			virtual void SetUniform1f(const std::string& uniformName, const float values) = 0;
+			virtual void SetUniform2f(const std::string& uniformName, const glm::vec2& values) = 0;
+			virtual void SetUniform3f(const std::string& uniformName, const glm::vec3& values) = 0;
 			virtual void SetUniform4f(const std::string& uniformName, const glm::vec4& values) = 0;
+
+
 			virtual void SetUniform1i(const std::string& uniformName, const int value) = 0;
+			virtual void SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) = 0;
+			virtual void SetUniform3i(const std::string& uniformName, const glm::i32vec3& values) = 0;
+			virtual void SetUniform4i(const std::string& uniformName, const glm::i32vec4& values) = 0;
+
+			virtual void SetUniform1i(const std::string& uniformName, const char value) = 0;
+			virtual void SetUniform2i(const std::string& uniformName, const glm::i8vec2& values) = 0;
+			virtual void SetUniform3i(const std::string& uniformName, const glm::i8vec3& values) = 0;
+			virtual void SetUniform4i(const std::string& uniformName, const glm::i8vec4& values) = 0;
+
+
+
 			virtual void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) = 0;
 
 

@@ -10,6 +10,7 @@
 #include "RetroGF/Events/Event.h"
 #include "RetroGF/Events/KeyEvents.h"
 #include "RetroGF/Events/WindowEvents.h"
+#include "RetroGF/Events/MouseEvents.h"
 
 
 
@@ -81,6 +82,7 @@ namespace RGF {
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);
+			bool ZoomCamera(MouseScrolledEvent& e);
 
 	};
 

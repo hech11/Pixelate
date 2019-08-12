@@ -28,9 +28,26 @@ namespace RGF {
 			void LoadFromSrc(const char* data) override;
 
 
+			
+			void SetUniform1f(const std::string& uniformName, const float value) override;
+			void SetUniform2f(const std::string& uniformName, const glm::vec2& values) override;
+			void SetUniform3f(const std::string& uniformName, const glm::vec3& values) override;
 			void SetUniform4f(const std::string& uniformName, const glm::vec4& values) override;
+
+
 			void SetUniform1i(const std::string& uniformName, const int value) override;
+			void SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) override;
+			void SetUniform3i(const std::string& uniformName, const glm::i32vec3& values) override;
+			void SetUniform4i(const std::string& uniformName, const glm::i32vec4& values) override;
+
+			void SetUniform1i(const std::string& uniformName, const char value) override;
+			void SetUniform2i(const std::string& uniformName, const glm::i8vec2& values) override;
+			void SetUniform3i(const std::string& uniformName, const glm::i8vec3& values) override;
+			void SetUniform4i(const std::string& uniformName, const glm::i8vec4& values) override;
+
 			void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) override;
+
+
 
 			int GetUniformLocation(const std::string& name) override;
 

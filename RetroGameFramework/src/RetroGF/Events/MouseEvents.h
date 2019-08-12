@@ -93,6 +93,8 @@ namespace RGF {
 			};
 			
 			EVENT_CLASS_TYPE(MouseScrolled);
+			int GetXScroll() const { return m_xScroll; }
+			int GetYScroll() const { return m_yScroll; }
 
 		private :
 			int m_xScroll, m_yScroll;

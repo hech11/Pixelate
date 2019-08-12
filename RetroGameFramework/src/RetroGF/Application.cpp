@@ -22,6 +22,7 @@
 
 #include "RetroGF/Input.h"
 #include "RetroGF/KeyCodes.h"
+#include "RetroGF/MouseButtonCodes.h"
 
 
 namespace RGF {
@@ -68,6 +69,16 @@ namespace RGF {
 		m_LayerStack.PushOverlay(overlay);
 	}
 
+	bool Application::ZoomCamera(MouseScrolledEvent& e) {
+		static float Scale = 1;
+		if (e.GetYScroll() > 0)
+			Scale -=0.01f * (Scale * 4);
+		else
+			Scale +=0.01f * (Scale*4);
+
+		m_Camera->SetScale({ Scale , Scale, 1.0f });
+		return true;
+	}
 
 
 	// Is bound to the function pointer in "m_Window". This function will be called when a event happens.
@@ -75,15 +86,16 @@ namespace RGF {
 
 		EventDispatcher dispatcher(e);
 
+
 		// Checks if the event was a "WindowCloseEvent". If it was the event, call the "OnWindowClose" function.
 		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
+		dispatcher.Dispatch<MouseScrolledEvent>(std::bind(&Application::ZoomCamera, this, std::placeholders::_1));
 
 		for (Layer* layer : m_LayerStack.GetLayerStack()) {
 			layer->OnEvent(e);
 			if (e.Handled)
 				break;
 		}
-
 	}
 
 
@@ -115,6 +127,7 @@ namespace RGF {
 				UpdateTimer += UpdateTick;
 			}
 			Frames++;
+
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnUpdate(timeStep);

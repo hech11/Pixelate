@@ -42,7 +42,11 @@ class ExampleLayer : public RGF::Layer {
 			Renderer2D::GetShaderManager().Add(shader, "Shader");
 
 			mat = std::make_shared<RGF::Material>(shader, "Test material");
-			mat->AddUniforms(new ShaderUniformInt("u_TextureSampler", ShaderUnifromType::Int, 0));
+
+			mat->AddUniforms(new UniformData<int>("u_TextureSampler", 0));
+			mat->AddUniforms(new UniformData<glm::vec4>("u_Color", {1.0f, 1.0f, 1.0f, 1.0f}));
+			mat->AddUniforms(new UniformData<int>("u_IsTexture", 1));
+
 
 			Renderer2D::GetMaterialManager().AddMaterial(mat);
 
