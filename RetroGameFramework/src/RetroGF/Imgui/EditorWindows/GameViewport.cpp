@@ -16,7 +16,9 @@
 
 #include "RetroGF/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
-
+#include "RetroGF\Rendering\RenderCommand.h"
+#include "RetroGF\Input.h"
+#include "RetroGF\MouseButtonCodes.h"
 
 #include <iomanip>
 
@@ -40,20 +42,93 @@ namespace RGF {
 	}
 
 
+	bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
+
+		if (e.GetYScroll() > 0)
+			m_ScaleSensitivity -= 0.01f * (m_ScaleSensitivity * 4);
+		else
+			m_ScaleSensitivity += 0.01f * (m_ScaleSensitivity * 4);
+
+
+		GameViewCamera->SetScale({ m_ScaleSensitivity, m_ScaleSensitivity, 1.0f });
+		return true;
+	}
+
+
+	bool GameViewport::MoveCamera(MouseMovedEvent& e) {
+
+		
+		const auto& window = static_cast<GLFWwindow*>(Application::GetApp().GetWindow().GetNativeWindow());
+		// TODO: Implement a raw mouse movement into the api. This is temp.
+		if (Input::IsMouseButtonDown(RGF_MOUSE_BUTTON_3)) {
+
+			static float LastMouseX = 0.0f, LastMouseY = 0.0f;
+			static bool firstMouseFocus = true;
+
+			if (firstMouseFocus) {
+				LastMouseX = e.GetMousePos().first;
+				LastMouseY = e.GetMousePos().second;
+				firstMouseFocus = false;
+			}
+
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+
+			float xOffset = e.GetMousePos().first - LastMouseX;
+			float yOffset = LastMouseY - e.GetMousePos().second;
+			LastMouseX = e.GetMousePos().first;
+			LastMouseY = e.GetMousePos().second;
+
+			xOffset *= m_ScaleSensitivity;
+			yOffset *= m_ScaleSensitivity;
+
+			GameViewCamera->Move({ -xOffset, -yOffset, 0.0f });
+
+
+		} else {
+			glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+
+
+
+		return true;
+	}
+
+
+	void GameViewport::OnEvent(Event& e) {
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<MouseScrolledEvent>(std::bind(&GameViewport::ZoomCamera, this, std::placeholders::_1));
+		dispatcher.Dispatch<MouseMovedEvent>(std::bind(&GameViewport::MoveCamera, this, std::placeholders::_1));
+
+	}
+
+	void GameViewport::OnUpdate(float dt) {
+		ViewportFBO->Bind();
+		RenderCommand::Clear();
+	}
+
+
 	void GameViewport::OnImguiRender() {
 		// The game viewport.
 		auto& Window = Application::GetApp().GetWindow();
 
 
 		ImGui::Begin("Game viewport", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollbar);
+
 		const auto gameviewportWindowPos = ImGui::GetWindowPos();
 		const auto gameviewportWindowScale = ImGui::GetWindowSize();
+
+		m_GameviewWindowSize = { gameviewportWindowPos.x, gameviewportWindowPos.y };
+		m_GameviewWindowPos = { gameviewportWindowScale.x, gameviewportWindowScale.y };
 
 		const ImVec2& windowscale = ImGui::GetWindowSize();
 		ImGui::Image((void*)ViewportFBO->GetTexture(), { windowscale.x, windowscale.y - 35.0f }, { 0, 1 }, {1, 0});
 		ImGui::End();
 
 		ViewportFBO->Unbind();
+		ViewportFBO->Clear();
 
 		// Properties window.
 		ImGui::Begin("Props", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoDocking
@@ -74,6 +149,9 @@ namespace RGF {
 		ImGui::Text("Version: %s", Application::GetApp().GetWindow().GetContext()->GetVersion().c_str());
 
 		ImGui::End();
+
+
+
 	}
 
 

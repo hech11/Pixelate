@@ -22,11 +22,11 @@ namespace RGF {
 				if (s_Instance != nullptr)
 					delete s_Instance;
 			}
-			static bool IsKeyDown(int keycode) { return s_Instance->IsKeyDownImpl(keycode); };
+			static inline bool IsKeyDown(int keycode) { return s_Instance->IsKeyDownImpl(keycode); };
 
-			static bool IsMouseButtonDown(int button) { return s_Instance->IsMouseButtonDown(button); }
-			static int GetMousePosX() { return s_Instance->GetMousePosX(); }
-			static int GetMousePosY() { return s_Instance->GetMousePosY(); }
+			static inline bool IsMouseButtonDown(int button) { return s_Instance->IsMouseButtonDownImpl(button); }
+			static inline int GetMousePosX() { return s_Instance->GetMousePosXImpl(); }
+			static inline int GetMousePosY() { return s_Instance->GetMousePosYImpl(); }
 
 		protected :
 			virtual bool IsKeyDownImpl(int keycode) = 0;

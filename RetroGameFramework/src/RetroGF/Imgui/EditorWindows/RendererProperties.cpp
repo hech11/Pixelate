@@ -111,13 +111,13 @@ ImGui::RadioButton(std::string("Dest###" + std::string(std::to_string((int)blend
 		}
 		if (ImGui::CollapsingHeader("Camera Properties")) {
 			ImGui::BeginChild("CamChild", {300, 100}, true);
-			ImGui::DragFloat3("Camera Pos", &app.GetCamera().GetPos().x, .01f);
-			ImGui::DragFloat("Camera Rot", &app.GetCamera().GetRot(), .01f);
-			ImGui::DragFloat("Camera angle", &app.GetCamera().GetAngle(), .01f);
-			ImGui::DragFloat3("Camera Scale", &app.GetCamera().GetScale().x, .01f);
+			ImGui::DragFloat3("Camera Pos", &app.GetGameviewCamera().GetPos().x, .01f);
+			ImGui::DragFloat("Camera Rot", &app.GetGameviewCamera().GetRot(), .01f);
+			ImGui::DragFloat("Camera angle", &app.GetGameviewCamera().GetAngle(), .01f);
+			ImGui::DragFloat3("Camera Scale", &app.GetGameviewCamera().GetScale().x, .01f);
 			ImGui::EndChild();
 		}
-		app.GetCamera().SetPosition({ app.GetCamera().GetPos().x, app.GetCamera().GetPos().y, 0.0f });
+		app.GetGameviewCamera().SetPosition({ app.GetGameviewCamera().GetPos().x, app.GetGameviewCamera().GetPos().y, 0.0f });
 
 
 		//ImGui::ShowDemoWindow((bool*)1);

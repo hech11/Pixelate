@@ -17,14 +17,16 @@ namespace RGF {
 	}
 
 
-
-	
-
-
 	void OrthographicCamera::SetPosition(const glm::vec3& pos) {
 		m_Pos = pos;
 		RecalculateViewProjMatrix();
 	}
+
+	void OrthographicCamera::Move(const glm::vec3& offset) {
+		m_Pos += offset;
+		RecalculateViewProjMatrix();
+	}
+
 	void OrthographicCamera::SetRotation(float angle, float axis) {
 		m_RotAxis = axis;
 		m_Angle = angle;
@@ -35,6 +37,11 @@ namespace RGF {
 		RecalculateViewProjMatrix();
 	}
 
+
+	void OrthographicCamera::Enlarge(const glm::vec3& offset) {
+		m_Scale += offset;
+		RecalculateViewProjMatrix();
+	}
 
 	void OrthographicCamera::RecalculateViewProjMatrix() {
 		m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Pos) *

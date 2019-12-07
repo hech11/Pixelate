@@ -85,8 +85,8 @@ class ExampleLayer : public RGF::Layer {
 		void OnUpdate(float dt) override {
 			
 			test->Bind();
-			RGF::Renderer2D::Start(&RGF::Application::GetApp().GetCamera());
-			shader->SetUniformMatrix("u_ViewProj", RGF::Application::GetApp().GetCamera().GetViewProjectionMatrix());
+			RGF::Renderer2D::Start(&RGF::Application::GetApp().GetGameviewCamera());
+			shader->SetUniformMatrix("u_ViewProj", RGF::Application::GetApp().GetGameviewCamera().GetViewProjectionMatrix());
 
 			for (unsigned int i = 0; i < sprites.size(); i++) {
 				RGF::Renderer2D::Submit(sprites[i], shader);

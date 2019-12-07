@@ -6,7 +6,8 @@
 #include "RetroGF/Layer.h"
 
 #include "RetroGF/Events/WindowEvents.h"
-
+#include "RetroGF/Events/MouseEvents.h"
+#include "RetroGF\Rendering\OrthographicCamera.h"
 
 // This layer shows the game viewport.
 // TODO: This uses layers. This could just be implemented into "ImguiEngineEdtior" without the use of layers. Investigate.
@@ -22,8 +23,10 @@ namespace RGF {
 			~GameViewport() {}
 
 
-			virtual void OnUpdate(float dt) override {}
-			virtual void OnEvent(Event& e) override {}
+
+
+			virtual void OnUpdate(float dt) override;
+			virtual void OnEvent(Event& e) override;
 
 			virtual void Init()override;
 			virtual void ShutDown()override;
@@ -33,8 +36,18 @@ namespace RGF {
 			void End();
 
 
+			Scoped<OrthographicCamera> GameViewCamera;
 			FrameBuffer* ViewportFBO;
 			unsigned int width, height;
+
+		private :
+			glm::vec2 m_GameviewWindowSize;
+			glm::vec2 m_GameviewWindowPos;
+			bool ZoomCamera(MouseScrolledEvent& e);
+			bool MoveCamera(MouseMovedEvent& e);
+
+			float m_ScaleSensitivity = 1.0f;
+
 	};
 }
 #endif

@@ -18,8 +18,12 @@ namespace RGF {
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
 		void SetPosition(const glm::vec3& pos);
+		void Move(const glm::vec3& offset);
+
 		void SetRotation(float angle, float axis);
+
 		void SetScale(const glm::vec3& scale);
+		void Enlarge(const glm::vec3& offset);
 
 
 

@@ -44,7 +44,9 @@ namespace RGF {
 #endif
 
 
-		m_Camera = std::make_unique<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
+		m_EngineEditorLayer->GetGameViewport().GameViewCamera = std::make_unique<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
+
+
 		RGF_CORE_MSG("Initialising File IO!\n");
 		m_FileIO = std::make_unique<FileIO>();
 		RGF_CORE_MSG("Creating the renderer!\n");
@@ -69,17 +71,6 @@ namespace RGF {
 		m_LayerStack.PushOverlay(overlay);
 	}
 
-	bool Application::ZoomCamera(MouseScrolledEvent& e) {
-		static float Scale = 1;
-		if (e.GetYScroll() > 0)
-			Scale -=0.01f * (Scale * 4);
-		else
-			Scale +=0.01f * (Scale*4);
-
-		m_Camera->SetScale({ Scale , Scale, 1.0f });
-		return true;
-	}
-
 
 	// Is bound to the function pointer in "m_Window". This function will be called when a event happens.
 	void Application::OnEvent(Event& e) {
@@ -89,7 +80,6 @@ namespace RGF {
 
 		// Checks if the event was a "WindowCloseEvent". If it was the event, call the "OnWindowClose" function.
 		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
-		dispatcher.Dispatch<MouseScrolledEvent>(std::bind(&Application::ZoomCamera, this, std::placeholders::_1));
 
 		for (Layer* layer : m_LayerStack.GetLayerStack()) {
 			layer->OnEvent(e);
@@ -112,10 +102,6 @@ namespace RGF {
 		float LastTime = 0.0f;
 
 		while (m_IsRunning) {
-#ifndef RGF_DISTRIBUTE
-			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Bind();
-#endif
-			RenderCommand::Clear();
 
 			float time = m_AppTimer.GetElapsedMillis();
 			float timeStep = time - LastTime;
@@ -134,10 +120,8 @@ namespace RGF {
 			}
 
 			
-#ifndef RGF_DISTRIBUTE
-			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Unbind();
-			m_EngineEditorLayer->GetEditor().GetGameViewport().ViewportFBO->Clear();
 
+#ifndef RGF_DISTRIBUTE
 			m_EngineEditorLayer->Start();
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 				layer->OnImguiRender();

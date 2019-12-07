@@ -50,7 +50,7 @@ namespace RGF {
 
 
 			WindowImpl& GetWindow() { return *m_Window; }
-			OrthographicCamera& GetCamera() { return *m_Camera; }
+			OrthographicCamera& GetGameviewCamera() { return *m_EngineEditorLayer->GetGameViewport().GameViewCamera; }
 			FileIO& GetFileIO() { return *m_FileIO; }
 
 
@@ -65,7 +65,6 @@ namespace RGF {
 
 			// TODO: This is temp, may need to refactor some of these components / systems
 
-			Scoped<OrthographicCamera> m_Camera;
 			Scoped<FileIO> m_FileIO;
 			
 
@@ -82,7 +81,6 @@ namespace RGF {
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);
-			bool ZoomCamera(MouseScrolledEvent& e);
 
 	};
 

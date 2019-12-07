@@ -36,6 +36,7 @@ namespace RGF {
 
 			EVENT_CLASS_TYPE(MouseMoved);
 
+			std::pair<int, int> GetMousePos() const { return std::make_pair(m_xPos, m_yPos); }
 		private :
 			int m_xPos, m_yPos;
 	};
@@ -52,6 +53,9 @@ namespace RGF {
 				ss << "MouseButtonPressedEvent : Button : " << m_Button << ", RepeatCount : " << m_RepeatCount;
 				return ss.str();
 			};
+
+			int GetButton() const { return m_Button; }
+			int GetRepeatCount() const { return m_RepeatCount; }
 
 			EVENT_CLASS_TYPE(MouseButtonPressed);
 
