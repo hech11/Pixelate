@@ -1,4 +1,6 @@
 #include "RGFpch.h"
+#ifndef RGF_DISTRIBUTE
+
 #include "AssetInspector.h"
 
 #include "RetroGF\Rendering\Sprite.h"
@@ -61,3 +63,5 @@ namespace RGF{
 
 
 }
+
+#endif

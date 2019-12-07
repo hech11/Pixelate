@@ -2,6 +2,7 @@
 #include "LayerStack.h"
 
 
+#include "RetroGF/Debug/Instrumentor.h"
 
 
 
@@ -20,10 +21,14 @@ namespace RGF {
 
 
 	void LayerStack::PushLayer(Layer* layer) {
+		RGF_PROFILE_SCOPE("LayerStack::PushLayer::" + layer->GetName() + "::Init");
+
 		layer->Init();
 		m_LayerStack.emplace(m_LayerStack.end() - m_OverLayIndex, layer);
 	}
 	void LayerStack::PushOverlay(Layer* overlay) {
+		RGF_PROFILE_SCOPE("LayerStack::PushOverlay::" + overlay->GetName() + "::Init");
+
 		overlay->Init();
 		m_LayerStack.emplace_back(overlay);
 	}

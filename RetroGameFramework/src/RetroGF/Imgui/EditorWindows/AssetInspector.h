@@ -4,8 +4,8 @@
 
 #ifndef RGF_DISTRIBUTE
 
-#include "RetroGF/Core.h"
-#include "RetroGF/Layer.h"
+#include "RetroGF/Core/Core.h"
+#include "RetroGF/Core/Layer.h"
 
 #include "RetroGF/Events/WindowEvents.h"
 

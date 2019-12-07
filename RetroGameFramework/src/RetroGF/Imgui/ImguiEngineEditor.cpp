@@ -14,7 +14,7 @@
 
 #include "RetroGF/Rendering/API/FrameBuffer.h"
 
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
 
 

@@ -5,8 +5,8 @@
 // The LayerStack will iterate "OnUpdate" and "OnEvent" in the "Application.h".
 
 
-#include "RetroGF/Core.h"
-#include "RetroGF/Layer.h"
+#include "RetroGF/Core/Core.h"
+#include "RetroGF/Core/Layer.h"
 #include <vector>
 
 namespace RGF {

@@ -2,8 +2,8 @@
 #include "GLRenderingContext.h"
 
 
-#include "RetroGF/Window.h"
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Window.h"
+#include "RetroGF/Core/Application.h"
 
 #include <GLAD/include/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>

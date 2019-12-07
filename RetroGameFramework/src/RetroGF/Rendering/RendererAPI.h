@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF\Core.h"
+#include "RetroGF/Core/Core.h"
 #include "API\VertexArray.h"
 
 namespace RGF {

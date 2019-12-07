@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Buffer.h"
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 
 
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 #include "RGFpch.h"
 
-#include "RetroGF/Window.h"
+#include "RetroGF/Core/Window.h"
 
 
 

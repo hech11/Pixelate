@@ -3,7 +3,7 @@
 /*
 
 	Layers and overlays.
-	They seperate graphical data and handle events in a stack like order. ( think photoshop layers )
+	They separate graphical data and handle events in a stack like order. ( think photoshop layers )
 
 	Overlays always execute last in the layer stack. Meaning they always render on top of layers.
 
@@ -12,7 +12,7 @@
 	{
 
 		Layer1 -- "3d World" -- renders the 3d world.
-		Layer2 -- "Post proccsesing effects" -- adds graphical effects to a scene.
+		Layer2 -- "Post possessing effects" -- adds graphical effects to a scene.
 		Layer3 -- "UI/HUD" -- The player's UI.
 
 		Overlay1 -- "DebuggingOverlay" -- Might be useful to have always render on top of the game.
@@ -22,7 +22,7 @@
 */
 
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 #include "RetroGF/Events/Event.h"
 
 namespace RGF {
@@ -40,6 +40,8 @@ namespace RGF {
 
 			virtual void Init() {}
 			virtual void ShutDown() {}
+
+			virtual std::string& GetName() { return m_DebugName; }
 
 		protected :
 			std::string m_DebugName; // TODO: Strip this in distrubute releases.

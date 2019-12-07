@@ -2,7 +2,7 @@
 
 
 #include "RGFpch.h"
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 
 #ifndef RGF_DISTRIBUTE
 

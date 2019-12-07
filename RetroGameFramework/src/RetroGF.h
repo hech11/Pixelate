@@ -2,17 +2,20 @@
 
 // Includes all header files from RetroGameFramework.
 
-#include "RetroGF/Application.h"
 
+// Core.
+#include "RetroGF/Core/Application.h"
+#include "RetroGF/Core/Input.h"
+#include "RetroGF/Core/KeyCodes.h"
+#include "RetroGF/Core/MouseButtonCodes.h"
+#include "RetroGF/Core/LayerStack.h"
+#include "RetroGF/Core/Layer.h"
+
+
+// Utility.
 #include "RetroGF/Utility/File.h"
 #include "RetroGF/Utility/Random.h"
 #include "RetroGF/Utility/Timer.h"
-
-
-
-#include "RetroGF/Input.h"
-#include "RetroGF/KeyCodes.h"
-#include "RetroGF/MouseButtonCodes.h"
 
 
 // Events.
@@ -22,12 +25,9 @@
 #include "RetroGF/Events/WindowEvents.h"
 
 
-#include "RetroGF/LayerStack.h"
-#include "RetroGF/Layer.h"
-
 
 // ---- ENTRY POINT ---- \\.
-#include "RetroGF/EntryPoint.h"
+#include "RetroGF/Core/EntryPoint.h"
 // ---- ---------- ---- \\.
 
 
@@ -53,3 +53,5 @@
 
 #include "RetroGF/Rendering/Renderer2D.h"
 
+// Debug.
+#include "RetroGF/Debug/Instrumentor.h"

@@ -3,7 +3,7 @@
 
 #include "RetroGF/Platform/OpenGL/GLShader.h"
 #include "RetroGF/Rendering/RenderingContext.h"
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
 
 namespace RGF {

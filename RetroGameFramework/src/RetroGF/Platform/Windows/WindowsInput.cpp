@@ -1,7 +1,7 @@
 #include "RGFpch.h"
 #include "WindowsInput.h"
 
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Application.h"
 #include "GLFW/include/GLFW/glfw3.h"
 
 namespace RGF {

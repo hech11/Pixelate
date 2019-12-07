@@ -2,7 +2,7 @@
 
 
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 #include "RGFpch.h"
 
 #include "RetroGF/Events/Event.h"

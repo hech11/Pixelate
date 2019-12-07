@@ -4,7 +4,7 @@
 #include <GLAD/include/glad.h>
 
 #include <glm/glm/gtc/type_ptr.hpp>
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Application.h"
 
 #include "GLCommon.h"
 
@@ -39,7 +39,7 @@ namespace RGF {
 	}
 
 	GLShader::ShaderSource GLShader::PraseShader(const std::string& shaderFile) {
-		std::string data = Application::GetApp().GetFileIO().ReadFromStorage(shaderFile);
+		std::string data = FileIO::Get().ReadFromStorage(shaderFile);
 		if (data == "Error") {
 			RGF_ASSERT(false, "Cannot find shader!\n");
 		}

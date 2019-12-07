@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RetroGF/Utility/Log.h"
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 #include <GLAD/include/glad.h>
 
 // This is used to debug OpenGL code.

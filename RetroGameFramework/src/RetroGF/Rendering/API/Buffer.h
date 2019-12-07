@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 
 // VertexBuffer and IndexBuffer interface.
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.

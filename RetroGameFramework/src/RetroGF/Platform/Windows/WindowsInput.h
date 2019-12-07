@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF/Input.h"
+#include "RetroGF/Core/Input.h"
 
 // The windows version of input.
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 
 
 // This is just a thin wrapper that returns a random number.

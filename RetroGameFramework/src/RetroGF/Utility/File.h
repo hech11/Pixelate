@@ -33,5 +33,11 @@ namespace RGF {
 			bool DoesFileExist(const std::string& filepath) const;
 			unsigned int GetFileSize(const std::string& filepath) const;
 
+
+			static FileIO& Get() {
+				static FileIO instance;
+				return instance;
+			}
+
 	};
 }

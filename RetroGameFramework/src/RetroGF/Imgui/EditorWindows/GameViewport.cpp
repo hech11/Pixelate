@@ -14,11 +14,11 @@
 
 #include "RetroGF/Rendering/API/FrameBuffer.h"
 
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
-#include "RetroGF\Rendering\RenderCommand.h"
-#include "RetroGF\Input.h"
-#include "RetroGF\MouseButtonCodes.h"
+#include "RetroGF/Rendering/RenderCommand.h"
+#include "RetroGF/Core/Input.h"
+#include "RetroGF/Core/MouseButtonCodes.h"
 
 #include <iomanip>
 

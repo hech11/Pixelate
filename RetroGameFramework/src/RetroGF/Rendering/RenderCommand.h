@@ -2,7 +2,7 @@
 
 
 #include "RendererAPI.h"
-#include "RetroGF\Core.h"
+#include "RetroGF/Core/Core.h"
 
 
 namespace RGF {

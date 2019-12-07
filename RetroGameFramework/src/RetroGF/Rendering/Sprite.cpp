@@ -1,7 +1,7 @@
 #include "RGFpch.h"
 #include "Sprite.h"
 
-#include "RetroGF\Application.h"
+#include "RetroGF/Core/Application.h"
 
 
 namespace RGF {

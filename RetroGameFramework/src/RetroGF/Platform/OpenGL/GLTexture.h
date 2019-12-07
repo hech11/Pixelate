@@ -2,7 +2,7 @@
 
 
 #include "RetroGF/Rendering/API/Texture.h"
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 
 
 // OpenGL's implemtation of the Texture class.

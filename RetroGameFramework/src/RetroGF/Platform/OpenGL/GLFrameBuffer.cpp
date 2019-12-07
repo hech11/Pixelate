@@ -7,7 +7,7 @@
 
 #include "GLCommon.h"
 
-#include "RetroGF/Application.h"
+#include "RetroGF/Core/Application.h"
 namespace RGF {
 
 	GLFrameBuffer::GLFrameBuffer(unsigned int width, unsigned int height) 

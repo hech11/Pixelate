@@ -5,6 +5,8 @@
 #include "RetroGF/Rendering/RenderingContext.h"
 #include "RetroGF/Rendering/RenderCommand.h"
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 namespace RGF {
 
 	Renderer2D::SceneData* Renderer2D::m_SceneData = nullptr;
@@ -23,14 +25,21 @@ namespace RGF {
 
 
 	void Renderer2D::Init() {
+		RGF_PROFILE_FUNCTION();
+
 		m_SceneData = new SceneData;
-		m_Vao = VertexArray::Create();
-		m_Vao->Bind();
+
+		{
+			RGF_PROFILE_SCOPE("Renderer2D::Init::Setting-VertexBuffer");
+
+			m_Vao = VertexArray::Create();
+			m_Vao->Bind();
 		
-		m_Vbo = VertexBuffer::Create(BufferUsage::Dynamic);
-		m_Vbo->Bind();
-		m_Vbo->Resize(RENDERER_BUFFER_SIZE);
-		m_Vbo->SetData(nullptr);
+			m_Vbo = VertexBuffer::Create(BufferUsage::Dynamic);
+			m_Vbo->Bind();
+			m_Vbo->Resize(RENDERER_BUFFER_SIZE);
+			m_Vbo->SetData(nullptr);
+
 
 
 		BufferLayout layout = 
@@ -49,36 +58,45 @@ namespace RGF {
 		m_Vao->PushVertexBuffer(m_Vbo);
 		m_Vbo->Unbind();
 
-
-		unsigned short indices[RENDERER_INDICIES_SIZE];
-		RGF_CORE_WARN("Indicies are unsigned shorts, This may cause problems. Change to unsigned ints if so.\n");
-		int offset = 0;
-
-		for (unsigned int i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
-			indices[i] = offset + 0;
-			indices[i + 1] = offset + 1;
-			indices[i + 2] = offset + 2;
-			indices[i + 3] = offset + 2;
-
-			indices[i + 4] = offset + 3;
-			indices[i + 5] = offset + 0;
-
-			offset += 4;
 		}
 
-		m_Ibo = IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE);
-		m_Vao->PushIndexBuffer(m_Ibo);
-		m_Vao->Unbind();
+		{
+
+			RGF_PROFILE_SCOPE("Renderer2D::Init::Setting-IndexBuffer");
+
+			unsigned short indices[RENDERER_INDICIES_SIZE];
+			RGF_CORE_WARN("Indicies are unsigned shorts, This may cause problems. Change to unsigned ints if so.\n");
+			int offset = 0;
+
+			for (unsigned int i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
+				indices[i] = offset + 0;
+				indices[i + 1] = offset + 1;
+				indices[i + 2] = offset + 2;
+				indices[i + 3] = offset + 2;
+
+				indices[i + 4] = offset + 3;
+				indices[i + 5] = offset + 0;
+
+				offset += 4;
+			}
+
+			m_Ibo = IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE);
+			m_Vao->PushIndexBuffer(m_Ibo);
+			m_Vao->Unbind();
+
+		}
+
 	}
 
 	void Renderer2D::Start(RGF::OrthographicCamera* camera) {
-		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 
+		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 
 		m_Vbo->Bind();
 		Buffer = (VertexData*)RenderCommand::MapBuffer(true);
 	}
 	void Renderer2D::End() {
+
 		RenderCommand::MapBuffer(false);
 		m_Vbo->Unbind();
 	}
@@ -131,6 +149,7 @@ namespace RGF {
 
 
 	void Renderer2D::Render() {
+
 		m_Vao->Bind();
 		m_Ibo->Bind();
 

@@ -7,7 +7,7 @@
 	Currently contains key, mouse and window events.
 */
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 #include "RGFpch.h"
 
 

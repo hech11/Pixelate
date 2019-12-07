@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 #include "RetroGF/Rendering/Renderable.h"
 #include "RetroGF/Rendering/Material.h"
 #include "RetroGF/Rendering/API/Shader/ShaderManager.h"

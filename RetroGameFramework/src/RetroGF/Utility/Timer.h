@@ -1,11 +1,11 @@
 #pragma once
 
-#include "RetroGF/Core.h"
+#include "RetroGF/Core/Core.h"
 
 #include "RGFpch.h"
 
 
-// Timer is a stopwatch that keeps running when instanciated.
+// Timer is a stopwatch that keeps running when instantiated.
 
 // TODO : Instead of using Chrono.h use the platform header files timer instead.
 namespace RGF {
@@ -39,27 +39,6 @@ namespace RGF {
 	};
 
 
-	// This is used in althgorithms. It can give an idea on how much time an althgorithm takes to be executed.
-	class RGF_API DebugStopwatch {
-		public :
-			DebugStopwatch(bool PrintInSeconds = false) : m_PrintInSeconds(PrintInSeconds){
-				m_Timer.Reset();
-			}
-			~DebugStopwatch() {
-				float time;
-				if (m_PrintInSeconds) {
-					time = m_Timer.GetElapsedSeconds();
-					RGF_CORE_MSG("[DebugStopwatch]: Took '%f' seconds to complete althgorithm!\n", time);
-				}
-				else {
-					time = m_Timer.GetElapsedMillis();
-				RGF_CORE_MSG("[DebugStopwatch]: Took '%f' milliseconds to complete althgorithm!\n", time);
-
-				}
-			}
-		private :
-			Timer m_Timer;
-			bool m_PrintInSeconds = false;
-	};
+	
 
 }
