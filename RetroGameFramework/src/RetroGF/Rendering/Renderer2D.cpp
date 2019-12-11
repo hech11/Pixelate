@@ -22,6 +22,7 @@ namespace RGF {
 	
 	Scoped<MaterialManager> Renderer2D::s_MatManager = std::make_unique<MaterialManager>();
 	Scoped<ShaderManager> Renderer2D::s_ShaderManager = std::make_unique<ShaderManager>();
+	Scoped<TextureManager> Renderer2D::s_TextureManager = std::make_unique<TextureManager>();
 
 
 	void Renderer2D::Init() {
@@ -101,7 +102,7 @@ namespace RGF {
 		m_Vbo->Unbind();
 	}
 
-	void Renderer2D::Submit(const Ref<Renderable>& renderable, const Ref<Shader>& currentShader) {
+	void Renderer2D::Submit(const Ref<Renderable>& renderable) {
 
 		const auto& Pos = renderable->GetPosition();
 		const auto& Scale = renderable->GetScale();

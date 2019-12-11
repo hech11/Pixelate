@@ -68,7 +68,7 @@ namespace RGF {
 		m_GameView = new GameViewport;
 		m_RenderingProps = new RendererProperties;
 		m_EngineColEditor = new ColorStyleEditor;
-		m_AssetInspector = new AssetInspector;
+		m_AssetInspector = new SpriteInspector;
 		
 
 

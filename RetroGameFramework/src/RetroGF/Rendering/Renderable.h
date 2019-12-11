@@ -22,11 +22,6 @@ namespace RGF {
 
 
 	class RGF_API Renderable {
-		protected :
-			glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
-			glm::vec3 m_Scale = { 1.0f, 1.0f, 1.0f };
-			glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-			std::array<glm::vec2, 4> m_UV;
 
 		public :
 			Renderable(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color)
@@ -36,6 +31,7 @@ namespace RGF {
 				m_UV[1] = { 1.0f, 0.0f }; // -- bottom right
 				m_UV[2] = { 1.0f, 1.0f }; // -- top right
 				m_UV[3] = { 0.0f, 1.0f }; // -- top left
+				
 			}
 
 			virtual ~Renderable() {}
@@ -50,32 +46,19 @@ namespace RGF {
 			inline glm::vec3& GetPosition()  { return m_Position; }
 			inline glm::vec3& GetScale() { return m_Scale; }
 			inline glm::vec4& GetColor() { return m_Color; }
-			inline std::array<glm::vec2, 4> & GetUV() { return m_UV; }
+			inline std::array<glm::vec2, 4> & GetUV () { return m_UV; }
 
 			void SetPosition(const glm::vec3& pos) { m_Position = pos; }
 			void SetScale(const glm::vec3& scale) { m_Scale = scale; }
 			void SetColor(const glm::vec4& color) { m_Color = color; }
 
-			// TEMP: This only works with OPENGL
-			void SetUV(const glm::i32vec4& UVTexCoords, const glm::vec2& textureDimensions) { 
-
-				const float xo = (UVTexCoords.x / textureDimensions.x);
-				const float yo = (UVTexCoords.y / textureDimensions.y);
-
-				const float uo = (UVTexCoords.z / textureDimensions.x);
-				const float vo = (UVTexCoords.w / textureDimensions.y);
-
-				const float xu = xo + uo;
-				const float yv = yo + vo;
-
-
-				m_UV[0] = { xo, 1.0f - yv }; // -- bottom left
-				m_UV[1] = { xu, 1.0f - yv }; // -- bottom right
-				m_UV[2] = { xu, 1.0f - yo }; // -- top right
-				m_UV[3] = { xo, 1.0f - yo }; // -- top left
-			}
 			void SetUV(const std::array<glm::vec2, 4>& uv) { m_UV = uv; }
 
+		protected :
+			glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
+			glm::vec3 m_Scale = { 1.0f, 1.0f, 1.0f };
+			glm::vec4 m_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			std::array<glm::vec2, 4> m_UV;
 	};
 
 }

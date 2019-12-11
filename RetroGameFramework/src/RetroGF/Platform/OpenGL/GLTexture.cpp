@@ -6,6 +6,8 @@
 
 #include "GLCommon.h"
 
+#include "RetroGF/Rendering/Renderer2D.h"
+
 namespace RGF {
 	static unsigned int GLConvertWrap(TextureWrap wrap) {
 		switch (wrap) {
@@ -42,6 +44,8 @@ namespace RGF {
 		m_Width = width;
 		m_Height = height;
 		m_Params = params;
+		m_IsBound = false;
+
 		GLCall(glGenTextures(1, &m_RendererID));
 	}
 	GLTexture::~GLTexture() {
@@ -49,14 +53,19 @@ namespace RGF {
 	}
 
 	void GLTexture::Bind(unsigned char slot) const {
+		
 		m_Slot = slot;
 		GLCall(glActiveTexture(GL_TEXTURE0 + slot));
-
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+
+
+		m_IsBound = true;
 	}
 	void GLTexture::Unbind() const {
+		
 		GLCall(glActiveTexture(GL_TEXTURE0));
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		m_IsBound = false;
 
 	}
 

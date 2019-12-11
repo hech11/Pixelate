@@ -15,7 +15,7 @@ class ExampleLayer : public RGF::Layer {
 
 
 
-#define LotsOfSprites 1
+#define LotsOfSprites 0
 	std::vector<RGF::Ref<RGF::Sprite>> sprites;
 
 
@@ -39,9 +39,12 @@ class ExampleLayer : public RGF::Layer {
 				test->Bind();
 				test->LoadTexture("assets/graphics/TestSpritesheet.png");
 
+				Renderer2D::GetTextureManager().Add("Test texture", test);
+
 				shader = Shader::Create();
 				shader->LoadFromFile("assets/Shaders/DefaultShaderFile.shader");
 				Renderer2D::GetShaderManager().Add(shader, "Shader");
+
 
 				mat = std::make_shared<RGF::Material>(shader, "Test material");
 
@@ -53,7 +56,6 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::GetMaterialManager().AddMaterial(mat);
 
 				mat->GetShader()->Bind();
-
 			}
 
 			{
@@ -75,10 +77,16 @@ class ExampleLayer : public RGF::Layer {
 				#else
 
 
-				Ref<Sprite> s = std::make_shared<Sprite>(Sprite({ 0.0f, -3.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+				RGF::Ref<RGF::Sprite> s = std::make_shared<RGF::Sprite>(RGF::Sprite({ 0.0f, -3.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+
+				RGF::Ref<RGF::Sprite> s2 = std::make_shared<RGF::Sprite>(RGF::Sprite({ -1.0f, 0.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+
+
 				sprites.push_back(s);
+				sprites.push_back(s2);
 				#ifndef RGF_DISTRIBUTE
-				Application::GetApp().GetEngineEditor().GetAssetInspector().PushSprite(s);
+				RGF::Application::GetApp().GetEngineEditor().GetAssetInspector().PushSprite(s);
+				RGF::Application::GetApp().GetEngineEditor().GetAssetInspector().PushSprite(s2);
 				#endif
 
 				#endif
@@ -91,17 +99,21 @@ class ExampleLayer : public RGF::Layer {
 
 		void OnUpdate(float dt) override {
 
-			test->Bind();
-
 			{
 				RGF_PROFILE_SCOPE("Test-Layer::OnUpdate::Render");
+				shader->Bind();
+				test->Bind();
+
+				shader->SetUniformMatrix("u_ViewProj", RGF::Application::GetApp().GetGameviewCamera().GetViewProjectionMatrix());
+				shader->SetUniform1i("u_TextureSampler", test->GetCurrentSlot());
+
+
 
 				RGF::Renderer2D::Start(&RGF::Application::GetApp().GetGameviewCamera());
-				shader->SetUniformMatrix("u_ViewProj", RGF::Application::GetApp().GetGameviewCamera().GetViewProjectionMatrix());
 
 
-				for (unsigned int i = 0; i < sprites.size(); i++) {
-					RGF::Renderer2D::Submit(sprites[i], shader);
+				for (const auto & sprite : sprites) {
+					RGF::Renderer2D::Submit(sprite);
 				}
 
 				RGF::Renderer2D::End();

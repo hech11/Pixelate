@@ -288,7 +288,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\RetroGF\Debug\Instrumentor.h" />
-    <ClInclude Include="src\RetroGF\Imgui\EditorWindows\AssetInspector.h" />
+    <ClInclude Include="src\RetroGF\Imgui\EditorWindows\SpriteInspector.h" />
     <ClInclude Include="src\RetroGF\Imgui\EditorWindows\ColorStyleEditor.h" />
     <ClInclude Include="src\RetroGF\Imgui\EditorWindows\GameViewport.h" />
     <ClInclude Include="src\RetroGF\Imgui\EditorWindows\RendererProperties.h" />
@@ -308,6 +308,7 @@
     <ClInclude Include="src\RetroGF\Rendering\API\Shader\ShaderGenerator.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\Shader\ShaderManager.h" />
     <ClInclude Include="src\RetroGF\Rendering\API\Shader\ShaderUniforms.h" />
+    <ClInclude Include="src\RetroGF\Rendering\API\TextureManager.h" />
     <ClInclude Include="src\RetroGF\Rendering\Material.h" />
     <ClInclude Include="src\RetroGF\Rendering\OrthographicCamera.h" />
     <ClInclude Include="src\RetroGF\Rendering\RenderCommand.h" />
@@ -349,7 +350,7 @@
     <ClInclude Include="vendor\STB\IMAGE\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\RetroGF\Imgui\EditorWindows\AssetInspector.cpp" />
+    <ClCompile Include="src\RetroGF\Imgui\EditorWindows\SpriteInspector.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\EditorWindows\ColorStyleEditor.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\EditorWindows\GameViewport.cpp" />
     <ClCompile Include="src\RetroGF\Imgui\EditorWindows\RendererProperties.cpp" />

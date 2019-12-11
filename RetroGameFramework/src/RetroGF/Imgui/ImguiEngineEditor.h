@@ -10,7 +10,7 @@
 #include "EditorWindows/GameViewport.h"
 #include "EditorWindows/RendererProperties.h"
 #include "EditorWindows/ColorStyleEditor.h"
-#include "EditorWindows/AssetInspector.h"
+#include "EditorWindows/SpriteInspector.h"
 
 namespace RGF {
 
@@ -38,14 +38,14 @@ namespace RGF {
 			GameViewport& GetGameViewport() { return *m_GameView; }
 			RendererProperties& GetRenderingProps() { return *m_RenderingProps; }
 			ColorStyleEditor& GetStyleEditor() { return *m_EngineColEditor; }
-			AssetInspector& GetAssetInspector() { return *m_AssetInspector; }
+			SpriteInspector& GetAssetInspector() { return *m_AssetInspector; }
 
 
 		private :
 			GameViewport* m_GameView;
 			RendererProperties* m_RenderingProps;
 			ColorStyleEditor* m_EngineColEditor;
-			AssetInspector* m_AssetInspector;
+			SpriteInspector* m_AssetInspector;
 
 
 			static ImguiEngineEditor* s_Instance;

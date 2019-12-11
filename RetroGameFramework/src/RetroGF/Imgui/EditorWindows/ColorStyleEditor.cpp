@@ -56,72 +56,77 @@ namespace RGF {
 	}
 
 	void theme_generator() {
-		ImGui::Begin("Theme generator");
-		ImGui::ColorEdit3("base", (float*)& base, ImGuiColorEditFlags_PickerHueWheel);
-		ImGui::ColorEdit3("bg", (float*)& bg, ImGuiColorEditFlags_PickerHueWheel);
-		ImGui::ColorEdit3("text", (float*)& text, ImGuiColorEditFlags_PickerHueWheel);
-		ImGui::SliderFloat("high", &high_val, 0, 1);
-		ImGui::SliderFloat("mid", &mid_val, 0, 1);
-		ImGui::SliderFloat("low", &low_val, 0, 1);
-		ImGui::SliderFloat("window", &window_offset, -0.4f, 0.4f);
-
-		ImGuiStyle& style = ImGui::GetStyle();
-
-		style.Colors[ImGuiCol_Text] = make_text(0.78f);
-		style.Colors[ImGuiCol_TextDisabled] = make_text(0.28f);
-		style.Colors[ImGuiCol_WindowBg] = make_bg(1.00f, window_offset);
-		style.Colors[ImGuiCol_ChildBg] = make_bg(0.58f);
-		style.Colors[ImGuiCol_PopupBg] = make_bg(0.9f);
-		style.Colors[ImGuiCol_Border] = make_bg(0.6f, -0.05f);
-		style.Colors[ImGuiCol_BorderShadow] = make_bg(0.0f, 0.0f);
-		style.Colors[ImGuiCol_FrameBg] = make_bg(1.00f);
-		style.Colors[ImGuiCol_FrameBgHovered] = make_mid(0.78f);
-		style.Colors[ImGuiCol_FrameBgActive] = make_mid(1.00f);
-		style.Colors[ImGuiCol_TitleBg] = make_low(1.00f);
-		style.Colors[ImGuiCol_TitleBgActive] = make_high(1.00f);
-		style.Colors[ImGuiCol_TitleBgCollapsed] = make_bg(0.75f);
-		style.Colors[ImGuiCol_MenuBarBg] = make_bg(0.47f);
-		style.Colors[ImGuiCol_ScrollbarBg] = make_bg(1.00f);
-		style.Colors[ImGuiCol_ScrollbarGrab] = make_low(1.00f);
-		style.Colors[ImGuiCol_ScrollbarGrabHovered] = make_mid(0.78f);
-		style.Colors[ImGuiCol_ScrollbarGrabActive] = make_mid(1.00f);
-		style.Colors[ImGuiCol_CheckMark] = make_high(1.00f);
-		style.Colors[ImGuiCol_SliderGrab] = make_bg(1.0f, .1f);
-		style.Colors[ImGuiCol_SliderGrabActive] = make_high(1.0f);
-		style.Colors[ImGuiCol_Button] = make_bg(1.0f, .2f);
-		style.Colors[ImGuiCol_ButtonHovered] = make_mid(1.00f);
-		style.Colors[ImGuiCol_ButtonActive] = make_high(1.00f);
-		style.Colors[ImGuiCol_Header] = make_mid(0.76f);
-		style.Colors[ImGuiCol_HeaderHovered] = make_mid(0.86f);
-		style.Colors[ImGuiCol_HeaderActive] = make_high(1.00f);
-		style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
-		style.Colors[ImGuiCol_ResizeGripHovered] = make_mid(0.78f);
-		style.Colors[ImGuiCol_ResizeGripActive] = make_mid(1.00f);
-		style.Colors[ImGuiCol_PlotLines] = make_text(0.63f);
-		style.Colors[ImGuiCol_PlotLinesHovered] = make_mid(1.00f);
-		style.Colors[ImGuiCol_PlotHistogram] = make_text(0.63f);
-		style.Colors[ImGuiCol_PlotHistogramHovered] = make_mid(1.00f);
-		style.Colors[ImGuiCol_TextSelectedBg] = make_mid(0.43f);
-		style.Colors[ImGuiCol_ModalWindowDimBg] = make_bg(0.73f);
-		style.Colors[ImGuiCol_Tab] = make_bg(0.40f);
-		style.Colors[ImGuiCol_TabHovered] = make_high(1.00f);
-		style.Colors[ImGuiCol_TabActive] = make_mid(1.00f);
-		style.Colors[ImGuiCol_TabUnfocused] = make_bg(0.40f);
-		style.Colors[ImGuiCol_TabUnfocusedActive] = make_bg(0.70f);
-		style.Colors[ImGuiCol_DockingPreview] = make_high(0.30f);
-
-		if (ImGui::Button("Export")) {
-			ImGui::LogToTTY();
-			ImGui::LogText("ImVec4* colors = ImGui::GetStyle().Colors;\n");
-			for (int i = 0; i < ImGuiCol_COUNT; i++) {
-				const ImVec4& col = style.Colors[i];
-				const char* name = ImGui::GetStyleColorName(i);
-				ImGui::LogText("colors[ImGuiCol_%s]%*s= ImVec4(%.2ff, %.2ff, %.2ff, %.2ff);\n",
-					name, 23 - (int)strlen(name), "", col.x, col.y, col.z, col.w);
-			}
-			ImGui::LogFinish();
+		if (!ImGui::Begin("Theme generator")) {
+			ImGui::End();
 		}
-		ImGui::End();
+		else {
+			ImGui::ColorEdit3("base", (float*)& base, ImGuiColorEditFlags_PickerHueWheel);
+			ImGui::ColorEdit3("bg", (float*)& bg, ImGuiColorEditFlags_PickerHueWheel);
+			ImGui::ColorEdit3("text", (float*)& text, ImGuiColorEditFlags_PickerHueWheel);
+			ImGui::SliderFloat("high", &high_val, 0, 1);
+			ImGui::SliderFloat("mid", &mid_val, 0, 1);
+			ImGui::SliderFloat("low", &low_val, 0, 1);
+			ImGui::SliderFloat("window", &window_offset, -0.4f, 0.4f);
+
+			ImGuiStyle& style = ImGui::GetStyle();
+
+			style.Colors[ImGuiCol_Text] = make_text(0.78f);
+			style.Colors[ImGuiCol_TextDisabled] = make_text(0.28f);
+			style.Colors[ImGuiCol_WindowBg] = make_bg(1.00f, window_offset);
+			style.Colors[ImGuiCol_ChildBg] = make_bg(0.58f);
+			style.Colors[ImGuiCol_PopupBg] = make_bg(0.9f);
+			style.Colors[ImGuiCol_Border] = make_bg(0.6f, -0.05f);
+			style.Colors[ImGuiCol_BorderShadow] = make_bg(0.0f, 0.0f);
+			style.Colors[ImGuiCol_FrameBg] = make_bg(1.00f);
+			style.Colors[ImGuiCol_FrameBgHovered] = make_mid(0.78f);
+			style.Colors[ImGuiCol_FrameBgActive] = make_mid(1.00f);
+			style.Colors[ImGuiCol_TitleBg] = make_low(1.00f);
+			style.Colors[ImGuiCol_TitleBgActive] = make_high(1.00f);
+			style.Colors[ImGuiCol_TitleBgCollapsed] = make_bg(0.75f);
+			style.Colors[ImGuiCol_MenuBarBg] = make_bg(0.47f);
+			style.Colors[ImGuiCol_ScrollbarBg] = make_bg(1.00f);
+			style.Colors[ImGuiCol_ScrollbarGrab] = make_low(1.00f);
+			style.Colors[ImGuiCol_ScrollbarGrabHovered] = make_mid(0.78f);
+			style.Colors[ImGuiCol_ScrollbarGrabActive] = make_mid(1.00f);
+			style.Colors[ImGuiCol_CheckMark] = make_high(1.00f);
+			style.Colors[ImGuiCol_SliderGrab] = make_bg(1.0f, .1f);
+			style.Colors[ImGuiCol_SliderGrabActive] = make_high(1.0f);
+			style.Colors[ImGuiCol_Button] = make_bg(1.0f, .2f);
+			style.Colors[ImGuiCol_ButtonHovered] = make_mid(1.00f);
+			style.Colors[ImGuiCol_ButtonActive] = make_high(1.00f);
+			style.Colors[ImGuiCol_Header] = make_mid(0.76f);
+			style.Colors[ImGuiCol_HeaderHovered] = make_mid(0.86f);
+			style.Colors[ImGuiCol_HeaderActive] = make_high(1.00f);
+			style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
+			style.Colors[ImGuiCol_ResizeGripHovered] = make_mid(0.78f);
+			style.Colors[ImGuiCol_ResizeGripActive] = make_mid(1.00f);
+			style.Colors[ImGuiCol_PlotLines] = make_text(0.63f);
+			style.Colors[ImGuiCol_PlotLinesHovered] = make_mid(1.00f);
+			style.Colors[ImGuiCol_PlotHistogram] = make_text(0.63f);
+			style.Colors[ImGuiCol_PlotHistogramHovered] = make_mid(1.00f);
+			style.Colors[ImGuiCol_TextSelectedBg] = make_mid(0.43f);
+			style.Colors[ImGuiCol_ModalWindowDimBg] = make_bg(0.73f);
+			style.Colors[ImGuiCol_Tab] = make_bg(0.40f);
+			style.Colors[ImGuiCol_TabHovered] = make_high(1.00f);
+			style.Colors[ImGuiCol_TabActive] = make_mid(1.00f);
+			style.Colors[ImGuiCol_TabUnfocused] = make_bg(0.40f);
+			style.Colors[ImGuiCol_TabUnfocusedActive] = make_bg(0.70f);
+			style.Colors[ImGuiCol_DockingPreview] = make_high(0.30f);
+
+			if (ImGui::Button("Export")) {
+				ImGui::LogToTTY();
+				ImGui::LogText("ImVec4* colors = ImGui::GetStyle().Colors;\n");
+				for (int i = 0; i < ImGuiCol_COUNT; i++) {
+					const ImVec4& col = style.Colors[i];
+					const char* name = ImGui::GetStyleColorName(i);
+					ImGui::LogText("colors[ImGuiCol_%s]%*s= ImVec4(%.2ff, %.2ff, %.2ff, %.2ff);\n",
+						name, 23 - (int)strlen(name), "", col.x, col.y, col.z, col.w);
+				}
+				ImGui::LogFinish();
+			}
+			ImGui::End();
+		}
+		
 	}
 
 
@@ -299,34 +304,39 @@ namespace RGF {
 			static bool LightTheme = false;
 			static bool DarkPinkTheme = false;
 			
-			ImGui::Begin("Themes", &IsOpen);
-			if (ImGui::Button("Dark Theme")) {
-				DarkTheme = true;
+			if (!ImGui::Begin("Themes", &IsOpen)) {
+				ImGui::End();
 			}
-			if (ImGui::Button("Light Theme")) {
-				LightTheme = true;
-			}
-			if (ImGui::Button("Dark Pink Theme")) {
-				DarkPinkTheme = true;
-			}
-			if (ImGui::Button("Theme Generator")) {
-				ThemeGenOpen = !ThemeGenOpen;
-			}
-			ImGui::End();
-			if (ThemeGenOpen) {
-				theme_generator();
-			}
-			if (DarkTheme) {
-				ChangeToDarkTheme();
-				DarkTheme = false;
-			}
-			if (LightTheme) {
-				ChangeToLightTheme();
-				LightTheme = false;
-			}
-			if (DarkPinkTheme) {
-				ChangeToDarkPink();
-				DarkPinkTheme = false;
+			else {
+				if (ImGui::Button("Dark Theme")) {
+					DarkTheme = true;
+				}
+				if (ImGui::Button("Light Theme")) {
+					LightTheme = true;
+				}
+				if (ImGui::Button("Dark Pink Theme")) {
+					DarkPinkTheme = true;
+				}
+				if (ImGui::Button("Theme Generator")) {
+					ThemeGenOpen = !ThemeGenOpen;
+				}
+				ImGui::End();
+				if (ThemeGenOpen) {
+					theme_generator();
+				}
+				if (DarkTheme) {
+					ChangeToDarkTheme();
+					DarkTheme = false;
+				}
+				if (LightTheme) {
+					ChangeToLightTheme();
+					LightTheme = false;
+				}
+				if (DarkPinkTheme) {
+					ChangeToDarkPink();
+					DarkPinkTheme = false;
+				}
+
 			}
 		}
 

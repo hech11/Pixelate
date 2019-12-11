@@ -132,10 +132,10 @@ namespace RGF {
 
 #ifndef RGF_DISTRIBUTE
 			{
-				RGF_PROFILE_SCOPE("Application::EngineEditor");
+				RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");
 				m_EngineEditorLayer->Start();
 				for (Layer* layer : m_LayerStack.GetLayerStack()) {
-					RGF_PROFILE_SCOPE("Imgui Layer: " + layer->GetName());
+					RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnImguiRender");
 					layer->OnImguiRender();
 				}
 				m_EngineEditorLayer->End();

@@ -48,6 +48,7 @@ namespace RGF {
 			virtual void SetBlendFunc(BlendFunc& source, BlendFunc& dest) = 0;
 
 			virtual void* MapBuffer(bool enable) = 0;
+
 			virtual void DrawElements(const Ref<VertexArray>& vao) = 0;
 
 

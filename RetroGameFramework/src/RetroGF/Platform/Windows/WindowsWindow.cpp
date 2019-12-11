@@ -10,6 +10,8 @@
 #include <GLAD/include/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 
 namespace RGF {
 
@@ -36,6 +38,7 @@ namespace RGF {
 
 	// Init Window and event callbacks.
 	void WindowsWindow::StartUp(const WindowProps& props) {
+		RGF_PROFILE_FUNCTION();
 
 		RGF_CORE_MSG("Creating the window...\n");
 

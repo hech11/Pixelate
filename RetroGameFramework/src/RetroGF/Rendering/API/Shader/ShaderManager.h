@@ -51,20 +51,23 @@ namespace RGF {
 			}
 	
 	
-			Ref<RGF::Shader>& Find(const Ref<RGF::Shader>& shader) {
-				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
-					if (shader == m_ShaderIndex[i].Shader)
-						return m_ShaderIndex[i].Shader;
+			ShaderIndexData& Find(const Ref<RGF::Shader>& shader) {
+				for (auto & i : m_ShaderIndex) {
+					if (shader == i.Shader)
+						return i;
 				}
 			}
 	
 	
-			std::string& Find(const std::string& name) {
-				for (unsigned int i = 0; i < m_ShaderIndex.size(); i++) {
-					if (name == m_ShaderIndex[i].Name)
-						return m_ShaderIndex[i].Name;
+			ShaderIndexData& Find(const std::string& name) {
+				for (auto & i : m_ShaderIndex) {
+					if (name == i.Name)
+						return i;
 				}
 			}
+
+
+
 			std::vector<ShaderIndexData>& GetShaderIndex() { return m_ShaderIndex; }
 	
 	

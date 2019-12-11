@@ -66,6 +66,8 @@ namespace RGF {
 			inline int GetWidth() const { return m_Width; }
 			inline int GetHeight() const { return m_Height; }
 			inline int GetBPP() const { return m_BPP; }
+			inline unsigned char GetCurrentSlot() const { return m_Slot; }
+			inline bool IsBound() const { return m_IsBound; }
 
 		public :
 			static Ref<Texture> Create(unsigned int width, unsigned int height, TextureParameters params);
@@ -74,6 +76,8 @@ namespace RGF {
 			TextureParameters m_Params;
 			int m_Width, m_Height, m_BPP;
 			mutable unsigned char m_Slot;
+
+			mutable bool m_IsBound;
 	};
 
 }

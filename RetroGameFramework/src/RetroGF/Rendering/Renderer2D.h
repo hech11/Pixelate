@@ -4,15 +4,16 @@
 #include "RetroGF/Rendering/Renderable.h"
 #include "RetroGF/Rendering/Material.h"
 #include "RetroGF/Rendering/API/Shader/ShaderManager.h"
+#include "RetroGF/Rendering/API/TextureManager.h"
 
 #include "RetroGF/Rendering/OrthographicCamera.h"
 
 
 
 // Renderer2D interface.
-// The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
+// The 'Create' method will decide depending on the API choice. OpenGL, DirectX 11 or 12, Vulkan etc.
 
-// The API equivlent contains a Renderer2D
+// The API equivalent contains a Renderer2D
 
 
 #define RENDERER_MAX_SPRITES 10000
@@ -39,11 +40,12 @@ namespace RGF {
 			static void End();
 
 
-			static void Submit(const Ref<Renderable>& renderable, const Ref<Shader>& currentShader);
+			static void Submit(const Ref<Renderable>& renderable);
 			static void Render();
 
 			static MaterialManager& GetMaterialManager() { return *s_MatManager; }
 			static ShaderManager& GetShaderManager() { return *s_ShaderManager; }
+			static TextureManager& GetTextureManager() { return *s_TextureManager; }
 
 		private :
 			struct SceneData {
@@ -64,6 +66,7 @@ namespace RGF {
 
 			static Scoped<MaterialManager> s_MatManager;
 			static Scoped<ShaderManager> s_ShaderManager;
+			static Scoped<TextureManager> s_TextureManager;
 	};
 
 }
