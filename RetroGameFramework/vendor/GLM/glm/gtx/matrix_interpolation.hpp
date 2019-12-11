@@ -1,5 +1,5 @@
 /// @ref gtx_matrix_interpolation
-/// @file glm/gtx/matrix_interpolation.hpp
+/// @file gtx/matrix_interpolation.hpp
 /// @author Ghenadii Ursachi (the.asteroth@gmail.com)
 ///
 /// @see core (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_matrix_interpolation GLM_GTX_matrix_interpolation
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/matrix_interpolation.hpp> to use the features of this extension.
+/// Include <gtx/matrix_interpolation.hpp> to use the features of this extension.
 ///
 /// Allows to directly interpolate two matrices.
 

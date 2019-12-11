@@ -1,5 +1,5 @@
 /// @ref ext_matrix_projection
-/// @file glm/ext/matrix_projection.hpp
+/// @file ext/matrix_projection.hpp
 ///
 /// @defgroup ext_matrix_projection GLM_EXT_matrix_projection
 /// @ingroup ext
@@ -12,7 +12,7 @@
 /// (perspective, ortho, etc) are designed to expect. The OpenGL compatibility
 /// specifications defines the particular layout of this eye space.
 ///
-/// Include <glm/ext/matrix_projection.hpp> to use the features of this extension.
+/// Include <ext/matrix_projection.hpp> to use the features of this extension.
 ///
 /// @see ext_matrix_transform
 /// @see ext_matrix_clip_space

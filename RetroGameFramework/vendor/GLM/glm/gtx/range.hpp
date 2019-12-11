@@ -1,11 +1,11 @@
 /// @ref gtx_range
-/// @file glm/gtx/range.hpp
+/// @file gtx/range.hpp
 /// @author Joshua Moerman
 ///
 /// @defgroup gtx_range GLM_GTX_range
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/range.hpp> to use the features of this extension.
+/// Include <gtx/range.hpp> to use the features of this extension.
 ///
 /// Defines begin and end for vectors and matrices. Useful for range-based for loop.
 /// The range is defined over the elements, not over columns or rows (e.g. mat4 has 16 elements).

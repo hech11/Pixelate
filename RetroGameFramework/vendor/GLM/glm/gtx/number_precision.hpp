@@ -1,5 +1,5 @@
 /// @ref gtx_number_precision
-/// @file glm/gtx/number_precision.hpp
+/// @file gtx/number_precision.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_type_precision (dependence)
@@ -8,7 +8,7 @@
 /// @defgroup gtx_number_precision GLM_GTX_number_precision
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/number_precision.hpp> to use the features of this extension.
+/// Include <gtx/number_precision.hpp> to use the features of this extension.
 ///
 /// Defined size types.
 

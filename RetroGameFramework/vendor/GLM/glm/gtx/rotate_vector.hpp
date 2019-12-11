@@ -1,5 +1,5 @@
 /// @ref gtx_rotate_vector
-/// @file glm/gtx/rotate_vector.hpp
+/// @file gtx/rotate_vector.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_transform (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_rotate_vector GLM_GTX_rotate_vector
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/rotate_vector.hpp> to use the features of this extension.
+/// Include <gtx/rotate_vector.hpp> to use the features of this extension.
 ///
 /// Function to directly rotate a vector
 

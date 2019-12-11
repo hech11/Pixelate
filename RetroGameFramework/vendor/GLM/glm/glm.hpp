@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/glm.hpp
+/// @file glm.hpp
 ///
 /// @defgroup core Core features
 ///
@@ -12,7 +12,7 @@
 /// <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.clean.pdf">version 4.2
 /// (pdf file)</a>.
 ///
-/// GLM core functionalities require <glm/glm.hpp> to be included to be used.
+/// GLM core functionalities require <glm.hpp> to be included to be used.
 ///
 ///
 /// @defgroup core_vector Vector types
@@ -69,7 +69,7 @@
 /// EXT extensions are fully tested and documented.
 ///
 /// Even if it's highly unrecommended, it's possible to include all the extensions at once by
-/// including <glm/ext.hpp>. Otherwise, each extension needs to be included  a specific file.
+/// including <ext.hpp>. Otherwise, each extension needs to be included  a specific file.
 ///
 ///
 /// @defgroup gtc Recommended extensions
@@ -79,7 +79,7 @@
 /// GTC extensions aim to be stable with tests and documentation.
 ///
 /// Even if it's highly unrecommended, it's possible to include all the extensions at once by
-/// including <glm/ext.hpp>. Otherwise, each extension needs to be included  a specific file.
+/// including <ext.hpp>. Otherwise, each extension needs to be included  a specific file.
 ///
 ///
 /// @defgroup gtx Experimental extensions
@@ -92,13 +92,13 @@
 /// for them.
 ///
 /// Even if it's highly unrecommended, it's possible to include all the extensions
-/// at once by including <glm/ext.hpp>. Otherwise, each extension needs to be
+/// at once by including <ext.hpp>. Otherwise, each extension needs to be
 /// included  a specific file.
 ///
 /// @mainpage OpenGL Mathematics (GLM)
 /// - Website: <a href="https://glm.g-truc.net">glm.g-truc.net</a>
 /// - <a href="modules.html">GLM API documentation</a>
-/// - <a href="https://github.com/g-truc/glm/blob/master/manual.md">GLM Manual</a>
+/// - <a href="https://github.com/g-truc/blob/master/manual.md">GLM Manual</a>
 
 #include "detail/_fixes.hpp"
 

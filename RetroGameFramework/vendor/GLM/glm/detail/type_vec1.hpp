@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/detail/type_vec1.hpp
+/// @file detail/type_vec1.hpp
 
 #pragma once
 

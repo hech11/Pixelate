@@ -1,12 +1,12 @@
 /// @ref gtx_closest_point
-/// @file glm/gtx/closest_point.hpp
+/// @file gtx/closest_point.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_closest_point GLM_GTX_closest_point
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/closest_point.hpp> to use the features of this extension.
+/// Include <gtx/closest_point.hpp> to use the features of this extension.
 ///
 /// Find the point on a straight line which is the closet of a point.
 

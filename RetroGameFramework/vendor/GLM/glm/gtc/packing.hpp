@@ -1,12 +1,12 @@
 /// @ref gtc_packing
-/// @file glm/gtc/packing.hpp
+/// @file gtc/packing.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtc_packing GLM_GTC_packing
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/packing.hpp> to use the features of this extension.
+/// Include <gtc/packing.hpp> to use the features of this extension.
 ///
 /// This extension provides a set of function to convert vertors to packed
 /// formats.

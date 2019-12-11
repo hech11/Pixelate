@@ -1,12 +1,12 @@
 /// @ref ext_matrix_common
-/// @file glm/ext/matrix_common.hpp
+/// @file ext/matrix_common.hpp
 ///
 /// @defgroup ext_matrix_common GLM_EXT_matrix_common
 /// @ingroup ext
 ///
 /// Defines functions for common matrix operations.
 ///
-/// Include <glm/ext/matrix_common.hpp> to use the features of this extension.
+/// Include <ext/matrix_common.hpp> to use the features of this extension.
 ///
 /// @see ext_matrix_common
 

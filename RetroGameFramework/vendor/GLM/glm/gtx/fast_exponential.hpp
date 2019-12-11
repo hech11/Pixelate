@@ -1,5 +1,5 @@
 /// @ref gtx_fast_exponential
-/// @file glm/gtx/fast_exponential.hpp
+/// @file gtx/fast_exponential.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_half_float (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_fast_exponential GLM_GTX_fast_exponential
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/fast_exponential.hpp> to use the features of this extension.
+/// Include <gtx/fast_exponential.hpp> to use the features of this extension.
 ///
 /// Fast but less accurate implementations of exponential based functions.
 

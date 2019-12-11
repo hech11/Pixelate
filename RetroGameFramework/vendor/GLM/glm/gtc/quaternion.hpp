@@ -1,5 +1,5 @@
 /// @ref gtc_quaternion
-/// @file glm/gtc/quaternion.hpp
+/// @file gtc/quaternion.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_constants (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_quaternion GLM_GTC_quaternion
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/quaternion.hpp> to use the features of this extension.
+/// Include <gtc/quaternion.hpp> to use the features of this extension.
 ///
 /// Defines a templated quaternion type and several quaternion operations.
 

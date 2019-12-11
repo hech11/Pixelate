@@ -1,5 +1,5 @@
+#include "RGFpch.h"
 #ifndef RGF_DISTRIBUTE
-
 
 // dear imgui: Renderer for modern OpenGL with shaders / programmatic pipeline
 // - Desktop GL: 3.x 4.x
@@ -63,8 +63,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include <IMGUI/imgui.h>
-#include <IMGUI/examples/imgui_impl_opengl3.h>
+#include "../imgui.h"
+#include "imgui_impl_opengl3.h"
 
 #include <stdio.h>
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
@@ -94,14 +94,13 @@
 //  Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
 //  Helper libraries are often used for this purpose! Here we are supporting a few common ones (gl3w, glew, glad).
 //  You may use another loader/header of your choice (glext, glLoadGen, etc.), or chose to manually implement your own.
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
-#include <GL/gl3w.h>
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-#include <GL/glew.h>
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
+
+#if defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
 #include <GLAD/include/glad.h>
+
 #else
-#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+#include <GLAD/include/glad.h>
+//#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
 #endif
 

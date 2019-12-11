@@ -1,12 +1,12 @@
 /// @ref ext_scalar_uint_sized
-/// @file glm/ext/scalar_uint_sized.hpp
+/// @file ext/scalar_uint_sized.hpp
 ///
 /// @defgroup ext_scalar_uint_sized GLM_EXT_scalar_uint_sized
 /// @ingroup ext
 ///
 /// Exposes sized unsigned integer scalar types.
 ///
-/// Include <glm/ext/scalar_uint_sized.hpp> to use the features of this extension.
+/// Include <ext/scalar_uint_sized.hpp> to use the features of this extension.
 ///
 /// @see ext_scalar_int_sized
 

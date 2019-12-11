@@ -1,12 +1,12 @@
 /// @ref gtx_type_trait
-/// @file glm/gtx/type_trait.hpp
+/// @file gtx/type_trait.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_type_trait GLM_GTX_type_trait
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/type_trait.hpp> to use the features of this extension.
+/// Include <gtx/type_trait.hpp> to use the features of this extension.
 ///
 /// Defines traits for each type.
 

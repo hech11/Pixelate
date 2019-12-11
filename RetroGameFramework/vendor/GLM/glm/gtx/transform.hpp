@@ -1,5 +1,5 @@
 /// @ref gtx_transform
-/// @file glm/gtx/transform.hpp
+/// @file gtx/transform.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_matrix_transform (dependence)
@@ -9,7 +9,7 @@
 /// @defgroup gtx_transform GLM_GTX_transform
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/transform.hpp> to use the features of this extension.
+/// Include <gtx/transform.hpp> to use the features of this extension.
 ///
 /// Add transformation matrices
 

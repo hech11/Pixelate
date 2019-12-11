@@ -1,12 +1,12 @@
 /// @ref ext_vector_common
-/// @file glm/ext/vector_common.hpp
+/// @file ext/vector_common.hpp
 ///
 /// @defgroup ext_vector_common GLM_EXT_vector_common
 /// @ingroup ext
 ///
 /// Exposes min and max functions for 3 to 4 vector parameters.
 ///
-/// Include <glm/ext/vector_common.hpp> to use the features of this extension.
+/// Include <ext/vector_common.hpp> to use the features of this extension.
 ///
 /// @see core_common
 /// @see ext_scalar_common

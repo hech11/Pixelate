@@ -1,5 +1,5 @@
 /// @ref gtx_matrix_cross_product
-/// @file glm/gtx/matrix_cross_product.hpp
+/// @file gtx/matrix_cross_product.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_extented_min_max (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_matrix_cross_product GLM_GTX_matrix_cross_product
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/matrix_cross_product.hpp> to use the features of this extension.
+/// Include <gtx/matrix_cross_product.hpp> to use the features of this extension.
 ///
 /// Build cross product matrices
 

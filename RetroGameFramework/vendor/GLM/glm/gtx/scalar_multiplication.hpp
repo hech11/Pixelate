@@ -1,8 +1,8 @@
 /// @ref gtx
-/// @file glm/gtx/scalar_multiplication.hpp
+/// @file gtx/scalar_multiplication.hpp
 /// @author Joshua Moerman
 ///
-/// Include <glm/gtx/scalar_multiplication.hpp> to use the features of this extension.
+/// Include <gtx/scalar_multiplication.hpp> to use the features of this extension.
 ///
 /// Enables scalar multiplication for all types
 ///

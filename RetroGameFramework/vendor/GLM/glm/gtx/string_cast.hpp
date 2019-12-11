@@ -1,5 +1,5 @@
 /// @ref gtx_string_cast
-/// @file glm/gtx/string_cast.hpp
+/// @file gtx/string_cast.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_integer (dependence)
@@ -8,7 +8,7 @@
 /// @defgroup gtx_string_cast GLM_GTX_string_cast
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/string_cast.hpp> to use the features of this extension.
+/// Include <gtx/string_cast.hpp> to use the features of this extension.
 ///
 /// Setup strings for GLM type values
 ///

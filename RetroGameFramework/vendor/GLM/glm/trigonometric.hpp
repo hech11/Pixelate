@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/trigonometric.hpp
+/// @file trigonometric.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.1 Angle and Trigonometry Functions</a>
 ///
@@ -12,7 +12,7 @@
 ///
 /// These all operate component-wise. The description is per component.
 ///
-/// Include <glm/trigonometric.hpp> to use these core features.
+/// Include <trigonometric.hpp> to use these core features.
 ///
 /// @see ext_vector_trigonometric
 

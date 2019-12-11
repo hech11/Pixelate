@@ -10,7 +10,7 @@ namespace RGF {
 	Ref<Texture> Texture::Create(unsigned int width, unsigned int height, TextureParameters params) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return std::make_shared<GLTexture>(width, height, params);
+				return CreateRef<GLTexture>(width, height, params);
 		}
 	}
 

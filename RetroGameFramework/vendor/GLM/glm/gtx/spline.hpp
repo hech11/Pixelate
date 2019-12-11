@@ -1,12 +1,12 @@
 /// @ref gtx_spline
-/// @file glm/gtx/spline.hpp
+/// @file gtx/spline.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_spline GLM_GTX_spline
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/spline.hpp> to use the features of this extension.
+/// Include <gtx/spline.hpp> to use the features of this extension.
 ///
 /// Spline functions
 

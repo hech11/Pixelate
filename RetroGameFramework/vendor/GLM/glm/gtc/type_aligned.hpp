@@ -1,12 +1,12 @@
 /// @ref gtc_type_aligned
-/// @file glm/gtc/type_aligned.hpp
+/// @file gtc/type_aligned.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtc_type_aligned GLM_GTC_type_aligned
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/type_aligned.hpp> to use the features of this extension.
+/// Include <gtc/type_aligned.hpp> to use the features of this extension.
 ///
 /// Aligned types allowing SIMD optimizations of vectors and matrices types
 

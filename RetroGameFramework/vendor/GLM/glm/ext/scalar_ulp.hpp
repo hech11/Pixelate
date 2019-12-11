@@ -1,5 +1,5 @@
 /// @ref ext_scalar_ulp
-/// @file glm/ext/scalar_ulp.hpp
+/// @file ext/scalar_ulp.hpp
 ///
 /// @defgroup ext_scalar_ulp GLM_EXT_scalar_ulp
 /// @ingroup ext
@@ -8,7 +8,7 @@
 /// implementation. This extension works on floating-point data and provide results
 /// in ULP.
 ///
-/// Include <glm/ext/scalar_ulp.hpp> to use the features of this extension.
+/// Include <ext/scalar_ulp.hpp> to use the features of this extension.
 ///
 /// @see ext_vector_ulp
 /// @see ext_scalar_relational

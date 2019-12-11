@@ -1,12 +1,12 @@
 /// @ref ext_quaternion_geometric
-/// @file glm/ext/quaternion_geometric.hpp
+/// @file ext/quaternion_geometric.hpp
 ///
 /// @defgroup ext_quaternion_geometric GLM_EXT_quaternion_geometric
 /// @ingroup ext
 ///
 /// Provides geometric functions for quaternion types
 ///
-/// Include <glm/ext/quaternion_geometric.hpp> to use the features of this extension.
+/// Include <ext/quaternion_geometric.hpp> to use the features of this extension.
 ///
 /// @see core_geometric
 /// @see ext_quaternion_float

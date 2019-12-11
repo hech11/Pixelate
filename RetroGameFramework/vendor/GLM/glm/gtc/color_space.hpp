@@ -1,5 +1,5 @@
 /// @ref gtc_color_space
-/// @file glm/gtc/color_space.hpp
+/// @file gtc/color_space.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_color_space (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_color_space GLM_GTC_color_space
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/color_space.hpp> to use the features of this extension.
+/// Include <gtc/color_space.hpp> to use the features of this extension.
 ///
 /// Allow to perform bit operations on integer values
 

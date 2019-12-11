@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLM/glm/glm.hpp"
+#include <GLM/glm/glm.hpp>
 #include "GLM/glm/gtx/transform.hpp"
 
 

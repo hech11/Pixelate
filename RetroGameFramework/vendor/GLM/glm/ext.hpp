@@ -1,4 +1,4 @@
-/// @file glm/ext.hpp
+/// @file ext.hpp
 ///
 /// @ref core (Dependence)
 

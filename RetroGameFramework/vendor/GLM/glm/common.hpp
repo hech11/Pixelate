@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/common.hpp
+/// @file common.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
 ///
@@ -10,7 +10,7 @@
 ///
 /// These all operate component-wise. The description is per component.
 ///
-/// Include <glm/common.hpp> to use these core features.
+/// Include <common.hpp> to use these core features.
 
 #pragma once
 
@@ -147,7 +147,7 @@ namespace glm
 	/// for each component in x using the floating point value y.
 	///
 	/// @tparam L Integer between 1 and 4 included that qualify the dimension of the vector
-	/// @tparam T Floating-point scalar types, include glm/gtc/integer for integer scalar types support
+	/// @tparam T Floating-point scalar types, include gtc/integer for integer scalar types support
 	/// @tparam Q Value from qualifier enum
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/mod.xml">GLSL mod man page</a>
@@ -291,7 +291,7 @@ namespace glm
 	/// @tparam genTypeU Floating point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT.
 	///
 	/// @code
-	/// #include <glm/glm.hpp>
+	/// #include <glm.hpp>
 	/// ...
 	/// float a;
 	/// bool b;

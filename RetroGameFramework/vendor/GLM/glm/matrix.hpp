@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/matrix.hpp
+/// @file matrix.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.6 Matrix Functions</a>
 ///
@@ -8,7 +8,7 @@
 ///
 /// Provides GLSL matrix functions.
 ///
-/// Include <glm/matrix.hpp> to use these core features.
+/// Include <matrix.hpp> to use these core features.
 
 #pragma once
 

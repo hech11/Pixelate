@@ -1,12 +1,12 @@
 /// @ref ext_quaternion_exponential
-/// @file glm/ext/quaternion_exponential.hpp
+/// @file ext/quaternion_exponential.hpp
 ///
 /// @defgroup ext_quaternion_exponential GLM_EXT_quaternion_exponential
 /// @ingroup ext
 ///
 /// Provides exponential functions for quaternion types
 ///
-/// Include <glm/ext/quaternion_exponential.hpp> to use the features of this extension.
+/// Include <ext/quaternion_exponential.hpp> to use the features of this extension.
 ///
 /// @see core_exponential
 /// @see ext_quaternion_float

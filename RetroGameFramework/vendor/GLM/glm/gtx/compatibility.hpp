@@ -1,12 +1,12 @@
 /// @ref gtx_compatibility
-/// @file glm/gtx/compatibility.hpp
+/// @file gtx/compatibility.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_compatibility GLM_GTX_compatibility
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/compatibility.hpp> to use the features of this extension.
+/// Include <gtx/compatibility.hpp> to use the features of this extension.
 ///
 /// Provide functions to increase the compatibility with Cg and HLSL languages
 

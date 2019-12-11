@@ -1,12 +1,12 @@
 /// @ref gtc_matrix_integer
-/// @file glm/gtc/matrix_integer.hpp
+/// @file gtc/matrix_integer.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtc_matrix_integer GLM_GTC_matrix_integer
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/matrix_integer.hpp> to use the features of this extension.
+/// Include <gtc/matrix_integer.hpp> to use the features of this extension.
 ///
 /// Defines a number of matrices with integer types.
 

@@ -1,12 +1,12 @@
 /// @ref ext_scalar_relational
-/// @file glm/ext/scalar_relational.hpp
+/// @file ext/scalar_relational.hpp
 ///
 /// @defgroup ext_scalar_relational GLM_EXT_scalar_relational
 /// @ingroup ext
 ///
 /// Exposes comparison functions for scalar types that take a user defined epsilon values.
 ///
-/// Include <glm/ext/scalar_relational.hpp> to use the features of this extension.
+/// Include <ext/scalar_relational.hpp> to use the features of this extension.
 ///
 /// @see core_vector_relational
 /// @see ext_vector_relational

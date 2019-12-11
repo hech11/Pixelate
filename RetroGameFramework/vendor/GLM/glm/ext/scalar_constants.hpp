@@ -1,12 +1,12 @@
 /// @ref ext_scalar_constants
-/// @file glm/ext/scalar_constants.hpp
+/// @file ext/scalar_constants.hpp
 ///
 /// @defgroup ext_scalar_constants GLM_EXT_scalar_constants
 /// @ingroup ext
 ///
 /// Provides a list of constants and precomputed useful values.
 ///
-/// Include <glm/ext/scalar_constants.hpp> to use the features of this extension.
+/// Include <ext/scalar_constants.hpp> to use the features of this extension.
 
 #pragma once
 

@@ -1,5 +1,5 @@
 /// @ref gtx_matrix_transform_2d
-/// @file glm/gtx/matrix_transform_2d.hpp
+/// @file gtx/matrix_transform_2d.hpp
 /// @author Miguel Ángel Pérez Martínez
 ///
 /// @see core (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_matrix_transform_2d GLM_GTX_matrix_transform_2d
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/matrix_transform_2d.hpp> to use the features of this extension.
+/// Include <gtx/matrix_transform_2d.hpp> to use the features of this extension.
 ///
 /// Defines functions that generate common 2d transformation matrices.
 

@@ -16,7 +16,7 @@ namespace RGF {
 
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return std::make_shared<GLVertexBuffer>(usage);
+				return CreateRef<GLVertexBuffer>(usage);
 		}
 	}
 
@@ -27,19 +27,19 @@ namespace RGF {
 	Ref<IndexBuffer> IndexBuffer::Create(unsigned int* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return std::make_shared<GLIndexBuffer>(data, count);
+				return CreateRef<GLIndexBuffer>(data, count);
 		}
 	}
 	Ref<IndexBuffer> IndexBuffer::Create(unsigned short* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return std::make_shared<GLIndexBuffer>(data, count);
+				return CreateRef<GLIndexBuffer>(data, count);
 		}
 	}
 	Ref<IndexBuffer> IndexBuffer::Create(unsigned char* data, unsigned int count) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return std::make_shared<GLIndexBuffer>(data, count);
+				return CreateRef<GLIndexBuffer>(data, count);
 		}
 	}
 

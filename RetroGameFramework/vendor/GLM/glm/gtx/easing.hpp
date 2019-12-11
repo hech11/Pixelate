@@ -1,5 +1,5 @@
 /// @ref gtx_easing
-/// @file glm/gtx/easing.hpp
+/// @file gtx/easing.hpp
 /// @author Robert Chisholm
 ///
 /// @see core (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_easing GLM_GTX_easing
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/easing.hpp> to use the features of this extension.
+/// Include <gtx/easing.hpp> to use the features of this extension.
 ///
 /// Easing functions for animations and transitons
 /// All functions take a parameter x in the range [0.0,1.0]

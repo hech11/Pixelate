@@ -1,5 +1,5 @@
 /// @ref gtx_normal
-/// @file glm/gtx/normal.hpp
+/// @file gtx/normal.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_extented_min_max (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_normal GLM_GTX_normal
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/normal.hpp> to use the features of this extension.
+/// Include <gtx/normal.hpp> to use the features of this extension.
 ///
 /// Compute the normal of a triangle.
 

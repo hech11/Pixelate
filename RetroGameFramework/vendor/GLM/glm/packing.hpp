@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/packing.hpp
+/// @file packing.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.4 Floating-Point Pack and Unpack Functions</a>
 /// @see gtc_packing
@@ -11,7 +11,7 @@
 ///
 /// These functions do not operate component-wise, rather as described in each case.
 ///
-/// Include <glm/packing.hpp> to use these core features.
+/// Include <packing.hpp> to use these core features.
 
 #pragma once
 

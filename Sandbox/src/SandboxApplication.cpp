@@ -46,7 +46,7 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::GetShaderManager().Add(shader, "Shader");
 
 
-				mat = std::make_shared<RGF::Material>(shader, "Test material");
+				mat = RGF::CreateRef<RGF::Material>(shader, "Test material");
 
 				mat->AddUniforms(new UniformData<int>("u_TextureSampler", 0));
 				mat->AddUniforms(new UniformData<glm::vec4>("u_Color", { 1.0f, 1.0f, 1.0f, 1.0f }));
@@ -65,7 +65,7 @@ class ExampleLayer : public RGF::Layer {
 				#if LotsOfSprites
 				for (float y = -4.5f * 2; y < 4.5f * 2; y += 0.5f / 2) {
 					for (float x = -8.0f * 2; x < 8.0f * 2; x += 0.5f / 2) {
-						RGF::Ref<RGF::Sprite> s = std::make_shared<RGF::Sprite>
+						RGF::Ref<RGF::Sprite> s = RGF::MakeRef<RGF::Sprite>
 							(RGF::Sprite({ 1 - x, y, 0.0f }, { 0.5f, 0.5f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
 
 						sprites.push_back(s);
@@ -77,9 +77,9 @@ class ExampleLayer : public RGF::Layer {
 				#else
 
 
-				RGF::Ref<RGF::Sprite> s = std::make_shared<RGF::Sprite>(RGF::Sprite({ 0.0f, -3.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+				RGF::Ref<RGF::Sprite> s = RGF::CreateRef<RGF::Sprite>(RGF::Sprite({ 0.0f, -3.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
 
-				RGF::Ref<RGF::Sprite> s2 = std::make_shared<RGF::Sprite>(RGF::Sprite({ -1.0f, 0.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
+				RGF::Ref<RGF::Sprite> s2 = RGF::CreateRef<RGF::Sprite>(RGF::Sprite({ -1.0f, 0.0f, 0.0f }, { 6.0f, 6.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }));
 
 
 				sprites.push_back(s);

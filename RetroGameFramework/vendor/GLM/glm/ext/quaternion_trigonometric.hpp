@@ -1,12 +1,12 @@
 /// @ref ext_quaternion_trigonometric
-/// @file glm/ext/quaternion_trigonometric.hpp
+/// @file ext/quaternion_trigonometric.hpp
 ///
 /// @defgroup ext_quaternion_trigonometric GLM_EXT_quaternion_trigonometric
 /// @ingroup ext
 ///
 /// Provides trigonometric functions for quaternion types
 ///
-/// Include <glm/ext/quaternion_trigonometric.hpp> to use the features of this extension.
+/// Include <ext/quaternion_trigonometric.hpp> to use the features of this extension.
 ///
 /// @see ext_quaternion_float
 /// @see ext_quaternion_double

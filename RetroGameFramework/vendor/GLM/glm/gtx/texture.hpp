@@ -1,12 +1,12 @@
 /// @ref gtx_texture
-/// @file glm/gtx/texture.hpp
+/// @file gtx/texture.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_texture GLM_GTX_texture
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/texture.hpp> to use the features of this extension.
+/// Include <gtx/texture.hpp> to use the features of this extension.
 ///
 /// Wrapping mode of texture coordinates.
 

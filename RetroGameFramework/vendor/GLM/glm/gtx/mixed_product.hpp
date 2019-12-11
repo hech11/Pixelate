@@ -1,12 +1,12 @@
 /// @ref gtx_mixed_product
-/// @file glm/gtx/mixed_product.hpp
+/// @file gtx/mixed_product.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_mixed_product GLM_GTX_mixed_producte
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/mixed_product.hpp> to use the features of this extension.
+/// Include <gtx/mixed_product.hpp> to use the features of this extension.
 ///
 /// Mixed product of 3 vectors.
 

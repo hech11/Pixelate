@@ -1,12 +1,12 @@
 /// @ref gtx_extended_min_max
-/// @file glm/gtx/extended_min_max.hpp
+/// @file gtx/extended_min_max.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_extended_min_max GLM_GTX_extented_min_max
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/extented_min_max.hpp> to use the features of this extension.
+/// Include <gtx/extented_min_max.hpp> to use the features of this extension.
 ///
 /// Min and max functions for 3 to 4 parameters.
 

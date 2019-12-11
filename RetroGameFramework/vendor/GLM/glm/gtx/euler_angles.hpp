@@ -1,12 +1,12 @@
 /// @ref gtx_euler_angles
-/// @file glm/gtx/euler_angles.hpp
+/// @file gtx/euler_angles.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_euler_angles GLM_GTX_euler_angles
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/euler_angles.hpp> to use the features of this extension.
+/// Include <gtx/euler_angles.hpp> to use the features of this extension.
 ///
 /// Build matrices from Euler angles.
 ///

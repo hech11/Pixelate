@@ -1,5 +1,5 @@
 /// @ref ext_vector_ulp
-/// @file glm/ext/vector_ulp.hpp
+/// @file ext/vector_ulp.hpp
 ///
 /// @defgroup ext_vector_ulp GLM_EXT_vector_ulp
 /// @ingroup ext
@@ -8,7 +8,7 @@
 /// implementation. This extension works on floating-point data and provide results
 /// in ULP.
 ///
-/// Include <glm/ext/vector_ulp.hpp> to use the features of this extension.
+/// Include <ext/vector_ulp.hpp> to use the features of this extension.
 ///
 /// @see ext_scalar_ulp
 /// @see ext_scalar_relational

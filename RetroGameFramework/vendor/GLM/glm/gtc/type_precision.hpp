@@ -1,5 +1,5 @@
 /// @ref gtc_type_precision
-/// @file glm/gtc/type_precision.hpp
+/// @file gtc/type_precision.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_quaternion (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_type_precision GLM_GTC_type_precision
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/type_precision.hpp> to use the features of this extension.
+/// Include <gtc/type_precision.hpp> to use the features of this extension.
 ///
 /// Defines specific C++-based qualifier types.
 

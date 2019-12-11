@@ -1,5 +1,5 @@
 /// @ref gtx_intersect
-/// @file glm/gtx/intersect.hpp
+/// @file gtx/intersect.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_closest_point (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_intersect GLM_GTX_intersect
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/intersect.hpp> to use the features of this extension.
+/// Include <gtx/intersect.hpp> to use the features of this extension.
 ///
 /// Add intersection functions
 

@@ -1,12 +1,12 @@
 /// @ref gtc_reciprocal
-/// @file glm/gtc/reciprocal.hpp
+/// @file gtc/reciprocal.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtc_reciprocal GLM_GTC_reciprocal
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/reciprocal.hpp> to use the features of this extension.
+/// Include <gtc/reciprocal.hpp> to use the features of this extension.
 ///
 /// Define secant, cosecant and cotangent functions.
 

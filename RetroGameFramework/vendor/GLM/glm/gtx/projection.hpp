@@ -1,12 +1,12 @@
 /// @ref gtx_projection
-/// @file glm/gtx/projection.hpp
+/// @file gtx/projection.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_projection GLM_GTX_projection
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/projection.hpp> to use the features of this extension.
+/// Include <gtx/projection.hpp> to use the features of this extension.
 ///
 /// Projection of a vector to other one
 

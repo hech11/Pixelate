@@ -1,5 +1,5 @@
 /// @ref gtx_dual_quaternion
-/// @file glm/gtx/dual_quaternion.hpp
+/// @file gtx/dual_quaternion.hpp
 /// @author Maksim Vorobiev (msomeone@gmail.com)
 ///
 /// @see core (dependence)
@@ -9,7 +9,7 @@
 /// @defgroup gtx_dual_quaternion GLM_GTX_dual_quaternion
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/dual_quaternion.hpp> to use the features of this extension.
+/// Include <gtx/dual_quaternion.hpp> to use the features of this extension.
 ///
 /// Defines a templated dual-quaternion type and several dual-quaternion operations.
 

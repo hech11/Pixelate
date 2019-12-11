@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/detail/func_common.inl
+/// @file detail/func_common.inl
 
 #include "../vector_relational.hpp"
 #include "compute_common.hpp"
@@ -213,7 +213,7 @@ namespace detail
 	{
 		GLM_FUNC_QUALIFIER static vec<L, T, Q> call(vec<L, T, Q> const& a, vec<L, T, Q> const& b)
 		{
-			GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'mod' only accept floating-point inputs. Include <glm/gtc/integer.hpp> for integer inputs.");
+			GLM_STATIC_ASSERT(std::numeric_limits<T>::is_iec559, "'mod' only accept floating-point inputs. Include <gtc/integer.hpp> for integer inputs.");
 			return a - b * floor(a / b);
 		}
 	};
@@ -401,7 +401,7 @@ namespace detail
 	GLM_FUNC_QUALIFIER genType mod(genType x, genType y)
 	{
 #		if GLM_COMPILER & GLM_COMPILER_CUDA
-			// Another Cuda compiler bug https://github.com/g-truc/glm/issues/530
+			// Another Cuda compiler bug https://github.com/g-truc/issues/530
 			vec<1, genType, defaultp> Result(mod(vec<1, genType, defaultp>(x), y));
 			return Result.x;
 #		else

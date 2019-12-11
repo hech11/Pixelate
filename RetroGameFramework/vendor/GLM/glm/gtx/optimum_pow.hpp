@@ -1,12 +1,12 @@
 /// @ref gtx_optimum_pow
-/// @file glm/gtx/optimum_pow.hpp
+/// @file gtx/optimum_pow.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_optimum_pow GLM_GTX_optimum_pow
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/optimum_pow.hpp> to use the features of this extension.
+/// Include <gtx/optimum_pow.hpp> to use the features of this extension.
 ///
 /// Integer exponentiation of power functions.
 

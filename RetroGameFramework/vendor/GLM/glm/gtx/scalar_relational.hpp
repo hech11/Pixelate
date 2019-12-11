@@ -1,12 +1,12 @@
 /// @ref gtx_scalar_relational
-/// @file glm/gtx/scalar_relational.hpp
+/// @file gtx/scalar_relational.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_scalar_relational GLM_GTX_scalar_relational
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/scalar_relational.hpp> to use the features of this extension.
+/// Include <gtx/scalar_relational.hpp> to use the features of this extension.
 ///
 /// Extend a position from a source to a position at a defined length.
 

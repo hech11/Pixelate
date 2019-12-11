@@ -1,12 +1,12 @@
 /// @ref ext_matrix_relational
-/// @file glm/ext/matrix_relational.hpp
+/// @file ext/matrix_relational.hpp
 ///
 /// @defgroup ext_matrix_relational GLM_EXT_matrix_relational
 /// @ingroup ext
 ///
 /// Exposes comparison functions for matrix types that take a user defined epsilon values.
 ///
-/// Include <glm/ext/matrix_relational.hpp> to use the features of this extension.
+/// Include <ext/matrix_relational.hpp> to use the features of this extension.
 ///
 /// @see ext_vector_relational
 /// @see ext_scalar_relational

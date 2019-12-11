@@ -43,9 +43,9 @@ namespace RGF {
 
 #ifndef RGF_DISTRIBUTE
 		m_EngineEditorLayer = new ImguiEngineEditor;
-		m_EngineEditorLayer->GetGameViewport().GameViewCamera = std::make_unique<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
+		m_EngineEditorLayer->GetGameViewport().GameViewCamera = CreateScoped<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
 #else
-		m_Camera = std::make_unique<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
+		m_Camera = CreateScoped<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
 #endif
 
 

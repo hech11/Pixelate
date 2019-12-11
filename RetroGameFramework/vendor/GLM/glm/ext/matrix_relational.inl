@@ -1,5 +1,5 @@
 /// @ref ext_vector_relational
-/// @file glm/ext/vector_relational.inl
+/// @file ext/vector_relational.inl
 
 // Dependency:
 #include "../ext/vector_relational.hpp"

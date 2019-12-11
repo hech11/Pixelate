@@ -1,12 +1,12 @@
 /// @ref gtx_color_space_YCoCg
-/// @file glm/gtx/color_space_YCoCg.hpp
+/// @file gtx/color_space_YCoCg.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_color_space_YCoCg GLM_GTX_color_space_YCoCg
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/color_space_YCoCg.hpp> to use the features of this extension.
+/// Include <gtx/color_space_YCoCg.hpp> to use the features of this extension.
 ///
 /// RGB to YCoCg conversions and operations
 

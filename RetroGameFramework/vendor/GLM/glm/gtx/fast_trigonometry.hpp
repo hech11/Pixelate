@@ -1,12 +1,12 @@
 /// @ref gtx_fast_trigonometry
-/// @file glm/gtx/fast_trigonometry.hpp
+/// @file gtx/fast_trigonometry.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_fast_trigonometry GLM_GTX_fast_trigonometry
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/fast_trigonometry.hpp> to use the features of this extension.
+/// Include <gtx/fast_trigonometry.hpp> to use the features of this extension.
 ///
 /// Fast but less accurate implementations of trigonometric functions.
 

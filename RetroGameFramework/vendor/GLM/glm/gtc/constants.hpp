@@ -1,12 +1,12 @@
 /// @ref gtc_constants
-/// @file glm/gtc/constants.hpp
+/// @file gtc/constants.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtc_constants GLM_GTC_constants
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/constants.hpp> to use the features of this extension.
+/// Include <gtc/constants.hpp> to use the features of this extension.
 ///
 /// Provide a list of constants and precomputed useful values.
 

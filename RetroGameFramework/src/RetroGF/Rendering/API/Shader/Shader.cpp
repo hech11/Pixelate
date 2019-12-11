@@ -15,7 +15,7 @@ namespace RGF {
 	Ref<Shader> Shader::Create() {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return std::make_shared<GLShader>();
+				return CreateRef<GLShader>();
 			}
 
 	}

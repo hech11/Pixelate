@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/integer.hpp
+/// @file integer.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
 ///
@@ -12,7 +12,7 @@
 /// The notation [a, b] means the set of bits from bit-number a through bit-number
 /// b, inclusive. The lowest-order bit is bit 0.
 ///
-/// Include <glm/integer.hpp> to use these core features.
+/// Include <integer.hpp> to use these core features.
 
 #pragma once
 

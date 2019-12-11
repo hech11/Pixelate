@@ -1,12 +1,12 @@
 /// @ref gtx_handed_coordinate_space
-/// @file glm/gtx/handed_coordinate_space.hpp
+/// @file gtx/handed_coordinate_space.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_handed_coordinate_space GLM_GTX_handed_coordinate_space
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/handed_coordinate_system.hpp> to use the features of this extension.
+/// Include <gtx/handed_coordinate_system.hpp> to use the features of this extension.
 ///
 /// To know if a set of three basis vectors defines a right or left-handed coordinate system.
 

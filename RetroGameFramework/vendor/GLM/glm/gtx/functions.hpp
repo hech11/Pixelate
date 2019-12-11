@@ -1,5 +1,5 @@
 /// @ref gtx_functions
-/// @file glm/gtx/functions.hpp
+/// @file gtx/functions.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_quaternion (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_functions GLM_GTX_functions
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/functions.hpp> to use the features of this extension.
+/// Include <gtx/functions.hpp> to use the features of this extension.
 ///
 /// List of useful common functions.
 

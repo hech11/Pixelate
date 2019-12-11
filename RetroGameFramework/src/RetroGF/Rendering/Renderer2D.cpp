@@ -20,9 +20,9 @@ namespace RGF {
 	Ref<IndexBuffer> Renderer2D::m_Ibo = nullptr;
 
 	
-	Scoped<MaterialManager> Renderer2D::s_MatManager = std::make_unique<MaterialManager>();
-	Scoped<ShaderManager> Renderer2D::s_ShaderManager = std::make_unique<ShaderManager>();
-	Scoped<TextureManager> Renderer2D::s_TextureManager = std::make_unique<TextureManager>();
+	Scoped<MaterialManager> Renderer2D::s_MatManager = CreateScoped<MaterialManager>();
+	Scoped<ShaderManager> Renderer2D::s_ShaderManager = CreateScoped<ShaderManager>();
+	Scoped<TextureManager> Renderer2D::s_TextureManager = CreateScoped<TextureManager>();
 
 
 	void Renderer2D::Init() {

@@ -1,5 +1,5 @@
 /// @ref gtc_random
-/// @file glm/gtc/random.hpp
+/// @file gtc/random.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_random (extended)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_random GLM_GTC_random
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/random.hpp> to use the features of this extension.
+/// Include <gtc/random.hpp> to use the features of this extension.
 ///
 /// Generate random number from various distribution methods.
 

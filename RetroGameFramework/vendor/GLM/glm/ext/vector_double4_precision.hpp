@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/ext/vector_double4_precision.hpp
+/// @file ext/vector_double4_precision.hpp
 
 #pragma once
 #include "../detail/setup.hpp"

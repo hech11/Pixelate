@@ -1,12 +1,12 @@
 /// @ref gtx_matrix_factorisation
-/// @file glm/gtx/matrix_factorisation.hpp
+/// @file gtx/matrix_factorisation.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_matrix_factorisation GLM_GTX_matrix_factorisation
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/matrix_factorisation.hpp> to use the features of this extension.
+/// Include <gtx/matrix_factorisation.hpp> to use the features of this extension.
 ///
 /// Functions to factor matrices in various forms
 

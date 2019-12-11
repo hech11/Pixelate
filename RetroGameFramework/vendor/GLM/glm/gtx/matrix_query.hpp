@@ -1,5 +1,5 @@
 /// @ref gtx_matrix_query
-/// @file glm/gtx/matrix_query.hpp
+/// @file gtx/matrix_query.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_vector_query (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_matrix_query GLM_GTX_matrix_query
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/matrix_query.hpp> to use the features of this extension.
+/// Include <gtx/matrix_query.hpp> to use the features of this extension.
 ///
 /// Query to evaluate matrix properties
 

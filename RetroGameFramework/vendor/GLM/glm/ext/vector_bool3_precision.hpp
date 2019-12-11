@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/ext/vector_bool3_precision.hpp
+/// @file ext/vector_bool3_precision.hpp
 
 #pragma once
 #include "../detail/type_vec3.hpp"

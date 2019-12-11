@@ -1,12 +1,12 @@
 /// @ref gtx_bit
-/// @file glm/gtx/bit.hpp
+/// @file gtx/bit.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_bit GLM_GTX_bit
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/bit.hpp> to use the features of this extension.
+/// Include <gtx/bit.hpp> to use the features of this extension.
 ///
 /// Allow to perform bit operations on integer values
 

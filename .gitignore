@@ -1,6 +1,21 @@
 .vs/
 bin/
-intermediates/
+bin-int/
 
 
+*.vcxproj
+*.vcxproj.filters
 *.user
+*.sln
+RetroGameFramework.sln
+*.vcxproj
+*.filters
+RetroGameFramework/RetroGameFramework.vcxproj.filters
+*.vcxproj
+*.vcxproj
+Sandbox/Sandbox.vcxproj
+RetroGameFramework.sln
+*.sln
+RetroGameFramework/RetroGameFramework.vcxproj
+RetroGameFramework/RetroGameFramework.vcxproj
+RetroGameFramework/RetroGameFramework.vcxproj

@@ -1,12 +1,12 @@
 /// @ref ext_scalar_int_sized
-/// @file glm/ext/scalar_int_sized.hpp
+/// @file ext/scalar_int_sized.hpp
 ///
 /// @defgroup ext_scalar_int_sized GLM_EXT_scalar_int_sized
 /// @ingroup ext
 ///
 /// Exposes sized signed integer scalar types.
 ///
-/// Include <glm/ext/scalar_int_sized.hpp> to use the features of this extension.
+/// Include <ext/scalar_int_sized.hpp> to use the features of this extension.
 ///
 /// @see ext_scalar_uint_sized
 

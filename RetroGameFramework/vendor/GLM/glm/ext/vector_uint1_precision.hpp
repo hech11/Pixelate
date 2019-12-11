@@ -1,12 +1,12 @@
 /// @ref ext_vector_uint1_precision
-/// @file glm/ext/vector_uint1_precision.hpp
+/// @file ext/vector_uint1_precision.hpp
 ///
 /// @defgroup ext_vector_uint1_precision GLM_EXT_vector_uint1_precision
 /// @ingroup ext
 ///
 /// Exposes highp_uvec1, mediump_uvec1 and lowp_uvec1 types.
 ///
-/// Include <glm/ext/vector_uint1_precision.hpp> to use the features of this extension.
+/// Include <ext/vector_uint1_precision.hpp> to use the features of this extension.
 
 #pragma once
 

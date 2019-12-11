@@ -1,5 +1,5 @@
 /// @ref gtc_matrix_transform
-/// @file glm/gtc/matrix_transform.hpp
+/// @file gtc/matrix_transform.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_transform
@@ -8,7 +8,7 @@
 /// @defgroup gtc_matrix_transform GLM_GTC_matrix_transform
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/matrix_transform.hpp> to use the features of this extension.
+/// Include <gtc/matrix_transform.hpp> to use the features of this extension.
 ///
 /// Defines functions that generate common transformation matrices.
 ///

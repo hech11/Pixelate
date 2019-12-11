@@ -1,5 +1,5 @@
 /// @ref gtx_rotate_normalized_axis
-/// @file glm/gtx/rotate_normalized_axis.hpp
+/// @file gtx/rotate_normalized_axis.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_matrix_transform
@@ -8,7 +8,7 @@
 /// @defgroup gtx_rotate_normalized_axis GLM_GTX_rotate_normalized_axis
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/rotate_normalized_axis.hpp> to use the features of this extension.
+/// Include <gtx/rotate_normalized_axis.hpp> to use the features of this extension.
 ///
 /// Quaternions and matrices rotations around normalized axis.
 

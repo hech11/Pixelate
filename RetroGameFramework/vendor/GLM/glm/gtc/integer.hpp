@@ -1,5 +1,5 @@
 /// @ref gtc_integer
-/// @file glm/gtc/integer.hpp
+/// @file gtc/integer.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_integer (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_integer GLM_GTC_integer
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/integer.hpp> to use the features of this extension.
+/// Include <gtc/integer.hpp> to use the features of this extension.
 ///
 /// @brief Allow to perform bit operations on integer values
 

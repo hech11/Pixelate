@@ -1,5 +1,5 @@
 /// @ref gtc_epsilon
-/// @file glm/gtc/epsilon.hpp
+/// @file gtc/epsilon.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_quaternion (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_epsilon GLM_GTC_epsilon
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/epsilon.hpp> to use the features of this extension.
+/// Include <gtc/epsilon.hpp> to use the features of this extension.
 ///
 /// Comparison functions for a user defined epsilon values.
 

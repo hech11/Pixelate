@@ -1,12 +1,12 @@
 /// @ref gtc_matrix_access
-/// @file glm/gtc/matrix_access.hpp
+/// @file gtc/matrix_access.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtc_matrix_access GLM_GTC_matrix_access
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/matrix_access.hpp> to use the features of this extension.
+/// Include <gtc/matrix_access.hpp> to use the features of this extension.
 ///
 /// Defines functions to access rows or columns of a matrix easily.
 

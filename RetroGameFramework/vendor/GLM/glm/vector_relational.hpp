@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/vector_relational.hpp
+/// @file vector_relational.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.7 Vector Relational Functions</a>
 ///
@@ -13,7 +13,7 @@
 /// In all cases, the sizes of all the input and return vectors for any particular
 /// call must match.
 ///
-/// Include <glm/vector_relational.hpp> to use these core features.
+/// Include <vector_relational.hpp> to use these core features.
 ///
 /// @see ext_vector_relational
 

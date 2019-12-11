@@ -1,12 +1,12 @@
 /// @ref gtx_raw_data
-/// @file glm/gtx/raw_data.hpp
+/// @file gtx/raw_data.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_raw_data GLM_GTX_raw_data
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/raw_data.hpp> to use the features of this extension.
+/// Include <gtx/raw_data.hpp> to use the features of this extension.
 ///
 /// Projection of a vector to other one
 

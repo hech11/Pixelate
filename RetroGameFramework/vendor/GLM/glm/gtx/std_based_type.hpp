@@ -1,5 +1,5 @@
 /// @ref gtx_std_based_type
-/// @file glm/gtx/std_based_type.hpp
+/// @file gtx/std_based_type.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_extented_min_max (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_std_based_type GLM_GTX_std_based_type
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/std_based_type.hpp> to use the features of this extension.
+/// Include <gtx/std_based_type.hpp> to use the features of this extension.
 ///
 /// Adds vector types based on STL value types.
 

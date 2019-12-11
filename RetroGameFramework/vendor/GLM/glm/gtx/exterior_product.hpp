@@ -1,5 +1,5 @@
 /// @ref gtx_exterior_product
-/// @file glm/gtx/exterior_product.hpp
+/// @file gtx/exterior_product.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_exterior_product (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_exterior_product GLM_GTX_exterior_product
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/exterior_product.hpp> to use the features of this extension.
+/// Include <gtx/exterior_product.hpp> to use the features of this extension.
 ///
 /// @brief Allow to perform bit operations on integer values
 

@@ -1,12 +1,12 @@
 /// @ref gtx_vector_query
-/// @file glm/gtx/vector_query.hpp
+/// @file gtx/vector_query.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_vector_query GLM_GTX_vector_query
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/vector_query.hpp> to use the features of this extension.
+/// Include <gtx/vector_query.hpp> to use the features of this extension.
 ///
 /// Query informations of vector types
 

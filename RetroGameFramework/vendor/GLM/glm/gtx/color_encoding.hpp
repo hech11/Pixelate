@@ -1,5 +1,5 @@
 /// @ref gtx_color_encoding
-/// @file glm/gtx/color_encoding.hpp
+/// @file gtx/color_encoding.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_color_encoding (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_color_encoding GLM_GTX_color_encoding
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/color_encoding.hpp> to use the features of this extension.
+/// Include <gtx/color_encoding.hpp> to use the features of this extension.
 ///
 /// @brief Allow to perform bit operations on integer values
 

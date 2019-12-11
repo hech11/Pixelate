@@ -1,12 +1,12 @@
 /// @ref ext_quaternion_common
-/// @file glm/ext/quaternion_common.hpp
+/// @file ext/quaternion_common.hpp
 ///
 /// @defgroup ext_quaternion_common GLM_EXT_quaternion_common
 /// @ingroup ext
 ///
 /// Provides common functions for quaternion types
 ///
-/// Include <glm/ext/quaternion_common.hpp> to use the features of this extension.
+/// Include <ext/quaternion_common.hpp> to use the features of this extension.
 ///
 /// @see ext_scalar_common
 /// @see ext_vector_common

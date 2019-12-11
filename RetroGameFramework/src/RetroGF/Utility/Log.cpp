@@ -26,8 +26,8 @@ namespace RGF {
 
 
 	// Static var's here.
-	std::shared_ptr<Log::Logger> Log::s_Core = std::make_shared<Log::Logger>();
-	std::shared_ptr<Log::Logger> Log::s_Client = std::make_shared<Log::Logger>();
+	std::shared_ptr<Log::Logger> Log::s_Core = CreateRef<Log::Logger>();
+	std::shared_ptr<Log::Logger> Log::s_Client = CreateRef<Log::Logger>();
 
 
 

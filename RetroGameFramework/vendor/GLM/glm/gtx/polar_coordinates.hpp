@@ -1,12 +1,12 @@
 /// @ref gtx_polar_coordinates
-/// @file glm/gtx/polar_coordinates.hpp
+/// @file gtx/polar_coordinates.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_polar_coordinates GLM_GTX_polar_coordinates
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/polar_coordinates.hpp> to use the features of this extension.
+/// Include <gtx/polar_coordinates.hpp> to use the features of this extension.
 ///
 /// Conversion from Euclidean space to polar space and revert.
 

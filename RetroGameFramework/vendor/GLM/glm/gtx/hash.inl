@@ -7,7 +7,7 @@
 ///
 /// @brief Add std::hash support for glm types
 ///
-/// <glm/gtx/hash.inl> need to be included to use the features of this extension.
+/// <gtx/hash.inl> need to be included to use the features of this extension.
 
 namespace glm {
 namespace detail

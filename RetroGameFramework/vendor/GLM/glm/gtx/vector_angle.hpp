@@ -1,5 +1,5 @@
 /// @ref gtx_vector_angle
-/// @file glm/gtx/vector_angle.hpp
+/// @file gtx/vector_angle.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_quaternion (dependence)
@@ -8,7 +8,7 @@
 /// @defgroup gtx_vector_angle GLM_GTX_vector_angle
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/vector_angle.hpp> to use the features of this extension.
+/// Include <gtx/vector_angle.hpp> to use the features of this extension.
 ///
 /// Compute angle between vectors
 

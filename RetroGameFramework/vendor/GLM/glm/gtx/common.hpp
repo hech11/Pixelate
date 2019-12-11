@@ -1,12 +1,12 @@
 /// @ref gtx_common
-/// @file glm/gtx/common.hpp
+/// @file gtx/common.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_common GLM_GTX_common
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/common.hpp> to use the features of this extension.
+/// Include <gtx/common.hpp> to use the features of this extension.
 ///
 /// @brief Provide functions to increase the compatibility with Cg and HLSL languages
 

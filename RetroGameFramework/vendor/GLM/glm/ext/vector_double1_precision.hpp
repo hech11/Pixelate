@@ -1,12 +1,12 @@
 /// @ref ext_vector_double1_precision
-/// @file glm/ext/vector_double1_precision.hpp
+/// @file ext/vector_double1_precision.hpp
 ///
 /// @defgroup ext_vector_double1_precision GLM_EXT_vector_double1_precision
 /// @ingroup ext
 ///
 /// Exposes highp_dvec1, mediump_dvec1 and lowp_dvec1 types.
 ///
-/// Include <glm/ext/vector_double1_precision.hpp> to use the features of this extension.
+/// Include <ext/vector_double1_precision.hpp> to use the features of this extension.
 ///
 /// @see ext_vector_double1
 

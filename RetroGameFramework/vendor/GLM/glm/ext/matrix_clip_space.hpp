@@ -1,5 +1,5 @@
 /// @ref ext_matrix_clip_space
-/// @file glm/ext/matrix_clip_space.hpp
+/// @file ext/matrix_clip_space.hpp
 ///
 /// @defgroup ext_matrix_clip_space GLM_EXT_matrix_clip_space
 /// @ingroup ext
@@ -12,7 +12,7 @@
 /// (perspective, ortho, etc) are designed to expect. The OpenGL compatibility
 /// specifications defines the particular layout of this eye space.
 ///
-/// Include <glm/ext/matrix_clip_space.hpp> to use the features of this extension.
+/// Include <ext/matrix_clip_space.hpp> to use the features of this extension.
 ///
 /// @see ext_matrix_transform
 /// @see ext_matrix_projection

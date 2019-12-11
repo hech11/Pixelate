@@ -1,12 +1,12 @@
 /// @ref gtx_matrix_operation
-/// @file glm/gtx/matrix_operation.hpp
+/// @file gtx/matrix_operation.hpp
 ///
 /// @see core (dependence)
 ///
 /// @defgroup gtx_matrix_operation GLM_GTX_matrix_operation
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/matrix_operation.hpp> to use the features of this extension.
+/// Include <gtx/matrix_operation.hpp> to use the features of this extension.
 ///
 /// Build diagonal matrices from vectors.
 

@@ -1,5 +1,5 @@
 /// @ref gtx_perpendicular
-/// @file glm/gtx/perpendicular.hpp
+/// @file gtx/perpendicular.hpp
 ///
 /// @see core (dependence)
 /// @see gtx_projection (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_perpendicular GLM_GTX_perpendicular
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/perpendicular.hpp> to use the features of this extension.
+/// Include <gtx/perpendicular.hpp> to use the features of this extension.
 ///
 /// Perpendicular of a vector from other one
 

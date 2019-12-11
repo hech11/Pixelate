@@ -1,5 +1,5 @@
 /// @ref gtc_bitfield
-/// @file glm/gtc/bitfield.hpp
+/// @file gtc/bitfield.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_bitfield (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_bitfield GLM_GTC_bitfield
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/bitfield.hpp> to use the features of this extension.
+/// Include <gtc/bitfield.hpp> to use the features of this extension.
 ///
 /// Allow to perform bit operations on integer values
 

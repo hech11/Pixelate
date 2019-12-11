@@ -3,7 +3,7 @@
 
 #include <GLAD/include/glad.h>
 
-#include <glm/glm/gtc/type_ptr.hpp>
+#include <GLM/glm/gtc/type_ptr.hpp>
 #include "RetroGF/Core/Application.h"
 
 #include "GLCommon.h"

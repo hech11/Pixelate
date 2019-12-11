@@ -1,5 +1,5 @@
 /// @ref core
-/// @file glm/exponential.hpp
+/// @file exponential.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.2 Exponential Functions</a>
 ///
@@ -10,7 +10,7 @@
 ///
 /// These all operate component-wise. The description is per component.
 ///
-/// Include <glm/exponential.hpp> to use these core features.
+/// Include <exponential.hpp> to use these core features.
 
 #pragma once
 

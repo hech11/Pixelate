@@ -1,5 +1,5 @@
 /// @ref gtc_type_ptr
-/// @file glm/gtc/type_ptr.hpp
+/// @file gtc/type_ptr.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_quaternion (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_type_ptr GLM_GTC_type_ptr
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/type_ptr.hpp> to use the features of this extension.
+/// Include <gtc/type_ptr.hpp> to use the features of this extension.
 ///
 /// Handles the interaction between pointers and vector, matrix types.
 ///
@@ -19,8 +19,8 @@
 ///
 /// Example:
 /// @code
-/// #include <glm/glm.hpp>
-/// #include <glm/gtc/type_ptr.hpp>
+/// #include <glm.hpp>
+/// #include <gtc/type_ptr.hpp>
 ///
 /// glm::vec3 aVector(3);
 /// glm::mat4 someMatrix(1.0);
@@ -29,7 +29,7 @@
 /// glUniformMatrix4fv(uniformMatrixLoc, 1, GL_FALSE, glm::value_ptr(someMatrix));
 /// @endcode
 ///
-/// <glm/gtc/type_ptr.hpp> need to be included to use the features of this extension.
+/// <gtc/type_ptr.hpp> need to be included to use the features of this extension.
 
 #pragma once
 

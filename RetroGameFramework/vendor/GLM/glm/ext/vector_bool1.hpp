@@ -1,12 +1,12 @@
 /// @ref ext_vector_bool1
-/// @file glm/ext/vector_bool1.hpp
+/// @file ext/vector_bool1.hpp
 ///
 /// @defgroup ext_vector_bool1 GLM_EXT_vector_bool1
 /// @ingroup ext
 ///
 /// Exposes bvec1 vector type.
 ///
-/// Include <glm/ext/vector_bool1.hpp> to use the features of this extension.
+/// Include <ext/vector_bool1.hpp> to use the features of this extension.
 ///
 /// @see ext_vector_bool1_precision extension.
 

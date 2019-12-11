@@ -1,5 +1,5 @@
 /// @ref gtx_type_aligned
-/// @file glm/gtx/type_aligned.hpp
+/// @file gtx/type_aligned.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_quaternion (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtx_type_aligned GLM_GTX_type_aligned
 /// @ingroup gtx
 ///
-/// Include <glm/gtx/type_aligned.hpp> to use the features of this extension.
+/// Include <gtx/type_aligned.hpp> to use the features of this extension.
 ///
 /// Defines aligned types.
 

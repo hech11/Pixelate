@@ -1,12 +1,12 @@
 /// @ref ext_vector_double1
-/// @file glm/ext/vector_double1.hpp
+/// @file ext/vector_double1.hpp
 ///
 /// @defgroup ext_vector_double1 GLM_EXT_vector_double1
 /// @ingroup ext
 ///
 /// Exposes double-precision floating point vector type with one component.
 ///
-/// Include <glm/ext/vector_double1.hpp> to use the features of this extension.
+/// Include <ext/vector_double1.hpp> to use the features of this extension.
 ///
 /// @see ext_vector_double1_precision extension.
 /// @see ext_vector_float1 extension.

@@ -5,7 +5,7 @@
 
 #include "RetroGF\Rendering\Sprite.h"
 #include "RetroGF\Utility\Timer.h"
-#include <IMGUI\imgui.h>
+#include <IMGUI/imgui.h>
 
 #include "RetroGF/Rendering/Renderer2D.h"
 

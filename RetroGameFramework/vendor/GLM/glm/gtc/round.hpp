@@ -1,5 +1,5 @@
 /// @ref gtc_round
-/// @file glm/gtc/round.hpp
+/// @file gtc/round.hpp
 ///
 /// @see core (dependence)
 /// @see gtc_round (dependence)
@@ -7,7 +7,7 @@
 /// @defgroup gtc_round GLM_GTC_round
 /// @ingroup gtc
 ///
-/// Include <glm/gtc/round.hpp> to use the features of this extension.
+/// Include <gtc/round.hpp> to use the features of this extension.
 ///
 /// Rounding value to specific boundings
 

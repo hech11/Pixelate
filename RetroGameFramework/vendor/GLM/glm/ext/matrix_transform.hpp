@@ -1,5 +1,5 @@
 /// @ref ext_matrix_transform
-/// @file glm/ext/matrix_transform.hpp
+/// @file ext/matrix_transform.hpp
 ///
 /// @defgroup ext_matrix_transform GLM_EXT_matrix_transform
 /// @ingroup ext
@@ -12,7 +12,7 @@
 /// (perspective, ortho, etc) are designed to expect. The OpenGL compatibility
 /// specifications defines the particular layout of this eye space.
 ///
-/// Include <glm/ext/matrix_transform.hpp> to use the features of this extension.
+/// Include <ext/matrix_transform.hpp> to use the features of this extension.
 ///
 /// @see ext_matrix_projection
 /// @see ext_matrix_clip_space
@@ -47,8 +47,8 @@ namespace glm
 	/// @tparam Q A value from qualifier enum
 	///
 	/// @code
-	/// #include <glm/glm.hpp>
-	/// #include <glm/gtc/matrix_transform.hpp>
+	/// #include <glm.hpp>
+	/// #include <gtc/matrix_transform.hpp>
 	/// ...
 	/// glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f));
 	/// // m[0][0] == 1.0f, m[0][1] == 0.0f, m[0][2] == 0.0f, m[0][3] == 0.0f
