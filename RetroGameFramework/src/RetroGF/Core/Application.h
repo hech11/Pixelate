@@ -5,7 +5,6 @@
 
 #include "RetroGF/Rendering/OrthographicCamera.h"
 #include "RetroGF/Rendering/API/Shader/ShaderManager.h"
-#include "RetroGF/Rendering/Material.h"
 
 #include "RetroGF/Events/Event.h"
 #include "RetroGF/Events/KeyEvents.h"
@@ -15,8 +14,7 @@
 
 
 #include "RetroGF/Core/LayerStack.h"
-#include "RetroGF/Imgui/ImguiEngineEditor.h"
-
+#include "RetroGF/Imgui/ImguiLayer.h"
 #include "RetroGF/Utility/Timer.h"
 #include "RetroGF/Utility/File.h"
 
@@ -53,17 +51,7 @@ namespace RGF {
 
 
 			WindowImpl& GetWindow() { return *m_Window; }
-			#ifndef RGF_DISTRIBUTE
-			OrthographicCamera& GetGameviewCamera() { return *m_EngineEditorLayer->GetGameViewport().GameViewCamera; }
-			#else
-			OrthographicCamera& GetGameviewCamera() { return *m_Camera; }
 
-			#endif
-
-
-#ifndef RGF_DISTRIBUTE
-			ImguiEngineEditor& GetEngineEditor() { return *m_EngineEditorLayer; }
-#endif
 
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
@@ -71,13 +59,8 @@ namespace RGF {
 			Scoped<WindowImpl> m_Window;
 
 			// TODO: This is temp, may need to refactor some of these components / systems
-
-
-#ifndef RGF_DISTRIBUTE
-			ImguiEngineEditor* m_EngineEditorLayer;
-#else
+			ImguiLayer* m_ImguiLayer;
 			Scoped<OrthographicCamera> m_Camera;
-#endif
 
 
 			LayerStack m_LayerStack;

@@ -18,6 +18,8 @@
 #endif
 
 
+#define RGF_BIND_EVENT_FNC(x) std::bind(&x, this, std::placeholders::_1)
+
 namespace RGF {
 
 	template<typename T>

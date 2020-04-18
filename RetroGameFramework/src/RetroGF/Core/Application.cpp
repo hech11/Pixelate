@@ -6,7 +6,6 @@
 
 #include <RetroGF/Rendering/API/Buffer.h>
 #include <RetroGF/Rendering/API/VertexArray.h>
-#include <RetroGF/Rendering/Material.h>
 #include <RetroGF/Rendering/API/Texture.h>
 #include <RetroGF/Rendering/API/FrameBuffer.h>
 
@@ -16,7 +15,6 @@
 
 #include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/RenderCommand.h>
-#include <RetroGF/Rendering/Sprite.h>
 
 #include "RetroGF/Platform/OpenGL/GLCommon.h"
 
@@ -41,12 +39,8 @@ namespace RGF {
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-#ifndef RGF_DISTRIBUTE
-		m_EngineEditorLayer = new ImguiEngineEditor;
-		m_EngineEditorLayer->GetGameViewport().GameViewCamera = CreateScoped<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
-#else
+		m_ImguiLayer = new ImguiLayer;
 		m_Camera = CreateScoped<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
-#endif
 
 
 
@@ -129,18 +123,15 @@ namespace RGF {
 			}
 
 			
-
-#ifndef RGF_DISTRIBUTE
 			{
 				RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");
-				m_EngineEditorLayer->Start();
+				m_ImguiLayer->Start();
 				for (Layer* layer : m_LayerStack.GetLayerStack()) {
 					RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnImguiRender");
 					layer->OnImguiRender();
 				}
-				m_EngineEditorLayer->End();
+				m_ImguiLayer->End();
 			}
-#endif
 
 
 			m_Window->OnUpdate();

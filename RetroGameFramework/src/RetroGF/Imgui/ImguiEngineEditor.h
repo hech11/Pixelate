@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef RGF_DISTRIBUTE
+#if 0
 
 #include "RetroGF/Core/Core.h"
 #include "RetroGF/Core/Layer.h"

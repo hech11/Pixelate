@@ -20,7 +20,6 @@ namespace RGF {
 	Ref<IndexBuffer> Renderer2D::m_Ibo = nullptr;
 
 	
-	Scoped<MaterialManager> Renderer2D::s_MatManager = CreateScoped<MaterialManager>();
 	Scoped<ShaderManager> Renderer2D::s_ShaderManager = CreateScoped<ShaderManager>();
 	Scoped<TextureManager> Renderer2D::s_TextureManager = CreateScoped<TextureManager>();
 
@@ -43,21 +42,21 @@ namespace RGF {
 
 
 
-		BufferLayout layout = 
-		{
-			{ BufferLayoutTypes::Float3, "aPos"},
-			{ BufferLayoutTypes::Char4, "aColor", true},
-			{ BufferLayoutTypes::Float2, "aTexCoords"},
+			BufferLayout layout = 
+			{
+				{ BufferLayoutTypes::Float3, "aPos"},
+				{ BufferLayoutTypes::Char4, "aColor", true},
+				{ BufferLayoutTypes::Float2, "aTexCoords"},
 
-		};
-
-
+			};
 
 
-		m_Vbo->SetLayout(layout);
-		
-		m_Vao->PushVertexBuffer(m_Vbo);
-		m_Vbo->Unbind();
+
+
+			m_Vbo->SetLayout(layout);
+			
+			m_Vao->PushVertexBuffer(m_Vbo);
+			m_Vbo->Unbind();
 
 		}
 
@@ -89,14 +88,14 @@ namespace RGF {
 
 	}
 
-	void Renderer2D::Start(RGF::OrthographicCamera* camera) {
+	void Renderer2D::BeginScene(RGF::OrthographicCamera* camera) {
 
 		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 
 		m_Vbo->Bind();
 		Buffer = (VertexData*)RenderCommand::MapBuffer(true);
 	}
-	void Renderer2D::End() {
+	void Renderer2D::EndScene() {
 
 		RenderCommand::MapBuffer(false);
 		m_Vbo->Unbind();
@@ -150,6 +149,7 @@ namespace RGF {
 
 
 	void Renderer2D::Render() {
+		RGF_PROFILE_FUNCTION();
 
 		m_Vao->Bind();
 		m_Ibo->Bind();

@@ -4,7 +4,6 @@
 
 #include "RetroGF/Rendering/API/Buffer.h"
 #include "RetroGF/Rendering/API/VertexArray.h"
-#include "RetroGF/Rendering/Material.h"
 
 #include "RetroGF/Core/Core.h"
 

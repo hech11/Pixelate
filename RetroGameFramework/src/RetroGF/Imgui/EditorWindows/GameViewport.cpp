@@ -27,6 +27,8 @@ namespace RGF {
 
 	void GameViewport::Init()  {
 		ViewportFBO = FrameBuffer::Create(960, 540);
+		GameViewCameraController = RGF::CreateScoped<OrthographicCameraController>(960/540, true);
+
 	}
 	void GameViewport::ShutDown() {
 		delete ViewportFBO;
@@ -42,7 +44,8 @@ namespace RGF {
 	}
 
 
-	bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
+	#if 0
+bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
 
 		if (e.GetYScroll() > 0)
 			m_ScaleSensitivity -= 0.01f * (m_ScaleSensitivity * 4);
@@ -95,18 +98,17 @@ namespace RGF {
 
 		return true;
 	}
+#endif
 
 
 	void GameViewport::OnEvent(Event& e) {
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(std::bind(&GameViewport::ZoomCamera, this, std::placeholders::_1));
-		dispatcher.Dispatch<MouseMovedEvent>(std::bind(&GameViewport::MoveCamera, this, std::placeholders::_1));
-
+		GameViewCameraController->OnEvent(e);
 	}
 
 	void GameViewport::OnUpdate(float dt) {
 		ViewportFBO->Bind();
 		RenderCommand::Clear();
+		GameViewCameraController->OnUpdate(dt);
 	}
 
 

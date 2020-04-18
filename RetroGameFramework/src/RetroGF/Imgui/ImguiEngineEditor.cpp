@@ -1,6 +1,6 @@
 #include "RGFpch.h"
 
-#ifndef RGF_DISTRIBUTE
+#if 0
 
 #include "ImguiEngineEditor.h"
 

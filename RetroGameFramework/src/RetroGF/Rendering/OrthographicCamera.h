@@ -17,6 +17,9 @@ namespace RGF {
 		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ProjectionViewMatrix; }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
+
+		void SetProjection(float left, float right, float bottom, float top);
+
 		void SetPosition(const glm::vec3& pos);
 		void Move(const glm::vec3& offset);
 

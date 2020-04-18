@@ -2,7 +2,6 @@
 
 #include "RetroGF/Core/Core.h"
 #include "RetroGF/Rendering/Renderable.h"
-#include "RetroGF/Rendering/Material.h"
 #include "RetroGF/Rendering/API/Shader/ShaderManager.h"
 #include "RetroGF/Rendering/API/TextureManager.h"
 
@@ -36,21 +35,19 @@ namespace RGF {
 			static void ShutDown() {
 			}
 			
-			static void Start(RGF::OrthographicCamera* camera);
-			static void End();
+			static void BeginScene(RGF::OrthographicCamera* camera);
+			static void EndScene();
 
 
 			static void Submit(const Ref<Renderable>& renderable);
 			static void Render();
 
-			static MaterialManager& GetMaterialManager() { return *s_MatManager; }
 			static ShaderManager& GetShaderManager() { return *s_ShaderManager; }
 			static TextureManager& GetTextureManager() { return *s_TextureManager; }
 
 		private :
 			struct SceneData {
 				glm::mat4 ViewProjectionMatrix;
-				std::vector<Material*> mats;
 			};
 
 			static SceneData* m_SceneData;
@@ -64,7 +61,6 @@ namespace RGF {
 			static unsigned int m_IndexCount;
 
 
-			static Scoped<MaterialManager> s_MatManager;
 			static Scoped<ShaderManager> s_ShaderManager;
 			static Scoped<TextureManager> s_TextureManager;
 	};
