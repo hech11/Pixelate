@@ -39,7 +39,8 @@ namespace RGF {
 			virtual void Clear() = 0;
 			virtual void SetClearColor(float r, float g, float b, float a) = 0;
 
-
+			//TODO: These parameters should prob be a struct
+			virtual void SetViewport(int x, int y, int width, int height) = 0;
 			virtual void SetDepthTesting(bool enable) = 0;
 			virtual void SetStencilTesting(bool enable) = 0;
 			virtual void RenderWireFrame(bool enable) = 0;
@@ -49,7 +50,7 @@ namespace RGF {
 
 			virtual void* MapBuffer(bool enable) = 0;
 
-			virtual void DrawElements(const Ref<VertexArray>& vao) = 0;
+			virtual void DrawElements(const Ref<VertexArray>& vao, unsigned int count) = 0;
 
 
 			inline const API& GetAPI() const { return *s_API; }

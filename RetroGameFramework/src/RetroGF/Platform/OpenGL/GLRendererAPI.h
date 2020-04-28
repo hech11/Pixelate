@@ -7,29 +7,32 @@
 
 namespace RGF {
 
-	class RGF_API GLRendererAPI : public RendererAPI{
+	class RGF_API GLRendererAPI : public RendererAPI {
 
 
 
-		public :
+	public:
 
-			void Clear() override;
-			void SetClearColor(float r, float g, float b, float a) override;
+		void Clear() override;
+		void SetClearColor(float r, float g, float b, float a) override;
 
-			void SetDepthTesting(bool enable) override;
-			void SetStencilTesting(bool enable) override;
-			void RenderWireFrame(bool enable) override;
-
-			void SetBlending(bool enable) override;
-			void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
+		void SetViewport(int x, int y, int width, int height)override;
 
 
-			void* MapBuffer(bool enable) override;
-			void DrawElements(const Ref<VertexArray>& vao) override;
+		void SetDepthTesting(bool enable) override;
+		void SetStencilTesting(bool enable) override;
+		void RenderWireFrame(bool enable) override;
+
+		void SetBlending(bool enable) override;
+		void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
 
 
-		private :
-			unsigned int ConvertBlendFunctions(const BlendFunc& func);
+		void* MapBuffer(bool enable) override;
+		void DrawElements(const Ref<VertexArray>& vao, unsigned int count) override;
+
+
+	private:
+		unsigned int ConvertBlendFunctions(const BlendFunc& func);
 
 	};
 }

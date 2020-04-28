@@ -14,55 +14,33 @@
 
 // The API equivalent contains a Renderer2D
 
-
-#define RENDERER_MAX_SPRITES 10000
-#define RENDERER_VERTEX_SIZE sizeof(VertexData)
-#define RENDERER_OBJECT_SIZE (RENDERER_VERTEX_SIZE  * 4)
-#define RENDERER_BUFFER_SIZE (RENDERER_OBJECT_SIZE * RENDERER_MAX_SPRITES)
-#define RENDERER_INDICIES_SIZE (RENDERER_MAX_SPRITES * 6)
-
 namespace RGF {
-
-
-
 
 	class RGF_API Renderer2D  {		
 
 		public :
 
+			struct RenderingStatistics {
+				unsigned int IndexCount = 0, VertexSize = 0, DrawCalls = 0,
+					MaxVertexBufferSize = 0, MaxIndexBuferSize = 0, MaxSprites = 0;
+			};
 			static void Init();
 
 			static void ShutDown() {
 			}
 			
-			static void BeginScene(RGF::OrthographicCamera* camera);
-			static void EndScene();
+			static void Begin(RGF::OrthographicCamera* camera);
+			static void End();
 
 
-			static void Submit(const Ref<Renderable>& renderable);
-			static void Render();
+			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
 
-			static ShaderManager& GetShaderManager() { return *s_ShaderManager; }
-			static TextureManager& GetTextureManager() { return *s_TextureManager; }
-
+			static void ResetStatistics();
+			static RenderingStatistics& GetStats();
 		private :
-			struct SceneData {
-				glm::mat4 ViewProjectionMatrix;
-			};
+			static void Flush();
+			static void FlushAndBeginNewBatch();
 
-			static SceneData* m_SceneData;
-
-			static Ref<VertexArray> m_Vao;
-			static Ref<VertexBuffer> m_Vbo;
-			static Ref<IndexBuffer> m_Ibo;
-
-
-			static VertexData* Buffer;
-			static unsigned int m_IndexCount;
-
-
-			static Scoped<ShaderManager> s_ShaderManager;
-			static Scoped<TextureManager> s_TextureManager;
 	};
 
 }

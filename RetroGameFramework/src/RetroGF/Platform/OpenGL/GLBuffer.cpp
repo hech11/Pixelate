@@ -22,28 +22,41 @@ namespace RGF {
 
 	// ------- Vertex buffer -------\\
 
-	GLVertexBuffer::GLVertexBuffer(BufferUsage usage) {
-		m_Usage = usage;
+	GLVertexBuffer::GLVertexBuffer(const void* data, unsigned int size) 
+	: m_Stats({size, BufferUsage::Static })
+	{
 		GLCall(glGenBuffers(1, &m_RendererID));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
+
 	}
 
+
+	GLVertexBuffer::GLVertexBuffer(unsigned int size)
+		: m_Stats({ size, BufferUsage::Dynamic })
+	{
+		GLCall(glGenBuffers(1, &m_RendererID));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW));
+
+	}
 
 	GLVertexBuffer::~GLVertexBuffer() {
 		GLCall(glDeleteBuffers(1, &m_RendererID));
 	}
 
 
-
-	void GLVertexBuffer::Resize(unsigned int size) {
-		m_Size = size;
-	}
-
-
-	void GLVertexBuffer::SetData(const void* data) {
-		if(!m_Size) RGF_CORE_WARN("VertexBuffer's size is set to 0!\n");
+	// TODO: it would be nice to have an offset, future API refactor?
+	void GLVertexBuffer::SetData(const void* data, unsigned int size) {
+		
+		if (m_Stats.Usage == BufferUsage::Dynamic)
+			m_Stats.Size = size;
+		else {
+			RGF_CORE_WARN("Trying to change the data of a vertex buffer while it is set to static draw!\n");
+		}
 
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-		GLCall(glBufferData(GL_ARRAY_BUFFER, m_Size, data, GetBufferPlatformUsage(m_Usage)));
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
 

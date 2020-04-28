@@ -7,68 +7,81 @@
 
 #include "RetroGF/Debug/Instrumentor.h"
 
+
+
+
+
 namespace RGF {
 
-	Renderer2D::SceneData* Renderer2D::m_SceneData = nullptr;
+	// Data that will be sent to the GPU.
+	struct RGF_API QuadVertexData {
+		glm::vec3 Verticies;
+		unsigned int Color;
+		glm::vec2 TextureCoords;
+	};
+
+	struct Renderer2DData {
+
+		static const unsigned int MaxSprites = 20000;
+		static const unsigned int MaxVerticiesSize = MaxSprites * 4;
+		static const unsigned int MaxIndiciesSize = MaxSprites * 6;
+
+		Ref<VertexArray> QuadVertexArray = nullptr;
+		Ref<VertexBuffer> QuadVertexBuffer = nullptr;
+		Ref<Shader> BatchRendererShader = nullptr;
 
 
-	VertexData* Renderer2D::Buffer = nullptr;
-	unsigned int Renderer2D::m_IndexCount = 0;
+		unsigned int IndexCount = 0;
+		QuadVertexData* VertexDataBase = nullptr;
+		QuadVertexData* VertexDataPtr = nullptr;
 
-	Ref<VertexArray> Renderer2D::m_Vao = nullptr;
-	Ref<VertexBuffer> Renderer2D::m_Vbo = nullptr;
-	Ref<IndexBuffer> Renderer2D::m_Ibo = nullptr;
 
-	
-	Scoped<ShaderManager> Renderer2D::s_ShaderManager = CreateScoped<ShaderManager>();
-	Scoped<TextureManager> Renderer2D::s_TextureManager = CreateScoped<TextureManager>();
+		std::array<glm::vec3, 4> QuadPivotPointPositions;
+		std::array<glm::vec2, 4> TextureCoords;
 
+		Renderer2D::RenderingStatistics m_Statistics;
+
+	};
+
+	static Renderer2DData SceneData;
 
 	void Renderer2D::Init() {
 		RGF_PROFILE_FUNCTION();
 
-		m_SceneData = new SceneData;
 
 		{
 			RGF_PROFILE_SCOPE("Renderer2D::Init::Setting-VertexBuffer");
 
-			m_Vao = VertexArray::Create();
-			m_Vao->Bind();
+			SceneData.m_Statistics.MaxIndexBuferSize = SceneData.MaxIndiciesSize;
+			SceneData.m_Statistics.MaxVertexBufferSize = SceneData.MaxVerticiesSize;
+			SceneData.m_Statistics.MaxSprites = SceneData.MaxSprites;
+
+			SceneData.QuadVertexArray = VertexArray::Create();
+			SceneData.QuadVertexBuffer = VertexBuffer::Create(SceneData.MaxVerticiesSize * sizeof(QuadVertexData));
 		
-			m_Vbo = VertexBuffer::Create(BufferUsage::Dynamic);
-			m_Vbo->Bind();
-			m_Vbo->Resize(RENDERER_BUFFER_SIZE);
-			m_Vbo->SetData(nullptr);
-
-
 
 			BufferLayout layout = 
 			{
 				{ BufferLayoutTypes::Float3, "aPos"},
-				{ BufferLayoutTypes::Char4, "aColor", true},
+				{ BufferLayoutTypes::UChar4, "aColor", true},
 				{ BufferLayoutTypes::Float2, "aTexCoords"},
 
 			};
 
+			SceneData.QuadVertexBuffer->SetLayout(layout);
+			SceneData.QuadVertexArray->PushVertexBuffer(SceneData.QuadVertexBuffer);
 
 
-
-			m_Vbo->SetLayout(layout);
-			
-			m_Vao->PushVertexBuffer(m_Vbo);
-			m_Vbo->Unbind();
-
+			SceneData.VertexDataBase = new QuadVertexData[SceneData.MaxVerticiesSize];
 		}
 
 		{
 
 			RGF_PROFILE_SCOPE("Renderer2D::Init::Setting-IndexBuffer");
+			unsigned int* indices = new unsigned int[SceneData.MaxIndiciesSize];
 
-			unsigned short indices[RENDERER_INDICIES_SIZE];
-			RGF_CORE_WARN("Indicies are unsigned shorts, This may cause problems. Change to unsigned ints if so.\n");
 			int offset = 0;
-
-			for (unsigned int i = 0; i < RENDERER_INDICIES_SIZE; i += 6) {
+			for (unsigned int i = 0; i < SceneData.MaxIndiciesSize; i += 6) {
 				indices[i] = offset + 0;
 				indices[i + 1] = offset + 1;
 				indices[i + 2] = offset + 2;
@@ -80,86 +93,114 @@ namespace RGF {
 				offset += 4;
 			}
 
-			m_Ibo = IndexBuffer::Create(indices, RENDERER_INDICIES_SIZE);
-			m_Vao->PushIndexBuffer(m_Ibo);
-			m_Vao->Unbind();
+			Ref<IndexBuffer> ibo = IndexBuffer::Create(indices, SceneData.MaxIndiciesSize);
+			SceneData.QuadVertexArray->PushIndexBuffer(ibo);
+			delete[] indices;
+
+		}
+		{
+
+			RGF_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
+
+			SceneData.TextureCoords[0] = { 0.0f, 0.0f }; // -- bottom left
+			SceneData.TextureCoords[1] = { 1.0f, 0.0f }; // -- bottom right
+			SceneData.TextureCoords[2] = { 1.0f, 1.0f }; // -- top right
+			SceneData.TextureCoords[3] = { 0.0f, 1.0f }; // -- top left
+
+
+			SceneData.QuadPivotPointPositions[0] = { -0.5f, -0.5f, 0.0f }; // -- bottom left
+			SceneData.QuadPivotPointPositions[1] = {  0.5f, -0.5f, 0.0f}; // -- bottom right
+			SceneData.QuadPivotPointPositions[2] = {  0.5f,  0.5f, 0.0f}; // -- top right
+			SceneData.QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f}; // -- top left
+
+			SceneData.BatchRendererShader = Shader::Create();
+			SceneData.BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
 
 		}
 
 	}
 
-	void Renderer2D::BeginScene(RGF::OrthographicCamera* camera) {
+	void Renderer2D::Begin(RGF::OrthographicCamera* camera) {
 
-		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
+		SceneData.BatchRendererShader->Bind();
+		SceneData.BatchRendererShader->SetUniformMatrix("u_ViewProj", camera->GetViewProjectionMatrix());
+		SceneData.IndexCount = 0;
 
-		m_Vbo->Bind();
-		Buffer = (VertexData*)RenderCommand::MapBuffer(true);
+		SceneData.VertexDataPtr = SceneData.VertexDataBase;
+
 	}
-	void Renderer2D::EndScene() {
+	void Renderer2D::End() {
 
-		RenderCommand::MapBuffer(false);
-		m_Vbo->Unbind();
+		unsigned int size = (unsigned char*)SceneData.VertexDataPtr - (unsigned char*)SceneData.VertexDataBase;
+		SceneData.QuadVertexBuffer->SetData(SceneData.VertexDataBase, size);
+
+		SceneData.m_Statistics.VertexSize = size;
+
+		Flush();
 	}
 
-	void Renderer2D::Submit(const Ref<Renderable>& renderable) {
+	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color) {
 
-		const auto& Pos = renderable->GetPosition();
-		const auto& Scale = renderable->GetScale();
-		const auto& Color = renderable->GetColor();
-		const auto& Uv = renderable->GetUV();
+		constexpr unsigned int VertexCount = 4;
 
 
-		unsigned char r = Color.x * 255.0f;
-		unsigned char g = Color.y * 255.0f;
-		unsigned char b = Color.z * 255.0f;
-		unsigned char a = Color.w * 255.0f;
+		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
+			FlushAndBeginNewBatch();
+		}
 
-		unsigned int c = a << 24 | b << 16 | g << 8 | r;
-
-
-
-		// 1st vertex -- bottom left
-		Buffer->verticies = Pos;
-		Buffer->color = c;
-		Buffer->uv = Uv[0];
-		Buffer++;
-
-		// 2st vertex -- bottom right
-		Buffer->verticies = { Pos.x + Scale.x, Pos.y, Pos.z };
-		Buffer->color = c;
-		Buffer->uv = Uv[1];
-		Buffer++;
-
-		// 3st vertex -- top right
-		Buffer->verticies = { Pos.x + Scale.x, Pos.y + Scale.y, Pos.z };
-		Buffer->color = c;
-		Buffer->uv = Uv[2];
-		Buffer++;
+		unsigned char r = color.x * 255.0f;
+		unsigned char g = color.y * 255.0f;
+		unsigned char b = color.z * 255.0f;
+		unsigned char a = color.w * 255.0f;
 
 
-		// 4st vertex -- top left
-		Buffer->verticies = { Pos.x, Pos.y + Scale.y, Pos.z };
-		Buffer->color = c;
-		Buffer->uv = Uv[3];
-		Buffer++;
+		unsigned int col = a << 24 | b << 16 | g << 8 | r;
 
-		m_IndexCount += 6;
+		// Vertex order = bottom left -> bottom right -> top right -> top leftx
+		for (unsigned int i = 0; i < VertexCount; i++) {
+
+			SceneData.VertexDataPtr->Verticies = (SceneData.QuadPivotPointPositions[i] * size) + position;
+			SceneData.VertexDataPtr->Color = col;
+			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
+			SceneData.VertexDataPtr++;
+		}
+
+
+		SceneData.IndexCount += 6;
+		SceneData.m_Statistics.IndexCount += 6;
 
 	}
 
+	void Renderer2D::FlushAndBeginNewBatch() {
 
-	void Renderer2D::Render() {
+		unsigned int size = (unsigned char*)SceneData.VertexDataPtr - (unsigned char*)SceneData.VertexDataBase;
+		SceneData.QuadVertexBuffer->SetData(SceneData.VertexDataBase, size);
+
+		Flush();
+
+		SceneData.IndexCount = 0;
+		SceneData.VertexDataPtr = SceneData.VertexDataBase;
+	}
+
+	void Renderer2D::Flush() {
 		RGF_PROFILE_FUNCTION();
 
-		m_Vao->Bind();
-		m_Ibo->Bind();
+		RenderCommand::DrawElements(SceneData.QuadVertexArray, SceneData.IndexCount);
+		SceneData.m_Statistics.DrawCalls += 1;
 
-		RenderCommand::DrawElements(m_Vao);
 
-		m_IndexCount = 0;
 	}
 
+	void Renderer2D::ResetStatistics() {
+		RGF_PROFILE_FUNCTION();
+		SceneData.m_Statistics.DrawCalls = 0;
+		SceneData.m_Statistics.IndexCount = 0;
+		SceneData.m_Statistics.VertexSize = 0;
+	}
 
+	RGF::Renderer2D::RenderingStatistics& Renderer2D::GetStats() {
+		return SceneData.m_Statistics;
+	}
 
 	
 }

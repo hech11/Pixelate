@@ -9,6 +9,10 @@ namespace RGF {
 	static unsigned int BufferLayoutDataTypeToOpenGLType(BufferLayoutTypes type) 
 	{
 		switch(type) {
+			case BufferLayoutTypes::UChar:	return GL_UNSIGNED_BYTE;
+			case BufferLayoutTypes::UChar2:	return GL_UNSIGNED_BYTE;
+			case BufferLayoutTypes::UChar3:	return GL_UNSIGNED_BYTE;
+			case BufferLayoutTypes::UChar4:	return GL_UNSIGNED_BYTE;
 			case BufferLayoutTypes::Char:	return GL_BYTE;
 			case BufferLayoutTypes::Char2:	return GL_BYTE;
 			case BufferLayoutTypes::Char3:	return GL_BYTE;
@@ -24,7 +28,7 @@ namespace RGF {
 			case BufferLayoutTypes::Float3: return GL_FLOAT;
 			case BufferLayoutTypes::Float2: return GL_FLOAT;
 			case BufferLayoutTypes::Float : return GL_FLOAT;
-			case BufferLayoutTypes::Mat4:	return GL_FLOAT_MAT4x3;
+			case BufferLayoutTypes::Mat4:	return GL_FLOAT;
 		}
 
 		RGF_ASSERT(false, "No buffer types were listed!");

@@ -32,6 +32,10 @@ namespace RGF {
 		Short2,
 		Short3,
 		Short4,
+		UChar,
+		UChar2,
+		UChar3,
+		UChar4,
 		Char,
 		Char2,
 		Char3,
@@ -49,6 +53,10 @@ namespace RGF {
 			case BufferLayoutTypes::Char2: return 2;
 			case BufferLayoutTypes::Char3: return 3;
 			case BufferLayoutTypes::Char4: return 4;
+			case BufferLayoutTypes::UChar: return 1;
+			case BufferLayoutTypes::UChar2: return 2;
+			case BufferLayoutTypes::UChar3: return 3;
+			case BufferLayoutTypes::UChar4: return 4;
 			case BufferLayoutTypes::Float:   return  4;
 			case BufferLayoutTypes::Float2:   return 4 * 2;
 			case BufferLayoutTypes::Float3:   return 4 * 3;
@@ -84,16 +92,26 @@ namespace RGF {
 		{
 			switch (type)
 			{
-				case BufferLayoutTypes::Float:   return 1;
-				case BufferLayoutTypes::Float2:  return 2;
-				case BufferLayoutTypes::Float3:  return 3;
-				case BufferLayoutTypes::Float4:  return 4;
-				case BufferLayoutTypes::Mat4:    return 4 * 4;
-				case BufferLayoutTypes::Int:     return 1;
-				case BufferLayoutTypes::Int2:    return 2;
-				case BufferLayoutTypes::Int3:    return 3;
-				case BufferLayoutTypes::Int4:    return 4;
+				case BufferLayoutTypes::Char:	  return 1;
+				case BufferLayoutTypes::Char2:	  return 2;
+				case BufferLayoutTypes::Char3:    return 3;
+				case BufferLayoutTypes::Char4:	  return 4;
+				case BufferLayoutTypes::UChar:	  return 1;
+				case BufferLayoutTypes::UChar2:	  return 2;
+				case BufferLayoutTypes::UChar3:    return 3;
+				case BufferLayoutTypes::UChar4:	  return 4;
+				case BufferLayoutTypes::Float:    return 1;
+				case BufferLayoutTypes::Float2:   return 2;
+				case BufferLayoutTypes::Float3:   return 3;
+				case BufferLayoutTypes::Float4:   return 4;
+				case BufferLayoutTypes::Mat4:     return 4 * 4;
+				case BufferLayoutTypes::Int:      return 1;
+				case BufferLayoutTypes::Int2:     return 2;
+				case BufferLayoutTypes::Int3:     return 3;
+				case BufferLayoutTypes::Int4:     return 4;
 			}
+			RGF_ASSERT(false, "Unknown component count!");
+			return 0;
 		}
 
 
@@ -150,11 +168,9 @@ namespace RGF {
 
 			virtual ~VertexBuffer() = default;
 
-			virtual void SetData(const void* data) = 0;
-			virtual void Resize(unsigned int size) = 0;
-
+			virtual void SetData(const void* data, unsigned int size) = 0;
+			
 			virtual void SetLayout(const RGF::BufferLayout& layout) = 0;
-
 
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
@@ -163,7 +179,8 @@ namespace RGF {
 			virtual BufferLayout& GetLayout() = 0;
 			
 		public :
-			static Ref<VertexBuffer> Create(BufferUsage usage = BufferUsage::Static);
+			static Ref<VertexBuffer> Create(const void* data, unsigned int size);
+			static Ref<VertexBuffer> Create(unsigned int size);
 
 ;
 

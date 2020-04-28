@@ -59,8 +59,9 @@ namespace RGF {
 			Scoped<WindowImpl> m_Window;
 
 			// TODO: This is temp, may need to refactor some of these components / systems
+#ifndef RGF_DISTRIBUTE
 			ImguiLayer* m_ImguiLayer;
-			Scoped<OrthographicCamera> m_Camera;
+#endif
 
 
 			LayerStack m_LayerStack;
@@ -71,6 +72,7 @@ namespace RGF {
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);
+			bool OnWindowResize(WindowResizeEvent& e);
 
 	};
 

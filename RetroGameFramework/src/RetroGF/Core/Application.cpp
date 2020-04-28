@@ -35,12 +35,12 @@ namespace RGF {
 		RGF_PROFILE_FUNCTION();
 		s_Instance = this;
 		m_Window = Scoped<WindowImpl>(WindowImpl::Create({960,540}));
-
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+#ifndef RGF_DISTRIBUTE
 		m_ImguiLayer = new ImguiLayer;
-		m_Camera = CreateScoped<OrthographicCamera>(-8.0f, 8.0f, -4.5f, 4.5f);
+#endif
 
 
 
@@ -78,6 +78,7 @@ namespace RGF {
 
 		// Checks if the event was a "WindowCloseEvent". If it was the event, call the "OnWindowClose" function.
 		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
+		dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
 
 		for (Layer* layer : m_LayerStack.GetLayerStack()) {
 			layer->OnEvent(e);
@@ -103,7 +104,7 @@ namespace RGF {
 		while (m_IsRunning) {
 			RGF_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
 
-			float time = m_AppTimer.GetElapsedMillis();
+			float time = m_AppTimer.GetElapsedSeconds();
 			float timeStep = time - LastTime;
 			LastTime = time;
 
@@ -123,6 +124,8 @@ namespace RGF {
 			}
 
 			
+#ifndef RGF_DISTRIBUTE
+
 			{
 				RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");
 				m_ImguiLayer->Start();
@@ -132,6 +135,7 @@ namespace RGF {
 				}
 				m_ImguiLayer->End();
 			}
+#endif
 
 
 			m_Window->OnUpdate();
@@ -154,7 +158,10 @@ namespace RGF {
 		m_IsRunning = false;
 		return true;
 	}
-
+	bool Application::OnWindowResize(WindowResizeEvent& e) {
+		RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+		return true;
+	}
 
 
 }

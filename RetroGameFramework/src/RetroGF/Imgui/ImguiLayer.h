@@ -1,5 +1,6 @@
 #pragma once
 
+#ifndef RGF_DISTRIBUTE
 
 #include "RetroGF/Core/Core.h"
 #include "RetroGF/Core/Layer.h"
@@ -31,3 +32,5 @@ namespace RGF {
 	};
 
 }
+
+#endif

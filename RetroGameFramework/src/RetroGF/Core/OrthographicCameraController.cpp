@@ -7,24 +7,29 @@
 namespace RGF {
 
 	OrthographicCameraController::OrthographicCameraController(float aspectRadio, bool rotation)
-		: m_AspectRatio(aspectRadio), m_ZoomLevel(1.0f), m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_Rotation(rotation)
+		: m_AspectRatio(aspectRadio),
+		m_ZoomLevel(1.0f),
+		m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
+		m_Rotation(rotation),
+		m_CameraPosition({ 0.0f, 0.0f, 0.0f }),
+		m_CameraRotation(0.0f)
 	{
 
 	}
 
 	void OrthographicCameraController::OnUpdate(float ts) {
 		if (Input::IsKeyDown(RGF_KEY_A)) {
-			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
+			m_CameraPosition.x -= m_CameraTranslationSpeed * ts * m_ZoomLevel;
 		}
 		else if (Input::IsKeyDown(RGF_KEY_D)) {
-			m_CameraPosition.x += m_CameraTranslationSpeed * ts;
+			m_CameraPosition.x += m_CameraTranslationSpeed * ts * m_ZoomLevel;
 		}
 
 		if (Input::IsKeyDown(RGF_KEY_W)) {
-			m_CameraPosition.y += m_CameraTranslationSpeed * ts;
+			m_CameraPosition.y += m_CameraTranslationSpeed * ts * m_ZoomLevel;
 		}
 		else if (Input::IsKeyDown(RGF_KEY_S)) {
-			m_CameraPosition.y -= m_CameraTranslationSpeed * ts;
+			m_CameraPosition.y -= m_CameraTranslationSpeed * ts * m_ZoomLevel;
 		}
 
 
@@ -59,7 +64,7 @@ namespace RGF {
 	bool OrthographicCameraController::OnWindowResize(WindowResizeEvent& e)
 	{
 
-		m_AspectRatio = e.GetWidth() / e.GetHeight();
+		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}

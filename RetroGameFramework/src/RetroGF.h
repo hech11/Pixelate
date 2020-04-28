@@ -10,6 +10,7 @@
 #include "RetroGF/Core/MouseButtonCodes.h"
 #include "RetroGF/Core/LayerStack.h"
 #include "RetroGF/Core/Layer.h"
+#include "RetroGF/Core/OrthographicCameraController.h"
 
 
 // Utility.
@@ -51,6 +52,7 @@
 #include "RetroGF/Rendering/OrthographicCamera.h"
 
 #include "RetroGF/Rendering/Renderer2D.h"
+#include "RetroGF/Rendering/RenderCommand.h"
 
 // Debug.
 #include "RetroGF/Debug/Instrumentor.h"

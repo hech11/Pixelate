@@ -10,13 +10,14 @@ namespace RGF {
 
 	class RGF_API GLVertexBuffer : public VertexBuffer {
 		public :
-			GLVertexBuffer(BufferUsage usage = BufferUsage::Static);
+			GLVertexBuffer(const void* data, unsigned int size);
+			GLVertexBuffer(unsigned int size);
+
+
 			virtual ~GLVertexBuffer();
 
 
-			void SetData(const void* data) override;
-			void Resize(unsigned int size) override;
-
+			void SetData(const void* data, unsigned int size) override;
 			void SetLayout(const BufferLayout& layout) override;
 
 
@@ -28,11 +29,16 @@ namespace RGF {
 
 			
 		private :
+
+			struct VertexBufferStatistics {
+				unsigned int Size;
+				BufferUsage Usage;
+			};
+			VertexBufferStatistics m_Stats;
+
+			BufferLayout m_Layout;
 			unsigned int m_RendererID;
 
-			unsigned int m_Size;
-			BufferUsage m_Usage;
-			BufferLayout m_Layout;
 
 	};
 

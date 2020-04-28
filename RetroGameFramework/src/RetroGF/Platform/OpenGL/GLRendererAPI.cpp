@@ -50,6 +50,11 @@ namespace RGF {
 		GLCall(glClearColor(r, g, b, a));
 	}
 
+	void GLRendererAPI::SetViewport(int x, int y, int width, int height) {
+		GLCall(glViewport(x, y, width, height));
+	}
+
+
 	void GLRendererAPI::SetDepthTesting(bool enable) {
 		if (enable) {
 			GLCall(glEnable(GL_DEPTH_TEST));
@@ -99,8 +104,12 @@ namespace RGF {
 			return nullptr;
 		}
 	}
-	void GLRendererAPI::DrawElements(const Ref<VertexArray>& vao) {
-		glDrawElements(GL_TRIANGLES, vao->GetIbos().GetCount(), vao->GetIbos().GetType(), nullptr);
+	void GLRendererAPI::DrawElements(const Ref<VertexArray>& vao, unsigned int count) {
+
+
+		unsigned int indexCount = count ? count : vao->GetIbos().GetCount();
+
+		glDrawElements(GL_TRIANGLES, indexCount, vao->GetIbos().GetType(), nullptr);
 	}
 
 

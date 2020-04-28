@@ -12,14 +12,20 @@ namespace RGF {
 
 	// ------- Vertex buffer -------\\
 
-	Ref<VertexBuffer> VertexBuffer::Create(BufferUsage usage) {
+	Ref<VertexBuffer> VertexBuffer::Create(const void* data, unsigned int size) {
 
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return CreateRef<GLVertexBuffer>(usage);
+				return CreateRef<GLVertexBuffer>(data, size);
 		}
 	}
+	Ref<VertexBuffer> VertexBuffer::Create(unsigned int size) {
 
+		switch (RenderingContext::GetContext()) {
+		case RenderingContext::ContextAPI::OPENGL:
+			return CreateRef<GLVertexBuffer>(size);
+		}
+	}
 
 	
 	// ------- Index buffer -------\\

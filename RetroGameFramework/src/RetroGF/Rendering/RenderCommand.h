@@ -17,7 +17,9 @@ namespace RGF {
 				s_API->SetClearColor(r, g, b, a);
 			}
 
-
+			inline static void SetViewport(int x, int y, int width, int height) {
+				s_API->SetViewport(x, y, width, height);
+			}
 
 			inline static void SetDepthTesting(bool enable) {
 				s_API->SetDepthTesting(enable);
@@ -39,7 +41,7 @@ namespace RGF {
 			inline static void* MapBuffer(bool enable) { return s_API->MapBuffer(enable); }
 
 
-			inline static void DrawElements(const Ref<VertexArray>& vao) { return s_API->DrawElements(vao); }
+			inline static void DrawElements(const Ref<VertexArray>& vao, unsigned int count) { return s_API->DrawElements(vao, count); }
 
 
 		private :

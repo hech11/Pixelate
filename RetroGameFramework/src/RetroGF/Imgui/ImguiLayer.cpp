@@ -1,5 +1,6 @@
 #include "RGFpch.h"
 
+#ifndef RGF_DISTRIBUTE
 
 #include "ImguiLayer.h"
 
@@ -88,9 +89,9 @@ namespace RGF {
 
 
 	void ImguiLayer::OnImguiRender() {
-
+		
 		// Docking space and the menu bar.
-		static bool opt_fullscreen_persistant = true;
+		static bool opt_fullscreen_persistant = false;
 		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
 		bool opt_fullscreen = opt_fullscreen_persistant;
 
@@ -124,10 +125,11 @@ namespace RGF {
 
 
 		ImGui::End();
-
+		
 	}
 
 
 
 }
 
+#endif
