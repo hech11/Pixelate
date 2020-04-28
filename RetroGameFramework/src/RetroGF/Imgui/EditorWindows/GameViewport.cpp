@@ -12,8 +12,6 @@
 #include <GLFW/include/GLFW/glfw3.h>
 
 
-#include "RetroGF/Rendering/API/FrameBuffer.h"
-
 #include "RetroGF/Core/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
 #include "RetroGF/Rendering/RenderCommand.h"
@@ -26,7 +24,6 @@
 namespace RGF {
 
 	void GameViewport::Init()  {
-		ViewportFBO = FrameBuffer::Create(960, 540);
 		GameViewCameraController = RGF::CreateScoped<OrthographicCameraController>(960/540, true);
 
 	}
@@ -43,8 +40,8 @@ namespace RGF {
 
 	}
 
-
 	#if 0
+
 bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
 
 		if (e.GetYScroll() > 0)
@@ -106,7 +103,6 @@ bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
 	}
 
 	void GameViewport::OnUpdate(float dt) {
-		ViewportFBO->Bind();
 		RenderCommand::Clear();
 		GameViewCameraController->OnUpdate(dt);
 	}
@@ -126,11 +122,8 @@ bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
 		m_GameviewWindowPos = { gameviewportWindowScale.x, gameviewportWindowScale.y };
 
 		const ImVec2& windowscale = ImGui::GetWindowSize();
-		ImGui::Image((void*)ViewportFBO->GetTexture(), { windowscale.x, windowscale.y - 35.0f }, { 0, 1 }, {1, 0});
 		ImGui::End();
 
-		ViewportFBO->Unbind();
-		ViewportFBO->Clear();
 
 		// Properties window.
 		ImGui::Begin("Props", (bool*)0, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoDocking

@@ -6,45 +6,14 @@
 
 
 // Texture interface.
-
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
 
 namespace RGF {
 	// A abstracted way to format the textures.
 	// The abstraction code should be implemented in the API texture's ".cpp" file.
 
-	enum class TextureFormat {
-		None = -1,
-		RGBA,
-		RGB
-	};
+	
 
-	enum class TextureFilter {
-		None = -1,
-		Nearest,
-		Linear,
-	};
-
-	enum class TextureWrap {
-		None = -1,
-		Clamp_To_Edge,
-		Repeat
-	};
-
-	struct TextureParameters {
-
-		TextureParameters(TextureFormat format, TextureFilter filter, TextureWrap wrap) 
-			: Format(format), Filter(filter), Wrap(wrap) 
-		{}
-
-		TextureParameters(){}
-
-
-		TextureFormat Format = TextureFormat::RGBA;
-		TextureFilter Filter = TextureFilter::Nearest;
-		TextureWrap Wrap = TextureWrap::Clamp_To_Edge;
-
-	};
 
 
 
@@ -52,6 +21,35 @@ namespace RGF {
 	class RGF_API Texture {
 
 		public :
+					
+			struct TextureProperties {
+				enum class Format {
+					None = -1,
+					RGBA,
+					RGB
+				};
+				enum class Filter {
+					None = -1,
+					Nearest,
+					Linear,
+				};
+				enum class Wrap {
+					None = -1,
+					Clamp_To_Edge,
+					Repeat
+				};
+
+				Format TexFormat = Format::RGBA;
+				Filter TexFilter = Filter::Nearest;
+				Wrap TexWrap = Wrap::Clamp_To_Edge;
+				bool GenerateMipMaps = false;
+
+				int Width = 0, Height = 0, BPP = 0;
+				mutable unsigned char Slot = 0;
+
+				mutable bool IsBound = false;
+			};
+
 
 			Texture() {}
 			virtual ~Texture(){}
@@ -59,25 +57,26 @@ namespace RGF {
 			virtual void Bind(unsigned char slot = 0) const = 0;
 			virtual void Unbind() const = 0;
 
-			virtual void LoadTexture(const std::string& filepath) = 0;
+			//TODO: Set data only sets the whole texture.
+			virtual void SetData(void* data, unsigned int size) = 0;
 
 			virtual unsigned int GetHandleID() const = 0;
 
-			inline int GetWidth() const { return m_Width; }
-			inline int GetHeight() const { return m_Height; }
-			inline int GetBPP() const { return m_BPP; }
-			inline unsigned char GetCurrentSlot() const { return m_Slot; }
-			inline bool IsBound() const { return m_IsBound; }
+
+			//TODO: Should this be stored in the platform specific classes or in this class?
+			inline int GetWidth() const { return m_Props.Width; }
+			inline int GetHeight() const { return m_Props.Height; }
+			inline int GetBPP() const { return m_Props.BPP; }
+			inline unsigned char GetCurrentSlot() const { return m_Props.Slot; }
+			inline bool IsBound() const { return m_Props.IsBound; }
 
 		public :
-			static Ref<Texture> Create(unsigned int width, unsigned int height, TextureParameters params);
+			static Ref<Texture> Create(const std::string& filepath, TextureProperties props = TextureProperties());
+			static Ref<Texture> Create(unsigned int width, unsigned int height, Texture::TextureProperties::Format format = Texture::TextureProperties::Format::RGBA);
 
 		protected :
-			TextureParameters m_Params;
-			int m_Width, m_Height, m_BPP;
-			mutable unsigned char m_Slot;
-
-			mutable bool m_IsBound;
+			TextureProperties m_Props;
+			
 	};
 
 }

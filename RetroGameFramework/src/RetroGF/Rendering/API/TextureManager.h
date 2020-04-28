@@ -9,7 +9,7 @@ namespace RGF {
 
 	class TextureManager {
 		public :
-			struct TextureIndexData {
+			struct TexturePairData {
 				std::string Name;
 				Ref<RGF::Texture> Texture;
 			};
@@ -50,14 +50,14 @@ namespace RGF {
 	
 
 	
-			TextureIndexData& Find(const std::string& name) {
+			TexturePairData& Find(const std::string& name) {
 				for (auto & Texture : m_Textures) {
 					if (name == Texture.Name)
 						return Texture;
 				}
 			}
 
-			TextureIndexData& Find(const Ref<Texture>& texture) {
+			TexturePairData& Find(const Ref<Texture>& texture) {
 				for (auto & Texture : m_Textures) {
 					if (texture == Texture.Texture)
 						return Texture;
@@ -71,12 +71,11 @@ namespace RGF {
 				}
 			}
 
-			std::vector<TextureIndexData>& GetTextures() { return m_Textures; }
+			std::vector<TexturePairData>& GetTextures() { return m_Textures; }
 
 
 		private :
-			std::vector<TextureIndexData> m_Textures;
-			bool m_CurrentTextureBound = false;
+			std::vector<TexturePairData> m_Textures;
 	};
 
 }

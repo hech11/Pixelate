@@ -7,11 +7,17 @@
 
 
 namespace RGF {
-	Ref<Texture> Texture::Create(unsigned int width, unsigned int height, TextureParameters params) {
+
+	Ref<Texture> Texture::Create(const std::string& filepath, TextureProperties props) {
 		switch (RenderingContext::GetContext()) {
 			case RenderingContext::ContextAPI::OPENGL:
-				return CreateRef<GLTexture>(width, height, params);
-		}
+				return CreateRef<GLTexture>(filepath, props);
+			}
 	}
-
+	Ref<Texture> Texture::Create(unsigned int width, unsigned int height, Texture::TextureProperties::Format format) {
+		switch (RenderingContext::GetContext()) {
+			case RenderingContext::ContextAPI::OPENGL:
+				return CreateRef<GLTexture>(width, height, format);
+			}
+	}
 }

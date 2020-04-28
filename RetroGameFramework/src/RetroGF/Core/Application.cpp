@@ -7,7 +7,6 @@
 #include <RetroGF/Rendering/API/Buffer.h>
 #include <RetroGF/Rendering/API/VertexArray.h>
 #include <RetroGF/Rendering/API/Texture.h>
-#include <RetroGF/Rendering/API/FrameBuffer.h>
 
 
 #include <GLM/glm/gtc/matrix_transform.hpp>

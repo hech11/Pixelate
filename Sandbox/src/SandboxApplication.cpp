@@ -12,6 +12,8 @@ class ExampleLayer : public RGF::Layer {
 	glm::vec3 SpritePosition, SpriteSize;
 	glm::vec4 SpriteColor;
 
+	RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
+
 
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
 	public:
@@ -23,6 +25,12 @@ class ExampleLayer : public RGF::Layer {
 
 			m_CameraController = RGF::CreateScoped<RGF::OrthographicCameraController>(16.0f / 9.0f, true);
 
+
+			LoadedFromFilepath = RGF::Texture::Create("assets/graphics/TestSpritesheet.png");
+			GeneratedTexture = RGF::Texture::Create(1, 1);
+			GeneratedTexture->Bind();
+			unsigned int data = 0xffA0Efff;
+			GeneratedTexture->SetData(&data, sizeof(unsigned int));
 		}
 	
 	
@@ -79,6 +87,15 @@ class ExampleLayer : public RGF::Layer {
 			ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
 			ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
 			ImGui::End();
+
+
+			ImGui::Begin("Texture");
+			ImGui::Text("Loading texture via filepath");
+			ImGui::Image((ImTextureID)LoadedFromFilepath->GetHandleID(), { (float)LoadedFromFilepath->GetWidth(), (float)LoadedFromFilepath->GetHeight() });
+			ImGui::Text("Generating texture in code");
+			ImGui::Image((ImTextureID)GeneratedTexture->GetHandleID(), { 200.0f, 200.0f });
+			ImGui::End();
+
 #endif
 
 
