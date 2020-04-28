@@ -34,6 +34,7 @@ namespace RGF {
 
 
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
+			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f});
 
 			static void ResetStatistics();
 			static RenderingStatistics& GetStats();

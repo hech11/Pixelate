@@ -185,6 +185,9 @@ namespace RGF {
 		
 	}
 
+	void GLShader::SetUniform1iArray(const std::string& uniformName, unsigned int count, const int* values) {
+		glUniform1iv(GetUniformLocation(uniformName), count, values);
+	}
 
 	void GLShader::SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) {
 		glUniform2i(GetUniformLocation(uniformName), values.x, values.y);
@@ -234,5 +237,7 @@ namespace RGF {
 
 		//m_Uniforms.push_back({ uniformName, ShaderUnifromType::Mat4, location });
 	}
+
+
 
 }

@@ -38,6 +38,7 @@ namespace RGF {
 
 
 			virtual void SetUniform1i(const std::string& uniformName, const int value) = 0;
+			virtual void SetUniform1iArray(const std::string& uniformName, unsigned int count, const int* values) = 0;
 			virtual void SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) = 0;
 			virtual void SetUniform3i(const std::string& uniformName, const glm::i32vec3& values) = 0;
 			virtual void SetUniform4i(const std::string& uniformName, const glm::i32vec4& values) = 0;

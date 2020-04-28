@@ -5,6 +5,7 @@
 #include "RetroGF/Core/Window.h"
 #include "RetroGF/Core/Application.h"
 
+#include "RetroGF/Rendering/RenderCommand.h"
 #include <GLAD/include/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
@@ -50,7 +51,15 @@ namespace RGF {
 		RGF_CORE_TRACE("Vendor: %s\n", GetVendorName().c_str());
 		RGF_CORE_TRACE("Version: %s\n", GetVersion().c_str());
 		RGF_CORE_TRACE("Shading Language version: %s\n", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
-		RGF_CORE_TRACE("GPU Card: %s\n\n\n", GetRendererName().c_str());
+		RGF_CORE_TRACE("GPU Card: %s\n", GetRendererName().c_str());
+
+		int maxTextureSlots, maxTexturesAllowedToUse;
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureSlots);
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTexturesAllowedToUse);
+		RGF_CORE_TRACE("Max texture slots: %d\n", maxTextureSlots);
+		RGF_CORE_TRACE("Max texture slots you can use: %d\n\n\n", maxTexturesAllowedToUse);
+
+		RenderCommand::Init();
 
 	}
 	void GLRenderingContext::SwapBuffers() {

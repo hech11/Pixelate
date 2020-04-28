@@ -13,6 +13,8 @@ namespace RGF {
 
 	public:
 
+		void Init() override;
+
 		void Clear() override;
 		void SetClearColor(float r, float g, float b, float a) override;
 

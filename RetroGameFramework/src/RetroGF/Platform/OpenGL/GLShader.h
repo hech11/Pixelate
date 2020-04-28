@@ -36,6 +36,7 @@ namespace RGF {
 
 
 			void SetUniform1i(const std::string& uniformName, const int value) override;
+			void SetUniform1iArray(const std::string& uniformName, unsigned int count, const int* values) override;
 			void SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) override;
 			void SetUniform3i(const std::string& uniformName, const glm::i32vec3& values) override;
 			void SetUniform4i(const std::string& uniformName, const glm::i32vec4& values) override;

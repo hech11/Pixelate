@@ -67,8 +67,6 @@ namespace RGF {
 		unsigned char* PixData = stbi_load(filepath.c_str(), &m_Props.Width, &m_Props.Height, &m_Props.BPP, 4);
 		if (PixData) {
 			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, PixData));
-			if (m_Props.GenerateMipMaps)
-				GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 		}
 		else {
 			RGF_ERROR("Failed to load '%s' !", filepath.c_str());

@@ -11,6 +11,10 @@ namespace RGF {
 
 		public :
 
+			inline static void Init() {
+				s_API->Init();
+			}
+
 			inline static void Clear() { s_API->Clear(); };
 
 			inline static void SetClearColor(float r, float g, float b, float a) {

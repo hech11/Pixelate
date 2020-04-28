@@ -25,11 +25,11 @@ class ExampleLayer : public RGF::Layer {
 
 			m_CameraController = RGF::CreateScoped<RGF::OrthographicCameraController>(16.0f / 9.0f, true);
 
-
-			LoadedFromFilepath = RGF::Texture::Create("assets/graphics/TestSpritesheet.png");
+			RGF::Texture::TextureProperties props;
+			props.GenerateMipMaps = false;
+			LoadedFromFilepath = RGF::Texture::Create("assets/graphics/TestSpritesheet.png", props);
 			GeneratedTexture = RGF::Texture::Create(1, 1);
-			GeneratedTexture->Bind();
-			unsigned int data = 0xffA0Efff;
+			unsigned int data = 0xffA0Ef22;
 			GeneratedTexture->SetData(&data, sizeof(unsigned int));
 		}
 	
@@ -53,9 +53,13 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::ResetStatistics();
 
 				Renderer2D::Begin(&m_CameraController->GetCamera());
-				
-				
+
+
 				Renderer2D::DrawSprite(SpritePosition, SpriteSize, SpriteColor);
+				Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, {1.0f, 1.0f, 1.0f, 1.0f});
+				Renderer2D::DrawSprite({-1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
+				Renderer2D::DrawSprite({ 2.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
+				Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
 
 				Renderer2D::End();
 
@@ -88,13 +92,6 @@ class ExampleLayer : public RGF::Layer {
 			ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
 			ImGui::End();
 
-
-			ImGui::Begin("Texture");
-			ImGui::Text("Loading texture via filepath");
-			ImGui::Image((ImTextureID)LoadedFromFilepath->GetHandleID(), { (float)LoadedFromFilepath->GetWidth(), (float)LoadedFromFilepath->GetHeight() });
-			ImGui::Text("Generating texture in code");
-			ImGui::Image((ImTextureID)GeneratedTexture->GetHandleID(), { 200.0f, 200.0f });
-			ImGui::End();
 
 #endif
 

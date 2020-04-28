@@ -26,6 +26,9 @@ namespace RGF {
 			unsigned int GetHandleID() const override { return m_RendererID; };
 
 
+			bool operator==(const Texture& other) const override { return m_RendererID == other.GetHandleID(); };
+
+
 		private :
 			unsigned int m_RendererID;
 	};

@@ -70,6 +70,8 @@ namespace RGF {
 			inline unsigned char GetCurrentSlot() const { return m_Props.Slot; }
 			inline bool IsBound() const { return m_Props.IsBound; }
 
+			virtual bool operator==(const Texture& other) const = 0;
+
 		public :
 			static Ref<Texture> Create(const std::string& filepath, TextureProperties props = TextureProperties());
 			static Ref<Texture> Create(unsigned int width, unsigned int height, Texture::TextureProperties::Format format = Texture::TextureProperties::Format::RGBA);
