@@ -10,6 +10,7 @@ class ExampleLayer : public RGF::Layer {
 
 
 	glm::vec3 SpritePosition, SpriteSize;
+	float Rotation = 0.0f;
 	glm::vec4 SpriteColor;
 
 	RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
@@ -25,9 +26,7 @@ class ExampleLayer : public RGF::Layer {
 
 			m_CameraController = RGF::CreateScoped<RGF::OrthographicCameraController>(16.0f / 9.0f, true);
 
-			RGF::Texture::TextureProperties props;
-			props.GenerateMipMaps = false;
-			LoadedFromFilepath = RGF::Texture::Create("assets/graphics/TestSpritesheet.png", props);
+			LoadedFromFilepath = RGF::Texture::Create("assets/graphics/TestSpritesheet.png");
 			GeneratedTexture = RGF::Texture::Create(1, 1);
 			unsigned int data = 0xffA0Ef22;
 			GeneratedTexture->SetData(&data, sizeof(unsigned int));
@@ -55,11 +54,15 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::Begin(&m_CameraController->GetCamera());
 
 
-				Renderer2D::DrawSprite(SpritePosition, SpriteSize, SpriteColor);
+				Renderer2D::DrawSprite(SpritePosition, Rotation, SpriteSize, SpriteColor);
+				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
+				Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f,{.5f, 5.f, 1.0f}, SpriteColor);
 				Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, {1.0f, 1.0f, 1.0f, 1.0f});
-				Renderer2D::DrawSprite({-1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
+				Renderer2D::DrawSprite({ -1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
+				Renderer2D::DrawSprite({ -2.0f, 1.0f, 0.0f }, 25.0f, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 				Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
+				Renderer2D::DrawSprite({ 2.0f, 2.0f, 0.0f }, 75.0f, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 
 				Renderer2D::End();
 
@@ -88,6 +91,7 @@ class ExampleLayer : public RGF::Layer {
 
 			ImGui::Begin("Sprite props");
 			ImGui::SliderFloat3("Sprite Position", glm::value_ptr(SpritePosition), -10.0f, 10.0f, "%.2f");
+			ImGui::SliderFloat("Sprite Rotation", &Rotation, -360.0f, 360.0f, "%.2f");
 			ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
 			ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
 			ImGui::End();

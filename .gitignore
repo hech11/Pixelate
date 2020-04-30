@@ -1,9 +1,10 @@
 .vs/
 bin/
 bin-int/
-
+logs/Profiling/
 
 *.vcxproj
 *.vcxproj.filters
 *.user
 *.sln
+*.json

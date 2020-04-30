@@ -40,7 +40,7 @@ namespace RGF {
 		QuadVertexData* VertexDataPtr = nullptr;
 
 
-		std::array<glm::vec3, 4> QuadPivotPointPositions;
+		std::array<glm::vec4, 4> QuadPivotPointPositions;
 		std::array<glm::vec2, 4> TextureCoords;
 		std::array<Ref<Texture>, MaxTextureSlots> AllTextureSlots;
 		Ref<Texture> DefaultWhiteTexture;
@@ -117,10 +117,10 @@ namespace RGF {
 			SceneData.TextureCoords[3] = { 0.0f, 1.0f }; // -- top left
 
 
-			SceneData.QuadPivotPointPositions[0] = { -0.5f, -0.5f, 0.0f }; // -- bottom left
-			SceneData.QuadPivotPointPositions[1] = {  0.5f, -0.5f, 0.0f}; // -- bottom right
-			SceneData.QuadPivotPointPositions[2] = {  0.5f,  0.5f, 0.0f}; // -- top right
-			SceneData.QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f}; // -- top left
+			SceneData.QuadPivotPointPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f }; // -- bottom left
+			SceneData.QuadPivotPointPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f}; // -- bottom right
+			SceneData.QuadPivotPointPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f}; // -- top right
+			SceneData.QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f}; // -- top left
 
 			SceneData.DefaultWhiteTexture = Texture::Create(1, 1, Texture::TextureProperties::Format::RGB);
 			unsigned int whiteTextureData = 0xffffffff;
@@ -172,6 +172,12 @@ namespace RGF {
 
 	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color) {
 		RGF_PROFILE_FUNCTION();
+		DrawSprite(position, 0.0f, size, color);
+	}
+
+
+	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color) {
+		RGF_PROFILE_FUNCTION();
 
 		constexpr unsigned int VertexCount = 4;
 
@@ -188,10 +194,14 @@ namespace RGF {
 
 		unsigned int col = a << 24 | b << 16 | g << 8 | r;
 
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
+			glm::scale(glm::mat4(1.0f), size);
+
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
-			SceneData.VertexDataPtr->Verticies = (SceneData.QuadPivotPointPositions[i] * size) + position;
+			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
 			SceneData.VertexDataPtr->Color = col;
 			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
 			SceneData.VertexDataPtr->TextureIndex = 0.0f;
@@ -204,7 +214,15 @@ namespace RGF {
 
 	}
 
+
 	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor) {
+		RGF_PROFILE_FUNCTION();
+		DrawSprite(position, 0.0f, size, texture, tintColor);
+	}
+
+
+
+	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor) {
 		RGF_PROFILE_FUNCTION();
 
 		constexpr unsigned int VertexCount = 4;
@@ -239,10 +257,17 @@ namespace RGF {
 			SceneData.TextureSlotIndex++;
 		}
 
+
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
+			glm::scale(glm::mat4(1.0f), size);
+
+
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
-			SceneData.VertexDataPtr->Verticies = (SceneData.QuadPivotPointPositions[i] * size) + position;
+			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
 			SceneData.VertexDataPtr->Color = color;
 			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
 			SceneData.VertexDataPtr->TextureIndex = textureIndex;
@@ -253,7 +278,6 @@ namespace RGF {
 		SceneData.IndexCount += 6;
 		SceneData.m_Statistics.IndexCount += 6;
 	}
-
 
 	void Renderer2D::FlushAndBeginNewBatch() {
 		RGF_PROFILE_FUNCTION();
