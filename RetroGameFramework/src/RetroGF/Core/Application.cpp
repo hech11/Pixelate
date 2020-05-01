@@ -92,11 +92,9 @@ namespace RGF {
 
 		//TODO: Need to refactor the game loop for a better FPS counter
 		float FPS = 60.0f;
-		float Time = 0.0f;
 		float UpdateTimer = 0.0f;
 		float UpdateTick = 1.0f / FPS;
-		unsigned int Frames = 0;
-		unsigned int Updates = 0;
+		float Time = 0.0f;
 
 		float LastTime = 0.0f;
 
@@ -107,12 +105,6 @@ namespace RGF {
 			float timeStep = time - LastTime;
 			LastTime = time;
 
-
-			if (m_AppTimer.GetElapsedSeconds() - UpdateTimer > UpdateTick) {
-				Updates++;
-				UpdateTimer += UpdateTick;
-			}
-			Frames++;
 
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
@@ -141,12 +133,10 @@ namespace RGF {
 
 			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
 				Time += 1.0f;
-				RGF_CORE_MSG("%d: FPS\t%d: UPS\n", Frames, Updates);
+				RGF_CORE_MSG("%f: timestep\n", timeStep*1000.0f);
 #ifdef RGF_DISTRIBUTE
-				printf("%d: FPS\t%d: UPS\n", Frames, Updates);
+				printf("%f: timestep\n", timeStep*1000.0f);
 #endif
-				Frames = 0;
-				Updates = 0;
 			}
 		}
 

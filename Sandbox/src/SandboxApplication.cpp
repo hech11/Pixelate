@@ -16,6 +16,9 @@ class ExampleLayer : public RGF::Layer {
 	RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
 	RGF::Ref<RGF::TextureBounds> SmileySprite, GaspSprite;
 
+	RGF::ParticleSystem particleSystem;
+	RGF::ParticleProperties particleProps;
+
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
 	public:
 		virtual void Init() override {
@@ -33,6 +36,16 @@ class ExampleLayer : public RGF::Layer {
 
 			SmileySprite = RGF::TextureBounds::Create(LoadedFromFilepath, { 0, 0, 16 ,16 });
 			GaspSprite = RGF::TextureBounds::Create(LoadedFromFilepath, { 16, 0, 16 ,16 });
+
+			particleProps.VelocityVariation1 = { -2.0f, -2.0f };
+			particleProps.VelocityVariation2 = { 2.0f, 2.0f };
+			particleProps.LifeTime = 1.0f;
+			particleProps.SizeBegin= 1.5f;
+			particleProps.SizeVariation = 0.0f;
+			particleProps.SizeEnd = 0.0f;
+			particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
+			particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
+
 		}
 	
 	
@@ -44,6 +57,29 @@ class ExampleLayer : public RGF::Layer {
 			{
 
 				m_CameraController->OnUpdate(dt);
+
+
+				if (RGF::Input::IsMouseButtonDown(0)) {
+					float x = RGF::Input::GetMousePosX();
+					float y = RGF::Input::GetMousePosY();
+					float width = RGF::Application::GetApp().GetWindow().GetWidth();
+					float height = RGF::Application::GetApp().GetWindow().GetHeight();
+
+					auto bounds = m_CameraController->GetBounds();
+					auto pos = m_CameraController->GetCamera().GetPos();
+					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+					y = bounds.GetHeight() * 0.5f - (y/height)*bounds.GetHeight();
+					particleProps.Position = { x + pos.x, y + pos.y };
+
+					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
+						particleSystem.Emit(particleProps);
+					}
+
+
+				}
+
+				particleSystem.OnUpdate(dt);
+
 			}
 
 			{
@@ -56,7 +92,7 @@ class ExampleLayer : public RGF::Layer {
 
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
-
+				
 				Renderer2D::DrawSprite(SpritePosition, Rotation, SpriteSize, SpriteColor);
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f,{.5f, 5.f, 1.0f}, SpriteColor);
@@ -68,7 +104,9 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 				Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
 				Renderer2D::DrawSprite({ 2.0f, 2.0f, 0.0f }, 75.0f, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
+				
 
+				particleSystem.OnRender();
 				Renderer2D::EndScene();
 
 

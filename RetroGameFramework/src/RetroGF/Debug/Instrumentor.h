@@ -3,6 +3,9 @@
 #include "RGFpch.h"
 #include "RetroGF/Utility/File.h"
 
+
+
+
 namespace RGF {
 
 			// May want to add more information to print in a session but for now the name is stored
@@ -127,8 +130,7 @@ namespace RGF {
 	};
 
 
-#define RGF_PROFILE 1
-
+	#define RGF_PROFILE 0
 	#if RGF_PROFILE
 		#define RGF_PROFILE_BEGIN_SESSION(name, filepath) ::RGF::Instrumentor::Get().BeginSession(name, filepath);
 		#define RGF_PROFILE_END_SESSION(name, filepath) ::RGF::Instrumentor::Get().EndSession();

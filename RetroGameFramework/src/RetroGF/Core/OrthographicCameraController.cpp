@@ -9,11 +9,13 @@ namespace RGF {
 	OrthographicCameraController::OrthographicCameraController(float aspectRadio, bool rotation)
 		: m_AspectRatio(aspectRadio),
 		m_ZoomLevel(1.0f),
-		m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
+		m_Bounds({-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel}),
+		m_Camera(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top),
 		m_Rotation(rotation),
 		m_CameraPosition({ 0.0f, 0.0f, 0.0f }),
 		m_CameraRotation(0.0f)
 	{
+
 
 	}
 
@@ -56,8 +58,12 @@ namespace RGF {
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-		m_ZoomLevel -= e.GetYScroll();
+		m_ZoomLevel -= e.GetYScroll()* 0.25f;
+		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+
+		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		
 		return false;
 	}
 
@@ -65,6 +71,7 @@ namespace RGF {
 	{
 
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}
