@@ -14,7 +14,7 @@ class ExampleLayer : public RGF::Layer {
 	glm::vec4 SpriteColor;
 
 	RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
-
+	RGF::Ref<RGF::TextureBounds> SmileySprite, GaspSprite;
 
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
 	public:
@@ -30,6 +30,9 @@ class ExampleLayer : public RGF::Layer {
 			GeneratedTexture = RGF::Texture::Create(1, 1);
 			unsigned int data = 0xffA0Ef22;
 			GeneratedTexture->SetData(&data, sizeof(unsigned int));
+
+			SmileySprite = RGF::TextureBounds::Create(LoadedFromFilepath, { 0, 0, 16 ,16 });
+			GaspSprite = RGF::TextureBounds::Create(LoadedFromFilepath, { 16, 0, 16 ,16 });
 		}
 	
 	
@@ -51,20 +54,22 @@ class ExampleLayer : public RGF::Layer {
 
 				Renderer2D::ResetStatistics();
 
-				Renderer2D::Begin(&m_CameraController->GetCamera());
+				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
 
 				Renderer2D::DrawSprite(SpritePosition, Rotation, SpriteSize, SpriteColor);
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f,{.5f, 5.f, 1.0f}, SpriteColor);
-				Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, {1.0f, 1.0f, 1.0f, 1.0f});
+				Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 1.0f });
+				Renderer2D::DrawSprite({ 0.0f, -2.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, SmileySprite, { 1.0f, 1.0f, 1.0f, 1.0f });
+				Renderer2D::DrawSprite({ 1.0f, -2.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GaspSprite, { 0.5f, 1.0f, 1.0f, 0.5f });
 				Renderer2D::DrawSprite({ -1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
 				Renderer2D::DrawSprite({ -2.0f, 1.0f, 0.0f }, 25.0f, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 				Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
 				Renderer2D::DrawSprite({ 2.0f, 2.0f, 0.0f }, 75.0f, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 
-				Renderer2D::End();
+				Renderer2D::EndScene();
 
 
 			}

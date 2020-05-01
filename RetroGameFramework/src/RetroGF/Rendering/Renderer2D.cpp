@@ -147,7 +147,11 @@ namespace RGF {
 
 	}
 
-	void Renderer2D::Begin(RGF::OrthographicCamera* camera) {
+	void Renderer2D::ShutDown() {
+
+	}
+
+	void Renderer2D::BeginScene(RGF::OrthographicCamera* camera) {
 		RGF_PROFILE_FUNCTION();
 
 		SceneData.BatchRendererShader->Bind();
@@ -159,7 +163,7 @@ namespace RGF {
 		SceneData.VertexDataPtr = SceneData.VertexDataBase;
 
 	}
-	void Renderer2D::End() {
+	void Renderer2D::EndScene() {
 		RGF_PROFILE_FUNCTION();
 
 		unsigned int size = (unsigned char*)SceneData.VertexDataPtr - (unsigned char*)SceneData.VertexDataBase;
@@ -278,6 +282,66 @@ namespace RGF {
 		SceneData.IndexCount += 6;
 		SceneData.m_Statistics.IndexCount += 6;
 	}
+
+	
+
+	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor) {
+		RGF_PROFILE_FUNCTION();
+
+		constexpr unsigned int VertexCount = 4;
+
+
+		unsigned char r = tintColor.r * 255.0f;
+		unsigned char g = tintColor.g * 255.0f;
+		unsigned char b = tintColor.b * 255.0f;
+		unsigned char a = tintColor.a * 255.0f;
+
+		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
+			FlushAndBeginNewBatch();
+		}
+
+
+		float textureIndex = 0.0f;
+
+		for (unsigned int i = 1; i < SceneData.TextureSlotIndex; i++) {
+			if (*SceneData.AllTextureSlots[i].get() == *textureBounds->GetTexture().get()) {
+				textureIndex = i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f) {
+			if (SceneData.TextureSlotIndex >= SceneData.MaxTextureSlots)
+				FlushAndBeginNewBatch();
+			textureIndex = SceneData.TextureSlotIndex;
+			SceneData.AllTextureSlots[SceneData.TextureSlotIndex] = textureBounds->GetTexture();
+			SceneData.TextureSlotIndex++;
+		}
+
+
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), size);
+
+		std::array<glm::vec2, 4> textureCoords = textureBounds->GetBoundsNormilized();
+
+		// Vertex order = bottom left -> bottom right -> top right -> top left
+		for (unsigned int i = 0; i < VertexCount; i++) {
+
+			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
+			SceneData.VertexDataPtr->Color = color;
+			SceneData.VertexDataPtr->TextureCoords = textureCoords[i];
+			SceneData.VertexDataPtr->TextureIndex = textureIndex;
+			SceneData.VertexDataPtr++;
+		}
+
+
+		SceneData.IndexCount += 6;
+		SceneData.m_Statistics.IndexCount += 6;
+	}
+
 
 	void Renderer2D::FlushAndBeginNewBatch() {
 		RGF_PROFILE_FUNCTION();

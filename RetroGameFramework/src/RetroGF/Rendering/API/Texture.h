@@ -3,6 +3,7 @@
 #include "RetroGF/Core/Core.h"
 
 #include "RGFpch.h"
+#include <GLM/glm/glm.hpp>
 
 
 // Texture interface.
@@ -79,6 +80,53 @@ namespace RGF {
 		protected :
 			TextureProperties m_Props;
 			
+	};
+
+	class TextureBounds {
+
+		public :
+
+			TextureBounds()
+			{
+			}
+
+			TextureBounds(const Ref<Texture>& texture, const glm::u32vec4& bounds)
+				: m_Texture(texture), m_Bounds(bounds) 
+			{
+
+			}
+
+
+			inline const glm::u32vec4& GetBounds() const { return m_Bounds; }
+			inline const std::array<glm::vec2, 4> GetBoundsNormilized() const {
+				std::array<glm::vec2, 4> coords;
+
+
+				float xOffset = (float)m_Bounds.x / m_Texture->GetWidth();
+				float yOffset = (float)m_Bounds.y / m_Texture->GetHeight();
+
+				float xSize = (float)m_Bounds.z / m_Texture->GetWidth();
+				float ySize = (float)m_Bounds.w / m_Texture->GetHeight();
+
+
+
+				coords[0] = { xOffset, 1.0f - (yOffset + ySize) }; // bottom left
+				coords[1] = { xOffset + xSize, 1.0f - (yOffset + ySize) }; // bottom right
+				coords[2] = { xOffset + xSize, 1.0f - yOffset }; // top right
+				coords[3] = { xOffset, 1.0f - yOffset }; // top left
+
+				return coords;
+			}
+
+			inline const Ref<Texture>& GetTexture() const { return m_Texture; }
+
+
+			static Ref<TextureBounds> Create(const Ref<Texture>& texture, const glm::u32vec4& bounds) {
+				return CreateRef<TextureBounds>(texture, bounds);
+			}
+		private :
+			Ref<Texture> m_Texture;
+			glm::u32vec4 m_Bounds;
 	};
 
 }

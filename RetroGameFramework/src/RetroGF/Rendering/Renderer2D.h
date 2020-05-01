@@ -25,18 +25,20 @@ namespace RGF {
 					MaxVertexBufferSize = 0, MaxIndexBuferSize = 0, MaxSprites = 0;
 			};
 			static void Init();
-
-			static void ShutDown() {
-			}
+			static void ShutDown();
 			
-			static void Begin(RGF::OrthographicCamera* camera);
-			static void End();
+			static void BeginScene(RGF::OrthographicCamera* camera);
+			static void EndScene();
 
 
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+
 
 			static void ResetStatistics();
 			static RenderingStatistics& GetStats();
