@@ -1,5 +1,5 @@
 #include "RGFpch.h"
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 
 #include "ColorStyleEditor.h"
 

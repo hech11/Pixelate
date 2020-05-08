@@ -83,41 +83,34 @@ namespace RGF {
 	};
 
 	class TextureBounds {
+		private :
+
+			void CalculateBounds(const glm::u32vec4& bounds) {
+				float xOffset = (float) bounds.x / m_Texture->GetWidth();
+				float yOffset = (float) bounds.y / m_Texture->GetHeight();
+
+				float xSize = (float) bounds.z / m_Texture->GetWidth();
+				float ySize = (float) bounds.w / m_Texture->GetHeight();
+
+
+
+				m_NormilizedBounds[0] = { xOffset, 1.0f - (yOffset + ySize) }; // bottom left
+				m_NormilizedBounds[1] = { xOffset + xSize, 1.0f - (yOffset + ySize) }; // bottom right
+				m_NormilizedBounds[2] = { xOffset + xSize, 1.0f - yOffset }; // top right
+				m_NormilizedBounds[3] = { xOffset, 1.0f - yOffset }; // top left
+
+			}
 
 		public :
 
-			TextureBounds()
-			{
-			}
-
 			TextureBounds(const Ref<Texture>& texture, const glm::u32vec4& bounds)
-				: m_Texture(texture), m_Bounds(bounds) 
+				: m_Texture(texture)
 			{
-
+				CalculateBounds(bounds);
 			}
 
 
-			inline const glm::u32vec4& GetBounds() const { return m_Bounds; }
-			inline const std::array<glm::vec2, 4> GetBoundsNormilized() const {
-				std::array<glm::vec2, 4> coords;
-
-
-				float xOffset = (float)m_Bounds.x / m_Texture->GetWidth();
-				float yOffset = (float)m_Bounds.y / m_Texture->GetHeight();
-
-				float xSize = (float)m_Bounds.z / m_Texture->GetWidth();
-				float ySize = (float)m_Bounds.w / m_Texture->GetHeight();
-
-
-
-				coords[0] = { xOffset, 1.0f - (yOffset + ySize) }; // bottom left
-				coords[1] = { xOffset + xSize, 1.0f - (yOffset + ySize) }; // bottom right
-				coords[2] = { xOffset + xSize, 1.0f - yOffset }; // top right
-				coords[3] = { xOffset, 1.0f - yOffset }; // top left
-
-				return coords;
-			}
-
+			inline const std::array<glm::vec2, 4>& GetBoundsNormilized() const { return m_NormilizedBounds; }
 			inline const Ref<Texture>& GetTexture() const { return m_Texture; }
 
 
@@ -126,7 +119,8 @@ namespace RGF {
 			}
 		private :
 			Ref<Texture> m_Texture;
-			glm::u32vec4 m_Bounds;
+			std::array<glm::vec2, 4> m_NormilizedBounds;
+
 	};
 
 }

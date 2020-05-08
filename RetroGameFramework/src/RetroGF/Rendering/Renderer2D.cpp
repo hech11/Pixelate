@@ -325,14 +325,14 @@ namespace RGF {
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 			glm::scale(glm::mat4(1.0f), size);
 
-		std::array<glm::vec2, 4> textureCoords = textureBounds->GetBoundsNormilized();
+		
 
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
 			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
 			SceneData.VertexDataPtr->Color = color;
-			SceneData.VertexDataPtr->TextureCoords = textureCoords[i];
+			SceneData.VertexDataPtr->TextureCoords = textureBounds->GetBoundsNormilized()[i];
 			SceneData.VertexDataPtr->TextureIndex = textureIndex;
 			SceneData.VertexDataPtr++;
 		}

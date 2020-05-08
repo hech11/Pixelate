@@ -1,5 +1,4 @@
-#ifndef RGF_DISTRIBUTE
-
+#ifdef RGF_USE_IMGUI
 
 // [DEAR IMGUI] 
 // This is a slightly modified version of stb_truetype.h 1.20.

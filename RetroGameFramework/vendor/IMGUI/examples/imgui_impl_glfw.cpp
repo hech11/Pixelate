@@ -1,5 +1,5 @@
 #include "RGFpch.h"
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 
 // dear imgui: Platform Binding for GLFW
 // This needs to be used along with a Renderer (e.g. OpenGL3, Vulkan..)

@@ -99,7 +99,13 @@ project "RetroGameFramework"
 		}
 
 	filter "configurations:Debug"
-		defines "RGF_DEBUG"
+		defines { 
+			"RGF_DEBUG",
+			"RGF_USE_IMGUI",
+			"RGF_USE_LOGGING",
+			"RGF_USE_INSTRUMENTOR",
+
+		}
 		runtime "Debug"
 		symbols "on"
 		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
@@ -107,13 +113,24 @@ project "RetroGameFramework"
 
 
 	filter "configurations:Release"
-		defines "RGF_RELEASE"
+		defines { 
+			"RGF_RELEASE",
+			"RGF_USE_IMGUI",
+			"RGF_USE_LOGGING",
+			"RGF_USE_INSTRUMENTOR",
+
+		}
 		runtime "Release"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 	filter "configurations:Distribute"
-		defines "RGF_DISTRIBUTE"
+		defines
+		{
+			 "RGF_DISTRIBUTE",
+			 "RGF_USE_CUSTOM_MEM_ALLOC"
+
+		}
 		runtime "Release"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
@@ -162,19 +179,35 @@ project "Sandbox"
 		}
 		
 	filter "configurations:Debug"
-		defines "RGF_DEBUG"
+		defines { 
+			"RGF_DEBUG",
+			"RGF_USE_IMGUI",
+			"RGF_USE_LOGGING",
+			"RGF_USE_INSTRUMENTOR",
+
+		}
 		runtime "Debug"
 		symbols "on"
 		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 	filter "configurations:Release"
-		defines "RGF_RELEASE"
+		defines 
+		{
+			"RGF_RELEASE",
+			"RGF_USE_IMGUI",
+			"RGF_USE_LOGGING",
+			"RGF_USE_INSTRUMENTOR",
+		}
 		runtime "Release"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 	filter "configurations:Distribute"
-		defines "RGF_DISTRIBUTE"
+		defines
+		{
+			 "RGF_DISTRIBUTE"
+
+		}
 		runtime "Release"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}

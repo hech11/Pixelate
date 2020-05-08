@@ -5,6 +5,8 @@
 // Common macros that are used when developing RGF.
 
 #include <memory>
+#include <iostream>
+#include <string>
 
 #ifdef RGF_PLATFORM_WINDOWS // TODO: I changed Retro into a static lib. Maybe remove this soon?
 
@@ -44,3 +46,24 @@ namespace RGF {
 	template<typename T>
 	using WeakRef = std::weak_ptr<T>;
 }
+
+#ifdef RGF_USE_CUSTOM_MEM_ALLOC
+
+	inline void* operator new(size_t size) {
+		return malloc(size);
+	}
+	
+	
+	inline void* operator new(size_t size, const char* file, unsigned int line) {
+		void* address = malloc(size);
+
+		std::string f = file;
+		std::string fileTrip = f.substr(f.rfind('\\'), f.length());
+		std::cout << "Allocated " << size << " byte(s) at address "
+			<< address << " in " << fileTrip << ":" << line << std::endl;
+		return address;
+	}
+	
+	#define new new(__FILE__, __LINE__)
+
+#endif

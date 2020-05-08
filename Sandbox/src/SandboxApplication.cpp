@@ -120,7 +120,7 @@ class ExampleLayer : public RGF::Layer {
 	
 	
 		virtual void OnImguiRender() override {
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 			using namespace RGF;
 
 			ImGui::Begin("Renderer stats");

@@ -13,7 +13,7 @@
 
 // TODO : add RGF_Debug macros around this logging system... so it can be stripped in Distribute builds.
 /*
-   TODO : Invesigate... do the two "Loggers" in "Log" really need to be shared pointers? 
+   TODO : Investigate... do the two "Loggers" in "Log" really need to be shared pointers? 
 		  ( they could be a unique ptr or stack allocated instead )
 */
 
@@ -32,11 +32,11 @@ namespace RGF {
 
 
 	// The main Logging system.
-	class RGF_API Log {
+	class Log {
 		struct Logger;
 
 		// Log is a container that contains two "Loggers" and names them both "App" and "Client".
-		// Log is initialised in "EntryPoint.h".
+		// Log is initialized in "EntryPoint.h".
 		public :
 			static void Init() {
 
@@ -55,7 +55,7 @@ namespace RGF {
 
 
 			// The "Logger" struct contains the actual logging code that is used.
-			struct RGF_API Logger {
+			struct Logger {
 				void Trace		(const char* message, ...);
 				void Message	(const char* message, ...);
 				void Warn		(const char* message, ...);

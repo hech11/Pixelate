@@ -1,6 +1,7 @@
 #pragma once
 
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
+
 
 #include "RetroGF/Core/Core.h"
 #include "RetroGF/Core/Layer.h"

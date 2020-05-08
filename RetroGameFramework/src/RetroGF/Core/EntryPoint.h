@@ -9,12 +9,12 @@
 // This initializes a RGF application as well as extern libraries.
 
 
-
 #ifdef RGF_PLATFORM_WINDOWS
 
 	
 	#include "RetroGF/Utility/Log.h"
 	#include "RetroGF/Debug/Instrumentor.h"
+
 
 
 	int main() {
@@ -41,6 +41,8 @@
 
 		RGF_PROFILE_END_SESSION();
 
+		int* a = new int;
+		delete a;
 
 		#ifdef RGF_DEBUG
 		RGF_PROFILE_BEGIN_SESSION("Runtime-Debug", "logs/Profling/Debug/RGFProfile-Runtime-Debug.json");

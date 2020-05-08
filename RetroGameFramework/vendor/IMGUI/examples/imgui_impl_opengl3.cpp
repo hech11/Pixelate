@@ -1,5 +1,5 @@
 #include "RGFpch.h"
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 
 // dear imgui: Renderer for modern OpenGL with shaders / programmatic pipeline
 // - Desktop GL: 3.x 4.x

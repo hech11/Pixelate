@@ -5,10 +5,9 @@
 
 
 
-
 namespace RGF {
 
-			// May want to add more information to print in a session but for now the name is stored
+	// May want to add more information to print in a session but for now the name is stored
 	struct Session
 	{
 		std::string Name;
@@ -130,8 +129,7 @@ namespace RGF {
 	};
 
 
-	#define RGF_PROFILE 0
-	#if RGF_PROFILE
+	#ifdef RGF_USE_INSTRUMENTOR
 		#define RGF_PROFILE_BEGIN_SESSION(name, filepath) ::RGF::Instrumentor::Get().BeginSession(name, filepath);
 		#define RGF_PROFILE_END_SESSION(name, filepath) ::RGF::Instrumentor::Get().EndSession();
 		#define RGF_PROFILE_SCOPE(name) ::RGF::InstrumentationTimer timer##__LINE__(name);

@@ -59,7 +59,7 @@ namespace RGF {
 			Scoped<WindowImpl> m_Window;
 
 			// TODO: This is temp, may need to refactor some of these components / systems
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 			ImguiLayer* m_ImguiLayer;
 #endif
 

@@ -37,7 +37,7 @@ namespace RGF {
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 		m_ImguiLayer = new ImguiLayer;
 #endif
 
@@ -115,7 +115,7 @@ namespace RGF {
 			}
 
 			
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 
 			{
 				RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");

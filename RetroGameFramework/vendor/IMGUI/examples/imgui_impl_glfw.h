@@ -1,4 +1,4 @@
-#ifndef RGF_DISTRIBUTE
+#ifdef RGF_USE_IMGUI
 
 
 // dear imgui: Platform Binding for GLFW
