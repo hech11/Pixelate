@@ -23,7 +23,6 @@ IncludeDir["GLAD"] = "RetroGameFramework/vendor/GLAD"
 IncludeDir["IMGUI"] = "RetroGameFramework/vendor/IMGUI"
 IncludeDir["GLM"] = "RetroGameFramework/vendor/GLM"
 IncludeDir["STB_IMAGE"] = "RetroGameFramework/vendor/STB_IMAGE"
-IncludeDir["MINIAUDIO"] = "RetroGameFramework/vendor/MINIAUDIO"
 
 group "Dependencies"
 	include "RetroGameFramework/vendor/GLFW"
@@ -68,7 +67,6 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.h",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
-		"%{prj.name}/vendor/MINIAUDIO/miniaudio.h"
 
 	}
 
