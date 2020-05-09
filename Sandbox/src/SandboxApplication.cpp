@@ -3,6 +3,8 @@
 #include "IMGUI/imgui.h"
 #include "GLM/glm/gtc/type_ptr.inl"
 
+#include "RetroGF/Audio/AudioTest.h"
+
 // An example application using RGF
 
 // A example layer.
@@ -46,10 +48,13 @@ class ExampleLayer : public RGF::Layer {
 			particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 			particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
+			RGF::Audio::Init("assets/audio/noise.wav");
+
 		}
 	
 	
 		virtual void ShutDown() override {
+			RGF::Audio::Shutdown();
 		}
 
 		virtual void OnUpdate(float dt) override {
@@ -79,7 +84,7 @@ class ExampleLayer : public RGF::Layer {
 				}
 
 				particleSystem.OnUpdate(dt);
-
+				RGF::Audio::Play();
 			}
 
 			{
