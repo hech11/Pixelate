@@ -23,10 +23,12 @@ IncludeDir["GLAD"] = "RetroGameFramework/vendor/GLAD"
 IncludeDir["IMGUI"] = "RetroGameFramework/vendor/IMGUI"
 IncludeDir["GLM"] = "RetroGameFramework/vendor/GLM"
 IncludeDir["STB_IMAGE"] = "RetroGameFramework/vendor/STB_IMAGE"
+IncludeDir["OPENAL_SOFT"] = "RetroGameFramework/vendor/OPENAL_SOFT"
 
 group "Dependencies"
 	include "RetroGameFramework/vendor/GLFW"
 	include "RetroGameFramework/vendor/GLAD"
+	include "RetroGameFramework/vendor/OPENAL_SOFT"
 
 group ""
 
@@ -67,6 +69,7 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.h",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
+		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/*.h",
 
 	}
 
@@ -85,7 +88,8 @@ project "RetroGameFramework"
 	{ 
 		"GLAD",
 		"GLFW",
-		"opengl32.lib"
+		"opengl32.lib",
+		"OPENAL_SOFT"
 	}
 
 	filter "system:windows"
@@ -108,7 +112,7 @@ project "RetroGameFramework"
 		}
 		runtime "Debug"
 		symbols "on"
-		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 
 
@@ -122,7 +126,7 @@ project "RetroGameFramework"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 	filter "configurations:Distribute"
 		defines
@@ -133,7 +137,7 @@ project "RetroGameFramework"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 
 project "Sandbox"
@@ -163,6 +167,7 @@ project "Sandbox"
 	{
 		"GLAD",
 		"GLFW",
+		"OPENAL_SOFT",
 		"RetroGameFramework"
 	}
 
@@ -188,7 +193,7 @@ project "Sandbox"
 		}
 		runtime "Debug"
 		symbols "on"
-		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 	filter "configurations:Release"
 		defines 
@@ -200,7 +205,7 @@ project "Sandbox"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 	filter "configurations:Distribute"
 		defines
@@ -210,4 +215,4 @@ project "Sandbox"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}

@@ -21,7 +21,6 @@
 #include "RetroGF/Core/KeyCodes.h"
 #include "RetroGF/Core/MouseButtonCodes.h"
 
-#include <RetroGF/Audio/Audio.h>
 
 
 namespace RGF {
@@ -49,7 +48,6 @@ namespace RGF {
 		Renderer2D::Init();
 
 		RGF_CORE_MSG("Initising the audio!\n");
-		Audio::Init();
 
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
