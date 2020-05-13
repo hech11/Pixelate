@@ -7,6 +7,8 @@
 #include "OPENAL_SOFT/include/AL/alext.h"
 #include "OPENAL_SOFT/src/alc/alcmain.h"
 
+#include "ALCommon.h"
+
 namespace RGF {
 
 	// Do more research into this...
@@ -16,18 +18,17 @@ namespace RGF {
 	void ALAudioContext::Init() {
 
 
-		///strcmp(0, "-device");
-		s_AudioDevice = alcOpenDevice(nullptr);
+		ALCall(s_AudioDevice = alcOpenDevice(nullptr));
 
 		if (!s_AudioDevice)
 			RGF_ASSERT(false, "Could not open an audio device!");
 
-		s_Context = alcCreateContext(s_AudioDevice, 0);
+		ALCall(s_Context = alcCreateContext(s_AudioDevice, 0));
 		if (s_Context == nullptr || alcMakeContextCurrent(s_Context) == ALC_FALSE)
 		{
 			if (s_Context != nullptr)
-				alcDestroyContext(s_Context);
-			alcCloseDevice(s_AudioDevice);
+				ALCall(alcDestroyContext(s_Context));
+			ALCall(alcCloseDevice(s_AudioDevice));
 			RGF_ASSERT(false, "Could not set a context!");
 		}
 
@@ -44,8 +45,8 @@ namespace RGF {
 	}
 
 	void ALAudioContext::Close() {
-		alcDestroyContext(s_Context);
-		alcCloseDevice(s_AudioDevice);
+		ALCall(alcDestroyContext(s_Context));
+		ALCall(alcCloseDevice(s_AudioDevice));
 	}
 
 
