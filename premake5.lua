@@ -69,19 +69,26 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.h",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
-		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/*.h",
-
+		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/*h",
+		"%{prj.name}/vendor/OPENAL_SOFT/src/common/*.h"
 	}
+
 
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"NOMINMAX",
+		"AL_LIBTYPE_STATIC"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor"
+		"%{prj.name}/vendor",
+		"%{IncludeDir.OPENAL_SOFT}/include",
+		"%{IncludeDir.OPENAL_SOFT}/src/common",
+		"%{IncludeDir.OPENAL_SOFT}/src/alc",
+		"%{IncludeDir.OPENAL_SOFT}/src/al",
 	}
 
 	links 
@@ -160,7 +167,11 @@ project "Sandbox"
 	{
 		"RetroGameFramework/src",
 		"RetroGameFramework/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.OPENAL_SOFT}/include",
+		"%{IncludeDir.OPENAL_SOFT}/src/common",
+		"%{IncludeDir.OPENAL_SOFT}/src/alc",
+		"%{IncludeDir.OPENAL_SOFT}/src/al",
 	}
 
 	links
@@ -179,8 +190,12 @@ project "Sandbox"
 
 		defines
 		{
+			"_CRT_SECURE_NO_WARNINGS",
+			"NOMINMAX",
 			"GLFW_INCLUDE_NONE",
-			"RGF_PLATFORM_WINDOWS"
+			"RGF_PLATFORM_WINDOWS",
+			"AL_LIBTYPE_STATIC"
+
 		}
 		
 	filter "configurations:Debug"
