@@ -4,15 +4,28 @@
 
 namespace RGF {
 
-	AudioContext* Audio::m_Context = nullptr;
+
+	struct AudioData {
+		AudioContext* m_Context;
+		Ref<Listener> m_Listener;
+	};
+
+	static AudioData m_Data;
 
 	void Audio::Init(const AudioContext::ContextAPI& api) {
-		m_Context = AudioContext::CreateContext(api);
-		m_Context->Init();
+
+		m_Data.m_Context = AudioContext::CreateContext(api);
+		m_Data.m_Context->Init();
+
+		m_Data.m_Listener = Listener::Create();
+
 	}
 	void Audio::Shutdown() {
-		m_Context->Close();
+		m_Data.m_Context->Close();
+	}
 
+	void Audio::PlayAudioSource(const Ref<AudioSource>& src) {
+		// play src here
 	}
 
 }

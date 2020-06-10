@@ -57,5 +57,9 @@
 
 // Audio.
 
+#include "RetroGF/Audio/WavFileHeader.h"
+#include "RetroGF/Audio/AudioSource.h"
+
+
 // Debug.
 #include "RetroGF/Debug/Instrumentor.h"

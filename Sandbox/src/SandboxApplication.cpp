@@ -21,7 +21,7 @@ class ExampleLayer : public RGF::Layer {
 	RGF::ParticleProperties particleProps;
 
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
-
+	RGF::Ref<RGF::AudioSource> toneSFX;
 
 	public:
 		virtual void Init() override {
@@ -49,6 +49,7 @@ class ExampleLayer : public RGF::Layer {
 			particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 			particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
+			toneSFX = RGF::AudioSource::Create({ "assets/audio/noise.wav" });
 		}
 	
 	
@@ -78,13 +79,10 @@ class ExampleLayer : public RGF::Layer {
 						particleSystem.Emit(particleProps);
 					}
 
-
 				}
 
 				particleSystem.OnUpdate(dt);
 
-				if (RGF::Input::IsKeyDown(RGF_KEY_P)) {
-				}
 
 			}
 
@@ -120,9 +118,21 @@ class ExampleLayer : public RGF::Layer {
 			}
 		}
 	
+		bool OnKeyPressedEvent(RGF::KeyPressedEvent& e) {
+			if (e.GetKeyCode() == RGF_KEY_P && e.GetRepeatCount() == 0) {
+				toneSFX->Play();
+				return true;
+			}
+
+			return false;
+		}
 	
 		virtual void OnEvent(RGF::Event& e) override {
 			m_CameraController->OnEvent(e);
+			RGF::EventDispatcher dispatcher(e);
+
+			dispatcher.Dispatch<RGF::KeyPressedEvent>(std::bind(&ExampleLayer::OnKeyPressedEvent, this, std::placeholders::_1));
+
 		}
 	
 	

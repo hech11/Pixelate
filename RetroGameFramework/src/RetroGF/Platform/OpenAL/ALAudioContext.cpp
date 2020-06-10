@@ -18,17 +18,17 @@ namespace RGF {
 	void ALAudioContext::Init() {
 
 
-		ALCall(s_AudioDevice = alcOpenDevice(nullptr));
+		s_AudioDevice = alcOpenDevice(NULL);
 
 		if (!s_AudioDevice)
 			RGF_ASSERT(false, "Could not open an audio device!");
 
-		ALCall(s_Context = alcCreateContext(s_AudioDevice, 0));
+		s_Context = alcCreateContext(s_AudioDevice, NULL);
 		if (s_Context == nullptr || alcMakeContextCurrent(s_Context) == ALC_FALSE)
 		{
 			if (s_Context != nullptr)
-				ALCall(alcDestroyContext(s_Context));
-			ALCall(alcCloseDevice(s_AudioDevice));
+				alcDestroyContext(s_Context);
+			alcCloseDevice(s_AudioDevice);
 			RGF_ASSERT(false, "Could not set a context!");
 		}
 
@@ -45,8 +45,8 @@ namespace RGF {
 	}
 
 	void ALAudioContext::Close() {
-		ALCall(alcDestroyContext(s_Context));
-		ALCall(alcCloseDevice(s_AudioDevice));
+		alcDestroyContext(s_Context);
+		alcCloseDevice(s_AudioDevice);
 	}
 
 

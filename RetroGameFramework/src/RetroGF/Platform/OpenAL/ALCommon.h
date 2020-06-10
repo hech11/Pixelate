@@ -13,8 +13,7 @@
 #else 
  // This is to be wrapped around every openal code. Example : AlCall(....);
 
-#define ALCall(x) RGF::AL::ALClearError();\
-				x;\
+#define ALCall(x) x;\
 RGF_ASSERT(RGF::AL::ALLogCall(#x, __FILE__, __LINE__), "");
 
 #endif
@@ -40,7 +39,8 @@ namespace RGF { namespace AL {
 	}
 
 	static bool ALLogCall(const char* function, const char* file, int line) {
-		if (ALenum error = alGetError()) { 
+		ALenum error;
+		if ((error = alGetError()) != AL_NO_ERROR) {
 			RGF_CORE_ERROR("OpenAL Error! : %s", GetALErrorName(error));
 			return false;
 		}
