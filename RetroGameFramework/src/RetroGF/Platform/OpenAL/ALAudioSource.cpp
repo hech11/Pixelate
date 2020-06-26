@@ -29,17 +29,24 @@ namespace RGF {
 	}
 
 	ALAudioSource::~ALAudioSource() {
-		ALCall(alDeleteBuffers(1, &m_AudioBufferID));
 		ALCall(alDeleteSources(1, &m_AudioSourceID));
+		ALCall(alDeleteBuffers(1, &m_AudioBufferID));
 	}
 
 
 	void ALAudioSource::Play() {
 		ALCall(alSourcePlay(m_AudioSourceID));
+
 	}
 
+	void ALAudioSource::Pause() {
+		ALCall(alSourcePause(m_AudioSourceID));
+	}
+
+
 	void ALAudioSource::Stop() {
-		
+		ALCall(alSourceStop(m_AudioSourceID));
+
 	}
 
 	void ALAudioSource::SetLooping(bool loop) {
@@ -91,9 +98,5 @@ namespace RGF {
 		RGF_ASSERT(false, "cannot deduce format!");
 	}
 
-	void ALAudioSource::LoadStream() {
-		
-
-	}
 
 }

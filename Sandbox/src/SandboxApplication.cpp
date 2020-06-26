@@ -49,7 +49,7 @@ class ExampleLayer : public RGF::Layer {
 			particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 			particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
-			toneSFX = RGF::AudioSource::Create({ "assets/audio/noise.wav" });
+			toneSFX = RGF::AudioSource::Create({ "assets/audio/tone.wav" });
 		}
 	
 	
@@ -57,6 +57,8 @@ class ExampleLayer : public RGF::Layer {
 		}
 
 		virtual void OnUpdate(float dt) override {
+
+			using namespace RGF;
 
 			{
 
@@ -82,13 +84,13 @@ class ExampleLayer : public RGF::Layer {
 				}
 
 				particleSystem.OnUpdate(dt);
+				Audio::Update();
 
 
 			}
 
 			{
 
-				using namespace RGF;
 				RenderCommand::Clear();
 				RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
@@ -123,6 +125,27 @@ class ExampleLayer : public RGF::Layer {
 				toneSFX->Play();
 				return true;
 			}
+
+			if (e.GetKeyCode() == RGF_KEY_S && e.GetRepeatCount() == 0) {
+				toneSFX->Stop();
+				return true;
+
+			}
+			if (e.GetKeyCode() == RGF_KEY_I && e.GetRepeatCount() == 0) {
+				toneSFX->Pause();
+				return true;
+
+			}
+
+			if (e.GetKeyCode() == RGF_KEY_L && e.GetRepeatCount() == 0) {
+				static bool loop = false;
+				loop = !loop;
+				RGF_TRACE("Looping is %d\n", loop);
+				toneSFX->SetLooping(loop);
+				return true;
+
+			}
+
 
 			return false;
 		}

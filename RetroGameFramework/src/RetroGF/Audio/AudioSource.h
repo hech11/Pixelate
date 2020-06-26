@@ -5,7 +5,7 @@
 #include "GLM/glm/glm.hpp"
 
 
-// Audio source contains both buffer and the source audio data. In the future I may want to seperate the buffer and the audio
+// Audio source contains both buffer and the source audio data. In the future I may want to separate the buffer and the audio
 // source into different classes
 
 namespace RGF {
@@ -19,6 +19,7 @@ namespace RGF {
 		public:
 			virtual bool IsPlaying() = 0;
 			virtual void Play() = 0;
+			virtual void Pause() = 0;
 			virtual void Stop() = 0;
 			virtual void SetLooping(bool loop) = 0;
 

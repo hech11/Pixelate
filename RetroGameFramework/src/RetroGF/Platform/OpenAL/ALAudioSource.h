@@ -12,6 +12,7 @@ namespace RGF {
 
 			virtual bool IsPlaying() override { return m_IsPlaying;  }
 			virtual void Play() override;
+			virtual void Pause() override;
 			virtual void Stop() override;
 			virtual void SetLooping(bool loop) override;
 
@@ -28,7 +29,6 @@ namespace RGF {
 			virtual bool IsLooping() override { return m_IsLooping; }
 
 		private :
-			void LoadStream();
 			int DeduceALFormat(int channels, int samples);
 		private :
 			bool m_IsPlaying = false, m_IsSpatial = false, m_IsLooping = false;

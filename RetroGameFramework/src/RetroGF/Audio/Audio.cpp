@@ -25,7 +25,12 @@ namespace RGF {
 	}
 
 	void Audio::PlayAudioSource(const Ref<AudioSource>& src) {
-		// play src here
+		src->Play();
 	}
+
+	void Audio::Update() {
+
+	}
+
 
 }
