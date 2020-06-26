@@ -14,31 +14,30 @@
 namespace RGF {
 	
 
-	struct AudioFileSpecs {
+	struct AudioFileSpec {
 			enum class FileFormat {
 				None = -1,
 				Wav,
-				Mp3
+				Mp3,
+				Ogg
 			};
 
 			int Channels, SampleRate, Bps, Size;
 			FileFormat Extention;
 			void* Data;
 
-			static AudioFileSpecs LoadAudioData(const std::string& filepath);
+			static AudioFileSpec LoadAudioData(const std::string& filepath);
 
-		protected:
-			virtual void LoadData(const std::string& filename) {};
 		private :
 			static FileFormat DeduceFileFormat(const std::string& filepath);
 	};
 
 
 
-	struct WavFileHeader : public AudioFileSpecs {
+	struct WavFileHeader : public AudioFileSpec {
 		
 		public :
-			void LoadData(const std::string& filepath) override;
+			void LoadData(const std::string& filepath);
 
 		private:
 			static bool IsBigEndian() {
@@ -60,13 +59,20 @@ namespace RGF {
 	};
 
 
-	struct MP3Header : public AudioFileSpecs {
+	struct MP3Header : public AudioFileSpec {
 		public :
 			MP3Header();
-			void LoadData(const std::string& filepath) override;
+			void LoadData(const std::string& filepath);
 
 		private :
 			static mp3dec_t mp3d;
+	};
+
+
+	struct OggHeader : public AudioFileSpec {
+		public:
+			void LoadData(const std::string& filepath);
+
 	};
 
 }

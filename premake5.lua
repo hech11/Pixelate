@@ -25,12 +25,16 @@ IncludeDir["GLM"] = "RetroGameFramework/vendor/GLM"
 IncludeDir["STB_IMAGE"] = "RetroGameFramework/vendor/STB_IMAGE"
 IncludeDir["OPENAL_SOFT"] = "RetroGameFramework/vendor/OPENAL_SOFT"
 IncludeDir["MINIMP3"] = "RetroGameFramework/vendor/MINIMP3"
+IncludeDir["VORBIS"] = "RetroGameFramework/vendor/VORBIS"
+IncludeDir["LIBOGG"] = "RetroGameFramework/vendor/LIBOGG"
 
-group "Dependencies"
+group "Dependencies/Rendering"
 	include "RetroGameFramework/vendor/GLFW"
 	include "RetroGameFramework/vendor/GLAD"
+group "Dependencies/Audio"
+	include "RetroGameFramework/vendor/LIBOGG"
+	include "RetroGameFramework/vendor/VORBIS"
 	include "RetroGameFramework/vendor/OPENAL_SOFT"
-
 group ""
 
 project "RetroGameFramework"
@@ -72,7 +76,12 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
 		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/*h",
 		"%{prj.name}/vendor/OPENAL_SOFT/src/common/*.h",
-		"%{prj.name}/vendor/MINIMP3/*.h"
+		"%{prj.name}/vendor/MINIMP3/*.h",
+		"%{prj.name}/vendor/LIBOGG/include/**.h",
+		"%{prj.name}/vendor/LIBOGG/src/**.c",
+		"%{prj.name}/vendor/LIBVORBIS/include/**.h",
+		"%{prj.name}/vendor/LIBVORBIS/lib/**.h",
+		"%{prj.name}/vendor/LIBVORBIS/lib/**.cpp",
 	}
 
 
@@ -91,7 +100,10 @@ project "RetroGameFramework"
 		"%{IncludeDir.OPENAL_SOFT}/src/common",
 		"%{IncludeDir.OPENAL_SOFT}/src/alc",
 		"%{IncludeDir.OPENAL_SOFT}/src/al",
-		"%{IncludeDir.MINIMP3}/"
+		"%{IncludeDir.MINIMP3}/",
+		"%{IncludeDir.LIBVORBIS}/include",
+		"%{IncludeDir.LIBOGG}/include",
+
 
 	}
 
@@ -100,7 +112,9 @@ project "RetroGameFramework"
 		"GLAD",
 		"GLFW",
 		"opengl32.lib",
-		"OPENAL_SOFT"
+		"OPENAL_SOFT",
+		"LIBVORBIS",
+		"LIBOGG"
 	}
 
 	filter "system:windows"
@@ -176,7 +190,9 @@ project "Sandbox"
 		"%{IncludeDir.OPENAL_SOFT}/src/common",
 		"%{IncludeDir.OPENAL_SOFT}/src/alc",
 		"%{IncludeDir.OPENAL_SOFT}/src/al",
-		"%{IncludeDir.MINIMP3}/"
+		"%{IncludeDir.MINIMP3}/",
+		"%{IncludeDir.LIBVORBIS}/include",
+		"%{IncludeDir.LIBOGG}/include",
 	}
 
 	links
@@ -184,6 +200,8 @@ project "Sandbox"
 		"GLAD",
 		"GLFW",
 		"OPENAL_SOFT",
+		"LIBOGG",
+		"LIBVORBIS",
 		"RetroGameFramework"
 	}
 

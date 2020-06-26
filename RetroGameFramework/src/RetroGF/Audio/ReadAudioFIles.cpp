@@ -9,20 +9,21 @@
 
 namespace RGF {
 
-	AudioFileSpecs::FileFormat AudioFileSpecs::DeduceFileFormat(const std::string& filepath) {
+	AudioFileSpec::FileFormat AudioFileSpec::DeduceFileFormat(const std::string& filepath) {
 		std::filesystem::path path = filepath;
 		std::string extension = path.extension().string();
 
 		if (extension == ".wav")  return FileFormat::Wav;
 		if (extension == ".mp3")  return FileFormat::Mp3;
+		if (extension == ".ogg")  return FileFormat::Ogg;
 
 
 		RGF_WARN("Could not deduce audio format!");
 		return FileFormat::None;
 	}
 
-	AudioFileSpecs AudioFileSpecs::LoadAudioData(const std::string& filepath) {
-		AudioFileSpecs specs;
+	AudioFileSpec AudioFileSpec::LoadAudioData(const std::string& filepath) {
+		AudioFileSpec specs;
 		specs.Extention = DeduceFileFormat(filepath);
 
 		if (specs.Extention == FileFormat::Mp3) {
