@@ -29,7 +29,7 @@ namespace RGF {
 			virtual bool IsLooping() override { return m_IsLooping; }
 
 		private :
-			int DeduceALFormat(int channels, int samples);
+			int DeduceALFormat(int channels);
 		private :
 			bool m_IsPlaying = false, m_IsSpatial = false, m_IsLooping = false;
 			float m_Gain = 1.0f, m_Pitch = 1.0f;

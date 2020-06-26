@@ -24,6 +24,7 @@ IncludeDir["IMGUI"] = "RetroGameFramework/vendor/IMGUI"
 IncludeDir["GLM"] = "RetroGameFramework/vendor/GLM"
 IncludeDir["STB_IMAGE"] = "RetroGameFramework/vendor/STB_IMAGE"
 IncludeDir["OPENAL_SOFT"] = "RetroGameFramework/vendor/OPENAL_SOFT"
+IncludeDir["MINIMP3"] = "RetroGameFramework/vendor/MINIMP3"
 
 group "Dependencies"
 	include "RetroGameFramework/vendor/GLFW"
@@ -70,7 +71,8 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
 		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/*h",
-		"%{prj.name}/vendor/OPENAL_SOFT/src/common/*.h"
+		"%{prj.name}/vendor/OPENAL_SOFT/src/common/*.h",
+		"%{prj.name}/vendor/MINIMP3/*.h"
 	}
 
 
@@ -89,6 +91,8 @@ project "RetroGameFramework"
 		"%{IncludeDir.OPENAL_SOFT}/src/common",
 		"%{IncludeDir.OPENAL_SOFT}/src/alc",
 		"%{IncludeDir.OPENAL_SOFT}/src/al",
+		"%{IncludeDir.MINIMP3}/"
+
 	}
 
 	links 
@@ -172,6 +176,7 @@ project "Sandbox"
 		"%{IncludeDir.OPENAL_SOFT}/src/common",
 		"%{IncludeDir.OPENAL_SOFT}/src/alc",
 		"%{IncludeDir.OPENAL_SOFT}/src/al",
+		"%{IncludeDir.MINIMP3}/"
 	}
 
 	links

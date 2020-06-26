@@ -5,7 +5,7 @@
 #include "RetroGF/Platform/OpenAL/ALCommon.h"
 
 
-#include "RetroGF/Audio/WavFileHeader.h"
+#include "RetroGF/Audio/ReadAudioFiles.h"
 
 namespace RGF {
 
@@ -14,13 +14,9 @@ namespace RGF {
 	{
 		ALCall(alGenBuffers(1, &m_AudioBufferID));
 
-
-		int channels, sampleRate, bps, size;
-		void* wavData = WavFileHeader::LoadData(m_Specification.filepath, &channels, &sampleRate, &bps
-		, &size);
-
-		ALCall(alBufferData(m_AudioBufferID, DeduceALFormat(channels, bps),
-			wavData, size, sampleRate));
+		AudioFileSpecs fileSpecs = AudioFileSpecs::LoadAudioData(specs.filepath);
+		ALCall(alBufferData(m_AudioBufferID, DeduceALFormat(fileSpecs.Channels),
+			fileSpecs.Data, fileSpecs.Size, fileSpecs.SampleRate));
 
 
 		ALCall(alGenSources(1, &m_AudioSourceID));
@@ -72,30 +68,11 @@ namespace RGF {
 	}
 
 
-	int ALAudioSource::DeduceALFormat(int channels, int samples) {
+	int ALAudioSource::DeduceALFormat(int channels) {
 		bool stereo = (channels > 1);
-
-		switch (samples) {
-			case 16:
-				if (stereo)
-					return AL_FORMAT_STEREO16;
-				else
-					return AL_FORMAT_MONO16;
-
-				break;
-			case 8:
-				if (stereo)
-					return AL_FORMAT_STEREO8;
-				else
-					return AL_FORMAT_MONO8;
-				break;
-
-			default:
-				return 0;
-		}
-
-
-		RGF_ASSERT(false, "cannot deduce format!");
+		if (stereo) return AL_FORMAT_STEREO16;
+		
+		return AL_FORMAT_MONO16;
 	}
 
 
