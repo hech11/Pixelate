@@ -32,10 +32,10 @@ namespace RGF {
 
 
 
-	struct WavFormat : public AudioFormatSpec {
+	struct WavFormat {
 		
 		public :
-			void LoadData(const std::string& filepath);
+			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
 		private:
 			static bool IsBigEndian() {
 				int a = 1;
@@ -55,18 +55,19 @@ namespace RGF {
 	};
 
 
-	struct MP3Format : public AudioFormatSpec {
+	struct MP3Format {
 		public :
 			MP3Format();
-			void LoadData(const std::string& filepath);
+
+			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
 
 		private :
 			static mp3dec_t mp3d;
 	};
 
-	struct OggFormat : public AudioFormatSpec {
+	struct OggFormat {
 		public:
-			void LoadData(const std::string& filepath);
+			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
 	};
 
 

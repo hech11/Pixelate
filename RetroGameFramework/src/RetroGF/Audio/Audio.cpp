@@ -41,8 +41,6 @@ namespace RGF {
 		}
 
 		AudioFormatSpec specs = AudioFormatSpec::LoadAudioData(filepath);
-
-
 		Ref<AudioBuffer> buffer = CreateRef<AudioBuffer>(specs);
 
 		s_Data.AudioBuffers[filepath] = buffer;

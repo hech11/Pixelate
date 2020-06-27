@@ -25,21 +25,22 @@ namespace RGF {
 		AudioFormatSpec specs;
 		specs.Extention = DeduceFileFormat(filepath);
 
-		if (specs.Extention == FileFormat::Mp3) {
-			MP3Format format;
-			format.LoadData(filepath);
-			return format;
+		switch (specs.Extention) {
+			case FileFormat::Mp3:
+				MP3Format::LoadData(filepath, &specs);
+				break;
+			case FileFormat::Wav:
+				WavFormat::LoadData(filepath, &specs);
+				break;
+			case FileFormat::Ogg:
+				OggFormat::LoadData(filepath, &specs);
+				break;
+
+			default:
+				RGF_ASSERT(false, "audio file type not supported!");
 		}
-		else if (specs.Extention == FileFormat::Wav) {
-			WavFormat format;
-			format.LoadData(filepath);
-			return format;
-		}
-		else if (specs.Extention == FileFormat::Ogg) {
-			OggFormat format;
-			format.LoadData(filepath);
-			return format;
-		}
+
+		return specs;
 
 
 
@@ -63,7 +64,7 @@ namespace RGF {
 
 	/////////////////////////-- WavFormat --//////////////////////////////////
 
-	void WavFormat::LoadData(const std::string& filepath) {
+	void WavFormat::LoadData(const std::string& filepath, AudioFormatSpec* specs) {
 		char buffer[4];
 		std::ifstream in(filepath.c_str(), std::ios::binary);
 		in.read(buffer, 4);
@@ -77,18 +78,18 @@ namespace RGF {
 		in.read(buffer, 4);      //16
 		in.read(buffer, 2);      //1
 		in.read(buffer, 2);
-		Channels = ConvertToInt(buffer, 2);
+		specs->Channels = ConvertToInt(buffer, 2);
 		in.read(buffer, 4);
-		SampleRate = ConvertToInt(buffer, 4);
+		specs->SampleRate = ConvertToInt(buffer, 4);
 		in.read(buffer, 4);
 		in.read(buffer, 2);
 		in.read(buffer, 2);
-		Bps = ConvertToInt(buffer, 2);
+		specs->Bps = ConvertToInt(buffer, 2);
 		in.read(buffer, 4);      //data
 		in.read(buffer, 4);
-		Size = ConvertToInt(buffer, 4);
-		Data = (char*)alloca(Size);
-		in.read((char*)Data, Size);
+		specs->Size = ConvertToInt(buffer, 4);
+		specs->Data = (char*)alloca(specs->Size);
+		in.read((char*)specs->Data, specs->Size);
 	}
 	//////////////////////////////////////////////////////////////////////////
 
@@ -104,37 +105,37 @@ namespace RGF {
 			init = true;
 		}
 	}
-	void MP3Format::LoadData(const std::string& filepath) {
+	void MP3Format::LoadData(const std::string& filepath, AudioFormatSpec* specs) {
 		mp3dec_file_info_t info;
 		int result = mp3dec_load(&mp3d, filepath.c_str(), &info, 0, 0);
 
 
-		Size = info.samples * sizeof(mp3d_sample_t);
-		Bps = Size / (info.avg_bitrate_kbps * 1024.0f);
-		SampleRate = info.hz;
-		Channels = info.channels;
+		specs->Size = info.samples * sizeof(mp3d_sample_t);
+		specs->Bps = specs->Size / (info.avg_bitrate_kbps * 1024.0f);
+		specs->SampleRate = info.hz;
+		specs->Channels = info.channels;
 
 
 
-		Data = (void*)info.buffer;
+		specs->Data = (void*)info.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 
 
 	///////////////////////////-- OggFomrat --///////////////////////////////
 
-	void OggFormat::LoadData(const std::string& filepath) {
+	void OggFormat::LoadData(const std::string& filepath, AudioFormatSpec* specs) {
 		short* dat;
 
-		int samplesDecoded = stb_vorbis_decode_filename(filepath.c_str(), &Channels, &SampleRate, &dat);
+		int samplesDecoded = stb_vorbis_decode_filename(filepath.c_str(), &specs->Channels, &specs->SampleRate, &dat);
 		if (samplesDecoded == -1) {
 			RGF_CORE_ERROR("There was an error decoding samples at: %s", filepath.c_str());
 		}
 
-		Data = dat;
+		specs->Data = dat;
 		// I am guessing how you retrieve the size. 2 bytes per sample as dat
 		// is a short and a short is 2 bytes typically...
-		Size = 2 * Channels * samplesDecoded;
+		specs->Size = 2 * specs->Channels * samplesDecoded;
 	}
 	//////////////////////////////////////////////////////////////////////////
 
