@@ -13,8 +13,8 @@
 
 namespace RGF {
 	
-
-	struct AudioFileSpec {
+	
+	struct AudioFormatSpec {
 			enum class FileFormat {
 				None = -1,
 				Wav,
@@ -26,7 +26,7 @@ namespace RGF {
 			FileFormat Extention;
 			void* Data;
 
-			static AudioFileSpec LoadAudioData(const std::string& filepath);
+			static AudioFormatSpec LoadAudioData(const std::string& filepath);
 
 		private :
 			static FileFormat DeduceFileFormat(const std::string& filepath);
@@ -34,7 +34,7 @@ namespace RGF {
 
 
 
-	struct WavFileHeader : public AudioFileSpec {
+	struct WavFormat : public AudioFormatSpec {
 		
 		public :
 			void LoadData(const std::string& filepath);
@@ -59,20 +59,18 @@ namespace RGF {
 	};
 
 
-	struct MP3Header : public AudioFileSpec {
+	struct MP3Format : public AudioFormatSpec {
 		public :
-			MP3Header();
+			MP3Format();
 			void LoadData(const std::string& filepath);
 
 		private :
 			static mp3dec_t mp3d;
 	};
 
-
-	struct OggHeader : public AudioFileSpec {
+	struct OggFormat : public AudioFormatSpec {
 		public:
 			void LoadData(const std::string& filepath);
-
 	};
 
 }

@@ -78,10 +78,8 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/OPENAL_SOFT/src/common/*.h",
 		"%{prj.name}/vendor/MINIMP3/*.h",
 		"%{prj.name}/vendor/LIBOGG/include/**.h",
-		"%{prj.name}/vendor/LIBOGG/src/**.c",
-		"%{prj.name}/vendor/LIBVORBIS/include/**.h",
-		"%{prj.name}/vendor/LIBVORBIS/lib/**.h",
-		"%{prj.name}/vendor/LIBVORBIS/lib/**.cpp",
+		"%{prj.name}/vendor/VORBIS/include/**.h",
+		"%{prj.name}/vendor/VORBIS/lib/**.h",
 	}
 
 
@@ -101,7 +99,7 @@ project "RetroGameFramework"
 		"%{IncludeDir.OPENAL_SOFT}/src/alc",
 		"%{IncludeDir.OPENAL_SOFT}/src/al",
 		"%{IncludeDir.MINIMP3}/",
-		"%{IncludeDir.LIBVORBIS}/include",
+		"%{IncludeDir.VORBIS}/include",
 		"%{IncludeDir.LIBOGG}/include",
 
 
@@ -113,8 +111,6 @@ project "RetroGameFramework"
 		"GLFW",
 		"opengl32.lib",
 		"OPENAL_SOFT",
-		"LIBVORBIS",
-		"LIBOGG"
 	}
 
 	filter "system:windows"
@@ -191,7 +187,7 @@ project "Sandbox"
 		"%{IncludeDir.OPENAL_SOFT}/src/alc",
 		"%{IncludeDir.OPENAL_SOFT}/src/al",
 		"%{IncludeDir.MINIMP3}/",
-		"%{IncludeDir.LIBVORBIS}/include",
+		"%{IncludeDir.VORBIS}/include",
 		"%{IncludeDir.LIBOGG}/include",
 	}
 
@@ -200,8 +196,6 @@ project "Sandbox"
 		"GLAD",
 		"GLFW",
 		"OPENAL_SOFT",
-		"LIBOGG",
-		"LIBVORBIS",
 		"RetroGameFramework"
 	}
 

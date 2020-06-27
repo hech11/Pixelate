@@ -49,7 +49,7 @@ class ExampleLayer : public RGF::Layer {
 			particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 			particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
-			toneSFX = RGF::AudioSource::Create({ "assets/audio/tone.wav" });
+			toneSFX = RGF::AudioSource::Create({ "assets/audio/tone-ogg.ogg" });
 		}
 	
 	

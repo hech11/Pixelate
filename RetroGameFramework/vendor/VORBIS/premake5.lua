@@ -18,12 +18,12 @@ project "Vorbis"
     files {
         "include/**.h",
         "lib/**.h",
-        "lib/**.cpp"
+        "lib/**.c"
     }
 
     includedirs {
         "include",
-        "RetroGameFramework/vendor/LIBOGG/include"
+        "../LIBOGG/include"
     }
 
     links {

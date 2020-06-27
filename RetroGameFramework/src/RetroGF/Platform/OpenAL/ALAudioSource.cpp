@@ -5,7 +5,7 @@
 #include "RetroGF/Platform/OpenAL/ALCommon.h"
 
 
-#include "RetroGF/Audio/ReadAudioFiles.h"
+#include "RetroGF/Audio/AudioFormat.h"
 
 namespace RGF {
 
@@ -14,7 +14,7 @@ namespace RGF {
 	{
 		ALCall(alGenBuffers(1, &m_AudioBufferID));
 
-		AudioFileSpecs fileSpecs = AudioFileSpecs::LoadAudioData(specs.filepath);
+		AudioFormatSpec fileSpecs = AudioFormatSpec::LoadAudioData(specs.filepath);
 		ALCall(alBufferData(m_AudioBufferID, DeduceALFormat(fileSpecs.Channels),
 			fileSpecs.Data, fileSpecs.Size, fileSpecs.SampleRate));
 

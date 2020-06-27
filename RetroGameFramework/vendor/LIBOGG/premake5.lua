@@ -24,9 +24,6 @@ project "LIBOGG"
         "include"
     }
 
-    links {
-        "LIBOGG"
-    }
 
     defines {
         "LIBOGG_EXPORTS"
