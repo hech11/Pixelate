@@ -13,18 +13,16 @@ namespace RGF {
 
 			enum class ContextAPI {
 				None = -1,
-				OPENAL
+				OpenAL
 			};
 
+			void Init();
+			void Close();
 
-			virtual void Init() = 0;
-			virtual void Close() = 0;
+			ContextAPI GetContext() const { return m_Context; }
 
-			static ContextAPI GetContext() { return m_Context; }
-			static AudioContext* CreateContext(const ContextAPI& context);
-
-		protected :
-			static ContextAPI m_Context;
+		private :
+			ContextAPI m_Context;
 	};
 
 }

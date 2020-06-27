@@ -5,39 +5,44 @@
 #include "GLM/glm/glm.hpp"
 
 
+#include "AudioBuffer.h"
+
 // Audio source contains both buffer and the source audio data. In the future I may want to separate the buffer and the audio
 // source into different classes
 
 namespace RGF {
 	
-	// This may not be needed but this could be expanded to force specific arguments on the audio source
-	struct AudioSourceSpecification {
-		const char* filepath;
-	};
 
 	class AudioSource {
 		public:
-			virtual bool IsPlaying() = 0;
-			virtual void Play() = 0;
-			virtual void Pause() = 0;
-			virtual void Stop() = 0;
-			virtual void SetLooping(bool loop) = 0;
+			AudioSource();
+			~AudioSource();
+
+			bool IsPlaying() { return m_IsPlaying; }
+			void Play();
+			void Pause();
+			void Stop();
+			void SetLooping(bool loop);
+
+			void SetGain(float gain);
+
+			void SetPosition(const glm::vec3& position);
+			void SetBufferData(const Ref<AudioBuffer>& buffer);
 
 
-			virtual void SetGain(float gain) = 0;
-			virtual void SetSpatial(bool spatial) = 0; // TODO: This may not need to be here.
+			unsigned int GetAudioSourceHandleID() { return m_AudioSourceID; }
+			float GetPitch() { return m_Pitch; }
+			float GetGain() { return m_Gain;}
+			bool IsLooping() { return m_IsLooping; }
 
-			virtual void SetPosition(const glm::vec3& position) = 0;
-
-			virtual unsigned int GetHandleID() = 0;
-			virtual float GetPitch() = 0;
-			virtual float GetGain() = 0;
-			virtual bool GetSpatial() = 0; // TODO: This may not need to be here.
-			virtual bool IsLooping() = 0;
-
-		public:
-			static Ref<AudioSource> Create(const AudioSourceSpecification& specs);
-
+		private:
+			bool m_IsPlaying = false, m_IsSpatial = false, m_IsLooping = false;
+			float m_Gain = 1.0f, m_Pitch = 1.0f;
+	
+			unsigned int m_AudioSourceID;
+			glm::vec3 m_Position;
+	
 	};
+
 
 }

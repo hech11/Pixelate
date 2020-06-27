@@ -1,36 +1,57 @@
 #include "RGFpch.h"
 #include "Audio.h"
 
+#include "AudioBuffer.h"
 
 namespace RGF {
 
 
 	struct AudioData {
-		AudioContext* m_Context;
-		Ref<Listener> m_Listener;
+		Ref<AudioContext> Context;
+		Ref<AudioListener> Listener;
+
+		std::map<std::string, Ref<AudioBuffer>> AudioBuffers;
 	};
 
-	static AudioData m_Data;
+	static AudioData s_Data;
 
-	void Audio::Init(const AudioContext::ContextAPI& api) {
+	void Audio::Init() {
 
-		m_Data.m_Context = AudioContext::CreateContext(api);
-		m_Data.m_Context->Init();
+		s_Data.Context = CreateRef<AudioContext>();
+		s_Data.Context->Init();
 
-		m_Data.m_Listener = Listener::Create();
+		s_Data.Listener = CreateRef<AudioListener>();
+
 
 	}
 	void Audio::Shutdown() {
-		m_Data.m_Context->Close();
+		s_Data.Context->Close();
 	}
 
-	void Audio::PlayAudioSource(const Ref<AudioSource>& src) {
-		src->Play();
+
+	Ref<AudioSource> Audio::CreateAudioSource(const std::string& filepath, bool shouldLoop /*= false*/, bool streaming /*= false*/) {
+
+		Ref<AudioSource> source = CreateRef<AudioSource>();
+		source->SetLooping(shouldLoop);
+
+		if (s_Data.AudioBuffers.find(filepath) != s_Data.AudioBuffers.end()) {
+
+			source->SetBufferData(s_Data.AudioBuffers[filepath]);
+			return source;
+		}
+
+		AudioFormatSpec specs = AudioFormatSpec::LoadAudioData(filepath);
+
+
+		Ref<AudioBuffer> buffer = CreateRef<AudioBuffer>(specs);
+
+		s_Data.AudioBuffers[filepath] = buffer;
+		source->SetBufferData(buffer);
+
+		return source;
 	}
 
-	void Audio::Update() {
-
-	}
-
+	
+	
 
 }

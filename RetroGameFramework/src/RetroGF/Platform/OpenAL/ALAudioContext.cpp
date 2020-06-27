@@ -1,5 +1,5 @@
 #include "RGFpch.h"
-#include "ALAudioContext.h"
+#include "RetroGF/Audio/AudioContext.h"
 
 #include "OPENAL_SOFT/include/AL/al.h"
 #include "OPENAL_SOFT/include/AL/alc.h"
@@ -15,8 +15,11 @@ namespace RGF {
 	static ALCcontext* s_Context = nullptr; // Not sure if this should be defined here.. but this works for now
 	static ALCdevice* s_AudioDevice = nullptr; // Not sure if this should be defined here.. but this works for now
 
-	void ALAudioContext::Init() {
 
+
+	void AudioContext::Init() {
+
+		m_Context = ContextAPI::OpenAL;
 
 		s_AudioDevice = alcOpenDevice(NULL);
 
@@ -44,7 +47,7 @@ namespace RGF {
 
 	}
 
-	void ALAudioContext::Close() {
+	void AudioContext::Close() {
 		alcDestroyContext(s_Context);
 		alcCloseDevice(s_AudioDevice);
 	}

@@ -57,7 +57,8 @@
 
 // Audio.
 
-#include "RetroGF/Audio/AudioFormat.h"
+#include "RetroGF/Audio/AudioBuffer.h"
+#include "RetroGF/Audio/AudioListener.h"
 #include "RetroGF/Audio/AudioSource.h"
 #include "RetroGF/Audio/Audio.h"
 

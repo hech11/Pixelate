@@ -1,19 +1,17 @@
 #pragma once
 
 
-// This is a temp solution to read in a .wav file.
-
 #include <string>
-#include <fstream>
-
-#include "RetroGF/Utility/Log.h"
 
 #include "minimp3.h"
-#include "minimp3_ex.h"
+
+
 
 namespace RGF {
-	
-	
+
+
+
+		
 	struct AudioFormatSpec {
 			enum class FileFormat {
 				None = -1,
@@ -38,13 +36,11 @@ namespace RGF {
 		
 		public :
 			void LoadData(const std::string& filepath);
-
 		private:
 			static bool IsBigEndian() {
 				int a = 1;
 				return !((char*)& a)[0];
 			}
-
 			static int ConvertToInt(char* buffer, int len) {
 				int a = 0;
 				if (!IsBigEndian())
@@ -73,4 +69,20 @@ namespace RGF {
 			void LoadData(const std::string& filepath);
 	};
 
+
+
+
+	class AudioBuffer {
+
+		public:
+
+			AudioBuffer(const AudioFormatSpec& spec);
+			~AudioBuffer();
+
+			void SetData(const AudioFormatSpec& spec);
+
+			unsigned int GetHandleID() const { return m_AudioID; }
+		private:
+			unsigned int m_AudioID;
+	};
 }

@@ -1,5 +1,5 @@
 #include "RGFpch.h"
-#include "ALListener.h"
+#include "RetroGF/Audio/AudioListener.h"
 
 #include "AL/al.h"
 
@@ -10,26 +10,20 @@
 namespace RGF {
 
 
+	// For now the orientation is fixed. If I decide to implement a 3D renderer
+	// I might enable 3d audio.
 
-	ALListener::ALListener() {
+	AudioListener::AudioListener() {
 		ALfloat ori[] = { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f };
 		ALCall(alListenerfv(AL_ORIENTATION, ori));
 	}
 
-	ALListener::~ALListener() {
-
-	}
-
-	void ALListener::SetPosition(const glm::vec3& position) {
+	void AudioListener::SetPosition(const glm::vec3& position) {
 		m_Position = position;
 		ALCall(alListenerfv(AL_POSITION, glm::value_ptr(m_Position)));
 	}
 
-	void ALListener::EnableSpatial(bool enable) {
-
-	}
-
-	void ALListener::SetGain(float gain)
+	void AudioListener::SetGain(float gain)
 	{
 		m_Gain = gain;
 		ALCall(alListenerfv(AL_GAIN, &m_Gain));

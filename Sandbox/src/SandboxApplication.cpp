@@ -21,7 +21,7 @@ class ExampleLayer : public RGF::Layer {
 	RGF::ParticleProperties particleProps;
 
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
-	RGF::Ref<RGF::AudioSource> toneSFX;
+	RGF::Ref<RGF::AudioSource> toneSFX, sameToneSfx;
 
 	public:
 		virtual void Init() override {
@@ -49,7 +49,8 @@ class ExampleLayer : public RGF::Layer {
 			particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 			particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
-			toneSFX = RGF::AudioSource::Create({ "assets/audio/tone-ogg.ogg" });
+			toneSFX = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
+			sameToneSfx = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 		}
 	
 	
@@ -123,6 +124,11 @@ class ExampleLayer : public RGF::Layer {
 		bool OnKeyPressedEvent(RGF::KeyPressedEvent& e) {
 			if (e.GetKeyCode() == RGF_KEY_P && e.GetRepeatCount() == 0) {
 				toneSFX->Play();
+				return true;
+			}
+
+			if (e.GetKeyCode() == RGF_KEY_O && e.GetRepeatCount() == 0) {
+				sameToneSfx->Play();
 				return true;
 			}
 
