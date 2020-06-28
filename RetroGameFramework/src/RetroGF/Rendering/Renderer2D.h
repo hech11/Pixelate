@@ -31,6 +31,7 @@ namespace RGF {
 			static void EndScene();
 
 
+			static void DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });

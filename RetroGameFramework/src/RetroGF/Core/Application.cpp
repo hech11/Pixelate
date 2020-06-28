@@ -26,6 +26,7 @@
 
 // This is temp. This is used to test out box2d
 #include <box2d/box2d.h>
+#include "RetroGF/Physics/PhysicsDebugDraw.h"
 
 
 namespace RGF {
@@ -42,7 +43,6 @@ namespace RGF {
 	static float fixedTimeStep = 1 / 20.0f;
 	static int velocityIterations = 8;
 	static int positionIterations = 3;
-
 
 	Application::Application() {
 		RGF_PROFILE_FUNCTION();
@@ -82,12 +82,15 @@ namespace RGF {
 			s_TestBody = s_PhysicsWorld->CreateBody(&bDef);
 
 			b2PolygonShape boxShape;
-			boxShape.SetAsBox(1, 1);
+			boxShape.SetAsBox(3, 0.63);
 
 			b2FixtureDef fDef;
 			fDef.shape = &boxShape;
 			fDef.density = 1;
 			s_TestFixture = s_TestBody->CreateFixture(&fDef);
+
+			s_PhysicsWorld->SetDebugDraw(&m_PhysicsDebugDraw);
+			m_PhysicsDebugDraw.SetFlags(b2Draw::e_shapeBit);
 		}
 	}
 	Application::~Application() {
@@ -137,7 +140,7 @@ namespace RGF {
 
 		while (m_IsRunning) {
 			RGF_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
-
+			RenderCommand::Clear();
 			float time = m_AppTimer.GetElapsedSeconds();
 			float timeStep = time - LastTime;
 			LastTime = time;
@@ -152,7 +155,12 @@ namespace RGF {
 			}
 
 			s_PhysicsWorld->Step(fixedTimeStep, velocityIterations, positionIterations);
-			
+
+			// TODO: This is temp. When I decide to start developing the editor, this code will be removed
+			Renderer2D::BeginScene(&m_PhysicsDebugDraw.GetCamera()->GetCamera());
+			s_PhysicsWorld->DebugDraw();
+			Renderer2D::EndScene();
+
 #ifdef RGF_USE_IMGUI
 
 			{

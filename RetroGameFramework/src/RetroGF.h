@@ -62,6 +62,9 @@
 #include "RetroGF/Audio/AudioSource.h"
 #include "RetroGF/Audio/Audio.h"
 
+// Physics.
+
+#include "RetroGF/Physics/PhysicsDebugDraw.h"
 
 // Debug.
 #include "RetroGF/Debug/Instrumentor.h"

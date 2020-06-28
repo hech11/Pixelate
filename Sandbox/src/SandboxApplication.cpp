@@ -6,6 +6,7 @@
 
 // An example application using RGF
 
+
 // A example layer.
 class ExampleLayer : public RGF::Layer {
 
@@ -51,6 +52,8 @@ class ExampleLayer : public RGF::Layer {
 
 			toneSFX = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 			sameToneSfx = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
+
+			RGF::Application::GetApp().GetPhysicsDebugDraw().SetCamera(m_CameraController.get());
 		}
 	
 	
@@ -92,15 +95,15 @@ class ExampleLayer : public RGF::Layer {
 
 			{
 
-				RenderCommand::Clear();
+
 				RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 				Renderer2D::ResetStatistics();
 
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
-				
 				Renderer2D::DrawSprite(SpritePosition, Rotation, SpriteSize, SpriteColor);
+				/*
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f,{.5f, 5.f, 1.0f}, SpriteColor);
 				Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -112,10 +115,12 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
 				Renderer2D::DrawSprite({ 2.0f, 2.0f, 0.0f }, 75.0f, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 				
+				*/
+
 
 				particleSystem.OnRender();
 				Renderer2D::EndScene();
-
+				
 
 
 			}
@@ -193,16 +198,15 @@ class ExampleLayer : public RGF::Layer {
 
 };
 
-
 class SandboxApp : public RGF::Application {
 
-	public :
-		SandboxApp() {
-			RGF_TRACE("Sandbox App was created!\n");
+public:
+	SandboxApp() {
+		RGF_TRACE("Sandbox App was created!\n");
 
-			//PushLayer(new ExampleLayer());
-		}
-		~SandboxApp() {}
+		PushLayer(new ExampleLayer());
+	}
+	~SandboxApp() {}
 
 };
 

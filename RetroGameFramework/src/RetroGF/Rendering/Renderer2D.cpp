@@ -174,6 +174,36 @@ namespace RGF {
 		Flush();
 	}
 
+	void Renderer2D::DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color) {
+
+		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
+			FlushAndBeginNewBatch();
+		}
+
+		unsigned char r = color.x * 255.0f;
+		unsigned char g = color.y * 255.0f;
+		unsigned char b = color.z * 255.0f;
+		unsigned char a = color.w * 255.0f;
+
+
+		unsigned int col = a << 24 | b << 16 | g << 8 | r;
+
+		// Vertex order = bottom left -> bottom right -> top right -> top left
+		for (unsigned int i = 0; i < vertexCount; i++) {
+
+			SceneData.VertexDataPtr->Verticies = vertices[i] * 0.5f;
+			SceneData.VertexDataPtr->Color = col;
+			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[0];
+			SceneData.VertexDataPtr->TextureIndex = 0.0f;
+			SceneData.VertexDataPtr++;
+		}
+
+
+		SceneData.IndexCount += 6;
+		SceneData.m_Statistics.IndexCount += 6;
+	}
+
+
 	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color) {
 		RGF_PROFILE_FUNCTION();
 		DrawSprite(position, 0.0f, size, color);
