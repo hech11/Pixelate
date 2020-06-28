@@ -64,7 +64,8 @@
 
 // Physics.
 
-#include "RetroGF/Physics/PhysicsDebugDraw.h"
+#include "RetroGF/Physics/RigidBody.h"
+#include "RetroGF/Physics/Physics.h"
 
 // Debug.
 #include "RetroGF/Debug/Instrumentor.h"

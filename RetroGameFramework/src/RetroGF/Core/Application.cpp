@@ -27,6 +27,7 @@
 // This is temp. This is used to test out box2d
 #include "RetroGF/Physics/PhysicsDebugDraw.h"
 #include "RetroGF/Physics/Physics.h"
+#include "RetroGF/Physics/RigidBody.h"
 
 
 namespace RGF {
@@ -38,7 +39,7 @@ namespace RGF {
 
 	static b2Body* s_TestBody;
 	static b2Fixture* s_TestFixture;
-
+	
 
 	Application::Application() {
 		RGF_PROFILE_FUNCTION();
@@ -71,26 +72,8 @@ namespace RGF {
 
 
 
-		// This is to test box2d
-		{
-			b2World* world = (b2World*)Physics::World();
-			b2BodyDef bDef;
-			bDef.type = b2_staticBody;
-			bDef.position.Set(0, 0);
-			bDef.angle = 0.0f;
-			s_TestBody = world->CreateBody(&bDef);
+		
 
-			b2PolygonShape boxShape;
-			boxShape.SetAsBox(3, 0.63);
-
-			b2FixtureDef fDef;
-			fDef.shape = &boxShape;
-			fDef.density = 1;
-			s_TestFixture = s_TestBody->CreateFixture(&fDef);
-
-			world->SetDebugDraw(&m_PhysicsDebugDraw);
-			m_PhysicsDebugDraw.SetFlags(b2Draw::e_shapeBit);
-		}
 	}
 	Application::~Application() {
 		RGF_PROFILE_FUNCTION();

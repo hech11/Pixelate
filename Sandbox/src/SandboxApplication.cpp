@@ -3,6 +3,7 @@
 #include "IMGUI/imgui.h"
 #include "GLM/glm/gtc/type_ptr.inl"
 
+#include "RetroGF/Physics/Physics.h"
 
 // An example application using RGF
 
@@ -23,6 +24,9 @@ class ExampleLayer : public RGF::Layer {
 
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
 	RGF::Ref<RGF::AudioSource> toneSFX, sameToneSfx;
+	RGF::Scoped<RGF::RigidBody> floor, dymanicBody;
+	glm::vec2 FloorSize = { 3.0f, 1.0f };
+	float VelocitySpeed = 1;
 
 	public:
 		virtual void Init() override {
@@ -53,7 +57,24 @@ class ExampleLayer : public RGF::Layer {
 			toneSFX = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 			sameToneSfx = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 
-			RGF::Application::GetApp().GetPhysicsDebugDraw().SetCamera(m_CameraController.get());
+
+			//TODO: This is temp until an editor with a viewport is created
+			RGF::Physics::GetDebug().SetCamera(m_CameraController.get());
+
+			b2World* world = (b2World*)RGF::Physics::World();
+
+			RGF::RigidBody::RigidBodyDef def1, def2;
+			def1.Type = RGF::RigidBody::BodyType::Static;
+			def1.StartPosition = { 0.0f, -2.0f };
+			def1.BoxStartSize = FloorSize;
+
+			def2.Type = RGF::RigidBody::BodyType::Dynamic;
+			def2.CanRotate = false;
+			floor = RGF::CreateScoped<RGF::RigidBody>(def1);
+			dymanicBody = RGF::CreateScoped<RGF::RigidBody>(def2);
+
+
+
 		}
 	
 	
@@ -66,7 +87,7 @@ class ExampleLayer : public RGF::Layer {
 
 			{
 
-				m_CameraController->OnUpdate(dt);
+				//m_CameraController->OnUpdate(dt);
 
 
 				if (RGF::Input::IsMouseButtonDown(0)) {
@@ -87,6 +108,14 @@ class ExampleLayer : public RGF::Layer {
 
 				}
 
+				if (RGF::Input::IsKeyDown(RGF_KEY_D)) {
+					dymanicBody->SetLinearVelocity({ VelocitySpeed, 0 });
+				}
+				if (RGF::Input::IsKeyDown(RGF_KEY_A)) {
+					dymanicBody->SetLinearVelocity({ -VelocitySpeed, 0 });
+				}
+
+
 				particleSystem.OnUpdate(dt);
 				Audio::Update();
 
@@ -102,7 +131,10 @@ class ExampleLayer : public RGF::Layer {
 
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
-				Renderer2D::DrawSprite(SpritePosition, Rotation, SpriteSize, SpriteColor);
+				// TODO: Alter the game loop so it is physics friendly!
+				Renderer2D::DrawSprite(floor->GetPosition(), Rotation, { FloorSize.x, FloorSize.y, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
+				Renderer2D::DrawSprite(dymanicBody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f}, SpriteColor);
+
 				/*
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f,{.5f, 5.f, 1.0f}, SpriteColor);
@@ -184,7 +216,10 @@ class ExampleLayer : public RGF::Layer {
 			ImGui::End();
 
 			ImGui::Begin("Sprite props");
-			ImGui::SliderFloat3("Sprite Position", glm::value_ptr(SpritePosition), -10.0f, 10.0f, "%.2f");
+			ImGui::SliderFloat("Sprite MoveSpeed", &VelocitySpeed, 0.0f, 4.0f, "%.2f");
+			auto pos = dymanicBody->GetPosition();
+			ImGui::SliderFloat3("Sprite Position old", glm::value_ptr(pos), -10.0f, 10.0f, "%.2f");
+			ImGui::SliderFloat3("Sprite Position new", glm::value_ptr(SpritePosition), -10.0f, 10.0f, "%.2f");
 			ImGui::SliderFloat("Sprite Rotation", &Rotation, -360.0f, 360.0f, "%.2f");
 			ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
 			ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));

@@ -191,7 +191,7 @@ namespace RGF {
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < vertexCount; i++) {
 
-			SceneData.VertexDataPtr->Verticies = vertices[i] * 0.5f;
+			SceneData.VertexDataPtr->Verticies = vertices[i];
 			SceneData.VertexDataPtr->Color = col;
 			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[0];
 			SceneData.VertexDataPtr->TextureIndex = 0.0f;

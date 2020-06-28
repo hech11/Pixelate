@@ -1,11 +1,10 @@
 #include "RGFpch.h"
 #include "PhysicsDebugDraw.h"
 
-#include "RetroGF/Rendering/RenderCommand.h"
-#include "RetroGF/Rendering/API/Buffer.h"
-#include "RetroGF/Rendering/API/VertexArray.h"
 
 #include "RetroGF/Rendering/Renderer2D.h"
+
+#include "Physics.h"
 
 namespace RGF {
 
@@ -45,6 +44,15 @@ namespace RGF {
 
 	void PhysicsDebugDraw::DrawPoint(const b2Vec2& p, float size, const b2Color& color)
 	{
+	}
+
+
+
+	void PhysicsDebugDraw::RenderObjects() {
+		Renderer2D::BeginScene(&m_Camera->GetCamera());
+		const auto& world = (b2World*)Physics::World();
+		world->DebugDraw();
+		Renderer2D::EndScene();
 	}
 
 }

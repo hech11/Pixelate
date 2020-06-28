@@ -53,14 +53,11 @@ namespace RGF {
 
 
 			WindowImpl& GetWindow() { return *m_Window; }
-			PhysicsDebugDraw& GetPhysicsDebugDraw() { return m_PhysicsDebugDraw; }
 
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			static Application* s_Instance;
 			Scoped<WindowImpl> m_Window;
-
-			PhysicsDebugDraw m_PhysicsDebugDraw;
 
 			// TODO: This is temp, may need to refactor some of these components / systems
 #ifdef RGF_USE_IMGUI

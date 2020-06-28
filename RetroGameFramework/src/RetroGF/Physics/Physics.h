@@ -1,6 +1,10 @@
 #pragma once
 
 #include "GLM/glm/glm.hpp"
+#include "RigidBody.h"
+
+#include "PhysicsDebugDraw.h"
+
 
 namespace RGF {
 
@@ -21,11 +25,12 @@ namespace RGF {
 			static void Init(const PhysicsWorldProperties& props = PhysicsWorldProperties());
 			static void Update();
 
+
 			static void* World();
 
 			static void SetProperties(const PhysicsWorldProperties& props);
 			static PhysicsWorldProperties GetProperties();
-
+			static PhysicsDebugDraw& GetDebug();
 	};
 
 }
