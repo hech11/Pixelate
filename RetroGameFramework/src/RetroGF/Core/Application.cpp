@@ -25,8 +25,8 @@
 
 
 // This is temp. This is used to test out box2d
-#include <box2d/box2d.h>
 #include "RetroGF/Physics/PhysicsDebugDraw.h"
+#include "RetroGF/Physics/Physics.h"
 
 
 namespace RGF {
@@ -36,19 +36,14 @@ namespace RGF {
 
 	Application* Application::s_Instance = nullptr;
 
-	static Scoped<b2World> s_PhysicsWorld;
 	static b2Body* s_TestBody;
 	static b2Fixture* s_TestFixture;
 
-	static float fixedTimeStep = 1 / 20.0f;
-	static int velocityIterations = 8;
-	static int positionIterations = 3;
 
 	Application::Application() {
 		RGF_PROFILE_FUNCTION();
 		s_Instance = this;
 		b2Vec2 grav = { 0.0f, -9.8f };
-		s_PhysicsWorld = CreateScoped<b2World>(grav);
 
 		m_Window = Scoped<WindowImpl>(WindowImpl::Create({960,540}));
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
@@ -66,6 +61,8 @@ namespace RGF {
 
 		RGF_CORE_MSG("initializing the audio!\n");
 		Audio::Init();
+		RGF_CORE_MSG("initializing physics!\n");
+		Physics::Init();
 
 		RGF_CORE_TRACE("RGF application created!\n");
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
@@ -73,13 +70,15 @@ namespace RGF {
 
 
 
+
 		// This is to test box2d
 		{
+			b2World* world = (b2World*)Physics::World();
 			b2BodyDef bDef;
 			bDef.type = b2_staticBody;
 			bDef.position.Set(0, 0);
 			bDef.angle = 0.0f;
-			s_TestBody = s_PhysicsWorld->CreateBody(&bDef);
+			s_TestBody = world->CreateBody(&bDef);
 
 			b2PolygonShape boxShape;
 			boxShape.SetAsBox(3, 0.63);
@@ -89,7 +88,7 @@ namespace RGF {
 			fDef.density = 1;
 			s_TestFixture = s_TestBody->CreateFixture(&fDef);
 
-			s_PhysicsWorld->SetDebugDraw(&m_PhysicsDebugDraw);
+			world->SetDebugDraw(&m_PhysicsDebugDraw);
 			m_PhysicsDebugDraw.SetFlags(b2Draw::e_shapeBit);
 		}
 	}
@@ -154,12 +153,9 @@ namespace RGF {
 				layer->OnUpdate(timeStep);
 			}
 
-			s_PhysicsWorld->Step(fixedTimeStep, velocityIterations, positionIterations);
+			Physics::Update();
 
-			// TODO: This is temp. When I decide to start developing the editor, this code will be removed
-			Renderer2D::BeginScene(&m_PhysicsDebugDraw.GetCamera()->GetCamera());
-			s_PhysicsWorld->DebugDraw();
-			Renderer2D::EndScene();
+		
 
 #ifdef RGF_USE_IMGUI
 
