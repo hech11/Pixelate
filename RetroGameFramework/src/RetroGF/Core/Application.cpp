@@ -24,6 +24,9 @@
 #include "RetroGF/Audio/Audio.h"
 
 
+// This is temp. This is used to test out box2d
+#include <box2d/box2d.h>
+
 
 namespace RGF {
 
@@ -32,9 +35,21 @@ namespace RGF {
 
 	Application* Application::s_Instance = nullptr;
 
+	static Scoped<b2World> s_PhysicsWorld;
+	static b2Body* s_TestBody;
+	static b2Fixture* s_TestFixture;
+
+	static float fixedTimeStep = 1 / 20.0f;
+	static int velocityIterations = 8;
+	static int positionIterations = 3;
+
+
 	Application::Application() {
 		RGF_PROFILE_FUNCTION();
 		s_Instance = this;
+		b2Vec2 grav = { 0.0f, -9.8f };
+		s_PhysicsWorld = CreateScoped<b2World>(grav);
+
 		m_Window = Scoped<WindowImpl>(WindowImpl::Create({960,540}));
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
@@ -56,6 +71,24 @@ namespace RGF {
 		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
 
+
+
+		// This is to test box2d
+		{
+			b2BodyDef bDef;
+			bDef.type = b2_staticBody;
+			bDef.position.Set(0, 0);
+			bDef.angle = 0.0f;
+			s_TestBody = s_PhysicsWorld->CreateBody(&bDef);
+
+			b2PolygonShape boxShape;
+			boxShape.SetAsBox(1, 1);
+
+			b2FixtureDef fDef;
+			fDef.shape = &boxShape;
+			fDef.density = 1;
+			s_TestFixture = s_TestBody->CreateFixture(&fDef);
+		}
 	}
 	Application::~Application() {
 		RGF_PROFILE_FUNCTION();
@@ -118,6 +151,7 @@ namespace RGF {
 				layer->OnUpdate(timeStep);
 			}
 
+			s_PhysicsWorld->Step(fixedTimeStep, velocityIterations, positionIterations);
 			
 #ifdef RGF_USE_IMGUI
 

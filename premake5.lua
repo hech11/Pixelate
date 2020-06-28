@@ -27,6 +27,7 @@ IncludeDir["OPENAL_SOFT"] = "RetroGameFramework/vendor/OPENAL_SOFT"
 IncludeDir["MINIMP3"] = "RetroGameFramework/vendor/MINIMP3"
 IncludeDir["VORBIS"] = "RetroGameFramework/vendor/VORBIS"
 IncludeDir["LIBOGG"] = "RetroGameFramework/vendor/LIBOGG"
+IncludeDir["BOX2D"] = "RetroGameFramework/vendor/BOX2D"
 
 group "Dependencies/Rendering"
 	include "RetroGameFramework/vendor/GLFW"
@@ -35,6 +36,8 @@ group "Dependencies/Audio"
 	include "RetroGameFramework/vendor/LIBOGG"
 	include "RetroGameFramework/vendor/VORBIS"
 	include "RetroGameFramework/vendor/OPENAL_SOFT"
+group"Dependencies/Physics"
+	include "RetroGameFramework/vendor/BOX2D"
 group ""
 
 project "RetroGameFramework"
@@ -60,23 +63,15 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/GLM/glm/**.inl",
 		"%{prj.name}/vendor/GLAD/**.h",
 		"%{prj.name}/vendor/GLAD/**.cpp",
-		"%{prj.name}/vendor/IMGUI/imconfig.h",
-		"%{prj.name}/vendor/IMGUI/imgui.h",
-		"%{prj.name}/vendor/IMGUI/imgui.cpp",
-		"%{prj.name}/vendor/IMGUI/imgui_draw.cpp",
-		"%{prj.name}/vendor/IMGUI/imgui_internal.h",
-		"%{prj.name}/vendor/IMGUI/imgui_widgets.cpp",
-		"%{prj.name}/vendor/IMGUI/imstb_rectpack.h",
-		"%{prj.name}/vendor/IMGUI/imstb_textedit.h",
-		"%{prj.name}/vendor/IMGUI/imstb_truetype.h",
-		"%{prj.name}/vendor/IMGUI/imgui_demo.cpp",
+		"%{prj.name}/vendor/IMGUI/*.h",
+		"%{prj.name}/vendor/IMGUI/*.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.h",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
-		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/*h",
-		"%{prj.name}/vendor/OPENAL_SOFT/src/common/*.h",
-		"%{prj.name}/vendor/MINIMP3/*.h",
+		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/**h",
+		"%{prj.name}/vendor/OPENAL_SOFT/src/common/**.h",
+		"%{prj.name}/vendor/MINIMP3/**.h",
 		"%{prj.name}/vendor/LIBOGG/include/**.h",
 		"%{prj.name}/vendor/VORBIS/include/**.h",
 		"%{prj.name}/vendor/VORBIS/lib/**.h",
@@ -101,6 +96,7 @@ project "RetroGameFramework"
 		"%{IncludeDir.MINIMP3}/",
 		"%{IncludeDir.VORBIS}/include",
 		"%{IncludeDir.LIBOGG}/include",
+		"%{IncludeDir.BOX2D}/include",
 
 
 	}
@@ -111,6 +107,7 @@ project "RetroGameFramework"
 		"GLFW",
 		"opengl32.lib",
 		"OPENAL_SOFT",
+		"BOX2D",
 	}
 
 	filter "system:windows"
@@ -189,6 +186,7 @@ project "Sandbox"
 		"%{IncludeDir.MINIMP3}/",
 		"%{IncludeDir.VORBIS}/include",
 		"%{IncludeDir.LIBOGG}/include",
+		"%{IncludeDir.BOX2D}/include",
 	}
 
 	links
@@ -196,6 +194,7 @@ project "Sandbox"
 		"GLAD",
 		"GLFW",
 		"OPENAL_SOFT",
+		"BOX2D",
 		"RetroGameFramework"
 	}
 

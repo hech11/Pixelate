@@ -200,7 +200,7 @@ class SandboxApp : public RGF::Application {
 		SandboxApp() {
 			RGF_TRACE("Sandbox App was created!\n");
 
-			PushLayer(new ExampleLayer());
+			//PushLayer(new ExampleLayer());
 		}
 		~SandboxApp() {}
 
