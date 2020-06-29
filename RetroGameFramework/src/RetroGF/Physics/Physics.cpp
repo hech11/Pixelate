@@ -7,6 +7,8 @@
 #include "RetroGF/Rendering/Renderer2D.h"
 #include "RetroGF/Core/Application.h"
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 namespace RGF {
 
 	static Physics::PhysicsWorldProperties s_Properties;
@@ -21,19 +23,20 @@ namespace RGF {
 	PhysicsWorldData s_Data;
 
 	void Physics::Init(const PhysicsWorldProperties& props) {
+		RGF_PROFILE_FUNCTION();
 		s_Properties = props;
 		b2Vec2 grav = { s_Properties.Gravity.x, s_Properties.Gravity.y };
 
 		s_Data.World = new b2World(grav);
 
 		s_Data.World->SetDebugDraw(&s_Data.DebugDraw);
-		s_Data.DebugDraw.SetFlags(b2Draw::e_shapeBit);
 
 	}
 
 
 
 	void Physics::Update(float time) {
+		RGF_PROFILE_FUNCTION();
 
 		while (s_Data.CurrentSimulationTime < time) {
 			s_Data.World->Step(s_Properties.FixedTimeStep, s_Properties.VelocityIterations, s_Properties.PositionIterations);
@@ -43,6 +46,7 @@ namespace RGF {
 	}
 
 	void Physics::DrawDebugObjects() {
+		RGF_PROFILE_FUNCTION();
 		// TODO: This is temp. When I decide to start developing the editor, this code will be removed
 		s_Data.DebugDraw.RenderObjects();
 	}

@@ -120,14 +120,12 @@ namespace RGF {
 		m_AppTimer.Reset();
 		while (m_IsRunning) {
 			RGF_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
-			RenderCommand::Clear();
 			float time = m_AppTimer.GetElapsedSeconds();
 			float timeStep = time - LastTime;
 			LastTime = time;
 
 
 			Physics::Update(m_AppTimer.GetElapsedSeconds());
-			Physics::DrawDebugObjects();
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 
@@ -135,7 +133,8 @@ namespace RGF {
 
 				layer->OnUpdate(timeStep);
 			}
-		
+			Physics::DrawDebugObjects();
+
 
 #ifdef RGF_USE_IMGUI
 

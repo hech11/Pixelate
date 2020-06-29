@@ -4,10 +4,20 @@
 #include <box2d/box2d.h>
 
 #include "RetroGF/Core/OrthographicCameraController.h"
+#include "RetroGF/Core/Core.h"
 namespace RGF {
 	class PhysicsDebugDraw : public b2Draw {
 
 		public:
+
+			// Mimics box2d's flags
+			enum DrawFlag {
+				shapeBit = BIT(0),	///< draw shapes
+				jointBit = BIT(1),	///< draw joint connections
+				aabbBit = BIT(2),	///< draw axis aligned bounding boxes
+				pairBit = BIT(3),	///< draw broad-phase pairs
+				centerOfMassBit = BIT(4) ///< draw center of mass frame
+			};
 
 
 			void SetCamera(OrthographicCameraController* camera) { m_Camera = camera; }
@@ -24,8 +34,17 @@ namespace RGF {
 
 			void RenderObjects();
 
+			void ShouldDrawVisuals(bool show);
+			void SetDrawFlag(unsigned int flag);
+
 		private :
 			OrthographicCameraController* m_Camera;
+			bool m_ShowVisuals = false;
 
 	};
+
+	inline PhysicsDebugDraw::DrawFlag operator| (PhysicsDebugDraw::DrawFlag a, PhysicsDebugDraw::DrawFlag b) 
+	{ return (PhysicsDebugDraw::DrawFlag)((int)a | (int)b); }
+
+
 }

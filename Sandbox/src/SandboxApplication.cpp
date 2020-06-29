@@ -147,7 +147,7 @@ class ExampleLayer : public RGF::Layer {
 
 			{
 
-
+				RenderCommand::Clear();
 				RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 				Renderer2D::ResetStatistics();
@@ -246,6 +246,43 @@ class ExampleLayer : public RGF::Layer {
 			ImGui::SliderFloat("Sprite Rotation", &Rotation, -360.0f, 360.0f, "%.2f");
 			ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
 			ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
+			ImGui::End();
+
+			ImGui::Begin("Physics");
+			unsigned int flags = 0;
+			static bool physicsDebugButton = false;
+			static bool shapeBit = false;
+			static bool jointBit = false;
+			static bool aabbBit = false;
+			static bool pairBit = false;
+			static bool centerOfMassBit = false;
+
+			ImGui::Checkbox("Physics debug", &physicsDebugButton);
+			ImGui::Checkbox("shapeBit", &shapeBit);
+			ImGui::Checkbox("jointBit", &jointBit);
+			ImGui::Checkbox("aabbBit", &aabbBit);
+			ImGui::Checkbox("pairBit", &pairBit);
+			ImGui::Checkbox("centerOfMassBit", &centerOfMassBit);
+			Physics::GetDebug().ShouldDrawVisuals(physicsDebugButton);
+
+			if(shapeBit)
+				flags = flags | RGF::PhysicsDebugDraw::DrawFlag::shapeBit;
+
+			if (jointBit)
+				flags = flags | RGF::PhysicsDebugDraw::DrawFlag::jointBit;
+
+			if (aabbBit)
+				flags = flags | RGF::PhysicsDebugDraw::DrawFlag::aabbBit;
+
+			if (pairBit)
+				flags = flags | RGF::PhysicsDebugDraw::DrawFlag::pairBit;
+
+			if (centerOfMassBit)
+				flags = flags | RGF::PhysicsDebugDraw::DrawFlag::centerOfMassBit;
+
+
+
+			Physics::GetDebug().SetDrawFlag(flags);
 			ImGui::End();
 
 

@@ -22,6 +22,7 @@ namespace RGF {
 	
 		
 	AudioFormatSpec AudioFormatSpec::LoadAudioData(const std::string& filepath) {
+		RGF_PROFILE_FUNCTION();
 		AudioFormatSpec specs;
 		specs.Extention = DeduceFileFormat(filepath);
 
@@ -48,6 +49,7 @@ namespace RGF {
 
 
 	AudioFormatSpec::FileFormat AudioFormatSpec::DeduceFileFormat(const std::string& filepath) {
+		RGF_PROFILE_FUNCTION();
 		std::filesystem::path path = filepath;
 		std::string extension = path.extension().string();
 
@@ -65,6 +67,7 @@ namespace RGF {
 	/////////////////////////-- WavFormat --//////////////////////////////////
 
 	void WavFormat::LoadData(const std::string& filepath, AudioFormatSpec* specs) {
+		RGF_PROFILE_FUNCTION();
 		char buffer[4];
 		std::ifstream in(filepath.c_str(), std::ios::binary);
 		in.read(buffer, 4);
@@ -99,6 +102,7 @@ namespace RGF {
 	mp3dec_t MP3Format::mp3d;
 
 	MP3Format::MP3Format() {
+		RGF_PROFILE_FUNCTION();
 		static bool init = false;
 		if (!init) {
 			mp3dec_init(&mp3d);
@@ -106,6 +110,7 @@ namespace RGF {
 		}
 	}
 	void MP3Format::LoadData(const std::string& filepath, AudioFormatSpec* specs) {
+		RGF_PROFILE_FUNCTION();
 		mp3dec_file_info_t info;
 		int result = mp3dec_load(&mp3d, filepath.c_str(), &info, 0, 0);
 
@@ -125,6 +130,7 @@ namespace RGF {
 	///////////////////////////-- OggFomrat --///////////////////////////////
 
 	void OggFormat::LoadData(const std::string& filepath, AudioFormatSpec* specs) {
+		RGF_PROFILE_FUNCTION();
 		short* dat;
 
 		int samplesDecoded = stb_vorbis_decode_filename(filepath.c_str(), &specs->Channels, &specs->SampleRate, &dat);

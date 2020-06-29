@@ -9,6 +9,8 @@
 
 
 #include "Renderer2D.h"
+#include "RetroGF/Debug/Instrumentor.h"
+
 namespace RGF {
 
 	
@@ -17,6 +19,7 @@ namespace RGF {
 	ParticleSystem::ParticleSystem(const SystemInitData& initProps) 
 		: InitData(initProps)
 	{
+		RGF_PROFILE_FUNCTION();
 		m_PoolIndex = 0;
 		m_ParticlePool.resize(InitData.PoolLimit);
 	}
@@ -26,6 +29,7 @@ namespace RGF {
 	}
 
 	void ParticleSystem::OnUpdate(float timeStep) {
+		RGF_PROFILE_FUNCTION();
 		for (auto& particle : m_ParticlePool) {
 			if(particle.Active < 1)
 				continue;
@@ -43,6 +47,7 @@ namespace RGF {
 		}
 	}
 	void ParticleSystem::OnRender() {
+		RGF_PROFILE_FUNCTION();
 		for (auto& particle : m_ParticlePool) {
 			if(particle.Active < 1)
 				continue;
@@ -56,6 +61,7 @@ namespace RGF {
 
 
 	void ParticleSystem::Emit(const ParticleProperties& props) {
+		RGF_PROFILE_FUNCTION();
 		Particle& particle = m_ParticlePool[m_PoolIndex];
 
 
@@ -91,6 +97,7 @@ namespace RGF {
 	ParticleSystem::ParticleSystem(const SystemInitData& initProps)
 		: InitData(initProps)
 	{
+		RGF_PROFILE_FUNCTION();
 		m_PoolIndex = 0;
 
 
@@ -98,10 +105,12 @@ namespace RGF {
 	}
 
 	ParticleSystem::~ParticleSystem() {
+		RGF_PROFILE_FUNCTION();
 
 	}
 
 	void ParticleSystem::OnUpdate(float timeStep) {
+		RGF_PROFILE_FUNCTION();
 		for (int i = 0; i < InitData.PoolLimit; i++) {
 			if (!m_ParticlePool.Active[i])
 				continue;
@@ -118,6 +127,7 @@ namespace RGF {
 		}
 	}
 	void ParticleSystem::OnRender() {
+		RGF_PROFILE_FUNCTION();
 		for (int i = 0; i < InitData.PoolLimit; i++) {
 			if (!m_ParticlePool.Active[i])
 				continue;
@@ -132,6 +142,7 @@ namespace RGF {
 
 
 	void ParticleSystem::Emit(const ParticleProperties& props) {
+		RGF_PROFILE_FUNCTION();
 		Particle& particle = m_ParticlePool;
 
 

@@ -18,26 +18,21 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "RetroGameFramework/vendor/GLFW"
-IncludeDir["GLAD"] = "RetroGameFramework/vendor/GLAD"
-IncludeDir["IMGUI"] = "RetroGameFramework/vendor/IMGUI"
-IncludeDir["GLM"] = "RetroGameFramework/vendor/GLM"
-IncludeDir["STB_IMAGE"] = "RetroGameFramework/vendor/STB_IMAGE"
-IncludeDir["OPENAL_SOFT"] = "RetroGameFramework/vendor/OPENAL_SOFT"
-IncludeDir["MINIMP3"] = "RetroGameFramework/vendor/MINIMP3"
-IncludeDir["VORBIS"] = "RetroGameFramework/vendor/VORBIS"
-IncludeDir["LIBOGG"] = "RetroGameFramework/vendor/LIBOGG"
-IncludeDir["BOX2D"] = "RetroGameFramework/vendor/BOX2D"
+IncludeDir["Glfw"] = "RetroGameFramework/vendor/Glfw"
+IncludeDir["Glad"] = "RetroGameFramework/vendor/Glad"
+IncludeDir["Imgui"] = "RetroGameFramework/vendor/Imgui"
+IncludeDir["Glm"] = "RetroGameFramework/vendor/Glm"
+IncludeDir["OpenAL_Soft"] = "RetroGameFramework/vendor/OpenAL_Soft"
+IncludeDir["MiniMp3"] = "RetroGameFramework/vendor/MiniMp3"
+IncludeDir["Box2D"] = "RetroGameFramework/vendor/Box2D"
 
 group "Dependencies/Rendering"
-	include "RetroGameFramework/vendor/GLFW"
-	include "RetroGameFramework/vendor/GLAD"
+	include "RetroGameFramework/vendor/Glfw"
+	include "RetroGameFramework/vendor/Glad"
 group "Dependencies/Audio"
-	include "RetroGameFramework/vendor/LIBOGG"
-	include "RetroGameFramework/vendor/VORBIS"
-	include "RetroGameFramework/vendor/OPENAL_SOFT"
+	include "RetroGameFramework/vendor/OpenAL_Soft"
 group"Dependencies/Physics"
-	include "RetroGameFramework/vendor/BOX2D"
+	include "RetroGameFramework/vendor/Box2D"
 group ""
 
 project "RetroGameFramework"
@@ -89,25 +84,27 @@ project "RetroGameFramework"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor",
-		"%{IncludeDir.OPENAL_SOFT}/include",
-		"%{IncludeDir.OPENAL_SOFT}/src/common",
-		"%{IncludeDir.OPENAL_SOFT}/src/alc",
-		"%{IncludeDir.OPENAL_SOFT}/src/al",
-		"%{IncludeDir.MINIMP3}/",
-		"%{IncludeDir.VORBIS}/include",
-		"%{IncludeDir.LIBOGG}/include",
-		"%{IncludeDir.BOX2D}/include",
+		"%{IncludeDir.Glfw}/include",
+		"%{IncludeDir.Glad}/include",
+		"%{IncludeDir.Glm}",
+		"%{IncludeDir.Imgui}",
+		"%{IncludeDir.OpenAL_Soft}/include",
+		"%{IncludeDir.OpenAL_Soft}/src/common",
+		"%{IncludeDir.OpenAL_Soft}/src/alc",
+		"%{IncludeDir.OpenAL_Soft}/src/al",
+		"%{IncludeDir.MiniMp3}/",
+		"%{IncludeDir.Box2D}/include",
 
 
 	}
 
 	links 
 	{ 
-		"GLAD",
-		"GLFW",
+		"Glad",
+		"Glfw",
 		"opengl32.lib",
-		"OPENAL_SOFT",
-		"BOX2D",
+		"OpenAL_Soft",
+		"Box2D",
 	}
 
 	filter "system:windows"
@@ -115,7 +112,6 @@ project "RetroGameFramework"
 
 		defines
 		{
-			"RGF_BUILD_DLL",
 			"GLFW_INCLUDE_NONE",
 			"RGF_PLATFORM_WINDOWS"
 		}
@@ -178,28 +174,20 @@ project "Sandbox"
 	{
 		"RetroGameFramework/src",
 		"RetroGameFramework/vendor",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.OPENAL_SOFT}/include",
-		"%{IncludeDir.OPENAL_SOFT}/src/common",
-		"%{IncludeDir.OPENAL_SOFT}/src/alc",
-		"%{IncludeDir.OPENAL_SOFT}/src/al",
-		"%{IncludeDir.MINIMP3}/",
-		"%{IncludeDir.VORBIS}/include",
-		"%{IncludeDir.LIBOGG}/include",
-		"%{IncludeDir.BOX2D}/include",
+		"%{IncludeDir.Glm}",
+		"%{IncludeDir.OpenAL_Soft}/include",
+		"%{IncludeDir.OpenAL_Soft}/src/common",
+		"%{IncludeDir.OpenAL_Soft}/src/alc",
+		"%{IncludeDir.OpenAL_Soft}/src/al",
+		"%{IncludeDir.MiniMp3}/",
+		"%{IncludeDir.Box2D}/include",
 	}
 
 	links
 	{
-		"GLAD",
-		"GLFW",
-		"OPENAL_SOFT",
-		"BOX2D",
 		"RetroGameFramework"
 	}
-
-
-
+	
 	filter "system:windows"
 		systemversion "latest"
 
@@ -211,7 +199,6 @@ project "Sandbox"
 			"GLFW_INCLUDE_NONE",
 			"RGF_PLATFORM_WINDOWS",
 			"AL_LIBTYPE_STATIC"
-
 		}
 		
 	filter "configurations:Debug"

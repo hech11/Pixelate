@@ -9,6 +9,8 @@
 
 #include "ALCommon.h"
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 namespace RGF {
 
 	// Do more research into this...
@@ -18,6 +20,7 @@ namespace RGF {
 
 
 	void AudioContext::Init() {
+		RGF_PROFILE_FUNCTION();
 
 		m_Context = ContextAPI::OpenAL;
 
@@ -48,6 +51,8 @@ namespace RGF {
 	}
 
 	void AudioContext::Close() {
+		RGF_PROFILE_FUNCTION();
+
 		alcDestroyContext(s_Context);
 		alcCloseDevice(s_AudioDevice);
 	}

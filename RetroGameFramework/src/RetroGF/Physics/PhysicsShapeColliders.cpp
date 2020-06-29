@@ -4,7 +4,7 @@
 #include "BOX2D/box2d.h"
 #include "Physics.h"
 
-
+#include "RetroGF/Debug/Instrumentor.h"
 namespace RGF {
 
 
@@ -12,6 +12,7 @@ namespace RGF {
 	BoxCollider::BoxCollider(const BoxColliderDef& def)
 		: m_Def(def)
 	{
+		RGF_PROFILE_FUNCTION();
 		m_Type = ColliderType::Box;
 		b2PolygonShape* shape = new b2PolygonShape;
 		m_ColliderData = shape;

@@ -5,6 +5,7 @@
 
 #include "minimp3.h"
 
+#include "RetroGF/Debug/Instrumentor.h"
 
 
 namespace RGF {
@@ -38,10 +39,12 @@ namespace RGF {
 			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
 		private:
 			static bool IsBigEndian() {
+				RGF_PROFILE_FUNCTION();
 				int a = 1;
 				return !((char*)& a)[0];
 			}
 			static int ConvertToInt(char* buffer, int len) {
+				RGF_PROFILE_FUNCTION();
 				int a = 0;
 				if (!IsBigEndian())
 					for (int i = 0; i < len; i++)

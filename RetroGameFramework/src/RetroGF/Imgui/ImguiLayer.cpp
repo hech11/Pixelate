@@ -19,6 +19,8 @@
 
 #include <iomanip>
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 
 namespace RGF {
 
@@ -28,7 +30,8 @@ namespace RGF {
 	}
 	void ImguiLayer::Init()  {
 
-		
+		RGF_PROFILE_FUNCTION();
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -56,6 +59,7 @@ namespace RGF {
 	}
 	void ImguiLayer::ShutDown() {
 
+		RGF_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -63,12 +67,14 @@ namespace RGF {
 
 	void ImguiLayer::Start() {
 
+		RGF_PROFILE_FUNCTION();
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
 	void ImguiLayer::End() {
 
+		RGF_PROFILE_FUNCTION();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		Application& app = Application::GetApp();
 		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
@@ -91,6 +97,7 @@ namespace RGF {
 	void ImguiLayer::OnImguiRender() {
 		
 		// Docking space and the menu bar.
+		RGF_PROFILE_FUNCTION();
 		static bool opt_fullscreen_persistant = false;
 		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
 		bool opt_fullscreen = opt_fullscreen_persistant;

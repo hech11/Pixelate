@@ -47,6 +47,8 @@ namespace RGF {
 	using WeakRef = std::weak_ptr<T>;
 }
 
+#define BIT(x) (1 << x)
+
 #ifdef RGF_USE_CUSTOM_MEM_ALLOC
 
 	inline void* operator new(size_t size) {

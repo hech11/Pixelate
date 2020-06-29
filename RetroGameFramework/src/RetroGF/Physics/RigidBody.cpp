@@ -3,6 +3,8 @@
 
 #include "Physics.h"
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 
 
 namespace RGF {
@@ -12,6 +14,7 @@ namespace RGF {
 	RigidBody::RigidBody(const RigidBodyDef& def)
 		: m_Def(def)
 	{
+		RGF_PROFILE_FUNCTION();
 		b2World* world = (b2World*)Physics::World();
 
 		b2BodyDef d;
@@ -28,6 +31,7 @@ namespace RGF {
 
 	RigidBody::~RigidBody()
 	{
+		RGF_PROFILE_FUNCTION();
 		b2World* world = (b2World*)Physics::World();
 		for (auto& Fixture : m_Fixtures) {
 			m_BodyData->DestroyFixture(Fixture);
@@ -37,6 +41,7 @@ namespace RGF {
 	}
 
 	void RigidBody::AddCollider(PhysicsShapeColliders* collider) {
+		RGF_PROFILE_FUNCTION();
 		b2FixtureDef fDef;
 
 		fDef.shape = (b2Shape*)collider->GetShapeData();
@@ -48,6 +53,7 @@ namespace RGF {
 	}
 
 	void RigidBody::RemoveCollider(PhysicsShapeColliders* collider) {
+		RGF_PROFILE_FUNCTION();
 		int iterator = 0;
 		for (auto& Fixture : m_Fixtures) {
 			if (Fixture->GetShape() == collider->GetShapeData()) {
@@ -63,15 +69,18 @@ namespace RGF {
 
 	void RigidBody::SetLinearVelocity(const glm::vec2& velocity)
 	{
+		RGF_PROFILE_FUNCTION();
 		const auto& bod = (b2Body*)m_BodyData;
 		bod->SetLinearVelocity({ velocity.x, velocity.y });
 	}
 	glm::vec2 RigidBody::GetLinearVelocity() const {
+		RGF_PROFILE_FUNCTION();
 		const auto& bod = (b2Body*)m_BodyData;
 		return { bod->GetLinearVelocity().x, bod->GetLinearVelocity().y };
 	}
 
 	glm::vec3 RigidBody::GetPosition() const {
+		RGF_PROFILE_FUNCTION();
 		const auto& bod = (b2Body*)m_BodyData;
 		return { bod->GetPosition().x, bod->GetPosition().y, 0.0f };
 	}

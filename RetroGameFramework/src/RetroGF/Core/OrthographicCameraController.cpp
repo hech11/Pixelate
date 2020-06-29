@@ -4,6 +4,8 @@
 #include "RetroGF/Core/Input.h"
 #include "RetroGF/Core/KeyCodes.h"
 
+#include "RetroGF/Debug/Instrumentor.h"
+
 namespace RGF {
 
 	OrthographicCameraController::OrthographicCameraController(float aspectRadio, bool rotation)
@@ -15,11 +17,12 @@ namespace RGF {
 		m_CameraPosition({ 0.0f, 0.0f, 0.0f }),
 		m_CameraRotation(0.0f)
 	{
-
+		RGF_PROFILE_FUNCTION();
 
 	}
 
 	void OrthographicCameraController::OnUpdate(float ts) {
+		RGF_PROFILE_FUNCTION();
 		if (Input::IsKeyDown(RGF_KEY_A)) {
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts * m_ZoomLevel;
 		}
@@ -51,6 +54,7 @@ namespace RGF {
 	}
 
 	void OrthographicCameraController::OnEvent(Event& e) {
+		RGF_PROFILE_FUNCTION();
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(RGF_BIND_EVENT_FNC(OrthographicCameraController::OnMouseScrolled));
 		dispatcher.Dispatch<WindowResizeEvent>(RGF_BIND_EVENT_FNC(OrthographicCameraController::OnWindowResize));
@@ -58,7 +62,8 @@ namespace RGF {
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-		m_ZoomLevel -= e.GetYScroll()* 0.25f;
+		RGF_PROFILE_FUNCTION();
+		m_ZoomLevel -= e.GetYScroll() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
@@ -69,6 +74,7 @@ namespace RGF {
 
 	bool OrthographicCameraController::OnWindowResize(WindowResizeEvent& e)
 	{
+		RGF_PROFILE_FUNCTION();
 
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
