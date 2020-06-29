@@ -112,13 +112,11 @@ namespace RGF {
 	void Application::Run() {
 		RGF_PROFILE_FUNCTION();
 
-		//TODO: Need to refactor the game loop for a better FPS counter
-		float FPS = 60.0f;
-		float UpdateTimer = 0.0f;
-		float UpdateTick = 1.0f / FPS;
+		
 		float Time = 0.0f;
 
 		float LastTime = 0.0f;
+
 
 		while (m_IsRunning) {
 			RGF_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
@@ -128,6 +126,8 @@ namespace RGF {
 			LastTime = time;
 
 
+			Physics::Update(m_AppTimer.GetElapsedSeconds());
+			Physics::DrawDebugObjects();
 
 			for (Layer* layer : m_LayerStack.GetLayerStack()) {
 
@@ -135,9 +135,6 @@ namespace RGF {
 
 				layer->OnUpdate(timeStep);
 			}
-
-			Physics::Update();
-
 		
 
 #ifdef RGF_USE_IMGUI
@@ -159,6 +156,7 @@ namespace RGF {
 			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
 				Time += 1.0f;
 				RGF_CORE_MSG("%f: timestep\n", timeStep*1000.0f);
+
 #ifdef RGF_DISTRIBUTE
 				printf("%f: timestep\n", timeStep*1000.0f);
 #endif

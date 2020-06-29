@@ -14,6 +14,8 @@ namespace RGF {
 	struct PhysicsWorldData {
 		b2World* World;
 		PhysicsDebugDraw DebugDraw;
+
+		float CurrentSimulationTime = 0.0f;
 	};
 
 	PhysicsWorldData s_Data;
@@ -31,12 +33,20 @@ namespace RGF {
 
 
 
-	void Physics::Update() {
-		s_Data.World->Step(s_Properties.FixedTimeStep, s_Properties.VelocityIterations, s_Properties.PositionIterations);
+	void Physics::Update(float time) {
 
+		while (s_Data.CurrentSimulationTime < time) {
+			s_Data.World->Step(s_Properties.FixedTimeStep, s_Properties.VelocityIterations, s_Properties.PositionIterations);
+			s_Data.CurrentSimulationTime += s_Properties.FixedTimeStep;
+		}
+
+	}
+
+	void Physics::DrawDebugObjects() {
 		// TODO: This is temp. When I decide to start developing the editor, this code will be removed
 		s_Data.DebugDraw.RenderObjects();
 	}
+
 
 
 	void* Physics::World() {

@@ -66,6 +66,10 @@ namespace RGF {
 		const auto& bod = (b2Body*)m_BodyData;
 		bod->SetLinearVelocity({ velocity.x, velocity.y });
 	}
+	glm::vec2 RigidBody::GetLinearVelocity() const {
+		const auto& bod = (b2Body*)m_BodyData;
+		return { bod->GetLinearVelocity().x, bod->GetLinearVelocity().y };
+	}
 
 	glm::vec3 RigidBody::GetPosition() const {
 		const auto& bod = (b2Body*)m_BodyData;

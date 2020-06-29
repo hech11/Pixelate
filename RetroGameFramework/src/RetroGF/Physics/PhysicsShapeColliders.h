@@ -13,7 +13,7 @@ namespace RGF {
 
 	// For now physics shapes only supports boxes and circles
 	enum class ColliderType {
-		Box
+		Box,
 	};
 
 	struct BoxColliderDef {

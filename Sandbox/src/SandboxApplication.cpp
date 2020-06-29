@@ -81,7 +81,7 @@ class ExampleLayer : public RGF::Layer {
 
 			// add colliders to the rigid bodies
 			RGF::BoxColliderDef floorColliderDef, playerColliderDef;
-			floorColliderDef.Size = { 3, 1 };
+			floorColliderDef.Size = { 5, 1 };
 
 			RGF::BoxCollider floorCollider(floorColliderDef);
 			FloorRigidbody->AddCollider(&floorCollider);
@@ -132,10 +132,10 @@ class ExampleLayer : public RGF::Layer {
 				}
 
 				if (RGF::Input::IsKeyDown(RGF_KEY_D)) {
-					PlayerRigidbody->SetLinearVelocity({ VelocitySpeed, 0 });
+					PlayerRigidbody->SetLinearVelocity({ VelocitySpeed, PlayerRigidbody->GetLinearVelocity().y });
 				}
 				if (RGF::Input::IsKeyDown(RGF_KEY_A)) {
-					PlayerRigidbody->SetLinearVelocity({ -VelocitySpeed, 0 });
+					PlayerRigidbody->SetLinearVelocity({ -VelocitySpeed, PlayerRigidbody->GetLinearVelocity().y });
 				}
 
 
@@ -155,7 +155,7 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
 				// TODO: Alter the game loop so it is physics friendly!
-				Renderer2D::DrawSprite(FloorRigidbody->GetPosition(), Rotation, { 3.0f, 1.0f, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
+				Renderer2D::DrawSprite(FloorRigidbody->GetPosition(), Rotation, { 5.0f, 1.0f, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
 				Renderer2D::DrawSprite(PlayerRigidbody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f}, SpriteColor);
 
 				/*

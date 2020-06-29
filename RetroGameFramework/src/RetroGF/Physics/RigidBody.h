@@ -47,6 +47,7 @@ namespace RGF {
 			void RemoveCollider(PhysicsShapeColliders* collider);
 
 			void SetLinearVelocity(const glm::vec2& velocity);
+			glm::vec2 GetLinearVelocity() const;
 
 			glm::vec3 GetPosition() const;
 		private :
