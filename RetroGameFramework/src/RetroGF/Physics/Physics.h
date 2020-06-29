@@ -15,10 +15,10 @@ namespace RGF {
 
 			struct PhysicsWorldProperties {
 				float FixedTimeStep = 1 / 60.0f;
-				int VelocityIterations = 8;
-				int PositionIterations = 3;
+				int VelocityIterations = 6;
+				int PositionIterations = 2;
 
-				glm::vec2 Gravity = glm::vec2( 0.0f, -9.8 );
+				glm::vec2 Gravity = glm::vec2( 0.0f, -9.8f );
 
 			};
 

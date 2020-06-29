@@ -3,11 +3,9 @@
 #include "GLM/glm/glm.hpp"
 #include "box2d/box2d.h"
 
+#include "PhysicsShapeColliders.h"
+
 namespace RGF {
-
-
-
-
 
 	class RigidBody {
 		public :
@@ -33,8 +31,8 @@ namespace RGF {
 			struct RigidBodyDef {
 
 				glm::vec2 StartPosition = glm::vec2(0.0f, 0.0f);
-				glm::vec2 BoxStartSize = glm::vec2(1.0f, 1.0f); // This is temp for now.
 				float Angle = 0.0f;
+				float GravityScale = 1.0f;
 				RigidBody::SleepingState State = RigidBody::SleepingState::Awake;
 				RigidBody::CollisionDetectionMode DetectionMode = RigidBody::CollisionDetectionMode::Discrete;
 				RigidBody::BodyType Type = RigidBody::BodyType::Dynamic;
@@ -45,14 +43,17 @@ namespace RGF {
 			RigidBody(const RigidBodyDef& def = RigidBodyDef());
 			~RigidBody();
 
+			void AddCollider(PhysicsShapeColliders* collider);
+			void RemoveCollider(PhysicsShapeColliders* collider);
+
 			void SetLinearVelocity(const glm::vec2& velocity);
 
 			glm::vec3 GetPosition() const;
 		private :
 
 			RigidBodyDef m_Def;
-			void* m_BodyData;
-			void* m_FixtureData;
+			std::vector<b2Fixture*> m_Fixtures;
+			b2Body* m_BodyData;
 
 	};
 

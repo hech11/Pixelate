@@ -24,8 +24,7 @@ class ExampleLayer : public RGF::Layer {
 
 	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
 	RGF::Ref<RGF::AudioSource> toneSFX, sameToneSfx;
-	RGF::Scoped<RGF::RigidBody> floor, dymanicBody;
-	glm::vec2 FloorSize = { 3.0f, 1.0f };
+	RGF::Scoped<RGF::RigidBody> FloorRigidbody, PlayerRigidbody;
 	float VelocitySpeed = 1;
 
 	public:
@@ -58,20 +57,44 @@ class ExampleLayer : public RGF::Layer {
 			sameToneSfx = RGF::Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 
 
-			//TODO: This is temp until an editor with a viewport is created
+			// This is temp until an editor with a viewport is created
 			RGF::Physics::GetDebug().SetCamera(m_CameraController.get());
 
 			b2World* world = (b2World*)RGF::Physics::World();
 
+
+			// Creating rigid bodies and setting their properties
 			RGF::RigidBody::RigidBodyDef def1, def2;
+
+
+			// the floor props
 			def1.Type = RGF::RigidBody::BodyType::Static;
 			def1.StartPosition = { 0.0f, -2.0f };
-			def1.BoxStartSize = FloorSize;
 
+			// the player props
+			def2.StartPosition = { 0.0f, 4.0f };
 			def2.Type = RGF::RigidBody::BodyType::Dynamic;
-			def2.CanRotate = false;
-			floor = RGF::CreateScoped<RGF::RigidBody>(def1);
-			dymanicBody = RGF::CreateScoped<RGF::RigidBody>(def2);
+
+			// create the bodies
+			FloorRigidbody = RGF::CreateScoped<RGF::RigidBody>(def1);
+			PlayerRigidbody = RGF::CreateScoped<RGF::RigidBody>(def2);
+
+			// add colliders to the rigid bodies
+			RGF::BoxColliderDef floorColliderDef, playerColliderDef;
+			floorColliderDef.Size = { 3, 1 };
+
+			RGF::BoxCollider floorCollider(floorColliderDef);
+			FloorRigidbody->AddCollider(&floorCollider);
+
+
+			// for a test I added two collision boxes to the player's rigid body. One of the boxes is offset
+			playerColliderDef.Size = { 1, 1 };
+			RGF::BoxCollider PlayerCollision(playerColliderDef);
+			playerColliderDef.Centre = { 1, 0 };
+			RGF::BoxCollider PlayerCollision2(playerColliderDef);
+
+			PlayerRigidbody->AddCollider(&PlayerCollision);
+			PlayerRigidbody->AddCollider(&PlayerCollision2);
 
 
 
@@ -109,10 +132,10 @@ class ExampleLayer : public RGF::Layer {
 				}
 
 				if (RGF::Input::IsKeyDown(RGF_KEY_D)) {
-					dymanicBody->SetLinearVelocity({ VelocitySpeed, 0 });
+					PlayerRigidbody->SetLinearVelocity({ VelocitySpeed, 0 });
 				}
 				if (RGF::Input::IsKeyDown(RGF_KEY_A)) {
-					dymanicBody->SetLinearVelocity({ -VelocitySpeed, 0 });
+					PlayerRigidbody->SetLinearVelocity({ -VelocitySpeed, 0 });
 				}
 
 
@@ -132,8 +155,8 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
 				// TODO: Alter the game loop so it is physics friendly!
-				Renderer2D::DrawSprite(floor->GetPosition(), Rotation, { FloorSize.x, FloorSize.y, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
-				Renderer2D::DrawSprite(dymanicBody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f}, SpriteColor);
+				Renderer2D::DrawSprite(FloorRigidbody->GetPosition(), Rotation, { 3.0f, 1.0f, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
+				Renderer2D::DrawSprite(PlayerRigidbody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f}, SpriteColor);
 
 				/*
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
@@ -217,7 +240,7 @@ class ExampleLayer : public RGF::Layer {
 
 			ImGui::Begin("Sprite props");
 			ImGui::SliderFloat("Sprite MoveSpeed", &VelocitySpeed, 0.0f, 4.0f, "%.2f");
-			auto pos = dymanicBody->GetPosition();
+			auto pos = PlayerRigidbody->GetPosition();
 			ImGui::SliderFloat3("Sprite Position old", glm::value_ptr(pos), -10.0f, 10.0f, "%.2f");
 			ImGui::SliderFloat3("Sprite Position new", glm::value_ptr(SpritePosition), -10.0f, 10.0f, "%.2f");
 			ImGui::SliderFloat("Sprite Rotation", &Rotation, -360.0f, 360.0f, "%.2f");
