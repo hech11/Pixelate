@@ -117,7 +117,7 @@ namespace RGF {
 
 		float LastTime = 0.0f;
 
-
+		m_AppTimer.Reset();
 		while (m_IsRunning) {
 			RGF_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
 			RenderCommand::Clear();
