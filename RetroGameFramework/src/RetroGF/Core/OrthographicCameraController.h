@@ -24,6 +24,8 @@ namespace RGF {
 			void OnUpdate(float ts); // TODO: Create a timestep class!
 			void OnEvent(Event& e);
 
+			void Resize(float width, float height);
+
 			OrthographicCamera& GetCamera() { return m_Camera; }
 			const OrthographicCamera& GetCamera() const { return m_Camera; }
 

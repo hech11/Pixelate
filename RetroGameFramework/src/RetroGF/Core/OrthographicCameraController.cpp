@@ -60,6 +60,13 @@ namespace RGF {
 		dispatcher.Dispatch<WindowResizeEvent>(RGF_BIND_EVENT_FNC(OrthographicCameraController::OnWindowResize));
 	}
 
+	void OrthographicCameraController::Resize(float width, float height) {
+		m_AspectRatio = width / height;
+		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
+		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+	}
+
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		RGF_PROFILE_FUNCTION();
@@ -75,10 +82,7 @@ namespace RGF {
 	bool OrthographicCameraController::OnWindowResize(WindowResizeEvent& e)
 	{
 		RGF_PROFILE_FUNCTION();
-
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		Resize((float)e.GetWidth(), (float)e.GetHeight());
 		return false;
 	}
 

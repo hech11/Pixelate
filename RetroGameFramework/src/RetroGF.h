@@ -45,6 +45,7 @@
 #include "RetroGF/Rendering/API/Shader/ShaderManager.h"
 #include "RetroGF/Rendering/API/Shader/ShaderUniforms.h"
 #include "RetroGF/Rendering/API/Texture.h"
+#include "RetroGF/Rendering/API/FrameBuffer.h"
 
 #include "RetroGF/Rendering/RenderingContext.h"
 #include "RetroGF/Rendering/Renderable.h"

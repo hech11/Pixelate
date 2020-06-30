@@ -18,6 +18,7 @@ class ExampleLayer : public RGF::Layer {
 
 	RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
 	RGF::Ref<RGF::TextureBounds> SmileySprite, GaspSprite;
+	RGF::Ref<RGF::FrameBuffer> TestViewport;
 
 	RGF::ParticleSystem particleSystem;
 	RGF::ParticleProperties particleProps;
@@ -29,6 +30,14 @@ class ExampleLayer : public RGF::Layer {
 
 	public:
 		virtual void Init() override {
+
+
+			RGF::FrameBufferSpecs ViewportSpecs;
+			ViewportSpecs.Width = 960;
+			ViewportSpecs.Height = 540;
+
+			TestViewport = RGF::FrameBuffer::Create(ViewportSpecs);
+
 
 			SpritePosition = { 0.0f, 0.0f, 0.0f };
 			SpriteSize = { 1.0f, 1.0f, 1.0f };
@@ -96,8 +105,6 @@ class ExampleLayer : public RGF::Layer {
 			PlayerRigidbody->AddCollider(&PlayerCollision);
 			PlayerRigidbody->AddCollider(&PlayerCollision2);
 
-
-
 		}
 	
 	
@@ -110,7 +117,7 @@ class ExampleLayer : public RGF::Layer {
 
 			{
 
-				//m_CameraController->OnUpdate(dt);
+				m_CameraController->OnUpdate(dt);
 
 
 				if (RGF::Input::IsMouseButtonDown(0)) {
@@ -146,6 +153,8 @@ class ExampleLayer : public RGF::Layer {
 			}
 
 			{
+				RenderCommand::Clear();
+				TestViewport->Bind();
 
 				RenderCommand::Clear();
 				RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -176,7 +185,7 @@ class ExampleLayer : public RGF::Layer {
 				particleSystem.OnRender();
 				Renderer2D::EndScene();
 				
-
+				TestViewport->Unbind();
 
 			}
 		}
@@ -284,6 +293,25 @@ class ExampleLayer : public RGF::Layer {
 
 			Physics::GetDebug().SetDrawFlag(flags);
 			ImGui::End();
+
+
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+			ImGui::Begin("Test Viewport");
+			static glm::vec2 viewportSize;
+			auto colorAttachment = TestViewport->GetColorAttachment();
+
+
+			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+			if (viewportSize != *((glm::vec2*) & viewportPanelSize)) {
+				TestViewport->Resize(viewportPanelSize.x, viewportPanelSize.y);
+				viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+				m_CameraController->Resize(viewportSize.x, viewportSize.y);
+			}
+			
+			ImGui::Image((void*)colorAttachment, { viewportSize.x, viewportSize.y }, { 0, 1 }, {1, 0});
+			ImGui::End();
+			ImGui::PopStyleVar();
 
 
 #endif
