@@ -19,7 +19,6 @@
 namespace RGF {
 
 	
-// A example layer.
 	class EditorLayer : public RGF::Layer {
 		public:
 			virtual void Init() override;
@@ -31,23 +30,23 @@ namespace RGF {
 			virtual void OnImguiRender() override;
 		
 		
-			bool OnKeyPressedEvent(RGF::KeyPressedEvent& e);
+			bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 		private :
 			glm::vec3 SpritePosition, SpriteSize;
 			float Rotation = 0.0f;
 			glm::vec4 SpriteColor;
 
-			RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
-			RGF::Ref<RGF::TextureBounds> SmileySprite, GaspSprite;
-			//	RGF::Ref<RGF::FrameBuffer> TestViewport;
+			Ref<Texture> LoadedFromFilepath, GeneratedTexture;
+			Ref<TextureBounds> SmileySprite, GaspSprite;
+			Ref<FrameBuffer> TestViewport;
 
-			RGF::ParticleSystem particleSystem;
-			RGF::ParticleProperties particleProps;
+			ParticleSystem particleSystem;
+			ParticleProperties particleProps;
 
-			RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
-			RGF::Ref<RGF::AudioSource> toneSFX, sameToneSfx;
-			RGF::Scoped<RGF::RigidBody> FloorRigidbody, PlayerRigidbody;
+			Scoped<OrthographicCameraController> m_CameraController;
+			Ref<AudioSource> toneSFX, sameToneSfx;
+			Scoped<RigidBody> FloorRigidbody, PlayerRigidbody;
 			float VelocitySpeed = 1;
 	};
 

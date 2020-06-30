@@ -25,7 +25,7 @@ namespace RGF {
 		ViewportSpecs.Width = 960;
 		ViewportSpecs.Height = 540;
 
-		//TestViewport = FrameBuffer::Create(ViewportSpecs);
+		TestViewport = FrameBuffer::Create(ViewportSpecs);
 
 
 		SpritePosition = { 0.0f, 0.0f, 0.0f };
@@ -142,7 +142,7 @@ namespace RGF {
 
 		{
 			RenderCommand::Clear();
-			//				TestViewport->Bind();
+			TestViewport->Bind();
 
 			RenderCommand::Clear();
 			RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -170,7 +170,7 @@ namespace RGF {
 			particleSystem.OnRender();
 			Renderer2D::EndScene();
 
-			//TestViewport->Unbind();
+			TestViewport->Unbind();
 
 		}
 	}
@@ -221,7 +221,72 @@ namespace RGF {
 
 	void EditorLayer::OnImguiRender() {
 #ifdef RGF_USE_IMGUI
-		using namespace RGF;
+
+
+
+
+		
+/////////////////////// The dockspace and menu bar //////////////////////////////////
+		static bool opt_fullscreen_persistant = true;
+		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
+		bool opt_fullscreen = opt_fullscreen_persistant;
+
+
+
+		// This is for the menu bar.
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		if (opt_fullscreen) // This is settings for the dockspace.
+		{
+			ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(viewport->Pos);
+			ImGui::SetNextWindowSize(viewport->Size);
+			ImGui::SetNextWindowViewport(viewport->ID);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		}
+
+		// To render the menu hotbar
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("MenuBar", (bool*)true, window_flags);
+		ImGui::PopStyleVar();
+
+		if (opt_fullscreen)
+			ImGui::PopStyleVar(2);
+
+		// Dockspace
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f));
+		}
+
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("Test menu item"))
+			{
+				ImGui::MenuItem("Test Button", "");
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::End();
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+		/*
+		static bool showDemoWindow = true;
+		ImGui::ShowDemoWindow(&showDemoWindow);
+		*/
+
 
 		ImGui::Begin("Renderer stats");
 		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);
@@ -281,7 +346,6 @@ namespace RGF {
 
 
 
-		/*s
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
 		ImGui::Begin("Test Viewport");
 		static glm::vec2 viewportSize;
@@ -298,7 +362,6 @@ namespace RGF {
 		ImGui::Image((void*)colorAttachment, { viewportSize.x, viewportSize.y }, { 0, 1 }, {1, 0});
 		ImGui::End();
 		ImGui::PopStyleVar();
-		*/
 
 #endif
 
