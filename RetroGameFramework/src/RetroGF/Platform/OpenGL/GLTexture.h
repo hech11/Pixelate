@@ -21,6 +21,7 @@ namespace RGF {
 			void Unbind() const override;
 
 			void SetData(void* data, unsigned int size) override;
+			void SetData(const std::string& filepath) override;
 
 			
 			unsigned int GetHandleID() const override { return m_RendererID; };

@@ -60,6 +60,7 @@ namespace RGF {
 
 			//TODO: Set data only sets the whole texture.
 			virtual void SetData(void* data, unsigned int size) = 0;
+			virtual void SetData(const std::string& filepath) = 0;
 
 			virtual unsigned int GetHandleID() const = 0;
 

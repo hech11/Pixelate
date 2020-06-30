@@ -26,13 +26,20 @@ IncludeDir["OpenAL_Soft"] = "RetroGameFramework/vendor/OpenAL_Soft"
 IncludeDir["MiniMp3"] = "RetroGameFramework/vendor/MiniMp3"
 IncludeDir["Box2D"] = "RetroGameFramework/vendor/Box2D"
 
-group "Dependencies/Rendering"
+
+IncludeDir["NativeFileDialog"] = "Retro-Editor/vendor/NativeFileDialog"
+
+
+
+group "Dependencies/Core/Rendering"
 	include "RetroGameFramework/vendor/Glfw"
 	include "RetroGameFramework/vendor/Glad"
-group "Dependencies/Audio"
+group "Dependencies/Core/Audio"
 	include "RetroGameFramework/vendor/OpenAL_Soft"
-group"Dependencies/Physics"
+group"Dependencies/Core/Physics"
 	include "RetroGameFramework/vendor/Box2D"
+group"Dependencies/Editor/"
+	include "Retro-Editor/vendor/NativeFileDialog"
 group ""
 
 project "RetroGameFramework"
@@ -184,10 +191,12 @@ project "Retro-Editor"
 		"%{IncludeDir.OpenAL_Soft}/src/al",
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
+		"%{IncludeDir.NativeFileDialog}src/include"
 	}
 
 	links
 	{
+		"NativeFileDialog",
 		"RetroGameFramework"
 	}
 	

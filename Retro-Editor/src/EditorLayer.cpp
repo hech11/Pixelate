@@ -15,6 +15,8 @@
 #include <functional>
 #include <Glm/gtc/type_ptr.hpp>
 
+#include "../vendor/NativeFileDialog/src/include/nfd.h"
+
 namespace RGF {
 
 	void EditorLayer::Init() {
@@ -105,25 +107,26 @@ namespace RGF {
 
 		{
 
-			m_CameraController->OnUpdate(dt);
 
+			if (m_IsViewportHovered) {
+				m_CameraController->OnUpdate(dt);
+				if (Input::IsMouseButtonDown(0)) {
+					float x = Input::GetMousePosX();
+					float y = Input::GetMousePosY();
+					float width = Application::GetApp().GetWindow().GetWidth();
+					float height = Application::GetApp().GetWindow().GetHeight();
 
-			if (Input::IsMouseButtonDown(0)) {
-				float x = Input::GetMousePosX();
-				float y = Input::GetMousePosY();
-				float width = Application::GetApp().GetWindow().GetWidth();
-				float height = Application::GetApp().GetWindow().GetHeight();
+					auto bounds = m_CameraController->GetBounds();
+					auto pos = m_CameraController->GetCamera().GetPos();
+					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+					y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
+					particleProps.Position = { x + pos.x, y + pos.y };
 
-				auto bounds = m_CameraController->GetBounds();
-				auto pos = m_CameraController->GetCamera().GetPos();
-				x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-				y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
-				particleProps.Position = { x + pos.x, y + pos.y };
+					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
+						particleSystem.Emit(particleProps);
+					}
 
-				for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
-					particleSystem.Emit(particleProps);
 				}
-
 			}
 
 			if (Input::IsKeyDown(RGF_KEY_D)) {
@@ -149,13 +152,14 @@ namespace RGF {
 				m_CameraController->Resize(m_ViewportSize.x, m_ViewportSize.y);
 			}
 
-			RenderCommand::Clear();
 			TestViewport->Bind();
+
 
 			RenderCommand::Clear();
 			RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 			Renderer2D::ResetStatistics();
+			Physics::DrawDebugObjects();
 
 			Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
@@ -272,9 +276,12 @@ namespace RGF {
 		}
 
 		if (ImGui::BeginMenuBar()) {
-			if (ImGui::BeginMenu("Test menu item"))
+			if (ImGui::BeginMenu("File"))
 			{
-				ImGui::MenuItem("Test Button", "");
+				ImGui::Separator();
+				if (ImGui::MenuItem("Exit", "")) {
+					Application::GetApp().Quit();
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -313,6 +320,26 @@ namespace RGF {
 		ImGui::SliderFloat("Sprite Rotation", &Rotation, -360.0f, 360.0f, "%.2f");
 		ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
 		ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
+		ImGui::Image((void*)LoadedFromFilepath->GetHandleID(), { 150, 150 }, { 0, 1 }, { 1, 0 });
+		ImGui::SameLine();
+		if (ImGui::SmallButton("...")) {
+			nfdchar_t* outPath = NULL;
+			nfdresult_t result = NFD_OpenDialog("png", NULL, &outPath);
+
+			if (result == NFD_OKAY) {
+				puts("Success!");
+				LoadedFromFilepath->SetData(outPath);
+				puts(outPath);
+				free(outPath);
+			}
+			else if (result == NFD_CANCEL) {
+				puts("User pressed cancel.");
+			}
+			else {
+				printf("Error: %s\n", NFD_GetError());
+			}
+
+		}
 		ImGui::End();
 
 		ImGui::Begin("Physics");
@@ -357,7 +384,7 @@ namespace RGF {
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
 
 
-		ImGui::Begin("Test Viewport");
+		ImGui::Begin("Viewport");
 		auto colorAttachment = TestViewport->GetColorAttachment();
 
 		m_IsViewportHovered = ImGui::IsWindowHovered();

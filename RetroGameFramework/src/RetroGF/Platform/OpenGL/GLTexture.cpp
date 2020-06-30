@@ -122,4 +122,32 @@ namespace RGF {
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Props.Width, m_Props.Height, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, data);
 	}
 
+	void GLTexture::SetData(const std::string& filepath) {
+
+		unsigned char* PixData = stbi_load(filepath.c_str(), &m_Props.Width, &m_Props.Height, &m_Props.BPP, 4);
+
+		if (PixData) {
+
+			GLCall(glDeleteTextures(1, &m_RendererID));
+
+
+			GLCall(glGenTextures(1, &m_RendererID));
+			GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GLConvertWrap(m_Props.TexWrap)));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GLConvertWrap(m_Props.TexWrap)));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GLConvertFilter(m_Props.TexFilter)));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GLConvertFilter(m_Props.TexFilter)));
+
+
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, PixData));
+
+		}
+		else {
+			RGF_ERROR("Failed to load '%s' !", filepath.c_str());
+		}
+
+		stbi_image_free(PixData);
+	}
+
 }

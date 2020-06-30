@@ -133,7 +133,6 @@ namespace RGF {
 
 				layer->OnUpdate(timeStep);
 			}
-			Physics::DrawDebugObjects();
 
 
 #ifdef RGF_USE_IMGUI
@@ -166,12 +165,15 @@ namespace RGF {
 
 
 	bool Application::OnWindowClose(WindowCloseEvent& e) {
-		m_IsRunning = false;
+		Quit();
 		return true;
 	}
 	bool Application::OnWindowResize(WindowResizeEvent& e) {
 		RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 		return true;
+	}
+	void Application::Quit() {
+		m_IsRunning = false;
 	}
 
 

@@ -44,6 +44,8 @@ namespace RGF {
 
 
 			void Run();
+			void Quit();
+
 			void OnEvent(Event& e);
 
 			void PushLayer(Layer* layer);
