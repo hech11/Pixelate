@@ -28,7 +28,7 @@ namespace RGF {
 	class RGF_API KeyEvent : public Event { 
 		public :
 			inline int GetKeyCode() const { return m_Keycode; }
-
+			EVENT_CATEGORY_TYPE(EventCategory::eInput | EventCategory::eKeyboard)
 		protected :
 			KeyEvent(int keycode) : m_Keycode(keycode) {}
 			int m_Keycode;

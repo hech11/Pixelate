@@ -33,6 +33,11 @@ namespace RGF {
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 		private :
+			glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+			glm::vec2 m_ViewportPanelSize = { 0.0f, 0.0f };
+
+			bool m_IsViewportHovered, m_IsViewportFocused;
+
 			glm::vec3 SpritePosition, SpriteSize;
 			float Rotation = 0.0f;
 			glm::vec4 SpriteColor;

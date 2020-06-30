@@ -28,6 +28,18 @@ namespace RGF {
 	ImguiLayer::ImguiLayer() : Layer("EngineEditor") {
 		Application::GetApp().PushOverlay(this);
 	}
+
+
+
+	void ImguiLayer::OnEvent(Event& e) {
+		if (m_BlockEvents) {
+			ImGuiIO& io = ImGui::GetIO();
+			e.Handled |= e.IsInCategory(EventCategory::eMouse) & io.WantCaptureMouse;
+			e.Handled |= e.IsInCategory(EventCategory::eKeyboard) & io.WantCaptureKeyboard;
+		}
+	}
+
+
 	void ImguiLayer::Init()  {
 
 		RGF_PROFILE_FUNCTION();

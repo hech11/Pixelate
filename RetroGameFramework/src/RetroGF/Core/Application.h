@@ -49,6 +49,10 @@ namespace RGF {
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
 
+			// TODO: This is temp, may need to refactor some of these components / systems
+#ifdef RGF_USE_IMGUI
+			ImguiLayer& GetImguiLayer() { return *m_ImguiLayer; }
+#endif
 
 			WindowImpl& GetWindow() { return *m_Window; }
 

@@ -46,6 +46,16 @@ namespace RGF {
 								virtual const char* GetName() const override{ return #x;}\
 
 
+	enum EventCategory {
+		None = 0,
+		eWindow			=	BIT(0),
+		eInput			=	BIT(1),
+		eKeyboard		=	BIT(2),
+		eMouse			=	BIT(3),
+		eMouseButton	=	BIT(4)
+	};
+
+	#define EVENT_CATEGORY_TYPE(category) virtual int GetCategoryFlags() const override { return category;}
 
 
 
@@ -57,6 +67,12 @@ namespace RGF {
 			virtual EventType GetEventType() const = 0;
 			virtual const char* GetName()const  = 0;
 			virtual std::string ToString() const { return GetName(); };
+
+			virtual int GetCategoryFlags() const = 0;
+
+			bool IsInCategory(EventCategory category) {
+				return GetCategoryFlags() & category;
+			}
 
 	};
 

@@ -31,6 +31,8 @@ namespace RGF {
 			
 
 			EVENT_CLASS_TYPE(WindowClose);
+			EVENT_CATEGORY_TYPE(EventCategory::eWindow)
+
 	};
 
 
@@ -52,6 +54,7 @@ namespace RGF {
 			};
 
 			EVENT_CLASS_TYPE(WindowResize);
+			EVENT_CATEGORY_TYPE(EventCategory::eWindow)
 
 
 		private :
@@ -64,6 +67,7 @@ namespace RGF {
 			WindowLosedFocusEvent() {}
 	
 			EVENT_CLASS_TYPE(WindowLosedFocus);
+			EVENT_CATEGORY_TYPE(EventCategory::eWindow)
 	};
 
 	class RGF_API WindowGainedFocusEvent : public Event {
@@ -71,6 +75,7 @@ namespace RGF {
 			WindowGainedFocusEvent() {}
 			
 			EVENT_CLASS_TYPE(WindowGainedFocus);
+			EVENT_CATEGORY_TYPE(EventCategory::eWindow)
 	};
 
 
@@ -83,6 +88,8 @@ namespace RGF {
 			inline unsigned int GetWinPosX() const { return m_WinPosX; }
 			inline unsigned int GetWinPosY() const { return m_WinPosY; }
 			EVENT_CLASS_TYPE(WindowMoved);
+			EVENT_CATEGORY_TYPE(EventCategory::eWindow)
+
 	};
 
 }

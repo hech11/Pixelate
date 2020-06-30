@@ -35,6 +35,8 @@ namespace RGF {
 			};
 
 			EVENT_CLASS_TYPE(MouseMoved);
+			EVENT_CATEGORY_TYPE(EventCategory::eInput | EventCategory::eMouse)
+
 
 			std::pair<int, int> GetMousePos() const { return std::make_pair(m_xPos, m_yPos); }
 		private :
@@ -58,6 +60,7 @@ namespace RGF {
 			int GetRepeatCount() const { return m_RepeatCount; }
 
 			EVENT_CLASS_TYPE(MouseButtonPressed);
+			EVENT_CATEGORY_TYPE(EventCategory::eInput | EventCategory::eMouseButton)
 
 		private :
 			int m_Button, m_RepeatCount;
@@ -78,6 +81,7 @@ namespace RGF {
 			};
 			
 			EVENT_CLASS_TYPE(MouseButtonReleased);
+			EVENT_CATEGORY_TYPE(EventCategory::eInput | EventCategory::eMouseButton)
 
 		private :
 			int m_Button;
@@ -97,8 +101,11 @@ namespace RGF {
 			};
 			
 			EVENT_CLASS_TYPE(MouseScrolled);
+			EVENT_CATEGORY_TYPE(EventCategory::eInput | EventCategory::eMouse)
+
 			int GetXScroll() const { return m_xScroll; }
 			int GetYScroll() const { return m_yScroll; }
+
 
 		private :
 			int m_xScroll, m_yScroll;

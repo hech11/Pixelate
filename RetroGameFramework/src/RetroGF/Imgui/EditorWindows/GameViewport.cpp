@@ -104,7 +104,7 @@ bool GameViewport::ZoomCamera(MouseScrolledEvent& e) {
 	}
 
 	void GameViewport::OnUpdate(float dt) {
-		RenderCommand::Clear();
+//		RenderCommand::Clear();
 		GameViewCameraController->OnUpdate(dt);
 	}
 

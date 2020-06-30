@@ -141,6 +141,14 @@ namespace RGF {
 		}
 
 		{
+
+			// Resizing the viewport
+			if (m_ViewportSize != m_ViewportPanelSize) {
+				TestViewport->Resize(m_ViewportPanelSize.x, m_ViewportPanelSize.y);
+				m_ViewportSize = m_ViewportPanelSize;
+				m_CameraController->Resize(m_ViewportSize.x, m_ViewportSize.y);
+			}
+
 			RenderCommand::Clear();
 			TestViewport->Bind();
 
@@ -347,19 +355,18 @@ namespace RGF {
 
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+
+
 		ImGui::Begin("Test Viewport");
-		static glm::vec2 viewportSize;
 		auto colorAttachment = TestViewport->GetColorAttachment();
 
+		m_IsViewportHovered = ImGui::IsWindowHovered();
+		m_IsViewportFocused = ImGui::IsWindowFocused();
 
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (viewportSize != *((glm::vec2*) & viewportPanelSize)) {
-			TestViewport->Resize(viewportPanelSize.x, viewportPanelSize.y);
-			viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-			m_CameraController->Resize(viewportSize.x, viewportSize.y);
-		}
+		Application::GetApp().GetImguiLayer().ShouldBlockEvents(!m_IsViewportHovered || !m_IsViewportFocused);
 
-		ImGui::Image((void*)colorAttachment, { viewportSize.x, viewportSize.y }, { 0, 1 }, {1, 0});
+		m_ViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+		ImGui::Image((void*)colorAttachment, { m_ViewportSize.x, m_ViewportSize.y }, { 0, 1 }, {1, 0});
 		ImGui::End();
 		ImGui::PopStyleVar();
 
