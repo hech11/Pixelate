@@ -154,6 +154,96 @@ project "RetroGameFramework"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 
+
+project "Retro-Editor"
+	location "Retro-Editor"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/*.cpp",
+		"%{prj.name}/src/*.h"
+	}
+
+	includedirs
+	{
+		"RetroGameFramework/src",
+		"RetroGameFramework/vendor",
+		"%{IncludeDir.Glm}",
+		"%{IncludeDir.OpenAL_Soft}/include",
+		"%{IncludeDir.OpenAL_Soft}/src/common",
+		"%{IncludeDir.OpenAL_Soft}/src/alc",
+		"%{IncludeDir.OpenAL_Soft}/src/al",
+		"%{IncludeDir.MiniMp3}/",
+		"%{IncludeDir.Box2D}/include",
+	}
+
+	links
+	{
+		"RetroGameFramework"
+	}
+	
+	filter "system:windows"
+		systemversion "latest"
+
+
+		defines
+		{
+			"_CRT_SECURE_NO_WARNINGS",
+			"NOMINMAX",
+			"GLFW_INCLUDE_NONE",
+			"RGF_PLATFORM_WINDOWS",
+			"AL_LIBTYPE_STATIC"
+		}
+		
+	filter "configurations:Debug"
+		defines { 
+			"RGF_DEBUG",
+			"RGF_USE_IMGUI",
+			"RGF_USE_LOGGING",
+			"RGF_USE_INSTRUMENTOR",
+
+		}
+		runtime "Debug"
+		symbols "on"
+		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
+	filter "configurations:Release"
+		defines 
+		{
+			"RGF_RELEASE",
+			"RGF_USE_IMGUI",
+			"RGF_USE_LOGGING",
+			"RGF_USE_INSTRUMENTOR",
+		}
+		runtime "Release"
+		optimize "on"
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
+	filter "configurations:Distribute"
+		defines
+		{
+			 "RGF_DISTRIBUTE"
+
+		}
+		runtime "Release"
+		optimize "on"
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
+
+
+
+
+
+
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
@@ -167,7 +257,9 @@ project "Sandbox"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/*.cpp",
+		"%{prj.name}/src/*.h"
 	}
 
 	includedirs

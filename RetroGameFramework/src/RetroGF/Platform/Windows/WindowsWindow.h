@@ -34,7 +34,7 @@ namespace RGF {
 
 
 			void SetVsync(bool enabled) override;
-			void SetTitle(const std::string& title) override { m_Data.props.Title = title; }
+			void SetTitle(const std::string& title) override;
 
 			inline void SetEventCallback(const EventCallbackFncPtr& callback) override { m_Data.EventCallback = callback; }
 			inline const std::string& GetTitle() const override { return m_Data.props.Title; };

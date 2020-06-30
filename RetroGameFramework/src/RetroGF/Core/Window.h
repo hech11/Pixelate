@@ -31,7 +31,7 @@ namespace RGF {
 
 		WindowProps(unsigned int width = 1280, unsigned int height = 720,
 			unsigned int xpos = 50, unsigned int ypos = 50,
-			const std::string& title = "Retro GameFramework")
+			const std::string& title = "RetroGameFramework")
 			: Width(width), Height(height), xPos(xpos), yPos(ypos), Title(title)
 		{}
 	};

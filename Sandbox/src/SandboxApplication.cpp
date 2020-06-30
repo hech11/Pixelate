@@ -18,7 +18,7 @@ class ExampleLayer : public RGF::Layer {
 
 	RGF::Ref<RGF::Texture> LoadedFromFilepath, GeneratedTexture;
 	RGF::Ref<RGF::TextureBounds> SmileySprite, GaspSprite;
-	RGF::Ref<RGF::FrameBuffer> TestViewport;
+//	RGF::Ref<RGF::FrameBuffer> TestViewport;
 
 	RGF::ParticleSystem particleSystem;
 	RGF::ParticleProperties particleProps;
@@ -36,7 +36,7 @@ class ExampleLayer : public RGF::Layer {
 			ViewportSpecs.Width = 960;
 			ViewportSpecs.Height = 540;
 
-			TestViewport = RGF::FrameBuffer::Create(ViewportSpecs);
+			//TestViewport = RGF::FrameBuffer::Create(ViewportSpecs);
 
 
 			SpritePosition = { 0.0f, 0.0f, 0.0f };
@@ -154,7 +154,7 @@ class ExampleLayer : public RGF::Layer {
 
 			{
 				RenderCommand::Clear();
-				TestViewport->Bind();
+//				TestViewport->Bind();
 
 				RenderCommand::Clear();
 				RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -163,11 +163,6 @@ class ExampleLayer : public RGF::Layer {
 
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
-				// TODO: Alter the game loop so it is physics friendly!
-				Renderer2D::DrawSprite(FloorRigidbody->GetPosition(), Rotation, { 5.0f, 1.0f, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
-				Renderer2D::DrawSprite(PlayerRigidbody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f}, SpriteColor);
-
-				/*
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
 				Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f,{.5f, 5.f, 1.0f}, SpriteColor);
 				Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -179,13 +174,15 @@ class ExampleLayer : public RGF::Layer {
 				Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
 				Renderer2D::DrawSprite({ 2.0f, 2.0f, 0.0f }, 75.0f, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
 				
-				*/
+
+				Renderer2D::DrawSprite(FloorRigidbody->GetPosition(), Rotation, { 5.0f, 1.0f, 1.0f }, {.75f,0.25f,0.4f, 1.0f});
+				Renderer2D::DrawSprite(PlayerRigidbody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f}, SpriteColor);
 
 
 				particleSystem.OnRender();
 				Renderer2D::EndScene();
 				
-				TestViewport->Unbind();
+				//TestViewport->Unbind();
 
 			}
 		}
@@ -296,6 +293,7 @@ class ExampleLayer : public RGF::Layer {
 
 
 
+			/*s
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
 			ImGui::Begin("Test Viewport");
 			static glm::vec2 viewportSize;
@@ -312,7 +310,7 @@ class ExampleLayer : public RGF::Layer {
 			ImGui::Image((void*)colorAttachment, { viewportSize.x, viewportSize.y }, { 0, 1 }, {1, 0});
 			ImGui::End();
 			ImGui::PopStyleVar();
-
+			*/
 
 #endif
 

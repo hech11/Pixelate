@@ -35,8 +35,6 @@ namespace RGF {
 
 
 	class Renderer2D;
-	class ShaderManager;
-	class MaterialManager;
 
 	class RGF_API Application {
 
