@@ -51,18 +51,6 @@ namespace RGF {
 		private :
 			GLFWwindow* m_Window;
 
-
-
-			struct WindowData { // Window data that will be passed into glfw.
-			
-				WindowProps props;
-				bool Vsync;
-
-				// Implement the callback using "SetEventCallback". Declared in "WindowImpl".
-				EventCallbackFncPtr EventCallback;
-			};
-
-
 			// "m_Data" should create events callbacks from GLFW and create the window. 
 			WindowData m_Data;
 	};

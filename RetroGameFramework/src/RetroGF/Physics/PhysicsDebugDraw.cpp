@@ -70,7 +70,7 @@ namespace RGF {
 		if (!m_ShowVisuals)
 			return;
 		RGF_PROFILE_FUNCTION();
-		Renderer2D::BeginScene(&m_Camera->GetCamera());
+		Renderer2D::BeginScene(m_Camera);
 		const auto& world = (b2World*)Physics::World();
 		world->DebugDraw();
 		Renderer2D::EndScene();

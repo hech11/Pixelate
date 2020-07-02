@@ -20,8 +20,8 @@ namespace RGF {
 			};
 
 
-			void SetCamera(OrthographicCameraController* camera) { m_Camera = camera; }
-			OrthographicCameraController* GetCamera() { return m_Camera; }
+			void SetCamera(OrthographicCamera* camera) { m_Camera = camera; }
+			OrthographicCamera* GetCamera() { return m_Camera; }
 
 			void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
 			void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
@@ -38,7 +38,7 @@ namespace RGF {
 			void SetDrawFlag(unsigned int flag);
 
 		private :
-			OrthographicCameraController* m_Camera;
+			OrthographicCamera* m_Camera;
 			bool m_ShowVisuals = false;
 
 	};

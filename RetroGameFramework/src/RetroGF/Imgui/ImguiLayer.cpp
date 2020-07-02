@@ -52,6 +52,8 @@ namespace RGF {
 		io.ConfigFlags |= ImGuiConfigFlags_::ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_::ImGuiConfigFlags_ViewportsEnable;
 
+		io.ConfigWindowsMoveFromTitleBarOnly = true;
+
 		ImGui::StyleColorsDark();
 
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -103,32 +105,11 @@ namespace RGF {
 
 		}
 
+
 	}
 
 
 	void ImguiLayer::OnImguiRender() {
-		
-		// Docking space and the menu bar.
-		RGF_PROFILE_FUNCTION();
-		static bool opt_fullscreen_persistant = false;
-		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
-		bool opt_fullscreen = opt_fullscreen_persistant;
-
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-		if (opt_fullscreen) {
-			ImGuiViewport* viewport = ImGui::GetMainViewport();
-			ImGui::SetNextWindowPos(viewport->Pos);
-			ImGui::SetNextWindowSize(viewport->Size);
-			ImGui::SetNextWindowViewport(viewport->ID);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-		}
-
-		if (opt_flags & ImGuiDockNodeFlags_PassthruDockspace)
-			window_flags |= ImGuiWindowFlags_NoBackground;
-
 	
 		
 	}

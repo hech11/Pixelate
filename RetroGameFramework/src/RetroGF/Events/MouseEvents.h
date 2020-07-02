@@ -79,7 +79,9 @@ namespace RGF {
 				ss << "MouseButtonReleasedEvent : Button : " << m_Button;
 				return ss.str();
 			};
-			
+
+			int GetButton() const { return m_Button; }
+
 			EVENT_CLASS_TYPE(MouseButtonReleased);
 			EVENT_CATEGORY_TYPE(EventCategory::eInput | EventCategory::eMouseButton)
 

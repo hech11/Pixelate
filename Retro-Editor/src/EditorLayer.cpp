@@ -17,23 +17,21 @@
 
 #include "../vendor/NativeFileDialog/src/include/nfd.h"
 
+
 namespace RGF {
 
 	void EditorLayer::Init() {
 
 		Application::GetApp().GetWindow().SetTitle("Retro-Editor");
-
-		FrameBufferSpecs ViewportSpecs;
-		ViewportSpecs.Width = 960;
-		ViewportSpecs.Height = 540;
-
-		TestViewport = FrameBuffer::Create(ViewportSpecs);
+		Ref<FrameBuffer> m_ViewportFramebuffer;
+		m_ViewportPanel = CreateScoped<SceneViewportPanel>();
 
 
 		SpritePosition = { 0.0f, 0.0f, 0.0f };
 		SpriteSize = { 1.0f, 1.0f, 1.0f };
 		SpriteColor = { 1.00, 1.0f, 1.0f, 1.0f };
 
+		
 		m_CameraController = CreateScoped<OrthographicCameraController>(16.0f / 9.0f, true);
 
 		LoadedFromFilepath = Texture::Create("assets/graphics/TestSpritesheet.png");
@@ -56,9 +54,6 @@ namespace RGF {
 		toneSFX = Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 		sameToneSfx = Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
 
-
-		// This is temp until an editor with a viewport is created
-		Physics::GetDebug().SetCamera(m_CameraController.get());
 
 		b2World* world = (b2World*)Physics::World();
 
@@ -106,18 +101,17 @@ namespace RGF {
 		using namespace RGF;
 
 		{
+			m_ViewportPanel->OnUpdate(dt);
 
-
-			if (m_IsViewportHovered) {
-				m_CameraController->OnUpdate(dt);
+			/*if (m_IsViewportHovered) {
 				if (Input::IsMouseButtonDown(0)) {
 					float x = Input::GetMousePosX();
 					float y = Input::GetMousePosY();
 					float width = Application::GetApp().GetWindow().GetWidth();
 					float height = Application::GetApp().GetWindow().GetHeight();
 
-					auto bounds = m_CameraController->GetBounds();
-					auto pos = m_CameraController->GetCamera().GetPos();
+					auto bounds = m_SceneCamera->GetBounds();
+					auto pos = m_SceneCamera->GetCamera().GetPos();
 					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
 					y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
 					particleProps.Position = { x + pos.x, y + pos.y };
@@ -127,7 +121,7 @@ namespace RGF {
 					}
 
 				}
-			}
+			}*/
 
 			if (Input::IsKeyDown(RGF_KEY_D)) {
 				PlayerRigidbody->SetLinearVelocity({ VelocitySpeed, PlayerRigidbody->GetLinearVelocity().y });
@@ -146,14 +140,7 @@ namespace RGF {
 		{
 
 			// Resizing the viewport
-			if (m_ViewportSize != m_ViewportPanelSize) {
-				TestViewport->Resize(m_ViewportPanelSize.x, m_ViewportPanelSize.y);
-				m_ViewportSize = m_ViewportPanelSize;
-				m_CameraController->Resize(m_ViewportSize.x, m_ViewportSize.y);
-			}
-
-			TestViewport->Bind();
-
+			m_ViewportPanel->DrawToViewport();
 
 			RenderCommand::Clear();
 			RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -161,7 +148,7 @@ namespace RGF {
 			Renderer2D::ResetStatistics();
 			Physics::DrawDebugObjects();
 
-			Renderer2D::BeginScene(&m_CameraController->GetCamera());
+			Renderer2D::BeginScene(&m_ViewportPanel->GetCamera()->GetCamera());
 
 			Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { .5f, .5f, .5f, 1.0f });
 			Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f, { .5f, 5.f, 1.0f }, SpriteColor);
@@ -182,7 +169,8 @@ namespace RGF {
 			particleSystem.OnRender();
 			Renderer2D::EndScene();
 
-			TestViewport->Unbind();
+			m_ViewportPanel->FinishDrawing();
+
 
 		}
 	}
@@ -223,9 +211,9 @@ namespace RGF {
 	}
 
 	void EditorLayer::OnEvent(Event& e) {
-		m_CameraController->OnEvent(e);
-		EventDispatcher dispatcher(e);
+		m_ViewportPanel->OnEvent(e);
 
+		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&EditorLayer::OnKeyPressedEvent, this, std::placeholders::_1));
 
 	}
@@ -381,21 +369,7 @@ namespace RGF {
 
 
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
-
-
-		ImGui::Begin("Viewport");
-		auto colorAttachment = TestViewport->GetColorAttachment();
-
-		m_IsViewportHovered = ImGui::IsWindowHovered();
-		m_IsViewportFocused = ImGui::IsWindowFocused();
-
-		Application::GetApp().GetImguiLayer().ShouldBlockEvents(!m_IsViewportHovered || !m_IsViewportFocused);
-
-		m_ViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
-		ImGui::Image((void*)colorAttachment, { m_ViewportSize.x, m_ViewportSize.y }, { 0, 1 }, {1, 0});
-		ImGui::End();
-		ImGui::PopStyleVar();
+		m_ViewportPanel->OnImguiRender();
 
 #endif
 

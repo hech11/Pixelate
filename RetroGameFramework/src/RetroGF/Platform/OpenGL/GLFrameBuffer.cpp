@@ -10,7 +10,7 @@ namespace RGF {
 
 
 	GLFrameBuffer::GLFrameBuffer(const FrameBufferSpecs& specs) 
-		:m_Specs(specs)
+		:m_Specs(specs), m_RendererID(0)
 	{
 
 		Generate();

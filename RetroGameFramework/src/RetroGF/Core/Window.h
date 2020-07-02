@@ -40,8 +40,20 @@ namespace RGF {
 	class RGF_API WindowImpl {
 
 		public :
+
+
 			// function pointer used to create a callback events. From window to "Application".
 			using EventCallbackFncPtr = std::function<void(Event&)>;
+
+
+			struct WindowData { // Window data that will be passed into glfw.
+
+				WindowProps props;
+				bool Vsync;
+
+				// Implement the callback using "SetEventCallback". Declared in "WindowImpl".
+				EventCallbackFncPtr EventCallback;
+			};
 
 			virtual ~WindowImpl(){}
 

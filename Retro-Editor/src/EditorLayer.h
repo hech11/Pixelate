@@ -14,6 +14,8 @@
 #include <RetroGF/Physics/RigidBody.h>
 
 #include <RetroGF/Events/KeyEvents.h>
+#include <RetroGF/Editor/SceneCamera.h>
+#include <RetroGF/Editor/SceneViewportPanel.h>
 
 
 namespace RGF {
@@ -33,11 +35,8 @@ namespace RGF {
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 		private :
-			glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
-			glm::vec2 m_ViewportPanelSize = { 0.0f, 0.0f };
-
-			bool m_IsViewportHovered, m_IsViewportFocused;
-
+			Scoped<SceneViewportPanel> m_ViewportPanel;
+			
 			glm::vec3 SpritePosition, SpriteSize;
 			float Rotation = 0.0f;
 			glm::vec4 SpriteColor;

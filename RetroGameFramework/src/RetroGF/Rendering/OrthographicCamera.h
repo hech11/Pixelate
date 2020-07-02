@@ -7,45 +7,54 @@
 namespace RGF {
 
 
+
+	struct OrthographicCameraBounds {
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() { return Right - Left; }
+		float GetHeight() { return Top - Bottom; }
+	};
+
 	class OrthographicCamera {
 
-	public:
+		public:
 
-		OrthographicCamera(float left, float right, float bottom, float top);
+			OrthographicCamera(float left, float right, float bottom, float top);
 
-		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ProjectionViewMatrix; }
-		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-
-
-		void SetProjection(float left, float right, float bottom, float top);
-
-		void SetPosition(const glm::vec3& pos);
-		void Move(const glm::vec3& offset);
-
-		void SetRotation(float angle, float axis);
-
-		void SetScale(const glm::vec3& scale);
-		void Enlarge(const glm::vec3& offset);
+			inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+			inline const glm::mat4& GetViewProjectionMatrix() const { return m_ProjectionViewMatrix; }
+			inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
 
+			void SetProjection(float left, float right, float bottom, float top);
 
-		glm::vec3& GetPos() { return m_Pos; }
-		float& GetRot() { return m_RotAxis; }
-		glm::vec3& GetScale() { return m_Scale; }
-		float& GetAngle() { return m_Angle; }
+			void SetPosition(const glm::vec3& pos);
+			void Move(const glm::vec3& offset);
 
-	private:
-		void RecalculateViewProjMatrix();
+			void SetRotation(float angle, float axis);
 
-	private:
-		glm::vec3 m_Pos, m_Scale;
-		float m_Angle, m_RotAxis;
+			void SetScale(const glm::vec3& scale);
+			void Enlarge(const glm::vec3& offset);
 
-		glm::mat4 m_ViewMatrix;
-		glm::mat4 m_ProjectionViewMatrix;
-		glm::mat4 m_ProjectionMatrix;
-	};
+
+
+			glm::vec3& GetPos() { return m_Pos; }
+			float& GetRot() { return m_RotAxis; }
+			glm::vec3& GetScale() { return m_Scale; }
+			float& GetAngle() { return m_Angle; }
+
+		private:
+			void RecalculateViewProjMatrix();
+
+		private:
+			glm::vec3 m_Pos, m_Scale;
+			float m_Angle, m_RotAxis;
+
+			glm::mat4 m_ViewMatrix;
+			glm::mat4 m_ProjectionViewMatrix;
+			glm::mat4 m_ProjectionMatrix;
+		};
 
 
 }
