@@ -28,7 +28,6 @@ namespace RGF {
 
 	void SceneViewportPanel::OnEvent(Event& e)
 	{
-		RGF_CORE_WARN("%s\n", e.ToString().c_str());
 		m_SceneCamera->OnEvent(e);
 	}
 

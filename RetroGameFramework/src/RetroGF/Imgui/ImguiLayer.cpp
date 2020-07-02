@@ -67,7 +67,7 @@ namespace RGF {
 
 
 		ImGui_ImplOpenGL3_Init("#version 400");
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(window, false);
 
 
 	}

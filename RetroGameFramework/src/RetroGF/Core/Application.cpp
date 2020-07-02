@@ -23,11 +23,14 @@
 
 #include "RetroGF/Audio/Audio.h"
 
-
-// This is temp. This is used to test out box2d
-#include "RetroGF/Physics/PhysicsDebugDraw.h"
 #include "RetroGF/Physics/Physics.h"
-#include "RetroGF/Physics/RigidBody.h"
+
+#ifdef RGF_USE_IMGUI
+#include <IMGUI/imgui.h>
+#include <IMGUI/examples/imgui_impl_glfw.h>
+#include <IMGUI/examples/imgui_impl_opengl3.h>
+
+#endif
 
 
 namespace RGF {
@@ -37,21 +40,18 @@ namespace RGF {
 
 	Application* Application::s_Instance = nullptr;
 
-	static b2Body* s_TestBody;
-	static b2Fixture* s_TestFixture;
 	
 
 	Application::Application() {
 		RGF_PROFILE_FUNCTION();
 		s_Instance = this;
-		b2Vec2 grav = { 0.0f, -9.8f };
 
 		m_Window = Scoped<WindowImpl>(WindowImpl::Create({960,540}));
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-
 #ifdef RGF_USE_IMGUI
 		m_ImguiLayer = new ImguiLayer;
+		ImGui::InstallImguiCallbacks(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 #endif
 
 

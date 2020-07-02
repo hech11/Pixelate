@@ -1,5 +1,9 @@
 #ifdef RGF_USE_IMGUI
 
+#include "RetroGF/Core/Window.h"
+#include "RetroGF/Events/Event.h"
+#include "RetroGF/Events/KeyEvents.h"
+#include "RetroGF/Events/MouseEvents.h"
 
 // dear imgui: Platform Binding for GLFW
 // This needs to be used along with a Renderer (e.g. OpenGL3, Vulkan..)
@@ -37,5 +41,9 @@ IMGUI_IMPL_API void     ImGui_ImplGlfw_ScrollCallback(GLFWwindow* window, double
 IMGUI_IMPL_API void     ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 IMGUI_IMPL_API void     ImGui_ImplGlfw_CharCallback(GLFWwindow* window, unsigned int c);
 
-
+// This is used to get imgui to work with retros event system.
+// TODO: ideally i should implement my own versions of these callbacks in another file
+namespace ImGui {
+    void InstallImguiCallbacks(const RGF::WindowImpl::EventCallbackFncPtr& callback);
+}
 #endif

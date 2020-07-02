@@ -89,6 +89,13 @@ static void ImGui_ImplGlfw_SetClipboardText(void* user_data, const char* text)
     glfwSetClipboardString((GLFWwindow*)user_data, text);
 }
 
+
+static RGF::WindowImpl::EventCallbackFncPtr s_RGFCallback;
+void ImGui::InstallImguiCallbacks(const RGF::WindowImpl::EventCallbackFncPtr& callback) {
+    s_RGFCallback = callback;
+}
+
+
 void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
     if (g_PrevUserCallbackMousebutton != NULL && window == g_Window)
@@ -96,6 +103,33 @@ void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int acti
 
     if (action == GLFW_PRESS && button >= 0 && button < IM_ARRAYSIZE(g_MouseJustPressed))
         g_MouseJustPressed[button] = true;
+
+
+    // Retros callback
+    using namespace RGF;
+    switch (action) {
+    case GLFW_PRESS:
+    {
+        MouseButtonPressedEvent event(button, 0);
+        s_RGFCallback(event);
+        break;
+
+    }
+    case GLFW_REPEAT:
+    {
+        MouseButtonPressedEvent event(button, 1);
+        s_RGFCallback(event);
+        break;
+    }
+
+    case GLFW_RELEASE:
+    {
+        MouseButtonReleasedEvent event(button);
+        s_RGFCallback(event);
+        break;
+    }
+    }
+
 }
 
 void ImGui_ImplGlfw_ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
@@ -106,6 +140,12 @@ void ImGui_ImplGlfw_ScrollCallback(GLFWwindow* window, double xoffset, double yo
     ImGuiIO& io = ImGui::GetIO();
     io.MouseWheelH += (float)xoffset;
     io.MouseWheel += (float)yoffset;
+
+
+    // Retros callback
+    using namespace RGF;
+    MouseScrolledEvent event((int)xoffset, (int)yoffset);
+    s_RGFCallback(event);
 }
 
 void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -124,6 +164,34 @@ void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int a
     io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
     io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
     io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+
+
+
+    // Retros callback
+    using namespace RGF;
+    switch (action) {
+    case GLFW_PRESS:
+    {
+        KeyPressedEvent event(key, 0);
+        s_RGFCallback(event);
+        break;
+    }
+    case GLFW_REPEAT:
+    {
+        KeyPressedEvent event(key, 1);
+        s_RGFCallback(event);
+        break;
+
+    }
+    case GLFW_RELEASE:
+    {
+        KeyReleasedEvent event(key);
+        s_RGFCallback(event);
+        break;
+
+    }
+    }
+
 }
 
 void ImGui_ImplGlfw_CharCallback(GLFWwindow* window, unsigned int c)

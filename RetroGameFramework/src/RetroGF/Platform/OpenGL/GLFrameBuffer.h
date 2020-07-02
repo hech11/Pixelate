@@ -27,7 +27,7 @@ namespace RGF {
 			void Generate();
 		private :
 			FrameBufferSpecs m_Specs;
-
+			unsigned int MaxFrameBufferSize = 8192;
 			unsigned int m_RendererID, m_ColorAttachment, m_DepthAttachment;
 
 	};

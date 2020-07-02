@@ -13,6 +13,7 @@
 #include "RetroGF/Debug/Instrumentor.h"
 
 
+
 namespace RGF {
 
 
@@ -149,6 +150,7 @@ namespace RGF {
 				}
 			}
 		});
+
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xScroll, double yScroll) {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 

@@ -34,6 +34,10 @@ namespace RGF {
 	void GLFrameBuffer::Resize(unsigned int width, unsigned int height) {
 		m_Specs.Width = width;
 		m_Specs.Height = height;
+		if (width == 0 || height == 0 || width > MaxFrameBufferSize || height > MaxFrameBufferSize) {
+			RGF_CORE_WARN("Framebuffer attempted to resize to %fx%f!\n", width, height);
+			return;
+		}
 
 		Generate();
 
