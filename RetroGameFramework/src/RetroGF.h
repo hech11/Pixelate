@@ -10,13 +10,10 @@
 #include "RetroGF/Core/MouseButtonCodes.h"
 #include "RetroGF/Core/LayerStack.h"
 #include "RetroGF/Core/Layer.h"
-#include "RetroGF/Core/OrthographicCameraController.h"
+#include "RetroGF/Core/Random.h"
+#include "RetroGF/Core/Timer.h"
 
 
-// Utility.
-#include "RetroGF/Utility/File.h"
-#include "RetroGF/Utility/Random.h"
-#include "RetroGF/Utility/Timer.h"
 
 
 // Events.
@@ -47,8 +44,7 @@
 #include "RetroGF/Rendering/API/Texture.h"
 #include "RetroGF/Rendering/API/FrameBuffer.h"
 
-#include "RetroGF/Rendering/RenderingContext.h"
-#include "RetroGF/Rendering/Renderable.h"
+#include "RetroGF/Rendering/RendererAPI.h"
 #include "RetroGF/Rendering/OrthographicCamera.h"
 #include "RetroGF/Rendering/ParticleSystem.h"
 

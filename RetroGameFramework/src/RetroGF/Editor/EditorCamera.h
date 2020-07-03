@@ -9,17 +9,17 @@
 
 #include "Glm/glm.hpp"
 namespace RGF{
-	struct SceneViewportPanelData {
+	struct EditorViewportPanelData {
 		glm::vec2 PanelPosition = { 0.0f, 0.0f };
 		glm::vec2 PanelSize = { 0.0f, 0.0f };
 
 	};
-	class SceneViewportCamera {
+	class EditorCamera {
 		public :
 
-			SceneViewportCamera(float aspectRatio, float ZoomLevel = 1);
+			EditorCamera(float aspectRatio, float ZoomLevel = 1);
 
-			void OnUpdate(float ts, const SceneViewportPanelData& data);
+			void OnUpdate(float ts, const EditorViewportPanelData& data);
 			void OnEvent(Event& e);
 
 			void Resize(float width, float height);
@@ -48,7 +48,7 @@ namespace RGF{
 			glm::vec2 m_CameraPosition = { 0.0f, 0.0f }, m_OriginalMousePosition = {0.0f, 0.0f};
 			glm::vec2 m_OriginalCamPos = {0.0f, 0.0f};
 
-			SceneViewportPanelData m_PanelData;
+			EditorViewportPanelData m_PanelData;
 
 			OrthographicCamera m_Camera;
 			OrthographicCameraBounds m_Bounds;

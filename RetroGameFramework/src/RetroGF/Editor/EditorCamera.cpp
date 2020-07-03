@@ -1,5 +1,5 @@
 #include "RGFpch.h"
-#include "SceneCamera.h"
+#include "EditorCamera.h"
 #include "../Core/Input.h"
 #include <RetroGF\Debug\Instrumentor.h>
 #include "../Core/Core.h"
@@ -27,7 +27,7 @@ namespace RGF {
 
 
 
-	SceneViewportCamera::SceneViewportCamera(float aspectRatio, float ZoomLevel) :
+	EditorCamera::EditorCamera(float aspectRatio, float ZoomLevel) :
 		m_AspectRatio(aspectRatio),
 		m_ZoomLevel(ZoomLevel),
 		m_Bounds({ -aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }),
@@ -35,7 +35,7 @@ namespace RGF {
 	{
 	}
 
-	void SceneViewportCamera::OnUpdate(float ts, const SceneViewportPanelData& data) {
+	void EditorCamera::OnUpdate(float ts, const EditorViewportPanelData& data) {
 
 		m_PanelData = data;
 		if (m_Drag) {
@@ -73,23 +73,23 @@ namespace RGF {
 
 	}
 
-	void SceneViewportCamera::OnEvent(Event& e) {
+	void EditorCamera::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(RGF_BIND_EVENT_FNC(SceneViewportCamera::OnMouseScrolled));
-		dispatcher.Dispatch<MouseButtonPressedEvent>(RGF_BIND_EVENT_FNC(SceneViewportCamera::OnMouseButtonPressed));
-		dispatcher.Dispatch<MouseButtonReleasedEvent>(RGF_BIND_EVENT_FNC(SceneViewportCamera::OnMouseButtonReleased));
-		dispatcher.Dispatch<WindowResizeEvent>(RGF_BIND_EVENT_FNC(SceneViewportCamera::OnWindowResize));
+		dispatcher.Dispatch<MouseScrolledEvent>(RGF_BIND_EVENT_FNC(EditorCamera::OnMouseScrolled));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(RGF_BIND_EVENT_FNC(EditorCamera::OnMouseButtonPressed));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(RGF_BIND_EVENT_FNC(EditorCamera::OnMouseButtonReleased));
+		dispatcher.Dispatch<WindowResizeEvent>(RGF_BIND_EVENT_FNC(EditorCamera::OnWindowResize));
 	}
 
 
-	void SceneViewportCamera::Resize(float width, float height)
+	void EditorCamera::Resize(float width, float height)
 	{
 		m_AspectRatio = width / height;
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 	}
 
-	bool SceneViewportCamera::OnMouseScrolled(MouseScrolledEvent& e) {
+	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e) {
 		m_ZoomLevel -= e.GetYScroll() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 
@@ -99,7 +99,7 @@ namespace RGF {
 	}
 
 
-	bool SceneViewportCamera::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
+	bool EditorCamera::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
 		if (e.GetButton() == RGF_MOUSE_BUTTON_RIGHT && e.GetRepeatCount() == 0) {
 			auto& app = Application::GetApp();
 
@@ -112,7 +112,7 @@ namespace RGF {
 		return false;
 	}
 
-	bool SceneViewportCamera::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
+	bool EditorCamera::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
 
 		if (e.GetButton() == RGF_MOUSE_BUTTON_RIGHT) {
 			m_Drag = false;
@@ -121,13 +121,13 @@ namespace RGF {
 		return false;
 	}
 
-	bool SceneViewportCamera::OnWindowResize(WindowResizeEvent& e) {
+	bool EditorCamera::OnWindowResize(WindowResizeEvent& e) {
 		Resize((float)e.GetWidth(), (float)e.GetHeight());
 		return false;
 	}
 
 
-	glm::vec2 SceneViewportCamera::GetMousePositionRelativeToViewportPanel() {
+	glm::vec2 EditorCamera::GetMousePositionRelativeToViewportPanel() {
 		auto& app = Application::GetApp();
 
 		glm::vec2 viewportPanelPosRelativeToWindow;

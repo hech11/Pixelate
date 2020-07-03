@@ -2,7 +2,7 @@
 
 
 
-#include "RetroGF/Utility/Log.h"
+#include "RetroGF/Core/Log.h"
 #include "RetroGF/Core/Core.h"
 #include <OPENAL_SOFT/include/AL/al.h>
 

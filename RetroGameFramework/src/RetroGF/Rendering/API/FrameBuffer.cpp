@@ -1,15 +1,15 @@
 #include "RGFpch.h"
 #include "FrameBuffer.h"
 
-#include "RetroGF/Rendering/RenderingContext.h"
+#include "RetroGF/Rendering/RendererAPI.h"
 #include "RetroGF/Platform/OpenGL/GLFrameBuffer.h"
 
 
 namespace RGF {
 
 	Ref<FrameBuffer> FrameBuffer::Create(const FrameBufferSpecs& specs) {
-		switch (RenderingContext::GetContext()) {
-			case RenderingContext::ContextAPI::OPENGL:
+		switch (RendererAPI::GetAPI()) {
+			case RendererAPI::API::OpenGL:
 				return CreateRef<GLFrameBuffer>(specs);
 		}
 	}

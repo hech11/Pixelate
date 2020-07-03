@@ -5,7 +5,7 @@
 #include <string>
 #include <fstream>
 
-#include "RetroGF/Utility/Log.h"
+#include "RetroGF/Core/Log.h"
 
 #define MINIMP3_IMPLEMENTATION
 #include "minimp3.h"

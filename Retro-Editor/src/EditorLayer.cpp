@@ -24,15 +24,13 @@ namespace RGF {
 
 		Application::GetApp().GetWindow().SetTitle("Retro-Editor");
 		Ref<FrameBuffer> m_ViewportFramebuffer;
-		m_ViewportPanel = CreateScoped<SceneViewportPanel>();
+		m_ViewportPanel = CreateScoped<EditorViewportPanel>();
 
 
 		SpritePosition = { 0.0f, 0.0f, 0.0f };
 		SpriteSize = { 1.0f, 1.0f, 1.0f };
 		SpriteColor = { 1.00, 1.0f, 1.0f, 1.0f };
-
 		
-		m_CameraController = CreateScoped<OrthographicCameraController>(16.0f / 9.0f, true);
 
 		LoadedFromFilepath = Texture::Create("assets/graphics/TestSpritesheet.png");
 		GeneratedTexture = Texture::Create(1, 1);
@@ -146,7 +144,6 @@ namespace RGF {
 			RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 			Renderer2D::ResetStatistics();
-			Physics::DrawDebugObjects();
 
 			Renderer2D::BeginScene(&m_ViewportPanel->GetCamera()->GetCamera());
 
@@ -169,6 +166,7 @@ namespace RGF {
 			particleSystem.OnRender();
 			Renderer2D::EndScene();
 
+			Physics::DrawDebugObjects();
 			m_ViewportPanel->FinishDrawing();
 
 

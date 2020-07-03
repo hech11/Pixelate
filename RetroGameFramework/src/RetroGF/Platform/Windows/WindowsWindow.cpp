@@ -23,9 +23,7 @@ namespace RGF {
 
 
 
-
-	// This was delcared from the BASE class (WindowsImpl.h).
-	WindowImpl* WindowImpl::Create(const WindowProps& props) {
+	Window* Window::Create(const WindowProps& props) {
 		return new WindowsWindow(props);
 	}
 
@@ -45,7 +43,6 @@ namespace RGF {
 
 		m_Data.props = props;
 
-		m_Context = RGF::RenderingContext::CreateContext(RGF::RenderingContext::ContextAPI::OPENGL);
 
 
 		int glfwValidation = glfwInit();
@@ -55,8 +52,10 @@ namespace RGF {
 		m_Window = glfwCreateWindow(m_Data.props.Width, m_Data.props.Height, m_Data.props.Title.c_str(), nullptr, nullptr);
 		RGF_ASSERT(m_Window, "Failed to create the window");
 
-
+		m_Context = RGF::RenderingContext::CreateContext(RGF::RenderingContext::ContextAPI::OPENGL);
 		m_Context->Init(m_Window);
+
+
 		SetVsync(false);
 
 		glfwSetWindowPos(m_Window, m_Data.props.xPos, m_Data.props.yPos);

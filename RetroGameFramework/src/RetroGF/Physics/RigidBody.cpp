@@ -22,7 +22,10 @@ namespace RGF {
 		d.angle = m_Def.Angle;
 		d.type = (b2BodyType)def.Type;
 		d.bullet = (def.DetectionMode == CollisionDetectionMode::Continuous ? true : false);
-		d.allowSleep = (def.State == SleepingState::NeverSleep ? true : false);
+		d.allowSleep = (def.State == SleepingState::NeverSleep ? false : true);
+		if (d.allowSleep) {
+			d.awake = def.State == SleepingState::Awake ? true : false;
+		}
 		d.fixedRotation = !def.CanRotate;
 		d.gravityScale = def.GravityScale;
 		m_BodyData = world->CreateBody(&d);

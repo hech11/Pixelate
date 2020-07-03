@@ -37,7 +37,7 @@ namespace RGF {
 	};
 
 
-	class RGF_API WindowImpl {
+	class RGF_API Window {
 
 		public :
 
@@ -55,7 +55,7 @@ namespace RGF {
 				EventCallbackFncPtr EventCallback;
 			};
 
-			virtual ~WindowImpl(){}
+			virtual ~Window(){}
 
 			virtual void StartUp(const WindowProps& props = WindowProps()) = 0;
 			virtual void ShutDown() = 0;
@@ -80,10 +80,8 @@ namespace RGF {
 			virtual inline RGF::RenderingContext* GetContext() const = 0;
 
 			// To be defined in the inherented DERIVED class.
-			static WindowImpl* Create(const WindowProps& props = WindowProps()); // Should return a HEAP allocated window object.
+			static Window* Create(const WindowProps& props = WindowProps()); // Should return a HEAP allocated window object.
 
-		protected :
-			RGF::RenderingContext* m_Context;
 	};
 
 }

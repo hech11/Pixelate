@@ -23,6 +23,13 @@ namespace RGF {
 	}
 
 	void GLFrameBuffer::Bind() const {
+
+		if (m_Specs.Width == 0 || m_Specs.Height == 0 || m_Specs.Width > MaxFrameBufferSize ||
+			m_Specs.Height > MaxFrameBufferSize) {
+			RGF_CORE_WARN("Framebuffer attempted to resize to %fx%f!\n", m_Specs.Width, m_Specs.Height);
+			return;
+		}
+
 		GLCall(glViewport(0, 0, m_Specs.Width, m_Specs.Height));
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID));
 	}

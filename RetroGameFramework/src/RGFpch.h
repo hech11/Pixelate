@@ -37,4 +37,4 @@
 #endif
 
 // If any header files i created are constantly used then it will be put here.
-#include "RetroGF/Utility/Log.h"
+#include "RetroGF/Core/Log.h"

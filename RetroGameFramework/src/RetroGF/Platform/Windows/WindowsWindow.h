@@ -7,7 +7,7 @@
 
 
 
-// This is the implementation of the "WindowsImpl.h" pure virtual functions.
+// This is the implementation of the "Windows.h" pure virtual functions.
 // Other platforms will inheret "Windows" and implement their own pure virtual functions.
 
 
@@ -22,7 +22,7 @@
 struct GLFWwindow;
 namespace RGF {
 
-	class RGF_API WindowsWindow : public WindowImpl {
+	class RGF_API WindowsWindow : public Window {
 		public :
 			WindowsWindow(const WindowProps& props);
 			virtual ~WindowsWindow();
@@ -50,6 +50,7 @@ namespace RGF {
 
 		private :
 			GLFWwindow* m_Window;
+			RGF::RenderingContext* m_Context;
 
 			// "m_Data" should create events callbacks from GLFW and create the window. 
 			WindowData m_Data;

@@ -1,5 +1,7 @@
 #pragma once
 
+//Temp. An asset manager will refactor and replace this.
+
 
 #include "RGFpch.h"
 #include "RetroGF/Core/Core.h"

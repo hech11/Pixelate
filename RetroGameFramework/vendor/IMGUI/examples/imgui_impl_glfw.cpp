@@ -90,8 +90,8 @@ static void ImGui_ImplGlfw_SetClipboardText(void* user_data, const char* text)
 }
 
 
-static RGF::WindowImpl::EventCallbackFncPtr s_RGFCallback;
-void ImGui::InstallImguiCallbacks(const RGF::WindowImpl::EventCallbackFncPtr& callback) {
+static RGF::Window::EventCallbackFncPtr s_RGFCallback;
+void ImGui::InstallImguiCallbacks(const RGF::Window::EventCallbackFncPtr& callback) {
     s_RGFCallback = callback;
 }
 

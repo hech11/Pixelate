@@ -2,17 +2,17 @@
 
 #include "Glm/glm.hpp"
 #include "RetroGF/Rendering/API/FrameBuffer.h"
-#include "RetroGF/Editor/SceneCamera.h"
+#include "RetroGF/Editor/EditorCamera.h"
 #include "RetroGF/Events/Event.h"
 
 
 namespace RGF {
 
-	class SceneViewportPanel {
+	class EditorViewportPanel {
 
 
 		public :
-			SceneViewportPanel();
+			EditorViewportPanel();
 
 			void OnEvent(Event& e);
 
@@ -33,13 +33,13 @@ namespace RGF {
 
 
 			// Not ideal to have for now..
-			const Scoped<SceneViewportCamera>& GetCamera() const { return m_SceneCamera; }
-			Scoped<SceneViewportCamera>& GetCamera() { return m_SceneCamera; }
+			const Scoped<EditorCamera>& GetCamera() const { return m_EditorCamera; }
+			Scoped<EditorCamera>& GetCamera() { return m_EditorCamera; }
 
 		private :
 
 			Ref<FrameBuffer> m_ViewportFramebuffer;
-			Scoped<SceneViewportCamera> m_SceneCamera;
+			Scoped<EditorCamera> m_EditorCamera;
 
 			glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 			glm::vec2 m_ViewportPanelSize = { 0.0f, 0.0f };

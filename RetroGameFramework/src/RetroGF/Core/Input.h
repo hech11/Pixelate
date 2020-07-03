@@ -18,26 +18,14 @@ namespace RGF {
 
 		public :
 
-			virtual ~Input() {
-				if (s_Instance != nullptr)
-					delete s_Instance;
-			}
-			static inline bool IsKeyDown(int keycode) { return s_Instance->IsKeyDownImpl(keycode); };
+			static bool IsKeyDown(int keycode);
 
-			static inline bool IsMouseButtonDown(int button) { return s_Instance->IsMouseButtonDownImpl(button); }
-			static inline int GetMousePosX() { return s_Instance->GetMousePosXImpl(); }
-			static inline int GetMousePosY() { return s_Instance->GetMousePosYImpl(); }
-
-		protected :
-			virtual bool IsKeyDownImpl(int keycode) = 0;
-
-			virtual bool IsMouseButtonDownImpl(int button) = 0;
-			virtual int GetMousePosXImpl() = 0;
-			virtual int GetMousePosYImpl() = 0;
+			static bool IsMouseButtonDown(int button);
+			static int GetMousePosX();
+			static int GetMousePosY();
+			static std::pair<int, int> GetMousePos();
 
 
-		private : 
-			static Input* s_Instance;
 	};
 
 }

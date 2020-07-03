@@ -14,7 +14,7 @@ namespace RGF {
 		public :
 
 			struct PhysicsWorldProperties {
-				float FixedTimeStep = 1.0f / 60.0f;
+				float FixedTimeStep = 1.0f / 60.0f; // not sure if this should live here or i should make a "Time" class
 				int VelocityIterations = 8;
 				int PositionIterations = 4;
 
@@ -23,7 +23,7 @@ namespace RGF {
 			};
 
 			static void Init(const PhysicsWorldProperties& props = PhysicsWorldProperties());
-			static void Update(float time); //TODO: Application::GetTimer();
+			static void Update();
 
 
 			static void* World();

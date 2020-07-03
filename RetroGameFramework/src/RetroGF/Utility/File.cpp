@@ -3,6 +3,7 @@
 
 #include <filesystem>
 
+#include "RetroGF/Core/Log.h"
 
 
 namespace RGF {

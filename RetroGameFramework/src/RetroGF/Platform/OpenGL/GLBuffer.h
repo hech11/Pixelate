@@ -56,8 +56,8 @@ namespace RGF {
 
 
 
-			unsigned int GetCount() const { return m_Count; };
-			unsigned int GetType() const { return m_Type; };
+			unsigned int GetCount() const override{ return m_Count; };
+			unsigned int GetType() const override { return m_Type; };
 
 
 			virtual void Bind() const override;

@@ -20,7 +20,7 @@ namespace RGF {
 			void Resize(unsigned int width, unsigned int height) override;
 
 			unsigned int GetColorAttachment() const override { return m_ColorAttachment; }
-
+			unsigned int GetRendererID() const override { return m_RendererID; }
 
 			const FrameBufferSpecs& GetSpecs() const override { return m_Specs; }
 		private :

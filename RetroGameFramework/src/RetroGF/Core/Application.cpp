@@ -10,7 +10,7 @@
 
 
 #include <GLM/glm/gtc/matrix_transform.hpp>
-#include <RetroGF/Utility/Random.h>
+#include <RetroGF/Core/Random.h>
 
 #include <RetroGF/Rendering/Renderer2D.h>
 #include <RetroGF/Rendering/RenderCommand.h>
@@ -46,7 +46,7 @@ namespace RGF {
 		RGF_PROFILE_FUNCTION();
 		s_Instance = this;
 
-		m_Window = Scoped<WindowImpl>(WindowImpl::Create({960,540}));
+		m_Window = Scoped<Window>(Window::Create({960,540}));
 		// Bind the "OnEvent" to the function pointer in "WindowImpl.h"
 		m_Window->SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 #ifdef RGF_USE_IMGUI
@@ -96,7 +96,6 @@ namespace RGF {
 
 		EventDispatcher dispatcher(e);
 
-
 		// Checks if the event was a "WindowCloseEvent". If it was the event, call the "OnWindowClose" function.
 		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
 		dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
@@ -125,32 +124,36 @@ namespace RGF {
 			LastTime = time;
 
 
-			Physics::Update(m_AppTimer.GetElapsedSeconds());
+			if (!m_IsMinimized) {
+				Physics::Update();
 
-			for (Layer* layer : m_LayerStack.GetLayerStack()) {
+				for (Layer* layer : m_LayerStack.GetLayerStack()) {
 
-				RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnUpdate");
+					RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnUpdate");
 
-				layer->OnUpdate(timeStep);
+					layer->OnUpdate(timeStep);
+				}
+
 			}
 
-
-#ifdef RGF_USE_IMGUI
+	#ifdef RGF_USE_IMGUI
 
 			{
 				RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");
 				m_ImguiLayer->Start();
-				for (Layer* layer : m_LayerStack.GetLayerStack()) {
-					RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnImguiRender");
-					layer->OnImguiRender();
+				if (!m_IsMinimized) {
+					for (Layer* layer : m_LayerStack.GetLayerStack()) {
+						RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnImguiRender");
+						layer->OnImguiRender();
+					}
 				}
 				m_ImguiLayer->End();
 			}
-#endif
 
+
+	#endif
 
 			m_Window->OnUpdate();
-
 			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
 				Time += 1.0f;
 				RGF_CORE_MSG("%f: timestep\n", timeStep*1000.0f);
@@ -169,7 +172,13 @@ namespace RGF {
 		return true;
 	}
 	bool Application::OnWindowResize(WindowResizeEvent& e) {
-		RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+		if (e.GetWidth() == 0 && e.GetHeight() == 0) {
+			m_IsMinimized = true;
+		} else {
+			m_IsMinimized = false;
+			RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+		}
+
 		return true;
 	}
 	void Application::Quit() {

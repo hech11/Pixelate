@@ -15,11 +15,14 @@
 	- Make read-only files, write-only files. ( only supports both )
 */
 
+
+// This is temp. Will refactor soon.
+
 namespace RGF {
 
 
 
-	class RGF_API FileIO {
+	class FileIO {
 		public :
 			void CreateDir(const std::string& filepath);
 

@@ -33,7 +33,27 @@ namespace RGF {
 
 	// The main Logging system.
 	class Log {
-		struct Logger;
+
+		// The "Logger" struct contains the actual logging code that is used.
+		struct Logger {
+			void Trace(const char* message, ...);
+			void Message(const char* message, ...);
+			void Warn(const char* message, ...);
+			void Error(const char* message, ...);
+			void Critical(const char* message, ...);
+
+
+			void SetName(const std::string& name) { m_Name = name; }
+			inline const std::string& GetName() const { return m_Name; }
+
+
+			void SetLogLevel(const LogLevels& level) { m_Level = level; }
+			inline const int GetLogLevel() const { return (int)m_Level; }
+		private:
+			std::string m_Name;
+			LogLevels m_Level = LogLevels::LAll;
+		};
+
 
 		// Log is a container that contains two "Loggers" and names them both "App" and "Client".
 		// Log is initialized in "EntryPoint.h".
@@ -54,25 +74,7 @@ namespace RGF {
 
 
 
-			// The "Logger" struct contains the actual logging code that is used.
-			struct Logger {
-				void Trace		(const char* message, ...);
-				void Message	(const char* message, ...);
-				void Warn		(const char* message, ...);
-				void Error		(const char* message, ...);
-				void Critical	(const char* message, ...);
 
-
-				void SetName(const std::string& name) { m_Name = name; }
-				inline const std::string& GetName() const { return m_Name; }
-
-
-				void SetLogLevel(const LogLevels& level) { m_Level = level; }
-				inline const int GetLogLevel() const { return (int)m_Level; }
-				private :
-					std::string m_Name;
-					LogLevels m_Level = LogLevels::LAll;
-			};
 	};
 
 
@@ -99,10 +101,7 @@ namespace RGF {
 #define RGF_CORE_CRIT(message, ...)	RGF::Log::GetCore()->Critical(message, __VA_ARGS__ )
 
 
-#define RGF_ASSERT(x, message, ...) if(!(x)){\
-RGF::Log::GetCore()->Critical(message, __VA_ARGS__ );\
-__debugbreak();\
-}\
+
 
 #else 
 
@@ -118,10 +117,6 @@ __debugbreak();\
 #define RGF_CORE_WARN(message, ...)
 #define RGF_CORE_ERROR(message, ...) 
 #define RGF_CORE_CRIT(message, ...)
-
-#define RGF_ASSERT(x, message, ...) if(!(x)){\
-__debugbreak();\
-}\
 
 
 

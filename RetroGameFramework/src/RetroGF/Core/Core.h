@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 
+
+
 #ifdef RGF_PLATFORM_WINDOWS // TODO: I changed Retro into a static lib. Maybe remove this soon?
 
 	#ifdef RGF_BUILD_DLL
@@ -22,6 +24,8 @@
 
 #define RGF_BIND_EVENT_FNC(x) std::bind(&x, this, std::placeholders::_1)
 
+
+#include "Assert.h"
 namespace RGF {
 
 	template<typename T>
@@ -45,10 +49,16 @@ namespace RGF {
 
 	template<typename T>
 	using WeakRef = std::weak_ptr<T>;
+
+	void InitEngine();
+	void ShutdownEngine();
+
 }
 
 #define BIT(x) (1 << x)
 
+
+// TODO: move this when i decide to create a custom memory allocator
 #ifdef RGF_USE_CUSTOM_MEM_ALLOC
 
 	inline void* operator new(size_t size) {

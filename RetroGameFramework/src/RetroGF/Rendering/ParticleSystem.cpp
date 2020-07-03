@@ -5,7 +5,7 @@
 #define GLM_ENABLE_EXERIMENTAL
 #include <GLM/glm/gtx/compatibility.hpp>
 
-#include "RetroGF/Utility/Random.h"
+#include "RetroGF/Core/Random.h"
 
 
 #include "Renderer2D.h"

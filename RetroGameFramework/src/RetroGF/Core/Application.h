@@ -15,8 +15,7 @@
 
 #include "RetroGF/Core/LayerStack.h"
 #include "RetroGF/Imgui/ImguiLayer.h"
-#include "RetroGF/Utility/Timer.h"
-#include "RetroGF/Utility/File.h"
+#include "RetroGF/Core/Timer.h"
 
 #include "RetroGF/Debug/Instrumentor.h"
 
@@ -55,13 +54,13 @@ namespace RGF {
 #ifdef RGF_USE_IMGUI
 			ImguiLayer& GetImguiLayer() { return *m_ImguiLayer; }
 #endif
-
-			WindowImpl& GetWindow() { return *m_Window; }
-
+			const bool& IsMinimized() const { return m_IsMinimized; }
+			const Timer& GetTime() const { return m_AppTimer; }
+			Window& GetWindow() { return *m_Window; }
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
 			static Application* s_Instance;
-			Scoped<WindowImpl> m_Window;
+			Scoped<Window> m_Window;
 
 			// TODO: This is temp, may need to refactor some of these components / systems
 #ifdef RGF_USE_IMGUI
@@ -74,6 +73,7 @@ namespace RGF {
 
 
 			bool m_IsRunning = true;
+			bool m_IsMinimized = false;
 		private :
 			// Callbacks. ( Should all return bools )
 			bool OnWindowClose(WindowCloseEvent& e);

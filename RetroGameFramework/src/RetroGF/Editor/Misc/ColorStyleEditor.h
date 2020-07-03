@@ -1,4 +1,5 @@
 #pragma once
+
 #ifdef RGF_USE_IMGUI
 
 
@@ -8,18 +9,18 @@
 #include "RetroGF/Events/WindowEvents.h"
 
 
-// Renders everything to do with the Renderer2D via an imgui window
+// This allows to change Imgui's "Theme". This class can also create custom themes.
+// (Although it's not really a main feature. Just used to develop the framework and used for fun)
+
 // TODO: This uses layers. This could just be implemented into "ImguiEngineEdtior" without the use of layers. Investigate.
 
 namespace RGF {
 
-	class RGF_API RendererProperties : public Layer {
-		
+	class ColorStyleEditor : public Layer {
+
 		public :
-			RendererProperties() : Layer("RendererProperties") {}
-			~RendererProperties() {}
-
-
+			ColorStyleEditor() : Layer("ColorStyleEditor") {}
+			~ColorStyleEditor() {}
 			virtual void OnUpdate(float dt) override {}
 			virtual void OnEvent(Event& e) override {}
 
@@ -27,6 +28,7 @@ namespace RGF {
 			virtual void ShutDown() override;
 			virtual void OnImguiRender() override;
 
+			bool IsOpen = true;
 	};
 
 }

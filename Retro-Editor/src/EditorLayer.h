@@ -2,7 +2,6 @@
 
 #include <Glm/glm.hpp>
 
-#include <RetroGF/Core/OrthographicCameraController.h>
 #include <RetroGF/Core/Layer.h>
 
 #include <RetroGF/Rendering/API/Texture.h>
@@ -14,8 +13,8 @@
 #include <RetroGF/Physics/RigidBody.h>
 
 #include <RetroGF/Events/KeyEvents.h>
-#include <RetroGF/Editor/SceneCamera.h>
-#include <RetroGF/Editor/SceneViewportPanel.h>
+#include <RetroGF/Editor/EditorCamera.h>
+#include <RetroGF/Editor/EditorViewportPanel.h>
 
 
 namespace RGF {
@@ -35,7 +34,7 @@ namespace RGF {
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
 
 		private :
-			Scoped<SceneViewportPanel> m_ViewportPanel;
+			Scoped<EditorViewportPanel> m_ViewportPanel;
 			
 			glm::vec3 SpritePosition, SpriteSize;
 			float Rotation = 0.0f;
@@ -48,7 +47,6 @@ namespace RGF {
 			ParticleSystem particleSystem;
 			ParticleProperties particleProps;
 
-			Scoped<OrthographicCameraController> m_CameraController;
 			Ref<AudioSource> toneSFX, sameToneSfx;
 			Scoped<RigidBody> FloorRigidbody, PlayerRigidbody;
 			float VelocitySpeed = 1;

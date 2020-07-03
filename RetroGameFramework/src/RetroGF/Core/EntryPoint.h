@@ -12,9 +12,9 @@
 #ifdef RGF_PLATFORM_WINDOWS
 
 	
-	#include "RetroGF/Utility/Log.h"
 	#include "RetroGF/Debug/Instrumentor.h"
-
+	#include "RetroGF/Core/Log.h"
+	#include "RetroGF/Core/Core.h"
 
 
 	int main() {
@@ -30,19 +30,13 @@
 		#endif
 
 
+		RGF::InitEngine();
 		using namespace RGF;
-#ifndef RGF_DISTRIBUTE
-		Log Logger;
-		Logger.Init();
-#endif
 
 		RGF_CORE_MSG("Creating RGF Application...\n");
 		auto App = RGF::CreateApplication();
 
 		RGF_PROFILE_END_SESSION();
-
-		int* a = new int;
-		delete a;
 
 		#ifdef RGF_DEBUG
 		RGF_PROFILE_BEGIN_SESSION("Runtime-Debug", "logs/Profling/Debug/RGFProfile-Runtime-Debug.json");
@@ -67,6 +61,8 @@
 		#ifdef RGF_DISTRIBUTE
 		RGF_PROFILE_BEGIN_SESSION("Shutdown-Distribute", "logs/Profling/Distribute/RGFProfile-Shutdown-Distribute.json");
 		#endif
+		RGF::ShutdownEngine();
+
 		delete App;
 		RGF_PROFILE_END_SESSION();
 

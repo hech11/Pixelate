@@ -53,15 +53,16 @@ namespace RGF {
 			int GetUniformLocation(const std::string& name) override;
 
 		private :
+			ShaderSource PraseShader(const std::string& shaderFile);
+			ShaderSource PraseShader(const char* data);
+			unsigned int CreateShader(unsigned int type, const std::string& shaderSource);
+
+		private :
 			unsigned int m_RendererID;
 
 			std::string m_Filepath;
 			std::unordered_map<std::string, int> m_CachedUniformLocations;
 
-		private :
-			ShaderSource PraseShader(const std::string& shaderFile);
-			ShaderSource PraseShader(const char* data);
-			unsigned int CreateShader(unsigned int type, const std::string& shaderSource);
 
 	};
 

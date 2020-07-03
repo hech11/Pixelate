@@ -42,8 +42,28 @@ namespace RGF {
 
 	}
 	void GLRendererAPI::Init() {
+		m_Caps.VendorName = (const char*)glGetString(GL_VENDOR);
+		m_Caps.RendererName = (const char*)glGetString(GL_RENDERER);
+		m_Caps.Version = (const char*)glGetString(GL_VERSION);
+		m_Caps.ContextName = "OpenGL";
+		m_API = RendererAPI::API::OpenGL;
+
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &m_Caps.MaxTextureSlots);
+
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+		RGF_CORE_MSG("Rendering API : OpenGL\n\n");
+
+		RGF_CORE_TRACE("---Infomation---\n");
+		RGF_CORE_TRACE("Vendor: %s\n", m_Caps.VendorName.c_str());
+		RGF_CORE_TRACE("Version: %s\n", m_Caps.Version.c_str());
+		RGF_CORE_TRACE("Shading Language version: %s\n", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+		RGF_CORE_TRACE("GPU Card: %s\n", m_Caps.RendererName.c_str());
+
+		RGF_CORE_TRACE("Max texture slots: %d\n", m_Caps.MaxTextureSlots);
+
 	}
 
 
@@ -99,15 +119,6 @@ namespace RGF {
 	}
 
 
-	
-	void* GLRendererAPI::MapBuffer(bool enable) {
-		if (enable) {
-			GLCall(return glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
-		} else {
-			GLCall(glUnmapBuffer(GL_ARRAY_BUFFER));
-			return nullptr;
-		}
-	}
 	void GLRendererAPI::DrawElements(const Ref<VertexArray>& vao, unsigned int count) {
 
 

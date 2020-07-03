@@ -6,7 +6,11 @@
 namespace RGF {
 
 
+	struct RenderAPICapabilities {
 
+		std::string ContextName, VendorName, Version, RendererName;
+		int MaxTextureSlots;
+	};
 
 	class RendererAPI {
 
@@ -41,7 +45,6 @@ namespace RGF {
 			virtual void Clear() = 0;
 			virtual void SetClearColor(float r, float g, float b, float a) = 0;
 
-			//TODO: These parameters should prob be a struct
 			virtual void SetViewport(int x, int y, int width, int height) = 0;
 			virtual void SetDepthTesting(bool enable) = 0;
 			virtual void SetStencilTesting(bool enable) = 0;
@@ -50,15 +53,17 @@ namespace RGF {
 			virtual void SetBlending(bool enable) = 0;
 			virtual void SetBlendFunc(BlendFunc& source, BlendFunc& dest) = 0;
 
-			virtual void* MapBuffer(bool enable) = 0;
 
 			virtual void DrawElements(const Ref<VertexArray>& vao, unsigned int count) = 0;
 
+			virtual const RenderAPICapabilities& GetCaps() const = 0;
 
-			inline const API& GetAPI() const { return *s_API; }
+			inline static const API& GetAPI(){ return m_API; }
 
 		protected :
-			static API* s_API;
+			static API m_API;
+
+
 	};
 
 }

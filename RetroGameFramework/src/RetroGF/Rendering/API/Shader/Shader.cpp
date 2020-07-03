@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "RetroGF/Platform/OpenGL/GLShader.h"
-#include "RetroGF/Rendering/RenderingContext.h"
+#include "RetroGF/Rendering/RendererAPI.h"
 #include "RetroGF/Core/Application.h"
 #include "RetroGF/Rendering/Renderer2D.h"
 
@@ -13,8 +13,8 @@ namespace RGF {
 	}
 
 	Ref<Shader> Shader::Create() {
-		switch (RenderingContext::GetContext()) {
-			case RenderingContext::ContextAPI::OPENGL:
+		switch (RendererAPI::GetAPI()) {
+			case RendererAPI::API::OpenGL:
 				return CreateRef<GLShader>();
 			}
 

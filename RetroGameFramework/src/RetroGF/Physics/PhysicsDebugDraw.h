@@ -3,8 +3,9 @@
 
 #include <box2d/box2d.h>
 
-#include "RetroGF/Core/OrthographicCameraController.h"
+#include "RetroGF/Rendering/OrthographicCamera.h"
 #include "RetroGF/Core/Core.h"
+
 namespace RGF {
 	class PhysicsDebugDraw : public b2Draw {
 

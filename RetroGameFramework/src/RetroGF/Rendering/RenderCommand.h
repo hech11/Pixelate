@@ -4,6 +4,7 @@
 #include "RendererAPI.h"
 #include "RetroGF/Core/Core.h"
 
+#include "RenderingContext.h"
 
 namespace RGF {
 
@@ -11,9 +12,7 @@ namespace RGF {
 
 		public :
 
-			inline static void Init() {
-				s_API->Init();
-			}
+			static void Init(const RenderingContext::ContextAPI& context);
 
 			inline static void Clear() { s_API->Clear(); };
 
@@ -42,8 +41,9 @@ namespace RGF {
 				s_API->SetBlendFunc(source, dest);
 			}
 			
-			inline static void* MapBuffer(bool enable) { return s_API->MapBuffer(enable); }
 
+			// Not sure how i feel about this being here..
+			inline static const RenderAPICapabilities& GetCaps() { return s_API->GetCaps(); }
 
 			inline static void DrawElements(const Ref<VertexArray>& vao, unsigned int count) { return s_API->DrawElements(vao, count); }
 

@@ -44,6 +44,6 @@ IMGUI_IMPL_API void     ImGui_ImplGlfw_CharCallback(GLFWwindow* window, unsigned
 // This is used to get imgui to work with retros event system.
 // TODO: ideally i should implement my own versions of these callbacks in another file
 namespace ImGui {
-    void InstallImguiCallbacks(const RGF::WindowImpl::EventCallbackFncPtr& callback);
+    void InstallImguiCallbacks(const RGF::Window::EventCallbackFncPtr& callback);
 }
 #endif

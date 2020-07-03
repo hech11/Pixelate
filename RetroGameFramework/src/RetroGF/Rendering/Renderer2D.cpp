@@ -2,7 +2,7 @@
 #include "Renderer2D.h"
 
 
-#include "RetroGF/Rendering/RenderingContext.h"
+#include "RetroGF/Rendering/RendererAPI.h"
 #include "RetroGF/Rendering/RenderCommand.h"
 
 #include "RetroGF/Debug/Instrumentor.h"

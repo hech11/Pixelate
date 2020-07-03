@@ -35,10 +35,11 @@ namespace RGF {
 
 
 
-	void Physics::Update(float time) {
+	void Physics::Update() {
 		RGF_PROFILE_FUNCTION();
+		auto& time = Application::GetApp().GetTime();
 
-		while (s_Data.CurrentSimulationTime < time) {
+		while (s_Data.CurrentSimulationTime < time.GetElapsedSeconds()) {
 			s_Data.World->Step(s_Properties.FixedTimeStep, s_Properties.VelocityIterations, s_Properties.PositionIterations);
 			s_Data.CurrentSimulationTime += s_Properties.FixedTimeStep;
 		}
