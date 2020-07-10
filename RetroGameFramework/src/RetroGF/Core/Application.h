@@ -56,6 +56,7 @@ namespace RGF {
 #endif
 			const bool& IsMinimized() const { return m_IsMinimized; }
 			const Timer& GetTime() const { return m_AppTimer; }
+			const float& GetTimestep() const { return m_Timestep; }
 			Window& GetWindow() { return *m_Window; }
 			inline static Application& GetApp() { return *s_Instance; };
 		private :
@@ -64,13 +65,14 @@ namespace RGF {
 
 			// TODO: This is temp, may need to refactor some of these components / systems
 #ifdef RGF_USE_IMGUI
+			void RenderImGui();
 			ImguiLayer* m_ImguiLayer;
 #endif
 
 
 			LayerStack m_LayerStack;
 			Timer m_AppTimer;
-
+			float m_Timestep = 0.0f;
 
 			bool m_IsRunning = true;
 			bool m_IsMinimized = false;

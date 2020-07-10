@@ -39,11 +39,7 @@ namespace RGF {
 	void WindowsWindow::StartUp(const WindowProps& props) {
 		RGF_PROFILE_FUNCTION();
 
-		RGF_CORE_MSG("Creating the window...\n");
-
 		m_Data.props = props;
-
-
 
 		int glfwValidation = glfwInit();
 		RGF_ASSERT(glfwValidation, "Failed to init GLFW!\n");

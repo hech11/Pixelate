@@ -29,13 +29,14 @@ namespace RGF{
 			const OrthographicCamera& GetCamera() const { return m_Camera; }
 			const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
 
+			glm::vec2 GetMousePositionRelativeToViewportPanel();
+
 		private:
 			bool OnMouseScrolled(MouseScrolledEvent& e);
 			bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 			bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 			bool OnWindowResize(WindowResizeEvent& e);
 
-			glm::vec2 GetMousePositionRelativeToViewportPanel();
 
 		private : 
 			bool m_Drag = false;

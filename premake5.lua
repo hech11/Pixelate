@@ -25,6 +25,7 @@ IncludeDir["Glm"] = "RetroGameFramework/vendor/Glm"
 IncludeDir["OpenAL_Soft"] = "RetroGameFramework/vendor/OpenAL_Soft"
 IncludeDir["MiniMp3"] = "RetroGameFramework/vendor/MiniMp3"
 IncludeDir["Box2D"] = "RetroGameFramework/vendor/Box2D"
+IncludeDir["entt"] = "RetroGameFramework/vendor/entt"
 
 
 IncludeDir["NativeFileDialog"] = "Retro-Editor/vendor/NativeFileDialog"
@@ -77,6 +78,7 @@ project "RetroGameFramework"
 		"%{prj.name}/vendor/LIBOGG/include/**.h",
 		"%{prj.name}/vendor/VORBIS/include/**.h",
 		"%{prj.name}/vendor/VORBIS/lib/**.h",
+		"%{prj.name}/vendor/entt/**.hpp"
 	}
 
 
@@ -101,6 +103,7 @@ project "RetroGameFramework"
 		"%{IncludeDir.OpenAL_Soft}/src/al",
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
+		"%{IncludeDir.entt}/vendor/entt/"
 
 
 	}
@@ -191,7 +194,9 @@ project "Retro-Editor"
 		"%{IncludeDir.OpenAL_Soft}/src/al",
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
-		"%{IncludeDir.NativeFileDialog}src/include"
+		"%{IncludeDir.NativeFileDialog}src/include",
+		"%{IncludeDir.entt}/vendor/entt/"
+
 	}
 
 	links
@@ -282,6 +287,8 @@ project "Sandbox"
 		"%{IncludeDir.OpenAL_Soft}/src/al",
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
+		"%{IncludeDir.entt}/vendor/entt/"
+		
 	}
 
 	links

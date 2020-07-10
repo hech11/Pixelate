@@ -8,6 +8,8 @@
 
 #include "GLCommon.h"
 
+#include "RetroGF/Rendering/Renderer2D.h"
+
 namespace RGF {
 
 
@@ -73,13 +75,14 @@ namespace RGF {
 		return { ss[0].str(), ss[1].str() };
 	}
 
-	// TODO: This code is duplication! need to refactor and redeign at some point.
+	// TODO: This code is duplication! need to refactor and redesign at some point.
 
 	void GLShader::LoadFromSrc(const char* data) {
+
 		const auto& program = m_RendererID;
 		ShaderSource source = PraseShader(data);
 
-		
+
 
 		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
 		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
@@ -93,12 +96,14 @@ namespace RGF {
 
 		GLCall(glDeleteShader(vs));
 		GLCall(glDeleteShader(fs));
+
 	}
 
 	void GLShader::LoadFromFile(const std::string& filepath) {
 		m_Filepath = filepath;
+
 		const auto& program = m_RendererID;
-		ShaderSource source = PraseShader(filepath);
+		ShaderSource source = PraseShader(m_Filepath);
 
 		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
 		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
@@ -106,15 +111,18 @@ namespace RGF {
 
 		GLCall(glAttachShader(program, vs));
 		GLCall(glAttachShader(program, fs));
-		
+
 		GLCall(glLinkProgram(program));
 		GLCall(glValidateProgram(program));
 
 		GLCall(glDeleteShader(vs));
 		GLCall(glDeleteShader(fs));
+
 	}
 
 	unsigned int GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
+
+
 		unsigned int shader = glCreateShader(type);
 		const char* shdSrc = shaderSource.c_str();
 		
@@ -147,6 +155,7 @@ namespace RGF {
 
 
 	int GLShader::GetUniformLocation(const std::string& name) {
+
 		if (m_CachedUniformLocations.find(name) != m_CachedUniformLocations.end()) {
 			return m_CachedUniformLocations[name];
 		}
@@ -156,6 +165,7 @@ namespace RGF {
 		}
 		m_CachedUniformLocations[name] = location;
 		return location;
+		
 	}
 
 
@@ -181,8 +191,7 @@ namespace RGF {
 
 
 	void GLShader::SetUniform1i(const std::string& uniformName, const int value) {
-		glUniform1i(GetUniformLocation(uniformName), value);
-		
+		glUniform1i(GetUniformLocation(uniformName), value);	
 	}
 
 	void GLShader::SetUniform1iArray(const std::string& uniformName, unsigned int count, const int* values) {
@@ -191,51 +200,42 @@ namespace RGF {
 
 	void GLShader::SetUniform2i(const std::string& uniformName, const glm::i32vec2& values) {
 		glUniform2i(GetUniformLocation(uniformName), values.x, values.y);
-
 	}
 
 
 	void GLShader::SetUniform3i(const std::string& uniformName, const glm::i32vec3& values) {
 		glUniform3i(GetUniformLocation(uniformName), values.x, values.y, values.z);
-
 	}
 
 
 	void GLShader::SetUniform4i(const std::string& uniformName, const glm::i32vec4& values) {
 		glUniform4i(GetUniformLocation(uniformName), values.x, values.y, values.z, values.z);
-
 	}
 
 
 
 	void GLShader::SetUniform1i(const std::string& uniformName, const char value) {
 		glUniform1i(GetUniformLocation(uniformName), value);
-
 	}
 
 
 	void GLShader::SetUniform2i(const std::string& uniformName, const glm::i8vec2& values) {
 		glUniform2i(GetUniformLocation(uniformName), values.x, values.y);
-
 	}
 
 
 	void GLShader::SetUniform3i(const std::string& uniformName, const glm::i8vec3& values) {
 		glUniform3i(GetUniformLocation(uniformName), values.x, values.y, values.z);
-
 	}
 
 
 	void GLShader::SetUniform4i(const std::string& uniformName, const glm::i8vec4& values) {
 		glUniform4i(GetUniformLocation(uniformName), values.x, values.y, values.z, values.z);
-
 	}
 
 
 	void GLShader::SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) {
 		glUniformMatrix4fv(GetUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(matrix));
-
-		//m_Uniforms.push_back({ uniformName, ShaderUnifromType::Mat4, location });
 	}
 
 

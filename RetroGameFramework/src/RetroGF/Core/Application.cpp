@@ -57,22 +57,12 @@ namespace RGF {
 
 
 
-		RGF_CORE_MSG("Creating the renderer!\n");
 		Renderer2D::Init();
-
-		RGF_CORE_MSG("initializing the audio!\n");
 		Audio::Init();
-		RGF_CORE_MSG("initializing physics!\n");
 		Physics::Init();
 
-		RGF_CORE_TRACE("RGF application created!\n");
-		RGF_CORE_TRACE("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
+		RGF_CORE_WARN("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
-
-
-
-
-		
 
 	}
 	Application::~Application() {
@@ -107,6 +97,16 @@ namespace RGF {
 		}
 	}
 
+	void Application::RenderImGui() {
+		RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");
+		m_ImguiLayer->Start();
+			for (Layer* layer : m_LayerStack.GetLayerStack()) {
+				RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnImguiRender");
+				layer->OnImguiRender();
+			}
+		m_ImguiLayer->End();
+	}
+
 
 	void Application::Run() {
 		RGF_PROFILE_FUNCTION();
@@ -120,7 +120,7 @@ namespace RGF {
 		while (m_IsRunning) {
 			RGF_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
 			float time = m_AppTimer.GetElapsedSeconds();
-			float timeStep = time - LastTime;
+			m_Timestep = time - LastTime;
 			LastTime = time;
 
 
@@ -131,35 +131,28 @@ namespace RGF {
 
 					RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnUpdate");
 
-					layer->OnUpdate(timeStep);
+					layer->OnUpdate(m_Timestep);
 				}
+
 
 			}
 
+
+			if (!m_IsMinimized) {
 	#ifdef RGF_USE_IMGUI
-
-			{
-				RGF_PROFILE_SCOPE("Application::ImguiRender||EngineEditor");
-				m_ImguiLayer->Start();
-				if (!m_IsMinimized) {
-					for (Layer* layer : m_LayerStack.GetLayerStack()) {
-						RGF_PROFILE_SCOPE("Application::Layer::" + layer->GetName() + "::OnImguiRender");
-						layer->OnImguiRender();
-					}
-				}
-				m_ImguiLayer->End();
+				RenderImGui();
+	#endif
+	
 			}
 
-
-	#endif
 
 			m_Window->OnUpdate();
 			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
 				Time += 1.0f;
-				RGF_CORE_MSG("%f: timestep\n", timeStep*1000.0f);
+				RGF_CORE_MSG("%f: timestep\n", m_Timestep *1000.0f);
 
 #ifdef RGF_DISTRIBUTE
-				printf("%f: timestep\n", timeStep*1000.0f);
+				printf("%f: timestep\n", m_Timestep *1000.0f);
 #endif
 			}
 		}

@@ -16,6 +16,7 @@
 #include <RetroGF/Editor/EditorCamera.h>
 #include <RetroGF/Editor/EditorViewportPanel.h>
 
+#include <entt/entt.hpp>
 
 namespace RGF {
 
@@ -32,7 +33,19 @@ namespace RGF {
 		
 		
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
+		private : 
+			struct Value {
+				int value = 0;
+				int Incrementor = 0;
+			};
+			void Update(entt::registry& reg) {
+				m_Reg.view<Value>().each([](auto& val) {
 
+					val.value += val.Incrementor;
+					RGF_WARN("Value: %d\n", val.value);
+				});
+
+			}
 		private :
 			Scoped<EditorViewportPanel> m_ViewportPanel;
 			
@@ -50,6 +63,11 @@ namespace RGF {
 			Ref<AudioSource> toneSFX, sameToneSfx;
 			Scoped<RigidBody> FloorRigidbody, PlayerRigidbody;
 			float VelocitySpeed = 1;
+
+			entt::registry m_Reg;
+			entt::entity m_TestEntity;
+
+
 	};
 
 

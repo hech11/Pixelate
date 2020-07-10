@@ -29,14 +29,12 @@ namespace RGF {
 
 			void DrawElements(const Ref<VertexArray>& vao, unsigned int count) override;
 
-			virtual const RenderAPICapabilities& GetCaps() const override { return m_Caps;}
+			virtual const RenderAPICapabilities& GetCaps() const override;
 
 
 
 		private:
 			unsigned int ConvertBlendFunctions(const BlendFunc& func);
-		private:
-			RenderAPICapabilities m_Caps;
 
 	};
 }

@@ -2,6 +2,7 @@
 #include "GLVertexArray.h"
 
 #include "GLCommon.h"
+#include "RetroGF/Rendering/Renderer2D.h"
 
 namespace RGF {
 
@@ -44,13 +45,14 @@ namespace RGF {
 	}
 
 	void GLVertexArray::PushVertexBuffer(const Ref<RGF::VertexBuffer>& buffer) {
+
 		RGF_ASSERT(buffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		GLCall(glBindVertexArray(m_RendererID));
-		buffer->Bind();
-		
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer->GetRendererID()))
 
-		unsigned int index = 0;
+
+			unsigned int index = 0;
 		const auto& layout = buffer->GetLayout();
 		for (const auto& element : layout)
 		{
@@ -65,15 +67,15 @@ namespace RGF {
 		}
 
 		m_Vbos.push_back(buffer);
+
 	}
 
 
 	void GLVertexArray::PushIndexBuffer(const Ref<RGF::IndexBuffer>& buffer) {
-		GLCall(glBindVertexArray(m_RendererID));
-		buffer->Bind();
-
-
 		m_Ibo = buffer;
+
+		GLCall(glBindVertexArray(m_RendererID));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ibo->GetRendererID()));
 	}
 
 	void GLVertexArray::Bind() const {

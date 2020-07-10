@@ -16,6 +16,7 @@
 #include <Glm/gtc/type_ptr.hpp>
 
 #include "../vendor/NativeFileDialog/src/include/nfd.h"
+#include <RetroGF/Rendering/RendererAPI.h>
 
 
 namespace RGF {
@@ -89,6 +90,10 @@ namespace RGF {
 		PlayerRigidbody->AddCollider(&PlayerCollision);
 		PlayerRigidbody->AddCollider(&PlayerCollision2);
 
+
+		// testing entt
+		m_TestEntity = m_Reg.create();
+		m_Reg.emplace<Value>(m_TestEntity, 0, 5);
 	}
 
 
@@ -101,25 +106,29 @@ namespace RGF {
 		{
 			m_ViewportPanel->OnUpdate(dt);
 
-			/*if (m_IsViewportHovered) {
+			if (m_ViewportPanel->IsHovered()) {
 				if (Input::IsMouseButtonDown(0)) {
-					float x = Input::GetMousePosX();
-					float y = Input::GetMousePosY();
-					float width = Application::GetApp().GetWindow().GetWidth();
-					float height = Application::GetApp().GetWindow().GetHeight();
+					float x = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().x;
+					float y = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().y;
 
-					auto bounds = m_SceneCamera->GetBounds();
-					auto pos = m_SceneCamera->GetCamera().GetPos();
+
+
+					float width = m_ViewportPanel->GetViewportSize().x;
+					float height = m_ViewportPanel->GetViewportSize().y;
+
+					auto bounds = m_ViewportPanel->GetCamera()->GetBounds();
+					auto pos = m_ViewportPanel->GetCamera()->GetCamera().GetPos();
 					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
 					y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
 					particleProps.Position = { x + pos.x, y + pos.y };
+
 
 					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
 						particleSystem.Emit(particleProps);
 					}
 
 				}
-			}*/
+			}
 
 			if (Input::IsKeyDown(RGF_KEY_D)) {
 				PlayerRigidbody->SetLinearVelocity({ VelocitySpeed, PlayerRigidbody->GetLinearVelocity().y });
@@ -132,12 +141,11 @@ namespace RGF {
 			particleSystem.OnUpdate(dt);
 			Audio::Update();
 
-
+			Update(m_Reg);
 		}
 
 		{
 
-			// Resizing the viewport
 			m_ViewportPanel->DrawToViewport();
 
 			RenderCommand::Clear();
@@ -167,8 +175,8 @@ namespace RGF {
 			Renderer2D::EndScene();
 
 			Physics::DrawDebugObjects();
-			m_ViewportPanel->FinishDrawing();
 
+			m_ViewportPanel->FinishDrawing();
 
 		}
 	}
@@ -219,6 +227,7 @@ namespace RGF {
 
 	void EditorLayer::OnImguiRender() {
 #ifdef RGF_USE_IMGUI
+		using namespace RGF;
 
 
 
@@ -363,6 +372,24 @@ namespace RGF {
 
 
 		Physics::GetDebug().SetDrawFlag(flags);
+		ImGui::End();
+
+
+		ImGui::Begin("Application");
+		static float time = 0.0f;
+		static std::string ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
+		if (Application::GetApp().GetTime().GetElapsedSeconds() - time > 1.0f) {
+			time += 1.0f;
+			ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
+		}
+		std::string context = "Context: " + RenderCommand::GetCaps().ContextName;
+		std::string info = "GPU Info: " + RenderCommand::GetCaps().RendererName;
+		std::string version = "GPU Version: " + RenderCommand::GetCaps().Version;
+		ImGui::Text(ts.c_str());
+		ImGui::Text(context.c_str());
+		ImGui::Text(info.c_str());
+		ImGui::Text(version.c_str());
+
 		ImGui::End();
 
 

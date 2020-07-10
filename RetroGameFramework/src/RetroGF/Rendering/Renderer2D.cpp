@@ -30,9 +30,10 @@ namespace RGF {
 		// TODO: this should be set dynamically as this differs between platforms and GPUs
 		static const unsigned int MaxTextureSlots = 16;
 
-		Ref<VertexArray> QuadVertexArray = nullptr;
-		Ref<VertexBuffer> QuadVertexBuffer = nullptr;
-		Ref<Shader> BatchRendererShader = nullptr;
+
+		Ref<VertexArray> QuadVertexArray;
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<Shader> BatchRendererShader;
 
 
 		unsigned int IndexCount = 0;
@@ -47,7 +48,8 @@ namespace RGF {
 		unsigned int TextureSlotIndex = 1; // 0 = white texture
 		Renderer2D::RenderingStatistics m_Statistics;
 
-
+		//temp
+		int Samplers[MaxTextureSlots];
 
 	};
 
@@ -126,9 +128,9 @@ namespace RGF {
 			unsigned int whiteTextureData = 0xffffffff;
 			SceneData.DefaultWhiteTexture->SetData(&whiteTextureData, 3);
 
-			int samplers[SceneData.MaxTextureSlots];
+
 			for (unsigned int i = 0; i < SceneData.MaxTextureSlots; i++)
-				samplers[i] = i;
+				SceneData.Samplers[i] = i;
 
 			{
 				RGF_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
@@ -136,7 +138,7 @@ namespace RGF {
 				SceneData.BatchRendererShader = Shader::Create();
 				SceneData.BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
 				SceneData.BatchRendererShader->Bind();
-				SceneData.BatchRendererShader->SetUniform1iArray("u_Textures", SceneData.MaxTextureSlots, samplers);
+				SceneData.BatchRendererShader->SetUniform1iArray("u_Textures", SceneData.MaxTextureSlots, SceneData.Samplers);
 			}
 
 
@@ -173,6 +175,7 @@ namespace RGF {
 
 		Flush();
 	}
+
 
 	void Renderer2D::DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color) {
 

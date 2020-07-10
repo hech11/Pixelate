@@ -4,6 +4,8 @@
 
 
 #include "RetroGF\Platform\OpenGL\GLRendererAPI.h"
+#include "Renderer2D.h"
+
 
 
 namespace RGF {
@@ -14,9 +16,10 @@ namespace RGF {
 	void RenderCommand::Init(const RenderingContext::ContextAPI& context) {
 
 		switch (context) {
-			case RenderingContext::ContextAPI::OPENGL:
-				s_API = new GLRendererAPI;
-				s_API->Init();
+		case RenderingContext::ContextAPI::OPENGL:
+			s_API = new GLRendererAPI;
+			s_API->Init();
+			
 		}
 	}
 

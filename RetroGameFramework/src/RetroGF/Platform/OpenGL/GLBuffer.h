@@ -8,16 +8,18 @@
 
 namespace RGF {
 
+
 	class RGF_API GLVertexBuffer : public VertexBuffer {
 		public :
 			GLVertexBuffer(const void* data, unsigned int size);
 			GLVertexBuffer(unsigned int size);
 
+			unsigned int GetRendererID() const override { return m_RendererID; }
 
 			virtual ~GLVertexBuffer();
 
 
-			void SetData(const void* data, unsigned int size) override;
+			void SetData(void* data, unsigned int size) override;
 			void SetLayout(const BufferLayout& layout) override;
 
 
@@ -39,7 +41,6 @@ namespace RGF {
 			BufferLayout m_Layout;
 			unsigned int m_RendererID;
 
-
 	};
 
 
@@ -52,8 +53,10 @@ namespace RGF {
 			GLIndexBuffer(unsigned short* data, unsigned int count);
 			GLIndexBuffer(unsigned char* data, unsigned int count);
 
+
 			virtual ~GLIndexBuffer();
 
+			unsigned int GetRendererID() const override { return m_RendererID; }
 
 
 			unsigned int GetCount() const override{ return m_Count; };
@@ -69,6 +72,7 @@ namespace RGF {
 
 			unsigned int m_Count;
 			unsigned int m_Type;
+
 	};
 
 }

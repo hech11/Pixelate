@@ -20,7 +20,6 @@ namespace RGF {
 	GLRenderingContext::GLRenderingContext() 
 		: m_Context(RenderingContext::ContextAPI::OPENGL)
 	{
-		RGF_CORE_MSG("Creating rendering context...\n");
 	}
 
 

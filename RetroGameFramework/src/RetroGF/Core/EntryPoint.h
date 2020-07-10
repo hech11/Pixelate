@@ -33,7 +33,7 @@
 		RGF::InitEngine();
 		using namespace RGF;
 
-		RGF_CORE_MSG("Creating RGF Application...\n");
+		RGF_CORE_MSG("Creating application...\n");
 		auto App = RGF::CreateApplication();
 
 		RGF_PROFILE_END_SESSION();

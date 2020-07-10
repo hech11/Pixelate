@@ -16,7 +16,7 @@ namespace RGF {
 			GLVertexArray();
 			~GLVertexArray();
 
-
+			
 			void PushVertexBuffer(const Ref<RGF::VertexBuffer>& buffer) override;
 			void PushIndexBuffer(const Ref<RGF::IndexBuffer>& buffer) override;
 

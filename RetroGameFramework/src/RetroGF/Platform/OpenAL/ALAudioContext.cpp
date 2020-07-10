@@ -39,13 +39,13 @@ namespace RGF {
 		}
 
 		// print device information..
-		
-		RGF_CORE_TRACE("----- Audio device information -----\n");
+		RGF_CORE_MSG("Audio context: OpenAL\n");
+		RGF_CORE_TRACE("----- Information -----\n");
 		RGF_CORE_TRACE("Device name: %s\n", s_AudioDevice->DeviceName.c_str());
 		RGF_CORE_TRACE("Sample Rate: %d\n", s_AudioDevice->Frequency);
 		RGF_CORE_TRACE("Available Mono: %d\n", s_AudioDevice->NumMonoSources);
 		RGF_CORE_TRACE("Available Stereo: %d\n", s_AudioDevice->NumStereoSources);
-		RGF_CORE_TRACE("--------------------------\n\n\n\n\n");
+		RGF_CORE_TRACE("--------------------------\n\n");
 
 
 	}

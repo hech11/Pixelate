@@ -54,6 +54,8 @@ namespace RGF {
 
 		props = m_Props;
 
+
+
 		GLCall(glGenTextures(1, &m_RendererID));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
@@ -75,11 +77,14 @@ namespace RGF {
 		stbi_image_free(PixData);
 
 
+
 	}
 	GLTexture::GLTexture(unsigned int width, unsigned int height, Texture::TextureProperties::Format format) {
 		m_Props.Width = width;
 		m_Props.Height = height;
 		m_Props.TexFormat = format;
+
+
 
 		GLCall(glGenTextures(1, &m_RendererID));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
@@ -91,25 +96,27 @@ namespace RGF {
 
 
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, 0));
-		
 	}
 
 
 	GLTexture::~GLTexture() {
+
 		GLCall(glDeleteTextures(1, &m_RendererID));
 	}
 
 	void GLTexture::Bind(unsigned char slot) const {
-		
 		m_Props.Slot = slot;
-		GLCall(glActiveTexture(GL_TEXTURE0 + slot));
+
+		GLCall(glActiveTexture(GL_TEXTURE0 + m_Props.Slot));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 
 
 		m_Props.IsBound = true;
+
 	}
 	void GLTexture::Unbind() const {
 		
+
 		GLCall(glActiveTexture(GL_TEXTURE0));
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 		m_Props.IsBound = false;
@@ -120,6 +127,7 @@ namespace RGF {
 		unsigned int bpp = GLConvertFormatToBPP(m_Props.TexFormat);
 		RGF_ASSERT(size == m_Props.Width * m_Props.Height * bpp, "Texture data must cover the entire texture!");
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Props.Width, m_Props.Height, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, data);
+
 	}
 
 	void GLTexture::SetData(const std::string& filepath) {
@@ -148,6 +156,7 @@ namespace RGF {
 		}
 
 		stbi_image_free(PixData);
+
 	}
 
 }

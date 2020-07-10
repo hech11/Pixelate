@@ -168,8 +168,9 @@ namespace RGF {
 
 			virtual ~VertexBuffer() = default;
 
-			virtual void SetData(const void* data, unsigned int size) = 0;
-			
+			virtual unsigned int GetRendererID() const = 0;
+
+			virtual void SetData(void* data, unsigned int size) = 0;
 			virtual void SetLayout(const RGF::BufferLayout& layout) = 0;
 
 			virtual void Bind() const = 0;
@@ -182,7 +183,6 @@ namespace RGF {
 			static Ref<VertexBuffer> Create(const void* data, unsigned int size);
 			static Ref<VertexBuffer> Create(unsigned int size);
 
-;
 
 	};
 
@@ -194,6 +194,7 @@ namespace RGF {
 		public :
 
 			virtual ~IndexBuffer() = default;
+			virtual unsigned int GetRendererID() const = 0;
 
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;

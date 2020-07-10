@@ -3,6 +3,8 @@
 
 #include "GLCommon.h"
 
+#include "RetroGF/Rendering/Renderer2D.h"
+
 namespace RGF {
 
 
@@ -25,9 +27,11 @@ namespace RGF {
 	GLVertexBuffer::GLVertexBuffer(const void* data, unsigned int size) 
 	: m_Stats({size, BufferUsage::Static })
 	{
+
+
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, m_Stats.Size, data, GL_STATIC_DRAW));
 
 	}
 
@@ -35,9 +39,12 @@ namespace RGF {
 	GLVertexBuffer::GLVertexBuffer(unsigned int size)
 		: m_Stats({ size, BufferUsage::Dynamic })
 	{
+
+
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW));
+		GLCall(glBufferData(GL_ARRAY_BUFFER, m_Stats.Size, nullptr, GL_DYNAMIC_DRAW));
+
 
 	}
 
@@ -47,7 +54,7 @@ namespace RGF {
 
 
 	// TODO: it would be nice to have an offset, future API refactor?
-	void GLVertexBuffer::SetData(const void* data, unsigned int size) {
+	void GLVertexBuffer::SetData(void* data, unsigned int size) {
 		
 		if (m_Stats.Usage == BufferUsage::Dynamic)
 			m_Stats.Size = size;
@@ -55,8 +62,10 @@ namespace RGF {
 			RGF_CORE_WARN("Trying to change the data of a vertex buffer while it is set to static draw!\n");
 		}
 
+
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m_Stats.Size, data);
+
 	}
 
 
@@ -66,6 +75,7 @@ namespace RGF {
 
 
 	void GLVertexBuffer::Bind() const {
+
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 	}
 
@@ -82,34 +92,42 @@ namespace RGF {
 
 	GLIndexBuffer::GLIndexBuffer(unsigned int* data, unsigned int count) : m_Count(count), m_Type(GL_UNSIGNED_INT)
 	{
+
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned int), data, GL_STATIC_DRAW));
 	}
 	GLIndexBuffer::GLIndexBuffer(unsigned short* data, unsigned int count) : m_Count(count), m_Type(GL_UNSIGNED_SHORT) 
 	{
+
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned short), data, GL_STATIC_DRAW));
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned short), data, GL_STATIC_DRAW));
+
 	}
 	GLIndexBuffer::GLIndexBuffer(unsigned char* data, unsigned int count) : m_Count(count), m_Type(GL_UNSIGNED_BYTE) 
 	{
 
 		GLCall(glGenBuffers(1, &m_RendererID));
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned char), data, GL_STATIC_DRAW));
-
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned char), data, GL_STATIC_DRAW));
 	}
 
 	GLIndexBuffer::~GLIndexBuffer() {
+
 		GLCall(glDeleteBuffers(1, &m_RendererID));
+
 	}
 
 	void GLIndexBuffer::Bind() const {
+
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+
 	}
 	void GLIndexBuffer::Unbind() const {
+
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
 
 	}
 

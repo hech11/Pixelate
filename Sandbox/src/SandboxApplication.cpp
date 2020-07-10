@@ -23,7 +23,6 @@ class ExampleLayer : public RGF::Layer {
 	RGF::ParticleSystem particleSystem;
 	RGF::ParticleProperties particleProps;
 
-	RGF::Scoped<RGF::OrthographicCameraController> m_CameraController;
 	RGF::Ref<RGF::AudioSource> toneSFX, sameToneSfx;
 	RGF::Scoped<RGF::RigidBody> FloorRigidbody, PlayerRigidbody;
 	float VelocitySpeed = 1;
@@ -43,7 +42,6 @@ class ExampleLayer : public RGF::Layer {
 			SpriteSize = { 1.0f, 1.0f, 1.0f };
 			SpriteColor = { 1.00, 1.0f, 1.0f, 1.0f };
 
-			m_CameraController = RGF::CreateScoped<RGF::OrthographicCameraController>(16.0f / 9.0f, true);
 
 			LoadedFromFilepath = RGF::Texture::Create("assets/graphics/TestSpritesheet.png");
 			GeneratedTexture = RGF::Texture::Create(1, 1);
@@ -67,7 +65,7 @@ class ExampleLayer : public RGF::Layer {
 
 
 			// This is temp until an editor with a viewport is created
-			RGF::Physics::GetDebug().SetCamera(m_CameraController.get());
+//			RGF::Physics::GetDebug().SetCamera(m_CameraController.get());
 
 			b2World* world = (b2World*)RGF::Physics::World();
 
@@ -117,7 +115,6 @@ class ExampleLayer : public RGF::Layer {
 
 			{
 
-				m_CameraController->OnUpdate(dt);
 
 
 				if (RGF::Input::IsMouseButtonDown(0)) {
@@ -126,11 +123,11 @@ class ExampleLayer : public RGF::Layer {
 					float width = RGF::Application::GetApp().GetWindow().GetWidth();
 					float height = RGF::Application::GetApp().GetWindow().GetHeight();
 
-					auto bounds = m_CameraController->GetBounds();
-					auto pos = m_CameraController->GetCamera().GetPos();
-					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-					y = bounds.GetHeight() * 0.5f - (y/height)*bounds.GetHeight();
-					particleProps.Position = { x + pos.x, y + pos.y };
+					//auto bounds = m_CameraController->GetBounds();
+//					auto pos = m_CameraController->GetCamera().GetPos();
+	//				x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+//					y = bounds.GetHeight() * 0.5f - (y/height)*bounds.GetHeight();
+//					particleProps.Position = { x + pos.x, y + pos.y };
 
 					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
 						particleSystem.Emit(particleProps);
@@ -160,7 +157,7 @@ class ExampleLayer : public RGF::Layer {
 				RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 				Renderer2D::ResetStatistics();
-
+				/*
 				Renderer2D::BeginScene(&m_CameraController->GetCamera());
 
 				Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, {.5f, .5f, .5f, 1.0f});
@@ -181,7 +178,7 @@ class ExampleLayer : public RGF::Layer {
 
 				particleSystem.OnRender();
 				Renderer2D::EndScene();
-				
+				*/
 				//TestViewport->Unbind();
 
 			}
@@ -223,7 +220,6 @@ class ExampleLayer : public RGF::Layer {
 		}
 	
 		virtual void OnEvent(RGF::Event& e) override {
-			m_CameraController->OnEvent(e);
 			RGF::EventDispatcher dispatcher(e);
 
 			dispatcher.Dispatch<RGF::KeyPressedEvent>(std::bind(&ExampleLayer::OnKeyPressedEvent, this, std::placeholders::_1));

@@ -34,6 +34,8 @@ namespace RGF {
 				s_API->RenderWireFrame(enable);
 			}
 
+
+			// Should this even be here if its not gonna be used?
 			inline static void SetBlending(bool enable) {
 				s_API->SetBlending(enable);
 			}

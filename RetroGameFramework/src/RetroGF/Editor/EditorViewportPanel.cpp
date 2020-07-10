@@ -27,7 +27,7 @@ namespace RGF {
 
 
 		Physics::GetDebug().SetCamera(&m_EditorCamera->GetCamera());
-	//	Application::GetApp().PushOverlay(new ColorStyleEditor);
+		//Application::GetApp().PushOverlay(new ColorStyleEditor);
 	}
 
 

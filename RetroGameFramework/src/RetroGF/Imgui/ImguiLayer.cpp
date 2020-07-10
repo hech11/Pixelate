@@ -69,12 +69,8 @@ namespace RGF {
 		ImGui_ImplOpenGL3_Init("#version 400");
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 
-
-
-
-
-
-
+		auto* font = io.Fonts->AddFontFromFileTTF("../RetroGameFramework/src/RetroGF/Editor/Misc/bahnschrift.ttf", 15.0f);
+		io.FontDefault = io.Fonts->Fonts.back();
 
 		{
 			ImVec4* colors = ImGui::GetStyle().Colors;
