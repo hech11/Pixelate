@@ -66,3 +66,8 @@
 
 // Debug.
 #include "RetroGF/Debug/Instrumentor.h"
+
+// Scene.
+#include "RetroGF/Scene/Components.h"
+#include "RetroGF/Scene/Entity.h"
+#include "RetroGF/Scene/Scene.h"

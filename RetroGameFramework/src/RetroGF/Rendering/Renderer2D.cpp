@@ -319,6 +319,12 @@ namespace RGF {
 	
 
 	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor) {
+		DrawSprite(position, 0.0f, size, textureBounds, tintColor);
+	}
+
+
+	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor /*= { 1.0f, 1.0f, 1.0f, 1.0f }*/)
+	{
 		RGF_PROFILE_FUNCTION();
 
 		constexpr unsigned int VertexCount = 4;
@@ -355,10 +361,11 @@ namespace RGF {
 
 
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
 			glm::scale(glm::mat4(1.0f), size);
 
-		
+
 
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
@@ -374,7 +381,6 @@ namespace RGF {
 		SceneData.IndexCount += 6;
 		SceneData.m_Statistics.IndexCount += 6;
 	}
-
 
 	void Renderer2D::FlushAndBeginNewBatch() {
 		RGF_PROFILE_FUNCTION();

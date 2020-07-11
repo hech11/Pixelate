@@ -91,9 +91,9 @@ namespace RGF {
 		PlayerRigidbody->AddCollider(&PlayerCollision2);
 
 
-		// testing entt
-		m_TestEntity = m_Reg.create();
-		m_Reg.emplace<Value>(m_TestEntity, 0, 5);
+		m_CurrentScene = CreateRef<Scene>();
+		m_TestEntity = m_CurrentScene->CreateEntity();
+		m_TestEntity->AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), SmileySprite);
 	}
 
 
@@ -141,18 +141,16 @@ namespace RGF {
 			particleSystem.OnUpdate(dt);
 			Audio::Update();
 
-			Update(m_Reg);
+
 		}
 
 		{
 
 			m_ViewportPanel->DrawToViewport();
 
-			RenderCommand::Clear();
-			RenderCommand::SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+			m_CurrentScene->OnUpdate(dt, *m_ViewportPanel->GetCamera().get());
 
-			Renderer2D::ResetStatistics();
-
+			/*
 			Renderer2D::BeginScene(&m_ViewportPanel->GetCamera()->GetCamera());
 
 			Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { .5f, .5f, .5f, 1.0f });
@@ -173,6 +171,7 @@ namespace RGF {
 
 			particleSystem.OnRender();
 			Renderer2D::EndScene();
+			*/
 
 			Physics::DrawDebugObjects();
 
@@ -218,6 +217,7 @@ namespace RGF {
 
 	void EditorLayer::OnEvent(Event& e) {
 		m_ViewportPanel->OnEvent(e);
+		m_CurrentScene->OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&EditorLayer::OnKeyPressedEvent, this, std::placeholders::_1));
