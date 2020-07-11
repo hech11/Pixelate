@@ -15,6 +15,7 @@
 #include <RetroGF/Events/KeyEvents.h>
 #include <RetroGF/Editor/EditorCamera.h>
 #include <RetroGF/Editor/EditorViewportPanel.h>
+#include <RetroGF/Editor/EditorSceneHierarchyPanel.h>
 
 #include <RetroGF/Scene/Scene.h>
 #include <RetroGF/Scene/Components.h>
@@ -38,7 +39,8 @@ namespace RGF {
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
 		private : 
 			Scoped<EditorViewportPanel> m_ViewportPanel;
-			
+			Scoped<EditorSceneHierarchyPanel> m_SceneHierarcyPanel;
+
 			glm::vec3 SpritePosition, SpriteSize;
 			float Rotation = 0.0f;
 			glm::vec4 SpriteColor;

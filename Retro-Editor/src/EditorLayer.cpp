@@ -15,7 +15,6 @@
 #include <functional>
 #include <Glm/gtc/type_ptr.hpp>
 
-#include "../vendor/NativeFileDialog/src/include/nfd.h"
 #include <RetroGF/Rendering/RendererAPI.h>
 
 
@@ -92,6 +91,7 @@ namespace RGF {
 
 
 		m_CurrentScene = CreateRef<Scene>();
+		m_SceneHierarcyPanel = CreateScoped<EditorSceneHierarchyPanel>(m_CurrentScene);
 		m_TestEntity = m_CurrentScene->CreateEntity();
 		m_TestEntity->AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), SmileySprite);
 	}
@@ -316,25 +316,7 @@ namespace RGF {
 		ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
 		ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
 		ImGui::Image((void*)LoadedFromFilepath->GetHandleID(), { 150, 150 }, { 0, 1 }, { 1, 0 });
-		ImGui::SameLine();
-		if (ImGui::SmallButton("...")) {
-			nfdchar_t* outPath = NULL;
-			nfdresult_t result = NFD_OpenDialog("png", NULL, &outPath);
-
-			if (result == NFD_OKAY) {
-				puts("Success!");
-				LoadedFromFilepath->SetData(outPath);
-				puts(outPath);
-				free(outPath);
-			}
-			else if (result == NFD_CANCEL) {
-				puts("User pressed cancel.");
-			}
-			else {
-				printf("Error: %s\n", NFD_GetError());
-			}
-
-		}
+		
 		ImGui::End();
 
 		ImGui::Begin("Physics");
@@ -394,6 +376,7 @@ namespace RGF {
 
 
 
+		m_SceneHierarcyPanel->OnImguiRender();
 		m_ViewportPanel->OnImguiRender();
 
 #endif

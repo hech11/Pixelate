@@ -53,6 +53,7 @@ namespace RGF {
 	GLTexture::GLTexture(const std::string& filepath, TextureProperties props) {
 
 		props = m_Props;
+		m_Props.FilePath = filepath;
 
 
 

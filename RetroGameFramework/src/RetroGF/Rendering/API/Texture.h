@@ -49,6 +49,7 @@ namespace RGF {
 				mutable unsigned char Slot = 0;
 
 				mutable bool IsBound = false;
+				std::string FilePath;
 			};
 
 
@@ -71,6 +72,7 @@ namespace RGF {
 			inline int GetBPP() const { return m_Props.BPP; }
 			inline unsigned char GetCurrentSlot() const { return m_Props.Slot; }
 			inline bool IsBound() const { return m_Props.IsBound; }
+			inline std::string& GetFilepath() { return m_Props.FilePath;  }
 
 			virtual bool operator==(const Texture& other) const = 0;
 
@@ -105,13 +107,19 @@ namespace RGF {
 		public :
 
 			TextureBounds(const Ref<Texture>& texture, const glm::u32vec4& bounds)
-				: m_Texture(texture)
+				: m_Texture(texture), m_Bounds(bounds)
 			{
 				CalculateBounds(bounds);
 			}
 
+			void SetBounds(const glm::u32vec4& bounds) 
+			{
+				m_Bounds = bounds;
+				CalculateBounds(m_Bounds);
+			}
 
 			inline const std::array<glm::vec2, 4>& GetBoundsNormilized() const { return m_NormilizedBounds; }
+			inline glm::u32vec4& GetBounds() { return m_Bounds; }
 			inline const Ref<Texture>& GetTexture() const { return m_Texture; }
 
 
@@ -120,6 +128,7 @@ namespace RGF {
 			}
 		private :
 			Ref<Texture> m_Texture;
+			glm::u32vec4 m_Bounds;
 			std::array<glm::vec2, 4> m_NormilizedBounds;
 
 	};
