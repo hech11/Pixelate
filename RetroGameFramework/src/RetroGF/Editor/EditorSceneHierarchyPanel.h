@@ -3,6 +3,8 @@
 #include "RetroGF/Scene/Scene.h"
 #include "RetroGF/Scene/Entity.h"
 
+#include "RetroGF/Editor/EditorCamera.h"
+
 namespace RGF {
 
 	class EditorSceneHierarchyPanel {
@@ -10,16 +12,23 @@ namespace RGF {
 
 			EditorSceneHierarchyPanel(const Ref<Scene>& scene);
 			void SetSceneContext(const Ref<Scene>& scene);
-			void SetSelectedEntity(const Ref<Entity>& entity);
+			void SetSelectedEntity(Entity entity);
+			void SetSelectedEntity();
 
-			void OnUpdate(float ts);
+			void OnUpdate(float ts, EditorCamera& camera);
 			void OnEvent();
 
 			void OnImguiRender();
 
+			Entity& CurrentlySelectedEntity() { return m_CurrentlySelectedEntity; };
+			bool& HasAnEntitySelected() { return m_SelectedEntity; };
+
 		private :
+			EditorCamera* m_Camera;
 			Ref<Scene> m_SceneContext;
 			Entity m_CurrentlySelectedEntity;
+			bool m_SelectedEntity = false;
+
 	};
 
 }

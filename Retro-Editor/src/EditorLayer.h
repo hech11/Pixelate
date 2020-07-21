@@ -21,6 +21,7 @@
 #include <RetroGF/Scene/Components.h>
 #include <RetroGF/Scene/Entity.h>
 
+#include <RetroGF/Core/AABB.h>
 
 namespace RGF {
 
@@ -35,29 +36,18 @@ namespace RGF {
 		
 			virtual void OnImguiRender() override;
 		
-		
+		private: 
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
+			bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 		private : 
 			Scoped<EditorViewportPanel> m_ViewportPanel;
-			Scoped<EditorSceneHierarchyPanel> m_SceneHierarcyPanel;
-
-			glm::vec3 SpritePosition, SpriteSize;
-			float Rotation = 0.0f;
-			glm::vec4 SpriteColor;
-
-			Ref<Texture> LoadedFromFilepath, GeneratedTexture;
-			Ref<TextureBounds> SmileySprite, GaspSprite;
-			Ref<FrameBuffer> TestViewport;
+			Ref<EditorSceneHierarchyPanel> m_SceneHierarcyPanel;
 
 			ParticleSystem particleSystem;
 			ParticleProperties particleProps;
+			Ref<Scene> m_EditorScene;
+			
 
-			Ref<AudioSource> toneSFX, sameToneSfx;
-			Scoped<RigidBody> FloorRigidbody, PlayerRigidbody;
-			float VelocitySpeed = 1;
-
-			Ref<Scene> m_CurrentScene;
-			Ref<Entity> m_TestEntity;
 	};
 
 

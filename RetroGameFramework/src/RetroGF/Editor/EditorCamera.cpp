@@ -22,7 +22,10 @@
 #define GLM_ENABLE_EXERIMENTAL
 #include <GLM/glm/gtx/compatibility.hpp>
 #include "../Core/Application.h"
+#include <cmath>
+#include <glm/gtc/matrix_transform.hpp>
 
+#include <imgui.h>
 namespace RGF {
 
 
@@ -36,11 +39,12 @@ namespace RGF {
 	}
 
 	void EditorCamera::OnUpdate(float ts, const EditorViewportPanelData& data) {
+// 		auto mViewspace = GetMousePositionViewportSpace();
+// 		RGF_CORE_WARN("%f, %f\n", mViewspace.x, mViewspace.y);
 
 		m_PanelData = data;
 		if (m_Drag) {
 			auto getCurrentMousePos = GetMousePositionRelativeToViewportPanel();
-
 			glm::vec2 posDelta;
 			posDelta.x = m_OriginalMousePosition.x - getCurrentMousePos.x;
 			posDelta.y = getCurrentMousePos.y - m_OriginalMousePosition.y; // This inverts the y movement
@@ -89,12 +93,35 @@ namespace RGF {
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 	}
 
+	bool EditorCamera::IsIntersecting(const glm::vec3& position, const glm::vec3& scale) {
+		// Not ideal...
+
+		// Convert mouse position from pixel space to world space
+		auto mouse = GetMousePositionRelativeToViewportPanel();
+		glm::vec3 mousepos = glm::vec3(mouse.x, mouse.y, 1.0f);
+		glm::vec4 viewport = glm::vec4(0.0f, 0.0f, m_PanelData.PanelSize.x, m_PanelData.PanelSize.y);
+		glm::vec3 xMouseWorld = glm::unProject(mousepos, m_Camera.GetViewMatrix(), m_Camera.GetProjectionMatrix(), viewport);
+		glm::vec3 yMouseWorld = glm::unProject(mousepos, glm::inverse(m_Camera.GetViewMatrix()), m_Camera.GetProjectionMatrix(), viewport);
+
+		glm::vec3 result = { xMouseWorld.x, yMouseWorld.y, 1.0f };
+		result.y *= -1.0f;
+
+
+		// Check for intersection
+		bool collisionX = result.x >= position.x - (scale.x / 2.0f) && result.x <= position.x + (scale.x / 2.0f);
+		bool collisionY = result.y >= position.y - (scale.y / 2.0f) && result.y <= position.y + (scale.y / 2.0f);
+
+		return collisionX && collisionY;
+	}
+
+
 	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e) {
 		m_ZoomLevel -= e.GetYScroll() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+
 		return false;
 	}
 
@@ -105,6 +132,7 @@ namespace RGF {
 
 			m_OriginalMousePosition = GetMousePositionRelativeToViewportPanel();
 			m_OriginalCamPos = m_Camera.GetPos();
+			Input::SetMouseLockMode(Input::MouseLockMode::Locked);
 
 			m_Drag = true;
 		}
@@ -116,6 +144,8 @@ namespace RGF {
 
 		if (e.GetButton() == RGF_MOUSE_BUTTON_RIGHT) {
 			m_Drag = false;
+			Input::SetMouseLockMode(Input::MouseLockMode::None);
+
 		}
 
 		return false;
@@ -137,6 +167,20 @@ namespace RGF {
 
 		return mousePositionRelativeToWindow - viewportPanelPosRelativeToWindow;
 
+	}
+
+	glm::vec2 EditorCamera::GetMousePositionScreenSpace() {
+		auto& app = Application::GetApp();
+
+
+		auto mPos = GetMousePositionRelativeToViewportPanel();
+		auto& panelSize = m_PanelData.PanelSize;
+		
+		glm::vec2 result;
+		result.x = (2.0f * mPos.x) / panelSize.x - 1.0f;
+		result.y = (2.0f * mPos.y) / panelSize.y - 1.0f;
+
+		return result;
 	}
 
 

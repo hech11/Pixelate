@@ -120,14 +120,26 @@ namespace RGF {
 		GLCall(glBlendFunc(ConvertBlendFunctions(source), ConvertBlendFunctions(dest)));
 
 	}
+	void GLRendererAPI::SetLineThickness(float width) {
+		GLCall(glLineWidth(width));
+	}
 
 
-	void GLRendererAPI::DrawElements(const Ref<VertexArray>& vao, unsigned int count) {
+	void GLRendererAPI::DrawElements(const Ref<VertexArray>& vao, PimitiveRenderType type, unsigned int count) {
 
 
 		unsigned int indexCount = count ? count : vao->GetIbos().GetCount();
-
-		glDrawElements(GL_TRIANGLES, indexCount, vao->GetIbos().GetType(), nullptr);
+		switch (type)
+		{
+		case RGF::PimitiveRenderType::Triangles:
+			glDrawElements(GL_TRIANGLES, indexCount, vao->GetIbos().GetType(), nullptr);
+			break;
+		case RGF::PimitiveRenderType::Lines:
+			glDrawElements(GL_LINES, indexCount, vao->GetIbos().GetType(), nullptr);
+			break;
+		default:
+			break;
+		}
 	}
 
 	const RenderAPICapabilities& GLRendererAPI::GetCaps() const {

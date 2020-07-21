@@ -5,6 +5,7 @@
 #include "RetroGF/Rendering/API/TextureManager.h"
 
 #include "RetroGF/Rendering/OrthographicCamera.h"
+#include "RetroGF/Core/AABB.h"
 
 
 
@@ -31,6 +32,7 @@ namespace RGF {
 
 
 			static void DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color);
+
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color);
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
@@ -39,12 +41,21 @@ namespace RGF {
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 
+			static void DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+			static void DrawSprite(const glm::mat4& transform, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+			static void DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
+			static void DrawAABB(const AABB& aabb, const glm::vec4& color);
+
+			static void SetBoundingBox(bool draw);
+			static const bool& ShouldDrawBoundingBox();
 
 			static void ResetStatistics();
 			static RenderingStatistics& GetStats();
 		private :
-			static void Flush();
-			static void FlushAndBeginNewBatch();
+			static void BeginNewQuadBatch();
+			static void BeginNewLineBatch();
 
 	};
 

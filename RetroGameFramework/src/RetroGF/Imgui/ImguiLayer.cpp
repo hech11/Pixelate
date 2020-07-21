@@ -20,6 +20,7 @@
 #include <iomanip>
 
 #include "RetroGF/Debug/Instrumentor.h"
+#include "RetroGF/Imgui/ImGuizmo.h"
 
 
 namespace RGF {
@@ -141,6 +142,9 @@ namespace RGF {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		ImGuizmo::BeginFrame();
+		ImGuizmo::SetOrthographic(true);
 	}
 	void ImguiLayer::End() {
 

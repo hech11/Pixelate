@@ -25,9 +25,10 @@ namespace RGF {
 
 			void SetBlending(bool enable) override;
 			void SetBlendFunc(BlendFunc& source, BlendFunc& dest) override;
+			void SetLineThickness(float width) override;
 
+			void DrawElements(const Ref<VertexArray>& vao, PimitiveRenderType type, unsigned int count) override;
 
-			void DrawElements(const Ref<VertexArray>& vao, unsigned int count) override;
 
 			virtual const RenderAPICapabilities& GetCaps() const override;
 

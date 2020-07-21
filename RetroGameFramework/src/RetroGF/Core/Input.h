@@ -17,15 +17,19 @@ namespace RGF {
 	class RGF_API Input {
 
 		public :
-
+			enum class MouseLockMode {
+				None = 0,
+				Locked
+			};
 			static bool IsKeyDown(int keycode);
 
 			static bool IsMouseButtonDown(int button);
 			static int GetMousePosX();
 			static int GetMousePosY();
 			static std::pair<int, int> GetMousePos();
-
-
+			static void SetMouseLockMode(MouseLockMode lockMode);
+		private :
+			static MouseLockMode m_LockmodeState;
 	};
 
 }

@@ -16,6 +16,10 @@
 #include <Glm/gtc/type_ptr.hpp>
 
 #include <RetroGF/Rendering/RendererAPI.h>
+#include <RetroGF/Core/MouseButtonCodes.h>
+#include "glm/ext/quaternion_common.hpp"
+#include "RetroGF/Imgui/ImGuizmo.h"
+#include "glm/gtx/matrix_decompose.hpp"
 
 
 namespace RGF {
@@ -24,21 +28,7 @@ namespace RGF {
 
 		Application::GetApp().GetWindow().SetTitle("Retro-Editor");
 		Ref<FrameBuffer> m_ViewportFramebuffer;
-		m_ViewportPanel = CreateScoped<EditorViewportPanel>();
-
-
-		SpritePosition = { 0.0f, 0.0f, 0.0f };
-		SpriteSize = { 1.0f, 1.0f, 1.0f };
-		SpriteColor = { 1.00, 1.0f, 1.0f, 1.0f };
 		
-
-		LoadedFromFilepath = Texture::Create("assets/graphics/TestSpritesheet.png");
-		GeneratedTexture = Texture::Create(1, 1);
-		unsigned int data = 0xffA0Ef22;
-		GeneratedTexture->SetData(&data, sizeof(unsigned int));
-
-		SmileySprite = TextureBounds::Create(LoadedFromFilepath, { 0, 0, 16 ,16 });
-		GaspSprite = TextureBounds::Create(LoadedFromFilepath, { 16, 0, 16 ,16 });
 
 		particleProps.VelocityVariation1 = { -2.0f, -2.0f };
 		particleProps.VelocityVariation2 = { 2.0f, 2.0f };
@@ -49,51 +39,14 @@ namespace RGF {
 		particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
 		particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
-		toneSFX = Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
-		sameToneSfx = Audio::CreateAudioSource("assets/audio/tone-ogg.ogg");
+
+		m_EditorScene = CreateRef<Scene>();
+		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
+
+		m_ViewportPanel = CreateScoped<EditorViewportPanel>(m_SceneHierarcyPanel);
 
 
-		b2World* world = (b2World*)Physics::World();
-
-
-		// Creating rigid bodies and setting their properties
-		RigidBody::RigidBodyDef def1, def2;
-
-
-		// the floor props
-		def1.Type = RigidBody::BodyType::Static;
-		def1.StartPosition = { 0.0f, -2.0f };
-
-		// the player props
-		def2.StartPosition = { 0.0f, 4.0f };
-		def2.Type = RigidBody::BodyType::Dynamic;
-
-		// create the bodies
-		FloorRigidbody = CreateScoped<RigidBody>(def1);
-		PlayerRigidbody = CreateScoped<RigidBody>(def2);
-
-		// add colliders to the rigid bodies
-		BoxColliderDef floorColliderDef, playerColliderDef;
-		floorColliderDef.Size = { 5, 1 };
-
-		BoxCollider floorCollider(floorColliderDef);
-		FloorRigidbody->AddCollider(&floorCollider);
-
-
-		// for a test I added two collision boxes to the player's rigid body. One of the boxes is offset
-		playerColliderDef.Size = { 1, 1 };
-		BoxCollider PlayerCollision(playerColliderDef);
-		playerColliderDef.Centre = { 1, 0 };
-		BoxCollider PlayerCollision2(playerColliderDef);
-
-		PlayerRigidbody->AddCollider(&PlayerCollision);
-		PlayerRigidbody->AddCollider(&PlayerCollision2);
-
-
-		m_CurrentScene = CreateRef<Scene>();
-		m_SceneHierarcyPanel = CreateScoped<EditorSceneHierarchyPanel>(m_CurrentScene);
-		m_TestEntity = m_CurrentScene->CreateEntity();
-		m_TestEntity->AddComponent<SpriteRendererComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), SmileySprite);
+		Renderer2D::SetBoundingBox(true);
 	}
 
 
@@ -105,38 +58,32 @@ namespace RGF {
 
 		{
 			m_ViewportPanel->OnUpdate(dt);
+			// TOOD: This should be its own component soon
+// 			if (m_ViewportPanel->IsHovered()) {
+// 				if (Input::IsMouseButtonDown(0)) {
+// 					float x = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().x;
+// 					float y = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().y;
+// 
+// 
+// 
+// 					float width = m_ViewportPanel->GetViewportSize().x;
+// 					float height = m_ViewportPanel->GetViewportSize().y;
+// 
+// 					auto bounds = m_ViewportPanel->GetCamera()->GetBounds();
+// 					auto pos = m_ViewportPanel->GetCamera()->GetCamera().GetPos();
+// 					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+// 					y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
+// 					particleProps.Position = { x + pos.x, y + pos.y };
+// 
+// 
+// 					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
+// 						particleSystem.Emit(particleProps);
+// 					}
+// 
+// 				}
+// 			}
 
-			if (m_ViewportPanel->IsHovered()) {
-				if (Input::IsMouseButtonDown(0)) {
-					float x = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().x;
-					float y = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().y;
-
-
-
-					float width = m_ViewportPanel->GetViewportSize().x;
-					float height = m_ViewportPanel->GetViewportSize().y;
-
-					auto bounds = m_ViewportPanel->GetCamera()->GetBounds();
-					auto pos = m_ViewportPanel->GetCamera()->GetCamera().GetPos();
-					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-					y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
-					particleProps.Position = { x + pos.x, y + pos.y };
-
-
-					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
-						particleSystem.Emit(particleProps);
-					}
-
-				}
-			}
-
-			if (Input::IsKeyDown(RGF_KEY_D)) {
-				PlayerRigidbody->SetLinearVelocity({ VelocitySpeed, PlayerRigidbody->GetLinearVelocity().y });
-			}
-			if (Input::IsKeyDown(RGF_KEY_A)) {
-				PlayerRigidbody->SetLinearVelocity({ -VelocitySpeed, PlayerRigidbody->GetLinearVelocity().y });
-			}
-
+		
 
 			particleSystem.OnUpdate(dt);
 			Audio::Update();
@@ -147,31 +94,12 @@ namespace RGF {
 		{
 
 			m_ViewportPanel->DrawToViewport();
+			m_EditorScene->OnUpdate(dt, *m_ViewportPanel->GetCamera().get());
 
-			m_CurrentScene->OnUpdate(dt, *m_ViewportPanel->GetCamera().get());
+			// temp
+			m_SceneHierarcyPanel->OnUpdate(dt, *m_ViewportPanel->GetCamera().get());
 
-			/*
-			Renderer2D::BeginScene(&m_ViewportPanel->GetCamera()->GetCamera());
-
-			Renderer2D::DrawSprite({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { .5f, .5f, .5f, 1.0f });
-			Renderer2D::DrawSprite({ 2.0f, 1.0f, 1.0f }, 50.0f, { .5f, 5.f, 1.0f }, SpriteColor);
-			Renderer2D::DrawSprite({ 1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 1.0f });
-			Renderer2D::DrawSprite({ 0.0f, -2.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, SmileySprite, { 1.0f, 1.0f, 1.0f, 1.0f });
-			Renderer2D::DrawSprite({ 1.0f, -2.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GaspSprite, { 0.5f, 1.0f, 1.0f, 0.5f });
-			Renderer2D::DrawSprite({ -1.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
-			Renderer2D::DrawSprite({ -2.0f, 1.0f, 0.0f }, 25.0f, { 1.0f, 1.0f, 1.0f }, LoadedFromFilepath, { 1.0f, 1.0f, 1.0f, 0.5f });
-			Renderer2D::DrawSprite({ 2.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
-			Renderer2D::DrawSprite({ 2.0f, 0.0f, 0.0f }, { 3.0f, 0.5f, 1.0f }, GeneratedTexture, { 0.4f, 0.8f, 0.2f, 0.75f });
-			Renderer2D::DrawSprite({ 2.0f, 2.0f, 0.0f }, 75.0f, { 1.0f, 1.0f, 1.0f }, GeneratedTexture, { 1.0f, 1.0f, 1.0f, 1.0f });
-
-
-			Renderer2D::DrawSprite(FloorRigidbody->GetPosition(), Rotation, { 5.0f, 1.0f, 1.0f }, { .75f,0.25f,0.4f, 1.0f });
-			Renderer2D::DrawSprite(PlayerRigidbody->GetPosition(), 0.0f, { 1.0f, 1.0f, 1.0f }, SpriteColor);
-
-
-			particleSystem.OnRender();
-			Renderer2D::EndScene();
-			*/
+// 			particleSystem.OnRender();
 
 			Physics::DrawDebugObjects();
 
@@ -181,46 +109,39 @@ namespace RGF {
 	}
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
-		if (e.GetKeyCode() == RGF_KEY_P && e.GetRepeatCount() == 0) {
-			toneSFX->Play();
-			return true;
-		}
 
-		if (e.GetKeyCode() == RGF_KEY_O && e.GetRepeatCount() == 0) {
-			sameToneSfx->Play();
-			return true;
-		}
+		return false;
+	}
 
-		if (e.GetKeyCode() == RGF_KEY_S && e.GetRepeatCount() == 0) {
-			toneSFX->Stop();
-			return true;
 
-		}
-		if (e.GetKeyCode() == RGF_KEY_I && e.GetRepeatCount() == 0) {
-			toneSFX->Pause();
-			return true;
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if (e.GetButton() == RGF_MOUSE_BUTTON_1 && e.GetRepeatCount() == 0 && m_ViewportPanel->IsHovered()) {
 
-		}
+			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
+			for (auto s : allSpriteEntities) {
+				Entity e = { s, m_EditorScene.get() };
+				auto& transform = e.GetComponent<TransformComponent>();
+				auto [position, rot, scale] = transform.DecomposeTransform();
 
-		if (e.GetKeyCode() == RGF_KEY_L && e.GetRepeatCount() == 0) {
-			static bool loop = false;
-			loop = !loop;
-			RGF_TRACE("Looping is %d\n", loop);
-			toneSFX->SetLooping(loop);
-			return true;
+				bool intersects = m_ViewportPanel->GetCamera()->IsIntersecting(position, scale);
+				if (intersects) {
+					m_SceneHierarcyPanel->SetSelectedEntity({s, m_EditorScene.get()});
+				} 
+			}
 
 		}
-
 
 		return false;
 	}
 
 	void EditorLayer::OnEvent(Event& e) {
 		m_ViewportPanel->OnEvent(e);
-		m_CurrentScene->OnEvent(e);
+		m_EditorScene->OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&EditorLayer::OnKeyPressedEvent, this, std::placeholders::_1));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(std::bind(&EditorLayer::OnMouseButtonPressed, this, std::placeholders::_1));
 
 	}
 
@@ -228,11 +149,8 @@ namespace RGF {
 	void EditorLayer::OnImguiRender() {
 #ifdef RGF_USE_IMGUI
 		using namespace RGF;
-
-
-
-
 		
+
 /////////////////////// The dockspace and menu bar //////////////////////////////////
 		static bool opt_fullscreen_persistant = true;
 		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
@@ -297,28 +215,7 @@ namespace RGF {
 		ImGui::ShowDemoWindow(&showDemoWindow);
 		*/
 
-
-		ImGui::Begin("Renderer stats");
-		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);
-		ImGui::Text("Max Sprites: %d", Renderer2D::GetStats().MaxSprites);
-		ImGui::Text("Max VBO size: %d", Renderer2D::GetStats().MaxVertexBufferSize);
-		ImGui::Text("Max IBO size: %d", Renderer2D::GetStats().MaxIndexBuferSize);
-		ImGui::Text("Vertex ptr size: %d", Renderer2D::GetStats().VertexSize);
-		ImGui::Text("IndexCount: %d", Renderer2D::GetStats().IndexCount);
-		ImGui::End();
-
-		ImGui::Begin("Sprite props");
-		ImGui::SliderFloat("Sprite MoveSpeed", &VelocitySpeed, 0.0f, 4.0f, "%.2f");
-		auto pos = PlayerRigidbody->GetPosition();
-		ImGui::SliderFloat3("Sprite Position old", glm::value_ptr(pos), -10.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat3("Sprite Position new", glm::value_ptr(SpritePosition), -10.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat("Sprite Rotation", &Rotation, -360.0f, 360.0f, "%.2f");
-		ImGui::SliderFloat3("Sprite Size", glm::value_ptr(SpriteSize), -10.0f, 10.0f, "%.2f");
-		ImGui::ColorPicker4("Sprite Color", glm::value_ptr(SpriteColor));
-		ImGui::Image((void*)LoadedFromFilepath->GetHandleID(), { 150, 150 }, { 0, 1 }, { 1, 0 });
-		
-		ImGui::End();
-
+	
 		ImGui::Begin("Physics");
 		unsigned int flags = 0;
 		static bool physicsDebugButton = false;
@@ -356,6 +253,31 @@ namespace RGF {
 		Physics::GetDebug().SetDrawFlag(flags);
 		ImGui::End();
 
+		ImGui::Begin("Renderer stats");
+		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);
+		ImGui::Text("Max Sprites: %d", Renderer2D::GetStats().MaxSprites);
+		ImGui::Text("Max VBO size: %d", Renderer2D::GetStats().MaxVertexBufferSize);
+		ImGui::Text("Max IBO size: %d", Renderer2D::GetStats().MaxIndexBuferSize);
+		ImGui::Text("Vertex ptr size: %d", Renderer2D::GetStats().VertexSize);
+		ImGui::Text("IndexCount: %d", Renderer2D::GetStats().IndexCount);
+		if(ImGui::Button("Draw bounding boxes")) {
+			Renderer2D::SetBoundingBox(!Renderer2D::ShouldDrawBoundingBox());
+		}
+		std::string pos = std::to_string(m_ViewportPanel->GetCamera()->GetCamera().GetPos().x ) + ", " + std::to_string(m_ViewportPanel->GetCamera()->GetCamera().GetPos().y);
+		std::string rot = std::to_string(m_ViewportPanel->GetCamera()->GetCamera().GetRot());
+		std::string orthoSize = std::to_string(m_ViewportPanel->GetCamera()->GetZoomLevel());
+
+		ImGui::Text("Camera Editor transform");
+		ImGui::Text("Position: ");
+		ImGui::SameLine();
+		ImGui::Text(pos.c_str());
+		ImGui::Text("Rotation (Z): ");
+		ImGui::SameLine();
+		ImGui::Text(rot.c_str());
+		ImGui::Text("OrthoSize: ");
+		ImGui::SameLine();
+		ImGui::Text(orthoSize.c_str());
+		ImGui::End();
 
 		ImGui::Begin("Application");
 		static float time = 0.0f;
@@ -371,9 +293,9 @@ namespace RGF {
 		ImGui::Text(context.c_str());
 		ImGui::Text(info.c_str());
 		ImGui::Text(version.c_str());
+		
 
 		ImGui::End();
-
 
 
 		m_SceneHierarcyPanel->OnImguiRender();

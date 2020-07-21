@@ -5,6 +5,9 @@
 #include "Components.h"
 #include "Entity.h"
 #include "RetroGF/Rendering/RenderCommand.h"
+#include "glm/ext/quaternion_float.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
+
 
 
 namespace RGF {
@@ -25,6 +28,7 @@ namespace RGF {
 
 	
 
+
 	void Scene::OnUpdate(float ts, EditorCamera& camera)
 	{
 		RenderCommand::Clear();
@@ -36,7 +40,14 @@ namespace RGF {
 
 		for (auto entity : renderGroup) {
 			auto[transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
-			Renderer2D::DrawSprite(transformComp.Position, transformComp.Rotation, transformComp.Scale, spriteComp.SpriteRect, spriteComp.TintColor);
+
+			// Does not support rotation yet
+			if (spriteComp.SpriteRect) {
+				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.SpriteRect, spriteComp.TintColor);
+			} else {
+				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor);
+			}
+
 		}
 
 		Renderer2D::EndScene();
@@ -47,10 +58,16 @@ namespace RGF {
 
 	}
 
-	Ref<Entity> Scene::CreateEntity() {
-		auto entity = CreateRef<Entity>(m_Reg.create(), this);
-		entity->AddComponent<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), 0.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+	Entity Scene::CreateEntity(const std::string& name) {
+		auto entity = Entity(m_Reg.create(), this);
+		entity.AddComponent<NameComponent>(name);
+		glm::mat4 transform = glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f,1.0f });
+		entity.AddComponent<TransformComponent>(transform);
 		return entity;
+	}
+
+	void Scene::DeleteEntity(Entity entity) {
+		m_Reg.destroy(entity.GetHandle());
 	}
 
 }

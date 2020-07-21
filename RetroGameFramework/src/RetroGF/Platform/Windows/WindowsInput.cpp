@@ -6,6 +6,7 @@
 #include "GLFW/include/GLFW/glfw3.h"
 
 namespace RGF {
+	Input::MouseLockMode Input::m_LockmodeState;
 
 
 	bool Input::IsKeyDown(int keycode) {
@@ -42,6 +43,17 @@ namespace RGF {
 		double xpos, ypos;
 		glfwGetCursorPos(win, &xpos, &ypos);
 		return std::make_pair((int)xpos, (int)ypos);
+	}
+
+
+	void Input::SetMouseLockMode(Input::MouseLockMode lockMode) {
+		m_LockmodeState = lockMode;
+		auto win = static_cast<GLFWwindow*>(Application::GetApp().GetWindow().GetNativeWindow());
+		if (m_LockmodeState == MouseLockMode::None) {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		} else {
+			glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
 	}
 
 

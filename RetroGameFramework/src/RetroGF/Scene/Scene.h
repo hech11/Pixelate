@@ -19,10 +19,13 @@ namespace RGF {
 			void OnEvent(Event& e);
 			
 			entt::registry& GetReg() { return m_Reg; }
+			template<typename T>
+			auto GetAllEntitiesWith() {
+				return m_Reg.view<T>();
+			}
 
-
-			Ref<Entity> CreateEntity();
-
+			Entity CreateEntity(const std::string& name = "Entity");
+			void DeleteEntity(Entity entity);
 		private :
 			entt::registry m_Reg;
 			std::string m_Name;

@@ -14,7 +14,15 @@
 namespace RGF {
 
 	// Data that will be sent to the GPU.
-	struct RGF_API QuadVertexData {
+	struct RGF_API SpriteVertexData {
+		glm::vec3 Verticies;
+		unsigned int Color;
+		glm::vec2 TextureCoords;
+		float TextureIndex;
+	};
+
+
+	struct RGF_API LineVertexData {
 		glm::vec3 Verticies;
 		unsigned int Color;
 		glm::vec2 TextureCoords;
@@ -27,18 +35,30 @@ namespace RGF {
 		static const unsigned int MaxVerticiesSize = MaxSprites * 4;
 		static const unsigned int MaxIndiciesSize = MaxSprites * 6;
 
+		static const unsigned int MaxLines = 10000;
+		static const unsigned int MaxLineVerticesSize = MaxLines * 2;
+		static const unsigned int MaxLineIndicesSize = MaxLines * 6;
+
+
 		// TODO: this should be set dynamically as this differs between platforms and GPUs
 		static const unsigned int MaxTextureSlots = 16;
 
 
-		Ref<VertexArray> QuadVertexArray;
-		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<VertexArray> SpriteVertexArray;
+		Ref<VertexBuffer> SpriteVertexBuffer;
 		Ref<Shader> BatchRendererShader;
 
+		unsigned int SpriteIndexCount = 0;
+		SpriteVertexData* SpriteVertexDataBase = nullptr;
+		SpriteVertexData* SpriteVertexDataPtr = nullptr;
 
-		unsigned int IndexCount = 0;
-		QuadVertexData* VertexDataBase = nullptr;
-		QuadVertexData* VertexDataPtr = nullptr;
+		// For rendering lines
+		Ref<VertexArray> LineVertexArray;
+		Ref<VertexBuffer> LineVertexBuffer;
+		unsigned int LineIndexCount = 0;
+
+		LineVertexData* LineVertexDataBase = nullptr;
+		LineVertexData* LineQuadVertexData = nullptr;
 
 
 		std::array<glm::vec4, 4> QuadPivotPointPositions;
@@ -48,9 +68,12 @@ namespace RGF {
 		unsigned int TextureSlotIndex = 1; // 0 = white texture
 		Renderer2D::RenderingStatistics m_Statistics;
 
+
+		glm::mat4 m_ViewMatrix;
 		//temp
 		int Samplers[MaxTextureSlots];
 
+		bool DrawBoundingBoxes = false;
 	};
 
 	static Renderer2DData SceneData;
@@ -66,8 +89,8 @@ namespace RGF {
 			SceneData.m_Statistics.MaxVertexBufferSize = SceneData.MaxVerticiesSize;
 			SceneData.m_Statistics.MaxSprites = SceneData.MaxSprites;
 
-			SceneData.QuadVertexArray = VertexArray::Create();
-			SceneData.QuadVertexBuffer = VertexBuffer::Create(SceneData.MaxVerticiesSize * sizeof(QuadVertexData));
+			SceneData.SpriteVertexArray = VertexArray::Create();
+			SceneData.SpriteVertexBuffer = VertexBuffer::Create(SceneData.MaxVerticiesSize * sizeof(SpriteVertexData));
 		
 
 			BufferLayout layout = 
@@ -79,11 +102,22 @@ namespace RGF {
 
 			};
 
-			SceneData.QuadVertexBuffer->SetLayout(layout);
-			SceneData.QuadVertexArray->PushVertexBuffer(SceneData.QuadVertexBuffer);
+			SceneData.SpriteVertexBuffer->SetLayout(layout);
+			SceneData.SpriteVertexArray->PushVertexBuffer(SceneData.SpriteVertexBuffer);
+
+			SceneData.SpriteVertexDataBase = new SpriteVertexData[SceneData.MaxVerticiesSize];
+
+			// For lines
+			SceneData.LineVertexArray = VertexArray::Create();
+			SceneData.LineVertexBuffer = VertexBuffer::Create(SceneData.MaxLineVerticesSize * sizeof(LineVertexData));
 
 
-			SceneData.VertexDataBase = new QuadVertexData[SceneData.MaxVerticiesSize];
+			SceneData.LineVertexBuffer->SetLayout(layout);
+			SceneData.LineVertexArray->PushVertexBuffer(SceneData.LineVertexBuffer);
+
+
+			SceneData.LineVertexDataBase = new LineVertexData[SceneData.MaxLineVerticesSize];
+
 		}
 
 		{
@@ -105,8 +139,20 @@ namespace RGF {
 			}
 
 			Ref<IndexBuffer> ibo = IndexBuffer::Create(indices, SceneData.MaxIndiciesSize);
-			SceneData.QuadVertexArray->PushIndexBuffer(ibo);
+			SceneData.SpriteVertexArray->PushIndexBuffer(ibo);
+			SceneData.SpriteVertexArray->Unbind();
 			delete[] indices;
+
+			// for rendering lines
+			unsigned int* lineIndices = new unsigned int[SceneData.MaxLineIndicesSize];
+			for (unsigned int i = 0; i < SceneData.MaxLineIndicesSize; i++) {
+				lineIndices[i] = i;
+			}
+
+			Ref<IndexBuffer> lineIbo = IndexBuffer::Create(lineIndices, SceneData.MaxLineIndicesSize);
+			SceneData.LineVertexArray->PushIndexBuffer(lineIbo);
+
+			delete[] lineIndices;
 
 		}
 		{
@@ -156,31 +202,59 @@ namespace RGF {
 	void Renderer2D::BeginScene(RGF::OrthographicCamera* camera) {
 		RGF_PROFILE_FUNCTION();
 
-		SceneData.BatchRendererShader->Bind();
-		SceneData.BatchRendererShader->SetUniformMatrix("u_ViewProj", camera->GetViewProjectionMatrix());
-		SceneData.IndexCount = 0;
-
+		SceneData.m_ViewMatrix = camera->GetViewProjectionMatrix();
 		SceneData.TextureSlotIndex = 1;
 
-		SceneData.VertexDataPtr = SceneData.VertexDataBase;
+		SceneData.SpriteIndexCount = 0;
+		SceneData.SpriteVertexDataPtr = SceneData.SpriteVertexDataBase;
+
+		SceneData.LineIndexCount = 0;
+		SceneData.LineQuadVertexData = SceneData.LineVertexDataBase;
+
 
 	}
 	void Renderer2D::EndScene() {
 		RGF_PROFILE_FUNCTION();
 
-		unsigned int size = (unsigned char*)SceneData.VertexDataPtr - (unsigned char*)SceneData.VertexDataBase;
-		SceneData.QuadVertexBuffer->SetData(SceneData.VertexDataBase, size);
+		SceneData.BatchRendererShader->Bind();
+		SceneData.BatchRendererShader->SetUniformMatrix("u_ViewProj", SceneData.m_ViewMatrix);
 
-		SceneData.m_Statistics.VertexSize = size;
+		unsigned int quadSize = (unsigned char*)SceneData.SpriteVertexDataPtr - (unsigned char*)SceneData.SpriteVertexDataBase;
+		if (quadSize) {
 
-		Flush();
+
+			SceneData.SpriteVertexArray->Bind();
+			SceneData.SpriteVertexArray->GetIbos().Bind();
+			SceneData.SpriteVertexBuffer->SetData(SceneData.SpriteVertexDataBase, quadSize);
+			for (unsigned int i = 0; i < SceneData.TextureSlotIndex; i++) {
+				SceneData.AllTextureSlots[i]->Bind(i);
+			}
+			RenderCommand::DrawElements(SceneData.SpriteVertexArray, PimitiveRenderType::Triangles, SceneData.SpriteIndexCount);
+			SceneData.m_Statistics.DrawCalls += 1;
+		}
+
+		unsigned int lineSize = (unsigned char*)SceneData.LineQuadVertexData - (unsigned char*)SceneData.LineVertexDataBase;
+		if (lineSize) {
+			SceneData.LineVertexArray->Bind();
+			SceneData.LineVertexArray->GetIbos().Bind();
+			SceneData.LineVertexBuffer->SetData(SceneData.LineVertexDataBase, lineSize);
+			SceneData.AllTextureSlots[0]->Bind(0);
+			RenderCommand::SetLineThickness(4.0f);
+
+			RenderCommand::DrawElements(SceneData.LineVertexArray, PimitiveRenderType::Lines, SceneData.LineIndexCount);
+			SceneData.m_Statistics.DrawCalls += 1;
+
+		}
+		SceneData.m_Statistics.VertexSize = quadSize + lineSize;
+
+
 	}
 
 
 	void Renderer2D::DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color) {
 
-		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
-			FlushAndBeginNewBatch();
+		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+			BeginNewQuadBatch();
 		}
 
 		unsigned char r = color.x * 255.0f;
@@ -194,15 +268,15 @@ namespace RGF {
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < vertexCount; i++) {
 
-			SceneData.VertexDataPtr->Verticies = vertices[i];
-			SceneData.VertexDataPtr->Color = col;
-			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[0];
-			SceneData.VertexDataPtr->TextureIndex = 0.0f;
-			SceneData.VertexDataPtr++;
+			SceneData.SpriteVertexDataPtr->Verticies = vertices[i];
+			SceneData.SpriteVertexDataPtr->Color = col;
+			SceneData.SpriteVertexDataPtr->TextureCoords = SceneData.TextureCoords[0];
+			SceneData.SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData.SpriteVertexDataPtr++;
 		}
 
 
-		SceneData.IndexCount += 6;
+		SceneData.SpriteIndexCount += 6;
 		SceneData.m_Statistics.IndexCount += 6;
 	}
 
@@ -215,39 +289,11 @@ namespace RGF {
 
 	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color) {
 		RGF_PROFILE_FUNCTION();
-
-		constexpr unsigned int VertexCount = 4;
-
-
-		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
-			FlushAndBeginNewBatch();
-		}
-
-		unsigned char r = color.x * 255.0f;
-		unsigned char g = color.y * 255.0f;
-		unsigned char b = color.z * 255.0f;
-		unsigned char a = color.w * 255.0f;
-
-
-		unsigned int col = a << 24 | b << 16 | g << 8 | r;
-
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
 			glm::scale(glm::mat4(1.0f), size);
 
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < VertexCount; i++) {
-
-			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
-			SceneData.VertexDataPtr->Color = col;
-			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
-			SceneData.VertexDataPtr->TextureIndex = 0.0f;
-			SceneData.VertexDataPtr++;
-		}
-
-
-		SceneData.IndexCount += 6;
-		SceneData.m_Statistics.IndexCount += 6;
+		DrawSprite(transform, color);
 
 	}
 
@@ -262,58 +308,11 @@ namespace RGF {
 	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor) {
 		RGF_PROFILE_FUNCTION();
 
-		constexpr unsigned int VertexCount = 4;
-
-
-		unsigned char r = tintColor.r * 255.0f;
-		unsigned char g = tintColor.g * 255.0f;
-		unsigned char b = tintColor.b * 255.0f;
-		unsigned char a = tintColor.a * 255.0f;
-
-		unsigned int color = a << 24 | b << 16 | g << 8 | r;
-
-		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
-			FlushAndBeginNewBatch();
-		}
-
-		
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < SceneData.TextureSlotIndex; i++) {
-			if (*SceneData.AllTextureSlots[i].get() == *texture.get()) {
-				textureIndex = i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f) {
-			if (SceneData.TextureSlotIndex >= SceneData.MaxTextureSlots)
-				FlushAndBeginNewBatch();
-			textureIndex = SceneData.TextureSlotIndex;
-			SceneData.AllTextureSlots[SceneData.TextureSlotIndex] = texture;
-			SceneData.TextureSlotIndex++;
-		}
-
-
-
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
 			glm::scale(glm::mat4(1.0f), size);
 
-
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < VertexCount; i++) {
-
-			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
-			SceneData.VertexDataPtr->Color = color;
-			SceneData.VertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
-			SceneData.VertexDataPtr->TextureIndex = textureIndex;
-			SceneData.VertexDataPtr++;
-		}
-
-
-		SceneData.IndexCount += 6;
-		SceneData.m_Statistics.IndexCount += 6;
+		DrawSprite(transform, texture, tintColor);
 	}
 
 	
@@ -327,6 +326,17 @@ namespace RGF {
 	{
 		RGF_PROFILE_FUNCTION();
 
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
+			glm::scale(glm::mat4(1.0f), size);
+		DrawSprite(transform, textureBounds, tintColor);
+		
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor) {
+		RGF_PROFILE_FUNCTION();
+
 		constexpr unsigned int VertexCount = 4;
 
 
@@ -337,8 +347,39 @@ namespace RGF {
 
 		unsigned int color = a << 24 | b << 16 | g << 8 | r;
 
-		if (SceneData.IndexCount >= SceneData.MaxIndiciesSize) {
-			FlushAndBeginNewBatch();
+		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+			BeginNewQuadBatch();
+		}
+
+
+		// Vertex order = bottom left -> bottom right -> top right -> top left
+		for (unsigned int i = 0; i < VertexCount; i++) {
+
+			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
+			SceneData.SpriteVertexDataPtr->Color = color;
+			SceneData.SpriteVertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
+			SceneData.SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData.SpriteVertexDataPtr++;
+		}
+
+
+		SceneData.SpriteIndexCount += 6;
+		SceneData.m_Statistics.IndexCount += 6;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor) {
+		constexpr unsigned int VertexCount = 4;
+
+
+		unsigned char r = tintColor.r * 255.0f;
+		unsigned char g = tintColor.g * 255.0f;
+		unsigned char b = tintColor.b * 255.0f;
+		unsigned char a = tintColor.a * 255.0f;
+
+		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+			BeginNewQuadBatch();
 		}
 
 
@@ -353,60 +394,168 @@ namespace RGF {
 
 		if (textureIndex == 0.0f) {
 			if (SceneData.TextureSlotIndex >= SceneData.MaxTextureSlots)
-				FlushAndBeginNewBatch();
+				BeginNewQuadBatch();
 			textureIndex = SceneData.TextureSlotIndex;
 			SceneData.AllTextureSlots[SceneData.TextureSlotIndex] = textureBounds->GetTexture();
 			SceneData.TextureSlotIndex++;
 		}
 
 
+		// Vertex order = bottom left -> bottom right -> top right -> top left
+		for (unsigned int i = 0; i < VertexCount; i++) {
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(glm::mat4(1.0f), size);
+			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
+			SceneData.SpriteVertexDataPtr->Color = color;
+			SceneData.SpriteVertexDataPtr->TextureCoords = textureBounds->GetBoundsNormilized()[i];
+			SceneData.SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData.SpriteVertexDataPtr++;
+		}
 
+
+		SceneData.SpriteIndexCount += 6;
+		SceneData.m_Statistics.IndexCount += 6;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor) {
+
+		constexpr unsigned int VertexCount = 4;
+
+
+		unsigned char r = tintColor.r * 255.0f;
+		unsigned char g = tintColor.g * 255.0f;
+		unsigned char b = tintColor.b * 255.0f;
+		unsigned char a = tintColor.a * 255.0f;
+
+		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+			BeginNewQuadBatch();
+		}
+
+
+		float textureIndex = 0.0f;
+
+		for (unsigned int i = 1; i < SceneData.TextureSlotIndex; i++) {
+			if (*SceneData.AllTextureSlots[i].get() == *texture.get()) {
+				textureIndex = i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f) {
+			if (SceneData.TextureSlotIndex >= SceneData.MaxTextureSlots)
+				BeginNewQuadBatch();
+			textureIndex = SceneData.TextureSlotIndex;
+			SceneData.AllTextureSlots[SceneData.TextureSlotIndex] = texture;
+			SceneData.TextureSlotIndex++;
+		}
 
 
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
-			SceneData.VertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
-			SceneData.VertexDataPtr->Color = color;
-			SceneData.VertexDataPtr->TextureCoords = textureBounds->GetBoundsNormilized()[i];
-			SceneData.VertexDataPtr->TextureIndex = textureIndex;
-			SceneData.VertexDataPtr++;
+			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
+			SceneData.SpriteVertexDataPtr->Color = color;
+			SceneData.SpriteVertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
+			SceneData.SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData.SpriteVertexDataPtr++;
 		}
 
 
-		SceneData.IndexCount += 6;
+		SceneData.SpriteIndexCount += 6;
 		SceneData.m_Statistics.IndexCount += 6;
 	}
 
-	void Renderer2D::FlushAndBeginNewBatch() {
+	void Renderer2D::DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color)
+	{
 		RGF_PROFILE_FUNCTION();
 
-		unsigned int size = (unsigned char*)SceneData.VertexDataPtr - (unsigned char*)SceneData.VertexDataBase;
-		SceneData.QuadVertexBuffer->SetData(SceneData.VertexDataBase, size);
 
-		Flush();
+		if (SceneData.LineIndexCount >= SceneData.MaxLineIndicesSize)
+			BeginNewLineBatch();
 
-		SceneData.IndexCount = 0;
-		SceneData.VertexDataPtr = SceneData.VertexDataBase;
-		SceneData.TextureSlotIndex = 1;
+		unsigned char r = color.r * 255.0f;
+		unsigned char g = color.g * 255.0f;
+		unsigned char b = color.b * 255.0f;
+		unsigned char a = color.a * 255.0f;
+
+		unsigned int c = a << 24 | b << 16 | g << 8 | r;
+
+
+		SceneData.LineQuadVertexData->Verticies = p1;
+		SceneData.LineQuadVertexData->Color = c;
+		SceneData.LineQuadVertexData->TextureIndex = 0.0f;
+		SceneData.LineQuadVertexData++;
+
+		SceneData.LineQuadVertexData->Verticies = p2;
+		SceneData.LineQuadVertexData->Color = c;
+		SceneData.LineQuadVertexData->TextureIndex = 0.0f;
+		SceneData.LineQuadVertexData++;
+
+
+		SceneData.LineIndexCount += 2;
+		SceneData.m_Statistics.IndexCount += 2;
+
 	}
 
-	void Renderer2D::Flush() {
+	void Renderer2D::DrawAABB(const AABB& aabb, const glm::vec4& color)
+	{
+		glm::vec3 corners[4] =
+		{
+			glm::vec3 { aabb.Min.x, aabb.Min.y, aabb.Max.z},
+			glm::vec3 { aabb.Min.x, aabb.Max.y, aabb.Max.z},
+			glm::vec3 { aabb.Max.x, aabb.Max.y, aabb.Max.z},
+			glm::vec3 { aabb.Max.x, aabb.Min.y, aabb.Max.z},
+
+		};
+
+		for (uint32_t i = 0; i < 4; i++)
+			Renderer2D::DrawLine(corners[i], corners[(i + 1) % 4], color);
+
+	}
+
+	void Renderer2D::SetBoundingBox(bool draw) {
+		SceneData.DrawBoundingBoxes = draw;
+	}
+	const bool& Renderer2D::ShouldDrawBoundingBox() {
+		return SceneData.DrawBoundingBoxes;
+	}
+
+	void Renderer2D::BeginNewQuadBatch() {
 		RGF_PROFILE_FUNCTION();
+
+		unsigned int size = (unsigned char*)SceneData.SpriteVertexDataPtr - (unsigned char*)SceneData.SpriteVertexDataBase;
+		SceneData.SpriteVertexBuffer->SetData(SceneData.SpriteVertexDataBase, size);
 
 		for (unsigned int i = 0; i < SceneData.TextureSlotIndex; i++) {
 			SceneData.AllTextureSlots[i]->Bind(i);
 		}
 
-		RenderCommand::DrawElements(SceneData.QuadVertexArray, SceneData.IndexCount);
-		SceneData.m_Statistics.DrawCalls += 1;
+		SceneData.SpriteVertexArray->Bind();
+		RenderCommand::DrawElements(SceneData.SpriteVertexArray, PimitiveRenderType::Triangles, SceneData.SpriteIndexCount);
 
 
+		SceneData.SpriteIndexCount = 0;
+		SceneData.SpriteVertexDataPtr = SceneData.SpriteVertexDataBase;
+		SceneData.TextureSlotIndex = 1;
 	}
+
+	void Renderer2D::BeginNewLineBatch() {
+		RGF_PROFILE_FUNCTION();
+
+		unsigned int size = (unsigned char*)SceneData.LineQuadVertexData - (unsigned char*)SceneData.LineVertexDataBase;
+		SceneData.SpriteVertexBuffer->SetData(SceneData.LineVertexDataBase, size);
+
+		SceneData.AllTextureSlots[0]->Bind(0);
+		SceneData.LineVertexArray->Bind();
+		RenderCommand::DrawElements(SceneData.LineVertexArray, PimitiveRenderType::Lines, SceneData.LineIndexCount);
+
+
+		SceneData.LineIndexCount = 0;
+		SceneData.LineQuadVertexData = SceneData.LineVertexDataBase;
+		SceneData.TextureSlotIndex = 1;
+	}
+
 
 	void Renderer2D::ResetStatistics() {
 		RGF_PROFILE_FUNCTION();

@@ -12,6 +12,12 @@ namespace RGF {
 		int MaxTextureSlots;
 	};
 
+	enum class PimitiveRenderType {
+		None = 0,
+		Triangles,
+		Lines
+	};
+
 	class RendererAPI {
 
 		public :
@@ -52,9 +58,9 @@ namespace RGF {
 
 			virtual void SetBlending(bool enable) = 0;
 			virtual void SetBlendFunc(BlendFunc& source, BlendFunc& dest) = 0;
+			virtual void SetLineThickness(float width) = 0;
 
-
-			virtual void DrawElements(const Ref<VertexArray>& vao, unsigned int count) = 0;
+			virtual void DrawElements(const Ref<VertexArray>& vao, PimitiveRenderType type, unsigned int count) = 0;
 
 			virtual const RenderAPICapabilities& GetCaps() const = 0;
 

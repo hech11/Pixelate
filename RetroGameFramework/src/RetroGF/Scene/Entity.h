@@ -21,6 +21,10 @@ namespace RGF {
 			T& AddComponent(Args&&... args) {
 				return m_SceneRef->GetReg().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			}
+			template<typename T>
+			void RemoveComponent() {
+				m_SceneRef->GetReg().remove<T>(m_EntityHandle);
+			}
 
 
 			template<typename T, typename... Args>
@@ -28,8 +32,13 @@ namespace RGF {
 				return m_SceneRef->GetReg().get<T>(m_EntityHandle);
 			}
 
+			template<typename T>
+			bool HasComponent() {
+				return m_SceneRef->GetReg().has<T>(m_EntityHandle);
+			}
 
 			operator unsigned int() const { return (unsigned int)m_EntityHandle; }
+			entt::entity GetHandle() { return m_EntityHandle; }
 		private :
 			entt::entity m_EntityHandle;
 			// more research: Should this be a ref if the ownership of this object is always going to be on the scene and therefore destroyed?
