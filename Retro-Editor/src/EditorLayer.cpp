@@ -27,7 +27,7 @@ namespace RGF {
 	void EditorLayer::Init() {
 
 		Application::GetApp().GetWindow().SetTitle("Retro-Editor");
-		Ref<FrameBuffer> m_ViewportFramebuffer;
+
 		
 
 		particleProps.VelocityVariation1 = { -2.0f, -2.0f };
@@ -43,10 +43,26 @@ namespace RGF {
 		m_EditorScene = CreateRef<Scene>();
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 
-		m_ViewportPanel = CreateScoped<EditorViewportPanel>(m_SceneHierarcyPanel);
+
+		//Setting up both scene and game viewport panels
+		FrameBufferSpecs ViewportSpecs;
+		ViewportSpecs.Width = 960;
+		ViewportSpecs.Height = 540;
+
+
+		m_SceneViewportFramebuffer = FrameBuffer::Create(ViewportSpecs);
+		m_GameViewportFramebuffer = FrameBuffer::Create(ViewportSpecs);
+
+		ViewportPanelProps props;
+		props.Position = &m_SceneViewportPanelPosition;
+		props.Size = &m_SceneViewportPanelSize;
+
+		m_EditorCamera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
 
 
 		Renderer2D::SetBoundingBox(true);
+
+		m_Gizmo = ImGuizmo::TRANSLATE;
 	}
 
 
@@ -56,8 +72,7 @@ namespace RGF {
 
 		using namespace RGF;
 
-		{
-			m_ViewportPanel->OnUpdate(dt);
+		
 			// TOOD: This should be its own component soon
 // 			if (m_ViewportPanel->IsHovered()) {
 // 				if (Input::IsMouseButtonDown(0)) {
@@ -85,38 +100,69 @@ namespace RGF {
 
 		
 
-			particleSystem.OnUpdate(dt);
+			//particleSystem.OnUpdate(dt);
+			//particleSystem.OnRender();
+
+		
+
+
+		if (m_IsSceneViewportFocused) {
+			m_EditorCamera->OnUpdate(dt);
+		}
+		if (m_SceneViewportSize != m_SceneViewportPanelSize) {
+			m_SceneViewportFramebuffer->Resize(m_SceneViewportPanelSize.x, m_SceneViewportPanelSize.y);
+			m_SceneViewportSize = m_SceneViewportPanelSize;
+			m_EditorCamera->Resize(m_SceneViewportPanelSize.x / m_SceneViewportPanelSize.y);
+		}
+
+		if (m_GameViewportSize != m_GameViewportPanelSize) {
+			m_GameViewportFramebuffer->Resize(m_GameViewportPanelSize.x, m_GameViewportPanelSize.y);
+			m_GameViewportSize = m_GameViewportPanelSize;
+		}
+
+		m_EditorScene->SetGameViewport(m_GameViewportPanelSize.x, m_GameViewportPanelSize.y);
+
+		// Render scene viewport to the its fbo
+
+		m_SceneViewportFramebuffer->Bind();
+		m_EditorScene->OnUpdate(dt, m_EditorCamera);
+		// temp
+		m_SceneHierarcyPanel->OnUpdate(dt, m_EditorCamera);
+
+		m_SceneViewportFramebuffer->Unbind();
+
+		// Render game viewport to the its fbo
+		m_GameViewportFramebuffer->Bind();
+		m_EditorScene->OnGameViewportRender();
+		m_GameViewportFramebuffer->Unbind();
+
+		if (m_SceneState == SceneState::Play) {
+			m_EditorScene->OnRuntimeUpdate(dt); // does nothing at the moment.
 			Audio::Update();
-
-
 		}
 
-		{
-
-			m_ViewportPanel->DrawToViewport();
-			m_EditorScene->OnUpdate(dt, *m_ViewportPanel->GetCamera().get());
-
-			// temp
-			m_SceneHierarcyPanel->OnUpdate(dt, *m_ViewportPanel->GetCamera().get());
-
-// 			particleSystem.OnRender();
-
-			Physics::DrawDebugObjects();
-
-			m_ViewportPanel->FinishDrawing();
-
-		}
+	
 	}
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
 
+		if (e.GetKeyCode() == RGF_KEY_Q) {
+			m_Gizmo = ImGuizmo::TRANSLATE;
+		}
+		if (e.GetKeyCode() == RGF_KEY_W) {
+			m_Gizmo = ImGuizmo::ROTATE;
+
+		}
+		if (e.GetKeyCode() == RGF_KEY_E) {
+			m_Gizmo = ImGuizmo::SCALE;
+		}
 		return false;
 	}
 
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		if (e.GetButton() == RGF_MOUSE_BUTTON_1 && e.GetRepeatCount() == 0 && m_ViewportPanel->IsHovered()) {
+		if (e.GetButton() == RGF_MOUSE_BUTTON_1 && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
 
 			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
 			for (auto s : allSpriteEntities) {
@@ -124,7 +170,7 @@ namespace RGF {
 				auto& transform = e.GetComponent<TransformComponent>();
 				auto [position, rot, scale] = transform.DecomposeTransform();
 
-				bool intersects = m_ViewportPanel->GetCamera()->IsIntersecting(position, scale);
+				bool intersects = m_EditorCamera->IsIntersecting(position, scale);
 				if (intersects) {
 					m_SceneHierarcyPanel->SetSelectedEntity({s, m_EditorScene.get()});
 				} 
@@ -135,14 +181,27 @@ namespace RGF {
 		return false;
 	}
 
+	void EditorLayer::OnScenePlay() {
+		m_SceneState = SceneState::Play;
+
+		m_EditorScene->OnRuntimeStart();
+	}
+
+	void EditorLayer::OnSceneStop() {
+		m_SceneState = SceneState::Edit;
+		m_EditorScene->OnRuntimeStop();
+
+	}
+
 	void EditorLayer::OnEvent(Event& e) {
-		m_ViewportPanel->OnEvent(e);
-		m_EditorScene->OnEvent(e);
+		m_EditorCamera->OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&EditorLayer::OnKeyPressedEvent, this, std::placeholders::_1));
 		dispatcher.Dispatch<MouseButtonPressedEvent>(std::bind(&EditorLayer::OnMouseButtonPressed, this, std::placeholders::_1));
 
+
+	
 	}
 
 
@@ -209,13 +268,13 @@ namespace RGF {
 
 
 
-
-		/*
-		static bool showDemoWindow = true;
-		ImGui::ShowDemoWindow(&showDemoWindow);
-		*/
-
-	
+// 
+// 
+// 		static bool showDemoWindow = true;
+// 		ImGui::ShowDemoWindow(&showDemoWindow);
+// 
+// 
+// 	
 		ImGui::Begin("Physics");
 		unsigned int flags = 0;
 		static bool physicsDebugButton = false;
@@ -231,26 +290,26 @@ namespace RGF {
 		ImGui::Checkbox("aabbBit", &aabbBit);
 		ImGui::Checkbox("pairBit", &pairBit);
 		ImGui::Checkbox("centerOfMassBit", &centerOfMassBit);
-		Physics::GetDebug().ShouldDrawVisuals(physicsDebugButton);
-
-		if (shapeBit)
-			flags = flags | PhysicsDebugDraw::DrawFlag::shapeBit;
-
-		if (jointBit)
-			flags = flags | PhysicsDebugDraw::DrawFlag::jointBit;
-
-		if (aabbBit)
-			flags = flags | PhysicsDebugDraw::DrawFlag::aabbBit;
-
-		if (pairBit)
-			flags = flags | PhysicsDebugDraw::DrawFlag::pairBit;
-
-		if (centerOfMassBit)
-			flags = flags | PhysicsDebugDraw::DrawFlag::centerOfMassBit;
-
-
-
-		Physics::GetDebug().SetDrawFlag(flags);
+// 		Physics::GetDebug().ShouldDrawVisuals(physicsDebugButton);
+// 
+// 		if (shapeBit)
+// 			flags = flags | PhysicsDebugDraw::DrawFlag::shapeBit;
+// 
+// 		if (jointBit)
+// 			flags = flags | PhysicsDebugDraw::DrawFlag::jointBit;
+// 
+// 		if (aabbBit)
+// 			flags = flags | PhysicsDebugDraw::DrawFlag::aabbBit;
+// 
+// 		if (pairBit)
+// 			flags = flags | PhysicsDebugDraw::DrawFlag::pairBit;
+// 
+// 		if (centerOfMassBit)
+// 			flags = flags | PhysicsDebugDraw::DrawFlag::centerOfMassBit;
+// 
+// 
+// 
+// 		Physics::GetDebug().SetDrawFlag(flags);
 		ImGui::End();
 
 		ImGui::Begin("Renderer stats");
@@ -263,9 +322,9 @@ namespace RGF {
 		if(ImGui::Button("Draw bounding boxes")) {
 			Renderer2D::SetBoundingBox(!Renderer2D::ShouldDrawBoundingBox());
 		}
-		std::string pos = std::to_string(m_ViewportPanel->GetCamera()->GetCamera().GetPos().x ) + ", " + std::to_string(m_ViewportPanel->GetCamera()->GetCamera().GetPos().y);
-		std::string rot = std::to_string(m_ViewportPanel->GetCamera()->GetCamera().GetRot());
-		std::string orthoSize = std::to_string(m_ViewportPanel->GetCamera()->GetZoomLevel());
+		std::string pos = std::to_string(m_EditorCamera->GetPos().x ) + ", " + std::to_string(m_EditorCamera->GetPos().y);
+		std::string rot = std::to_string(m_EditorCamera->GetAngle());
+		std::string orthoSize = std::to_string(m_EditorCamera->GetOrthographicSize());
 
 		ImGui::Text("Camera Editor transform");
 		ImGui::Text("Position: ");
@@ -296,10 +355,139 @@ namespace RGF {
 		
 
 		ImGui::End();
+//		auto temp = ImGui::GetStyle().WindowTitleAlign;
+	//	ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5f, 0.5f);
 
+		ImGui::Begin("Toolbar" , 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+		ImGui::SetCursorPos({ ImGui::GetWindowSize().x / 2  + -161, ImGui::GetWindowSize().y /2  +  -23});
+		if (m_SceneState == SceneState::Play) {
+			if (ImGui::Button("Stop", { 145, 42 })) {
+				OnSceneStop();
+			}
+		} else if (m_SceneState == SceneState::Edit) {
+			if (ImGui::Button("Play", { 145, 42 })) {
+				OnScenePlay();
+			}
+		}
+
+		ImGui::SetCursorPos({ ImGui::GetWindowSize().x / 2 + -12, ImGui::GetWindowSize().y / 2 + -23 });
+
+		if (ImGui::Button("Pause", { 145, 42 })) {
+		}
+		
+		ImGui::End();
 
 		m_SceneHierarcyPanel->OnImguiRender();
-		m_ViewportPanel->OnImguiRender();
+		
+
+
+		// scene viewport panel
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+		ImGui::Begin("Scene Viewport", 0, ImGuiWindowFlags_NoCollapse);
+		static glm::vec4 sceneColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+		ImGui::PushItemWidth(250);
+		ImGui::ColorEdit4("Scene color", glm::value_ptr(sceneColor));
+		ImGui::PopItemWidth();
+		RenderCommand::SetClearColor(sceneColor.r, sceneColor.g, sceneColor.b, sceneColor.a);
+		ImGui::Separator();
+		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachment();
+
+		m_IsSceneViewportHovered = ImGui::IsWindowHovered();
+		m_IsSceneViewportFocused = ImGui::IsWindowFocused();
+
+		if (m_IsSceneViewportHovered && (Input::IsMouseButtonDown(RGF_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonDown(RGF_MOUSE_BUTTON_MIDDLE))) {
+			m_IsSceneViewportFocused = true;
+			ImGui::SetWindowFocus();
+		}
+
+
+		Application::GetApp().GetImguiLayer().ShouldBlockEvents(!m_IsSceneViewportHovered);
+
+		m_SceneViewportPanelPosition = *((glm::vec2*) & ImGui::GetWindowPos());
+		m_SceneViewportPanelPosition += *((glm::vec2*) & ImGui::GetCursorPos());
+		m_SceneViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+		ImGui::Image((void*)sceneViewportColorAttachment, { m_SceneViewportSize.x, m_SceneViewportSize.y }, { 0, 1 }, { 1, 0 });
+
+		if (m_SceneHierarcyPanel->HasAnEntitySelected()) {
+			ImGuizmo::SetDrawlist();
+
+			ImGuizmo::SetRect(m_SceneViewportPanelPosition.x, m_SceneViewportPanelPosition.y, m_SceneViewportPanelSize.x, m_SceneViewportPanelSize.y);
+			auto& transformComp = m_SceneHierarcyPanel->CurrentlySelectedEntity().GetComponent<TransformComponent>();
+
+			ImGuizmo::Manipulate(glm::value_ptr(m_EditorCamera->GetViewMatrix()), glm::value_ptr(m_EditorCamera->GetProjectionMatrix()), (ImGuizmo::OPERATION) m_Gizmo, ImGuizmo::LOCAL, glm::value_ptr(transformComp.Transform));
+
+		}
+
+
+		ImGui::End();
+		ImGui::PopStyleVar();
+
+
+
+
+
+
+		// game viewport panel
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+		ImGui::Begin("Game Viewport", 0, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+
+		const char* items[] = { "Any Aspect", "16x9", "4x3" };
+		static const char* current_item = items[0];
+
+		if (ImGui::BeginCombo("Aspect Ratio", current_item)) // The second parameter is the label previewed before opening the combo.
+		{
+			for (auto & item : items) {
+				bool is_selected = (current_item == item); // You can store your selection however you want, outside or inside your objects
+				if (ImGui::Selectable(item, is_selected))
+					current_item = item;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::Separator();
+
+
+		int padding = ImGui::GetCursorPosY();
+		auto gameViewportColorAttachment = m_GameViewportFramebuffer->GetColorAttachment();
+
+		m_IsGameViewportHovered = ImGui::IsWindowHovered();
+		m_IsGameViewportFocused = ImGui::IsWindowFocused();
+
+		if (m_IsGameViewportHovered && (Input::IsMouseButtonDown(RGF_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonDown(RGF_MOUSE_BUTTON_MIDDLE))) {
+			m_IsGameViewportHovered = true;
+			ImGui::SetWindowFocus();
+		}
+
+
+
+		m_GameViewportPanelPosition = *((glm::vec2*) & ImGui::GetWindowPos());
+		m_GameViewportPanelPosition += *((glm::vec2*) & ImGui::GetCursorPos());
+		if (current_item == items[1]) {
+			m_GameViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+			m_GameViewportPanelSize.y = m_GameViewportPanelSize.x / 16.0f * 9.0f;
+		}
+		else if (current_item == items[2]) {
+			m_GameViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+			m_GameViewportPanelSize.y = m_GameViewportPanelSize.x / 4.0f * 3.0f;
+		}
+		else {
+			m_GameViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+		}
+
+		glm::vec2 cursorPos = { ImGui::GetWindowSize().x - m_GameViewportSize.x, ImGui::GetWindowSize().y - m_GameViewportSize.y + padding };
+		cursorPos.x *= 0.5f;
+		cursorPos.y *= 0.5f;
+		ImGui::SetCursorPos({ cursorPos.x, cursorPos.y });
+		ImGui::Image((void*)gameViewportColorAttachment, { m_GameViewportSize.x, m_GameViewportSize.y }, { 0, 1 }, { 1, 0 });
+
+		ImGui::End();
+		ImGui::PopStyleVar();
+
+
+
+
 
 #endif
 

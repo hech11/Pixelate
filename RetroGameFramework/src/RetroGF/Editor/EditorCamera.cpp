@@ -8,6 +8,7 @@
 
 
 
+
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtx/transform.hpp>
@@ -30,19 +31,17 @@ namespace RGF {
 
 
 
-	EditorCamera::EditorCamera(float aspectRatio, float ZoomLevel) :
-		m_AspectRatio(aspectRatio),
-		m_ZoomLevel(ZoomLevel),
-		m_Bounds({ -aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel }),
-		m_Camera(m_Bounds.Left, m_Bounds.Right, m_Bounds.Bottom, m_Bounds.Top)
+	EditorCamera::EditorCamera(float aspectRatio, const ViewportPanelProps& props, float orhographicScale) :
+		OrthographicCamera({-aspectRatio* orhographicScale, aspectRatio* orhographicScale, -orhographicScale, orhographicScale })
 	{
+		m_ViewportProps = props;
+		Resize(m_ViewportProps.Size->x / m_ViewportProps.Size->y);
 	}
 
-	void EditorCamera::OnUpdate(float ts, const EditorViewportPanelData& data) {
+	void EditorCamera::OnUpdate(float ts) {
 // 		auto mViewspace = GetMousePositionViewportSpace();
 // 		RGF_CORE_WARN("%f, %f\n", mViewspace.x, mViewspace.y);
 
-		m_PanelData = data;
 		if (m_Drag) {
 			auto getCurrentMousePos = GetMousePositionRelativeToViewportPanel();
 			glm::vec2 posDelta;
@@ -50,32 +49,31 @@ namespace RGF {
 			posDelta.y = getCurrentMousePos.y - m_OriginalMousePosition.y; // This inverts the y movement
 
 
-			m_CameraPosition = (posDelta * m_ZoomLevel * m_MouseSensitivity + m_OriginalCamPos);
-			m_Camera.SetPosition({ m_CameraPosition.x, m_CameraPosition.y, 0.0f });
+			glm::vec2 m_CameraPosition = (posDelta * m_OrthographicSize * m_MouseSensitivity + m_OriginalCamPos);
+			SetPosition({ m_CameraPosition.x, m_CameraPosition.y, 0.0f });
 		}
 		else {
 			const bool& IsAltHeld = (Input::IsKeyDown(RGF_KEY_LEFT_ALT) || Input::IsKeyDown(RGF_KEY_RIGHT));
 			if (Input::IsKeyDown(RGF_KEY_A) && IsAltHeld) {
 
-				m_CameraPosition.x -= m_CameraTranslationSpeed * ts * m_ZoomLevel;
+				Move({ -m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f, 0.0f});
 			}
 			else if (Input::IsKeyDown(RGF_KEY_D) && IsAltHeld) {
-				m_CameraPosition.x += m_CameraTranslationSpeed * ts * m_ZoomLevel;
+				Move({ m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f, 0.0f });
 			}
 
 			if (Input::IsKeyDown(RGF_KEY_W) && IsAltHeld) {
-				m_CameraPosition.y += m_CameraTranslationSpeed * ts * m_ZoomLevel;
+				Move({ 0.0f, m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f });
 			}
 			else if (Input::IsKeyDown(RGF_KEY_S) && IsAltHeld) {
-				m_CameraPosition.y -= m_CameraTranslationSpeed * ts * m_ZoomLevel;
+				Move({ 0.0f, -m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f });
 			}
-			m_Camera.SetPosition({ m_CameraPosition.x, m_CameraPosition.y, 0.0f });
 		}
 
 
-
-
 	}
+
+
 
 	void EditorCamera::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
@@ -86,22 +84,15 @@ namespace RGF {
 	}
 
 
-	void EditorCamera::Resize(float width, float height)
-	{
-		m_AspectRatio = width / height;
-		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
-	}
-
 	bool EditorCamera::IsIntersecting(const glm::vec3& position, const glm::vec3& scale) {
 		// Not ideal...
 
 		// Convert mouse position from pixel space to world space
 		auto mouse = GetMousePositionRelativeToViewportPanel();
 		glm::vec3 mousepos = glm::vec3(mouse.x, mouse.y, 1.0f);
-		glm::vec4 viewport = glm::vec4(0.0f, 0.0f, m_PanelData.PanelSize.x, m_PanelData.PanelSize.y);
-		glm::vec3 xMouseWorld = glm::unProject(mousepos, m_Camera.GetViewMatrix(), m_Camera.GetProjectionMatrix(), viewport);
-		glm::vec3 yMouseWorld = glm::unProject(mousepos, glm::inverse(m_Camera.GetViewMatrix()), m_Camera.GetProjectionMatrix(), viewport);
+		glm::vec4 viewport = glm::vec4(0.0f, 0.0f, m_ViewportProps.Size->x, m_ViewportProps.Size->y);
+		glm::vec3 xMouseWorld = glm::unProject(mousepos, GetViewMatrix(), GetProjectionMatrix(), viewport);
+		glm::vec3 yMouseWorld = glm::unProject(mousepos, glm::inverse(GetViewMatrix()), GetProjectionMatrix(), viewport);
 
 		glm::vec3 result = { xMouseWorld.x, yMouseWorld.y, 1.0f };
 		result.y *= -1.0f;
@@ -116,11 +107,11 @@ namespace RGF {
 
 
 	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e) {
-		m_ZoomLevel -= e.GetYScroll() * 0.25f;
-		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+		m_OrthographicSize -= e.GetYScroll() * 0.25f;
+		m_OrthographicSize = std::max(m_OrthographicSize, 0.25f);
 
-		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		m_Bounds = { -m_AspectRatio * m_OrthographicSize, m_AspectRatio * m_OrthographicSize, -m_OrthographicSize, m_OrthographicSize };
+		SetProjection(m_Bounds);
 
 		return false;
 	}
@@ -131,7 +122,7 @@ namespace RGF {
 			auto& app = Application::GetApp();
 
 			m_OriginalMousePosition = GetMousePositionRelativeToViewportPanel();
-			m_OriginalCamPos = m_Camera.GetPos();
+			m_OriginalCamPos = GetPos();
 			Input::SetMouseLockMode(Input::MouseLockMode::Locked);
 
 			m_Drag = true;
@@ -151,8 +142,9 @@ namespace RGF {
 		return false;
 	}
 
+
 	bool EditorCamera::OnWindowResize(WindowResizeEvent& e) {
-		Resize((float)e.GetWidth(), (float)e.GetHeight());
+		Resize((float)e.GetWidth() /  (float)e.GetHeight());
 		return false;
 	}
 
@@ -161,8 +153,10 @@ namespace RGF {
 		auto& app = Application::GetApp();
 
 		glm::vec2 viewportPanelPosRelativeToWindow;
-		viewportPanelPosRelativeToWindow.x = m_PanelData.PanelPosition.x - app.GetWindow().GetXPos();
-		viewportPanelPosRelativeToWindow.y = m_PanelData.PanelPosition.y - app.GetWindow().GetYPos();
+		
+
+		viewportPanelPosRelativeToWindow.x = m_ViewportProps.Position->x - app.GetWindow().GetXPos();
+		viewportPanelPosRelativeToWindow.y = m_ViewportProps.Position->y - app.GetWindow().GetYPos();
 		glm::vec2 mousePositionRelativeToWindow = { Input::GetMousePosX(), Input::GetMousePosY() };
 
 		return mousePositionRelativeToWindow - viewportPanelPosRelativeToWindow;
@@ -174,11 +168,11 @@ namespace RGF {
 
 
 		auto mPos = GetMousePositionRelativeToViewportPanel();
-		auto& panelSize = m_PanelData.PanelSize;
+		auto& panelSize = m_ViewportProps.Size;
 		
 		glm::vec2 result;
-		result.x = (2.0f * mPos.x) / panelSize.x - 1.0f;
-		result.y = (2.0f * mPos.y) / panelSize.y - 1.0f;
+		result.x = (2.0f * mPos.x) / panelSize->x - 1.0f;
+		result.y = (2.0f * mPos.y) / panelSize->y - 1.0f;
 
 		return result;
 	}

@@ -144,8 +144,6 @@ project "RetroGameFramework"
 		defines { 
 			"RGF_RELEASE",
 			"RGF_USE_IMGUI",
-			"RGF_USE_LOGGING",
-			"RGF_USE_INSTRUMENTOR",
 
 		}
 		runtime "Release"
@@ -235,8 +233,7 @@ project "Retro-Editor"
 		{
 			"RGF_RELEASE",
 			"RGF_USE_IMGUI",
-			"RGF_USE_LOGGING",
-			"RGF_USE_INSTRUMENTOR",
+
 		}
 		runtime "Release"
 		optimize "on"

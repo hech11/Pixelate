@@ -21,9 +21,6 @@ namespace RGF {
 			};
 
 
-			void SetCamera(OrthographicCamera* camera) { m_Camera = camera; }
-			OrthographicCamera* GetCamera() { return m_Camera; }
-
 			void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
 			void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
 			void DrawCircle(const b2Vec2& center, float radius, const b2Color& color) override;
@@ -33,15 +30,10 @@ namespace RGF {
 			void DrawPoint(const b2Vec2& p, float size, const b2Color& color) override;
 
 
-			void RenderObjects();
-
 			void ShouldDrawVisuals(bool show);
 			void SetDrawFlag(unsigned int flag);
-
 		private :
-			OrthographicCamera* m_Camera;
-			bool m_ShowVisuals = false;
-
+			bool m_ShowVisuals = true;
 	};
 
 	inline PhysicsDebugDraw::DrawFlag operator| (PhysicsDebugDraw::DrawFlag a, PhysicsDebugDraw::DrawFlag b) 

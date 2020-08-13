@@ -3,36 +3,32 @@
 #include "GLM/glm/glm.hpp"
 #include "RigidBody.h"
 
+#include "box2d/box2d.h"
 #include "PhysicsDebugDraw.h"
 
 
 namespace RGF {
 
 
+	struct PhysicsWorldComponent {
 
-	class Physics {
-		public :
-
-			struct PhysicsWorldProperties {
-				float FixedTimeStep = 1.0f / 60.0f; // not sure if this should live here or i should make a "Time" class
-				int VelocityIterations = 8;
-				int PositionIterations = 4;
-
-				glm::vec2 Gravity = glm::vec2( 0.0f, -9.8f);
-
-			};
-
-			static void Init(const PhysicsWorldProperties& props = PhysicsWorldProperties());
-			static void Update();
+		PhysicsWorldComponent() {
+			World = CreateScoped<b2World>(b2Vec2(Gravity.x, Gravity.y));
+			World->SetDebugDraw(&DebugDraw);
+		}
 
 
-			static void* World();
+		float FixedTimeStep =  1.0f / 60.0f;
+		int VelocityIterations = 8;
+		int PositionIterations = 4;
+		glm::vec2 Gravity = glm::vec2(0.0f, -9.8f);
+		float CurrentSimulationTime = 0.0f;
 
-			static void DrawDebugObjects();
+		Scoped<b2World> World; 
+		PhysicsDebugDraw DebugDraw;
 
-			static void SetProperties(const PhysicsWorldProperties& props);
-			static PhysicsWorldProperties GetProperties();
-			static PhysicsDebugDraw& GetDebug();
+		std::vector<RigidBody> AllRigidbodiesInScene;
+
 	};
-
+	
 }

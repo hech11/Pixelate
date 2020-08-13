@@ -15,7 +15,7 @@ namespace RGF {
 			void SetSelectedEntity(Entity entity);
 			void SetSelectedEntity();
 
-			void OnUpdate(float ts, EditorCamera& camera);
+			void OnUpdate(float ts, const Ref<EditorCamera>& camera);
 			void OnEvent();
 
 			void OnImguiRender();
@@ -24,7 +24,6 @@ namespace RGF {
 			bool& HasAnEntitySelected() { return m_SelectedEntity; };
 
 		private :
-			EditorCamera* m_Camera;
 			Ref<Scene> m_SceneContext;
 			Entity m_CurrentlySelectedEntity;
 			bool m_SelectedEntity = false;

@@ -16,6 +16,8 @@
 #include "glm/gtx/matrix_decompose.hpp"
 #include "../Core/KeyCodes.h"
 
+#include "RetroGF/Rendering/RenderCommand.h"
+
 namespace RGF {
 
 #define LOCK_MOUSE_IF_NEEDED() if (ImGui::IsItemActivated()) {\
@@ -46,10 +48,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 	// Not sure if this should render the aabb of the entities should prob make a scene renderer or scene manager
 	// this is temp.
-	void EditorSceneHierarchyPanel::OnUpdate(float ts, EditorCamera& camera)
+	void EditorSceneHierarchyPanel::OnUpdate(float ts, const Ref<EditorCamera>& camera)
 	{
-		m_Camera = &camera;
-		Renderer2D::BeginScene(&camera.GetCamera());
+		Renderer2D::BeginScene(camera.get());
 		if (Renderer2D::ShouldDrawBoundingBox() && m_SelectedEntity) {
 			auto& entity = m_CurrentlySelectedEntity;
 			if (entity.HasComponent<SpriteRendererComponent>()) {
@@ -62,8 +63,25 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				boundingBox.Max = { Scale.x / 2.0f + Position.x, Scale.y / 2.0f + Position.y, 1.0f };
 
 				Renderer2D::DrawAABB(boundingBox, { 0.0f, 1.0f, 1.0f, 1.0f });
-
 			}
+
+
+			if (entity.HasComponent<BoxColliderComponent>()) {
+				auto& bcc = entity.GetComponent<BoxColliderComponent>();
+				auto& transformComp = entity.GetComponent<TransformComponent>();
+
+				AABB boundingBox;
+				auto [pos, rot, s] = transformComp.DecomposeTransform();
+				glm::vec2 transformPos = { pos.x, pos.y };
+				const auto Position = bcc.Center + transformPos;
+				const auto Scale = bcc.Size;
+
+				boundingBox.Min = { -Scale.x + Position.x, -Scale.y+ Position.y, 1.0f };
+				boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
+
+				Renderer2D::DrawAABB(boundingBox, { 0.0f, 1.0f, 0.0f, 1.0f });
+			}
+
 
 		}
 
@@ -77,8 +95,68 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 	}
 
 
-	
+	template<typename T, typename lamda>
+	static void DrawEntityComponents(const std::string& compName, Entity entity, lamda func) {
+		if (entity.HasComponent<T>()) {
+			ImGui::NewLine();
+			ImGui::Separator();
 
+
+			auto& comp = entity.GetComponent<T>();
+			if (ImGui::Button("X", { 20, 20 })) {
+				entity.RemoveComponent<T>();
+				return;
+			
+			}
+
+			ImGui::SameLine();
+			bool isOpen = ImGui::TreeNodeEx((void*)((unsigned int)entity | typeid(T).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, compName.c_str());
+
+			
+			if (isOpen) {
+				func(entity.GetComponent<T>());
+				ImGui::NextColumn();
+				ImGui::Columns(1);
+				ImGui::TreePop();
+			}
+			ImGui::Separator();
+
+			
+
+		}
+	}
+
+	static std::string ConvertBodyTypeEnumToString(RGF::BodyType type) {
+
+		switch (type)
+		{
+			case RGF::BodyType::Static:
+				return "Static";
+			case RGF::BodyType::Kinematic:
+				return "Kinematic";
+			case RGF::BodyType::Dynamic:
+				return "Dynamic";
+		}
+
+		RGF_ASSERT(false, "");
+		return "null";
+	}
+
+	static std::string ConvertSleepStateEnumToString(RGF::SleepingState type) {
+
+		switch (type)
+		{
+		case RGF::SleepingState::Awake:
+			return "Awake";
+		case RGF::SleepingState::NeverSleep:
+			return "Never Sleep";
+		case RGF::SleepingState::Sleep:
+			return "Sleep";
+		}
+
+		RGF_ASSERT(false, "");
+		return "null";
+	}
 
 	void EditorSceneHierarchyPanel::OnImguiRender()
 	{
@@ -88,33 +166,36 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		m_SceneContext->GetReg().each([&](auto entity) {
 
 			Entity e(entity, m_SceneContext.get());
-			std::string name = e.GetComponent<NameComponent>().Name;
+			if (e.HasComponent<NameComponent>()) {
+				std::string name = e.GetComponent<NameComponent>().Name;
 
-			ImGuiTreeNodeFlags node_flags = ((e == m_CurrentlySelectedEntity) && m_SelectedEntity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-			if (ImGui::TreeNodeEx((void*)(unsigned int)e, node_flags, name.c_str())) {
-				ImGui::TreePop();
-			}
-
-			if (ImGui::IsItemClicked()) {
-				SetSelectedEntity(e);
-			}
-
-			if (Input::IsKeyDown(RGF_KEY_DELETE))
-				deleteEntity = true;
-
-
-			if (ImGui::BeginPopupContextItem()) {
-				if (ImGui::Button("Delete"))
-					deleteEntity = true;
-				ImGui::EndPopup();
-			}
-
-			if (deleteEntity) {
-				if (e == m_CurrentlySelectedEntity) {
-					SetSelectedEntity();
-					m_SceneContext->DeleteEntity(e);
-					deleteEntity = false;
+				ImGuiTreeNodeFlags node_flags = ((e == m_CurrentlySelectedEntity) && m_SelectedEntity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+				if (ImGui::TreeNodeEx((void*)(unsigned int)e, node_flags, name.c_str())) {
+					ImGui::TreePop();
 				}
+
+				if (ImGui::IsItemClicked()) {
+					SetSelectedEntity(e);
+				}
+
+				if (Input::IsKeyDown(RGF_KEY_DELETE))
+					deleteEntity = true;
+
+
+				if (ImGui::BeginPopupContextItem()) {
+					if (ImGui::Button("Delete"))
+						deleteEntity = true;
+					ImGui::EndPopup();
+				}
+
+				if (deleteEntity) {
+					if (e == m_CurrentlySelectedEntity) {
+						SetSelectedEntity();
+						m_SceneContext->DeleteEntity(e);
+						deleteEntity = false;
+					}
+				}
+
 			}
 
 
@@ -141,9 +222,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		ImGui::End();
 
 
-
 		// display all components that the selected entity has
-		ImGui::Begin("Entity Properties");
+		ImGui::Begin("Entity Components");
 		if (m_SelectedEntity) {
 
 			if (m_CurrentlySelectedEntity.HasComponent<NameComponent>()) {
@@ -158,21 +238,19 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 
 			auto& transformComp = m_CurrentlySelectedEntity.GetComponent<TransformComponent>();
-
-
+			auto [transformPosition, transformRotation, transformScale] = transformComp.DecomposeTransform();
 			if (ImGui::TreeNodeEx((void*)((unsigned int)m_CurrentlySelectedEntity | typeid(TransformComponent).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, "Transform")) {
 
 				ImGui::Columns(2);
 				ImGui::SetColumnWidth(0, 100);
 
-				auto [Position, Rotation, Scale] = transformComp.DecomposeTransform();
-				auto rot = glm::degrees(glm::eulerAngles(Rotation));
+				auto rot = glm::degrees(glm::eulerAngles(transformRotation));
 				bool updateTransform = false;
 
 				ImGui::Text("Position");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				if (ImGui::DragFloat3("##position", glm::value_ptr(Position), 0.01f)) {
+				if (ImGui::DragFloat3("##position", glm::value_ptr(transformPosition), 0.01f)) {
 					updateTransform = true;
 				}
 				LOCK_MOUSE_IF_NEEDED();
@@ -194,7 +272,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::Text("Scale");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				if (ImGui::DragFloat3("##scale", glm::value_ptr(Scale), 0.01f)) {
+				if (ImGui::DragFloat3("##scale", glm::value_ptr(transformScale), 0.01f)) {
 					updateTransform = true;
 				}
 				LOCK_MOUSE_IF_NEEDED();
@@ -207,150 +285,261 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::TreePop();
 
 				if (updateTransform) {
-					transformComp.Transform = glm::translate(glm::mat4(1.0f), Position)
+
+					transformComp.Transform = glm::translate(glm::mat4(1.0f), transformPosition)
 						* glm::toMat4(glm::quat(glm::radians(rot)))
-						* glm::scale(glm::mat4(1.0f), Scale);
+						* glm::scale(glm::mat4(1.0f), transformScale);
 				}
 			}
 
-			if (m_CurrentlySelectedEntity.HasComponent<SpriteRendererComponent>()) {
-				ImGui::NewLine();
-				ImGui::Separator();
-				bool removeComp = false;
-
-				auto& spriteComp = m_CurrentlySelectedEntity.GetComponent<SpriteRendererComponent>();
-				if (ImGui::Button("X", {20, 20})) {
-					removeComp = true;
-				}
-				ImGui::SameLine();
-				if (ImGui::TreeNodeEx((void*)((unsigned int)m_CurrentlySelectedEntity | typeid(SpriteRendererComponent).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer")) {
+			DrawEntityComponents<SpriteRendererComponent>("Sprite Renderer", m_CurrentlySelectedEntity, [](SpriteRendererComponent& spriteComp) {
+				const auto& spriteRect = spriteComp.SpriteRect;
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
 
 
-					if (ImGui::BeginPopupContextItem()) {
-						if (ImGui::Button("Delete Component"))
-							removeComp = true;
-						ImGui::EndPopup();
-					}
+				ImGui::Text("FilePath");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				if (ImGui::Button("open")) {
+					nfdchar_t* outPath = NULL;
+					nfdresult_t result = NFD_OpenDialog("png,jpeg,jpg", NULL, &outPath);
 
-					const auto& spriteRect = spriteComp.SpriteRect;
-					ImGui::Columns(2);
-					ImGui::SetColumnWidth(0, 150);
-
-
-					ImGui::Text("FilePath");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					if (ImGui::Button("open")) {
-						nfdchar_t* outPath = NULL;
-						nfdresult_t result = NFD_OpenDialog("png", NULL, &outPath);
-
-						if (result == NFD_OKAY) {
-							puts("Success!");
-							if (!spriteRect) {
-								// this creates a texture and does not re use textures if the user decides to load a existing texture
-								// that is already loaded in the scene.
-								//TODO: Refactor the texture manager class and texture class to fix this issue.
-								auto texture = Texture::Create(outPath);
-								spriteComp.SpriteRect = CreateRef<TextureBounds>(texture, glm::u32vec4(0, 0, texture->GetWidth(), texture->GetHeight()));
-								spriteComp.TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-							}
-							else {
-								spriteRect->GetTexture()->SetData(outPath);
-								spriteRect->SetBounds({ 0, 0, spriteRect->GetTexture()->GetWidth(), spriteRect->GetTexture()->GetHeight() });
-							}
-
-							free(outPath);
-						}
-						else if (result == NFD_CANCEL) {
-							RGF_CORE_MSG("User pressed cancel.\n");
+					if (result == NFD_OKAY) {
+						puts("Success!");
+						if (!spriteRect) {
+							// this creates a texture and does not re use textures if the user decides to load a existing texture
+							// that is already loaded in the scene.
+							//TODO: Refactor the texture manager class and texture class to fix this issue.
+							auto texture = Texture::Create(outPath);
+							spriteComp.SpriteRect = CreateRef<TextureBounds>(texture, glm::u32vec4(0, 0, texture->GetWidth(), texture->GetHeight()));
+							spriteComp.TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 						}
 						else {
-							RGF_CORE_ERROR("Error: %s\n", NFD_GetError());
+							spriteRect->GetTexture()->SetData(outPath);
+							spriteRect->SetBounds({ 0, 0, spriteRect->GetTexture()->GetWidth(), spriteRect->GetTexture()->GetHeight() });
 						}
 
+						free(outPath);
 					}
-					ImGui::SameLine();
-
-					if (spriteRect)
-						ImGui::InputText("##spriteFilepath", (char*)spriteRect->GetTexture()->GetFilepath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-					else
-						ImGui::InputText("##spriteFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
-
-					ImGui::PopItemWidth();
-
-
-					ImGui::NextColumn();
-
-
-					ImGui::Text("Sprite coordinates");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					if (spriteRect) {
-						ImGui::DragInt4("##spriteRect", (int*)glm::value_ptr(spriteRect->GetBounds()), 1.0f, 0);
-						LOCK_MOUSE_IF_NEEDED();
-						spriteRect->SetBounds(spriteRect->GetBounds());
+					else if (result == NFD_CANCEL) {
+						RGF_CORE_MSG("User pressed cancel.\n");
 					}
 					else {
-						ImGui::Text("No texture loaded");
+						RGF_CORE_ERROR("Error: %s\n", NFD_GetError());
 					}
-
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
-
-					ImGui::Text("Tint color");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					ImGui::ColorEdit4("##tintcolor", glm::value_ptr(spriteComp.TintColor));
-					LOCK_MOUSE_IF_NEEDED();
-
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
-
-
-
-
-					ImGui::Text("Texture");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					if (spriteRect) {
-						ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 });
-					}
-					else {
-						ImGui::Text("No texture loaded");
-					}
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
-
-
-					ImGui::Text("Sprite rect");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					if (spriteRect) {
-						ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 },
-							{ spriteRect->GetBoundsNormilized()[0].x, spriteRect->GetBoundsNormilized()[2].y },
-							{ spriteRect->GetBoundsNormilized()[2].x, spriteRect->GetBoundsNormilized()[0].y });
-					}
-					else {
-						ImGui::Text("No texture loaded");
-					}
-
-					ImGui::PopItemWidth();
-					ImGui::NextColumn();
-
-					ImGui::Columns(1);
-					ImGui::TreePop();
 
 				}
+				ImGui::SameLine();
 
-				if (removeComp)
-					m_CurrentlySelectedEntity.RemoveComponent<SpriteRendererComponent>();
+				if (spriteRect)
+					ImGui::InputText("##spriteFilepath", (char*)spriteRect->GetTexture()->GetFilepath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+				else
+					ImGui::InputText("##spriteFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
 
+				ImGui::PopItemWidth();
+
+
+				ImGui::NextColumn();
+
+
+				ImGui::Text("Sprite coordinates");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				if (spriteRect) {
+					ImGui::DragInt4("##spriteRect", (int*)glm::value_ptr(spriteRect->GetBounds()), 1.0f, 0);
+					LOCK_MOUSE_IF_NEEDED();
+					spriteRect->SetBounds(spriteRect->GetBounds());
+				}
+				else {
+					ImGui::Text("No texture loaded");
+				}
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				ImGui::Text("Tint color");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::ColorEdit4("##tintcolor", glm::value_ptr(spriteComp.TintColor));
+				LOCK_MOUSE_IF_NEEDED();
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
+
+
+				ImGui::Text("Texture");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				if (spriteRect) {
+					ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 });
+				}
+				else {
+					ImGui::Text("No texture loaded");
+				}
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
+				ImGui::Text("Sprite rect");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				if (spriteRect) {
+					ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 },
+						{ spriteRect->GetBoundsNormilized()[0].x, spriteRect->GetBoundsNormilized()[2].y },
+						{ spriteRect->GetBoundsNormilized()[2].x, spriteRect->GetBoundsNormilized()[0].y });
+				}
+				else {
+					ImGui::Text("No texture loaded");
+				}
+
+				ImGui::PopItemWidth();
+			});
+		
+			DrawEntityComponents<CameraComponent>("Orthographic Camera", m_CurrentlySelectedEntity, [](CameraComponent& cc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Is Primary");
+				ImGui::NextColumn();
+				ImGui::Checkbox("##PrCamera", &cc.PrimaryCamera);
+				ImGui::NextColumn();
+				ImGui::Text("Orthographic Scale");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				float orthoSize = cc.Camera.GetOrthographicSize();
+				ImGui::DragFloat("##orthoSize", &orthoSize, 0.01f);
+				LOCK_MOUSE_IF_NEEDED();
+				cc.Camera.SetOrthographicSize(orthoSize);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Clear Color");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::ColorEdit4("##ClearColor", glm::value_ptr(cc.ClearColor));
+				LOCK_MOUSE_IF_NEEDED();
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+			});
+			DrawEntityComponents<RigidBodyComponent>("RigidBody", m_CurrentlySelectedEntity, [](RigidBodyComponent& rbc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+
+
+				ImGui::Text("Freeze Z rotation");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::Checkbox("##FreezeZRotCheckmark", &rbc.Definition.CanRotate);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
+				ImGui::Text("Gravity scale");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat("##gravScale", &rbc.Definition.GravityScale);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
+
+
+
+				ImGui::Text("Type");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+
+
+
+				RGF::BodyType currentType = rbc.Definition.Type;
+
+				if (ImGui::BeginCombo("##Type", ConvertBodyTypeEnumToString(currentType).c_str()))
+				{
+					bool dyIsSelected = (currentType == BodyType::Dynamic);
+					bool stIsSelected = (currentType == BodyType::Static);
+					bool kiIsSelected = (currentType == BodyType::Kinematic);
+
+					if (ImGui::Selectable("Dynamic", dyIsSelected))
+						currentType = BodyType::Dynamic;
+
+					if (ImGui::Selectable("Static", stIsSelected))
+						currentType = BodyType::Static;
+
+					if (ImGui::Selectable("Kinematic", kiIsSelected))
+						currentType = BodyType::Kinematic;
+
+					ImGui::EndCombo();
+				}
 				
-			}
+				rbc.Definition.Type = currentType;
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
 
 
-			ImGui::NewLine();
-			ImGui::Separator();
+
+				ImGui::Text("Initial sleep state");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+				RGF::SleepingState currentState = rbc.Definition.State;
+
+				if (ImGui::BeginCombo("##State", ConvertSleepStateEnumToString(currentState).c_str()))
+				{
+					bool aIsSelected = (currentState == SleepingState::Awake);
+					bool sIsSelected = (currentState == SleepingState::Sleep);
+					bool nsIsSelected = (currentState == SleepingState::NeverSleep);
+
+					if (ImGui::Selectable("Awake", aIsSelected))
+						currentState = SleepingState::Awake;
+
+					if (ImGui::Selectable("Sleep", sIsSelected))
+						currentState = SleepingState::Sleep;
+
+					if (ImGui::Selectable("NeverSleep", nsIsSelected))
+						currentState = SleepingState::NeverSleep;
+
+					ImGui::EndCombo();
+				}
+
+				rbc.Definition.State = currentState;
+
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
+			
+
+			});
+
+			DrawEntityComponents<BoxColliderComponent>("Box Collider", m_CurrentlySelectedEntity, [](BoxColliderComponent& bcc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Center");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat2("##center", glm::value_ptr(bcc.Center), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Size");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat2("##size", glm::value_ptr(bcc.Size), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Is trigger");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::Checkbox("##istrigger", &bcc.IsTrigger);
+				ImGui::PopItemWidth();
+
+			});
+
 			if (ImGui::Button("Add component", { 200, 50 })) {
 				ImGui::OpenPopup("AddComponentPopup");
 			}
@@ -362,6 +551,33 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						m_CurrentlySelectedEntity.AddComponent <SpriteRendererComponent>();
 						ImGui::CloseCurrentPopup();
 					}
+
+
+				}
+				if (!m_CurrentlySelectedEntity.HasComponent<CameraComponent>()) {
+
+					if (ImGui::Button("Camera")) {
+						auto& cam = m_CurrentlySelectedEntity.AddComponent <CameraComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+
+
+				}
+				if (!m_CurrentlySelectedEntity.HasComponent<RigidBodyComponent>()) {
+
+					if (ImGui::Button("RigidBody")) {
+						m_CurrentlySelectedEntity.AddComponent <RigidBodyComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+
+				}
+				if (!m_CurrentlySelectedEntity.HasComponent<BoxColliderComponent>()) {
+
+					if (ImGui::Button("Box Collider")) {
+						m_CurrentlySelectedEntity.AddComponent <BoxColliderComponent>(glm::vec2(0.0f, 0.0f), glm::vec2(transformScale.x / 2, transformScale.y /2 ), false);
+						ImGui::CloseCurrentPopup();
+					}
+
 				}
 				ImGui::EndPopup();
 			}

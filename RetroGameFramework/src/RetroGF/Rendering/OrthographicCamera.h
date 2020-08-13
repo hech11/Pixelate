@@ -20,7 +20,8 @@ namespace RGF {
 
 		public:
 
-			OrthographicCamera(float left, float right, float bottom, float top);
+			OrthographicCamera() = default;
+			OrthographicCamera(const OrthographicCameraBounds& bounds, float orthoSize = 1.0f);
 
 			inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 			inline const glm::mat4& GetViewProjectionMatrix() const { return m_ProjectionViewMatrix; }
@@ -28,32 +29,38 @@ namespace RGF {
 
 
 			void SetProjection(float left, float right, float bottom, float top);
+			void SetProjection(const OrthographicCameraBounds& bounds);
+
+			void SetViewMatrix(const glm::mat4& matrix);
+
+			void SetOrthographicSize(float size);
+			const float& GetOrthographicSize() const { return m_OrthographicSize; }
 
 			void SetPosition(const glm::vec3& pos);
 			void Move(const glm::vec3& offset);
 
-			void SetRotation(float angle, float axis);
-
-			void SetScale(const glm::vec3& scale);
-			void Enlarge(const glm::vec3& offset);
+			void SetRotation(float angle); // rotate around the z axis
 
 
+			void Resize(float aspectRatio);
 
 			glm::vec3& GetPos() { return m_Pos; }
-			float& GetRot() { return m_RotAxis; }
-			glm::vec3& GetScale() { return m_Scale; }
 			float& GetAngle() { return m_Angle; }
 
 		private:
 			void RecalculateViewProjMatrix();
 
-		private:
-			glm::vec3 m_Pos, m_Scale;
-			float m_Angle, m_RotAxis;
+		protected :
+			float m_OrthographicSize = 1.0f;
+			float m_AspectRatio;
+			float m_Angle;
+			glm::vec3 m_Pos;
 
+			OrthographicCameraBounds m_Bounds;
 			glm::mat4 m_ViewMatrix;
 			glm::mat4 m_ProjectionViewMatrix;
 			glm::mat4 m_ProjectionMatrix;
+
 		};
 
 

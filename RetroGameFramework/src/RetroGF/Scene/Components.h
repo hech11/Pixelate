@@ -7,11 +7,14 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/gtx/matrix_decompose.hpp"
 
+#include "RetroGF/Physics/RigidBody.h"
 
 
 namespace RGF {
 	
+	//TODO: UUID Component 
 
+///////////////////////////////////////////////////// Misc components /////////////////////////////////////////////////////
 	struct NameComponent
 	{
 		std::string Name;
@@ -49,19 +52,14 @@ namespace RGF {
 
 			return { position, qua, scale };
 		}
-
+		void SetPosition(const glm::vec3& postion) {
+			Transform[3][0] = postion.x;
+			Transform[3][1] = postion.y;
+			Transform[3][2] = postion.z;
+		}
 	};
 
-
-	//TODO: i don't know if i agree with this design. Might refactor soon.
-	struct CameraComponent {
-		OrthographicCamera Camera;
-
-		CameraComponent() = default;
-		CameraComponent(const CameraComponent& other) : Camera(other.Camera){}
-
-	};
-
+///////////////////////////////////////////////////// Rendering components /////////////////////////////////////////////////////
 	struct SpriteRendererComponent {
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		Ref<TextureBounds> SpriteRect;
@@ -76,5 +74,65 @@ namespace RGF {
 
 
 	};
+
+
+	//TODO: i don't know if i agree with this design. Might refactor soon.
+	struct CameraComponent {
+
+		OrthographicCamera Camera;
+		glm::vec4 ClearColor = {0.25f, 0.5f, 0.7f, 1.0f};
+		bool PrimaryCamera = true;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent& other) : Camera(other.Camera), ClearColor(other.ClearColor), PrimaryCamera(other.PrimaryCamera) {}
+
+	};
+
+	struct ParticleEmmiterComponent {
+
+	};
+///////////////////////////////////////////////////// Audio components /////////////////////////////////////////////////////
+
+	struct AudioListenerComponent {
+
+	};
+
+	struct AudioEmitterComponent {
+
+	};
+
+///////////////////////////////////////////////////// Physics components /////////////////////////////////////////////////////
+
+	struct RigidBodyComponent {
+
+		RGF::RigidBody RigidBody;
+		RGF::RigidBodyDef Definition;
+
+		RigidBodyComponent() = default;
+		RigidBodyComponent(const RigidBodyComponent& other) : 
+			RigidBody(other.RigidBody), Definition(other.Definition)
+		{}
+
+		
+	};
+
+	struct BoxColliderComponent {
+
+
+		b2PolygonShape* ColliderData = nullptr;
+		glm::vec2 Center, Size;
+		bool IsTrigger = false;
+
+		
+		BoxColliderComponent() = default;
+		BoxColliderComponent(glm::vec2 center, glm::vec2 size, bool isTrigger) :
+			Center(center), Size(size), IsTrigger(isTrigger)
+		{}
+
+	};
+
+	//TODO: Need to support the other colliders such as polygon, edge and circle
+
+
 
 }

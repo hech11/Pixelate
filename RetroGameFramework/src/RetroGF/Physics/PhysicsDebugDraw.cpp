@@ -13,7 +13,6 @@ namespace RGF {
 
 	void PhysicsDebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
 		if (!m_ShowVisuals)
-			return;
 		RGF_PROFILE_FUNCTION();
 		std::array<glm::vec4, 4> vertex = {
 			glm::vec4(vertices[0].x, vertices[0].y, 0.0f, 0.0f),
@@ -64,17 +63,6 @@ namespace RGF {
 	{
 	}
 
-
-
-	void PhysicsDebugDraw::RenderObjects() {
-		if (!m_ShowVisuals)
-			return;
-		RGF_PROFILE_FUNCTION();
-		Renderer2D::BeginScene(m_Camera);
-		const auto& world = (b2World*)Physics::World();
-		world->DebugDraw();
-		Renderer2D::EndScene();
-	}
 
 	void PhysicsDebugDraw::ShouldDrawVisuals(bool show) {
 		m_ShowVisuals = show;

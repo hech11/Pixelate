@@ -59,7 +59,6 @@ namespace RGF {
 
 		Renderer2D::Init();
 		Audio::Init();
-		Physics::Init();
 
 		RGF_CORE_WARN("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
@@ -125,7 +124,6 @@ namespace RGF {
 
 
 			if (!m_IsMinimized) {
-				Physics::Update();
 
 				for (Layer* layer : m_LayerStack.GetLayerStack()) {
 
@@ -138,18 +136,18 @@ namespace RGF {
 			}
 
 
-			if (!m_IsMinimized) {
 	#ifdef RGF_USE_IMGUI
+			if (!m_IsMinimized) {
 				RenderImGui();
-	#endif
 	
 			}
 
+	#endif
 
 			m_Window->OnUpdate();
 			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
-				Time += 1.0f;
 				RGF_CORE_MSG("%f: timestep\n", m_Timestep *1000.0f);
+				Time += 1.0f;
 
 #ifdef RGF_DISTRIBUTE
 				printf("%f: timestep\n", m_Timestep *1000.0f);

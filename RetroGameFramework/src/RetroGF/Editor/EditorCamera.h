@@ -8,29 +8,23 @@
 #include "RetroGF/Events/WindowEvents.h"
 #include "Glm/glm.hpp"
 
-// TODO: This really should inherit orthographic camera. Do this.
+
 
 namespace RGF{
-	struct EditorViewportPanelData {
-		glm::vec2 PanelPosition = { 0.0f, 0.0f };
-		glm::vec2 PanelSize = { 0.0f, 0.0f };
-
+	
+	struct ViewportPanelProps {
+		glm::vec2* Position;
+		glm::vec2* Size;
 	};
-	class EditorCamera {
+
+	class EditorCamera : public OrthographicCamera {
 		public :
 
-			EditorCamera(float aspectRatio, float ZoomLevel = 1);
+			EditorCamera(float aspectRatio, const ViewportPanelProps& props, float orhographicScale = 1.0f);
 
-			void OnUpdate(float ts, const EditorViewportPanelData& data);
+			void OnUpdate(float ts);
 			void OnEvent(Event& e);
 
-			void Resize(float width, float height);
-			
-			const float& GetZoomLevel() const { return m_ZoomLevel; }
-
-			OrthographicCamera& GetCamera() { return m_Camera; }
-			const OrthographicCamera& GetCamera() const { return m_Camera; }
-			const OrthographicCameraBounds& GetBounds() const { return m_Bounds; }
 
 			glm::vec2 GetMousePositionRelativeToViewportPanel();
 			glm::vec2 GetMousePositionScreenSpace();
@@ -46,18 +40,13 @@ namespace RGF{
 		private : 
 			bool m_Drag = false;
 			bool m_MouseMoving = false;
-			float m_AspectRatio = 0.0f;
-			float m_ZoomLevel = 1.0f;
 			float m_MouseSensitivity = 0.003f;
 
 			float m_CameraTranslationSpeed = 3.0f;
-			glm::vec2 m_CameraPosition = { 0.0f, 0.0f }, m_OriginalMousePosition = {0.0f, 0.0f};
+			glm::vec2 m_OriginalMousePosition = {0.0f, 0.0f};
 			glm::vec2 m_OriginalCamPos = {0.0f, 0.0f};
 
-			EditorViewportPanelData m_PanelData;
-
-			OrthographicCamera m_Camera;
-			OrthographicCameraBounds m_Bounds;
+			ViewportPanelProps m_ViewportProps;
 
 
 	};
