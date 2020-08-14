@@ -61,6 +61,11 @@ namespace RGF {
 		LineVertexData* LineQuadVertexData = nullptr;
 
 
+		// For drawing the scene grid.
+		Ref<VertexArray> SceneGridVertexArray;
+		Ref<VertexBuffer> SceneGridVertexBuffer;
+		Ref<Shader> SceneGridShader;
+
 		std::array<glm::vec4, 4> QuadPivotPointPositions;
 		std::array<glm::vec2, 4> TextureCoords;
 		std::array<Ref<Texture>, MaxTextureSlots> AllTextureSlots;
@@ -152,8 +157,8 @@ namespace RGF {
 			Ref<IndexBuffer> lineIbo = IndexBuffer::Create(lineIndices, SceneData.MaxLineIndicesSize);
 			SceneData.LineVertexArray->PushIndexBuffer(lineIbo);
 
+			SceneData.LineVertexArray->Unbind();
 			delete[] lineIndices;
-
 		}
 		{
 
@@ -185,6 +190,7 @@ namespace RGF {
 				SceneData.BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
 				SceneData.BatchRendererShader->Bind();
 				SceneData.BatchRendererShader->SetUniform1iArray("u_Textures", SceneData.MaxTextureSlots, SceneData.Samplers);
+				SceneData.BatchRendererShader->Unbind();
 			}
 
 
@@ -192,7 +198,35 @@ namespace RGF {
 
 		}
 
+		float gridVerticies[] = {
+			 -10000.0f, -10000.0f, 0.0f, 0.0f, 0.0f,
+			  10000.0f, -10000.0f, 0.0f, 1.0f, 0.0f,
+			  10000.0f,  10000.0f, 0.0f, 1.0f, 1.0f,
+			 -10000.0f,  10000.0f, 0.0f, 0.0f, 1.0f
 
+		};
+		SceneData.SceneGridVertexArray = VertexArray::Create();
+		SceneData.SceneGridVertexBuffer = VertexBuffer::Create(gridVerticies,  sizeof(gridVerticies));
+		BufferLayout layout = {
+			{BufferLayoutTypes::Float3, "aPos"},
+			{BufferLayoutTypes::Float2, "aUV" }
+		};
+
+
+		SceneData.SceneGridVertexBuffer->SetLayout(layout);
+		SceneData.SceneGridVertexArray->PushVertexBuffer(SceneData.SceneGridVertexBuffer);
+
+
+		unsigned int gridIndicies[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+		Ref<IndexBuffer> aaa = IndexBuffer::Create(gridIndicies, 6);
+		SceneData.SceneGridVertexArray->PushIndexBuffer(aaa);
+
+		SceneData.SceneGridShader = Shader::Create();
+		SceneData.SceneGridShader->LoadFromFile("assets/Shaders/SceneGrid.shader");
+		
 	}
 
 	void Renderer2D::ShutDown() {
@@ -205,6 +239,8 @@ namespace RGF {
 		SceneData.m_ViewMatrix = camera->GetViewProjectionMatrix();
 		SceneData.TextureSlotIndex = 1;
 
+
+
 		SceneData.SpriteIndexCount = 0;
 		SceneData.SpriteVertexDataPtr = SceneData.SpriteVertexDataBase;
 
@@ -212,12 +248,16 @@ namespace RGF {
 		SceneData.LineQuadVertexData = SceneData.LineVertexDataBase;
 
 
+		
+
 	}
 	void Renderer2D::EndScene() {
 		RGF_PROFILE_FUNCTION();
 
+
 		SceneData.BatchRendererShader->Bind();
 		SceneData.BatchRendererShader->SetUniformMatrix("u_ViewProj", SceneData.m_ViewMatrix);
+
 
 		unsigned int quadSize = (unsigned char*)SceneData.SpriteVertexDataPtr - (unsigned char*)SceneData.SpriteVertexDataBase;
 		if (quadSize) {
@@ -246,7 +286,6 @@ namespace RGF {
 
 		}
 		SceneData.m_Statistics.VertexSize = quadSize + lineSize;
-
 
 	}
 
@@ -278,6 +317,10 @@ namespace RGF {
 
 		SceneData.SpriteIndexCount += 6;
 		SceneData.m_Statistics.IndexCount += 6;
+
+
+		
+
 	}
 
 
@@ -520,6 +563,27 @@ namespace RGF {
 	const bool& Renderer2D::ShouldDrawBoundingBox() {
 		return SceneData.DrawBoundingBoxes;
 	}
+
+	void Renderer2D::DrawSceneGrid(float gridAlpha) {
+
+		SceneData.SceneGridShader->Bind();
+		SceneData.SceneGridShader->SetUniformMatrix("u_ViewProj", SceneData.m_ViewMatrix);
+		SceneData.SceneGridShader->SetUniform1f("u_SceneCameraZoom", gridAlpha);
+
+		SceneData.SceneGridVertexArray->Bind();
+		SceneData.SceneGridVertexArray->GetIbos().Bind();
+
+		RenderCommand::DrawElements(SceneData.SceneGridVertexArray, PimitiveRenderType::Triangles, SceneData.SceneGridVertexArray->GetIbos().GetCount());
+
+		SceneData.SceneGridShader->Unbind();
+		SceneData.SceneGridVertexArray->Unbind();
+		SceneData.SceneGridVertexArray->GetIbos().Unbind();
+
+
+		
+
+	}
+
 
 	void Renderer2D::BeginNewQuadBatch() {
 		RGF_PROFILE_FUNCTION();

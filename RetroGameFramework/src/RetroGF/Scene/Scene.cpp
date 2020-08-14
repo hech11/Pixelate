@@ -52,6 +52,8 @@ namespace RGF {
 		Renderer2D::ResetStatistics();
 
 		Renderer2D::BeginScene(camera.get());
+		Renderer2D::DrawSceneGrid(camera->GetOrthographicSize());
+
 		auto renderGroup = m_Reg.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
 		for (auto entity : renderGroup) {
@@ -65,7 +67,10 @@ namespace RGF {
 			}
 
 		}
+
+
 		Renderer2D::EndScene();
+
 	}
 
 
@@ -100,6 +105,7 @@ namespace RGF {
 			Renderer2D::ResetStatistics();
 
 			Renderer2D::BeginScene(&renderCam->Camera);
+
 			auto renderGroup = m_Reg.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
 			for (auto entity : renderGroup) {

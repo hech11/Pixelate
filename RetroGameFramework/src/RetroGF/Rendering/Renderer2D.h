@@ -51,6 +51,9 @@ namespace RGF {
 			static void SetBoundingBox(bool draw);
 			static const bool& ShouldDrawBoundingBox();
 
+			// temp
+			static void DrawSceneGrid(float gridAlpha);
+
 			static void ResetStatistics();
 			static RenderingStatistics& GetStats();
 		private :
