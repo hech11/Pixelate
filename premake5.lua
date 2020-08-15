@@ -200,6 +200,7 @@ project "Pixelate-Editor"
 	links
 	{
 		"NativeFileDialog",
+		"Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.lib",
 		"Pixelate"
 	}
 	
@@ -252,6 +253,45 @@ project "Pixelate-Editor"
 
 
 
+
+
+project "Pixelate-Scripting"
+	location "Pixelate-Scripting"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	
+
+	files
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+
+
+
+project "Sandbox-CSharpApp"
+	location "Sandbox-CSharpApp"
+	kind "ConsoleApp"
+	language "C#"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	
+
+	files
+	{
+		"%{prj.name}/src/**.cs", 
+	}
+
+
+	links
+	{
+		"Pixelate-Scripting"
+	}
 
 
 
