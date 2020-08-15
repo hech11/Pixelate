@@ -1,2 +1,2 @@
-# RetroGameFramework
-A framework used to create 'retro' games.
+# Pixelate
+A game engine designed to make 2D games.

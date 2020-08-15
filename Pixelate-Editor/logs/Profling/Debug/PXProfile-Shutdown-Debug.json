@@ -1,0 +1,1 @@
+{"otherData" : {},"traceEvents":[{"cat":"function","dur":6,"name":"__cdecl Pixelate::Application::~Application(void)","ph":"X","pid":0,"tid":2393200702,"ts":157696885734},{"cat":"function","dur":1691,"name":"void __cdecl Pixelate::ImguiLayer::ShutDown(void)","ph":"X","pid":0,"tid":2393200702,"ts":157696885889}]}

@@ -1,6 +1,6 @@
-workspace "RetroGameFramework"
+workspace "Pixelate"
 	architecture "x86_64"
-	startproject "Sandbox"
+	startproject "Pixelate-Editor"
 
 	configurations
 	{
@@ -18,33 +18,33 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["Glfw"] = "RetroGameFramework/vendor/Glfw"
-IncludeDir["Glad"] = "RetroGameFramework/vendor/Glad"
-IncludeDir["Imgui"] = "RetroGameFramework/vendor/Imgui"
-IncludeDir["Glm"] = "RetroGameFramework/vendor/Glm"
-IncludeDir["OpenAL_Soft"] = "RetroGameFramework/vendor/OpenAL_Soft"
-IncludeDir["MiniMp3"] = "RetroGameFramework/vendor/MiniMp3"
-IncludeDir["Box2D"] = "RetroGameFramework/vendor/Box2D"
-IncludeDir["entt"] = "RetroGameFramework/vendor/entt"
+IncludeDir["Glfw"] = "Pixelate/vendor/Glfw"
+IncludeDir["Glad"] = "Pixelate/vendor/Glad"
+IncludeDir["Imgui"] = "Pixelate/vendor/Imgui"
+IncludeDir["Glm"] = "Pixelate/vendor/Glm"
+IncludeDir["OpenAL_Soft"] = "Pixelate/vendor/OpenAL_Soft"
+IncludeDir["MiniMp3"] = "Pixelate/vendor/MiniMp3"
+IncludeDir["Box2D"] = "Pixelate/vendor/Box2D"
+IncludeDir["entt"] = "Pixelate/vendor/entt"
 
 
-IncludeDir["NativeFileDialog"] = "Retro-Editor/vendor/NativeFileDialog"
+IncludeDir["NativeFileDialog"] = "Pixelate-Editor/vendor/NativeFileDialog"
 
 
 
 group "Dependencies/Core/Rendering"
-	include "RetroGameFramework/vendor/Glfw"
-	include "RetroGameFramework/vendor/Glad"
+	include "Pixelate/vendor/Glfw"
+	include "Pixelate/vendor/Glad"
 group "Dependencies/Core/Audio"
-	include "RetroGameFramework/vendor/OpenAL_Soft"
+	include "Pixelate/vendor/OpenAL_Soft"
 group"Dependencies/Core/Physics"
-	include "RetroGameFramework/vendor/Box2D"
+	include "Pixelate/vendor/Box2D"
 group"Dependencies/Editor/"
-	include "Retro-Editor/vendor/NativeFileDialog"
+	include "Pixelate-Editor/vendor/NativeFileDialog"
 group ""
 
-project "RetroGameFramework"
-	location "RetroGameFramework"
+project "Pixelate"
+	location "Pixelate"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
@@ -53,8 +53,8 @@ project "RetroGameFramework"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "RGFpch.h"
-	pchsource "RetroGameFramework/src/RGFpch.cpp"
+	pchheader "PXpch.h"
+	pchsource "Pixelate/src/PXpch.cpp"
 
 	files
 	{
@@ -123,15 +123,15 @@ project "RetroGameFramework"
 		defines
 		{
 			"GLFW_INCLUDE_NONE",
-			"RGF_PLATFORM_WINDOWS"
+			"PX_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"
 		defines { 
-			"RGF_DEBUG",
-			"RGF_USE_IMGUI",
-			"RGF_USE_LOGGING",
-			"RGF_USE_INSTRUMENTOR",
+			"PX_DEBUG",
+			"PX_USE_IMGUI",
+			"PX_USE_LOGGING",
+			"PX_USE_INSTRUMENTOR",
 
 		}
 		runtime "Debug"
@@ -142,8 +142,8 @@ project "RetroGameFramework"
 
 	filter "configurations:Release"
 		defines { 
-			"RGF_RELEASE",
-			"RGF_USE_IMGUI",
+			"PX_RELEASE",
+			"PX_USE_IMGUI",
 
 		}
 		runtime "Release"
@@ -153,8 +153,8 @@ project "RetroGameFramework"
 	filter "configurations:Distribute"
 		defines
 		{
-			 "RGF_DISTRIBUTE",
-			 "RGF_USE_CUSTOM_MEM_ALLOC"
+			 "PX_DISTRIBUTE",
+			 "PX_USE_CUSTOM_MEM_ALLOC"
 
 		}
 		runtime "Release"
@@ -163,8 +163,8 @@ project "RetroGameFramework"
 
 
 
-project "Retro-Editor"
-	location "Retro-Editor"
+project "Pixelate-Editor"
+	location "Pixelate-Editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -183,8 +183,8 @@ project "Retro-Editor"
 
 	includedirs
 	{
-		"RetroGameFramework/src",
-		"RetroGameFramework/vendor",
+		"Pixelate/src",
+		"Pixelate/vendor",
 		"%{IncludeDir.Glm}",
 		"%{IncludeDir.OpenAL_Soft}/include",
 		"%{IncludeDir.OpenAL_Soft}/src/common",
@@ -200,7 +200,7 @@ project "Retro-Editor"
 	links
 	{
 		"NativeFileDialog",
-		"RetroGameFramework"
+		"Pixelate"
 	}
 	
 	filter "system:windows"
@@ -212,16 +212,16 @@ project "Retro-Editor"
 			"_CRT_SECURE_NO_WARNINGS",
 			"NOMINMAX",
 			"GLFW_INCLUDE_NONE",
-			"RGF_PLATFORM_WINDOWS",
+			"PX_PLATFORM_WINDOWS",
 			"AL_LIBTYPE_STATIC"
 		}
 		
 	filter "configurations:Debug"
 		defines { 
-			"RGF_DEBUG",
-			"RGF_USE_IMGUI",
-			"RGF_USE_LOGGING",
-			"RGF_USE_INSTRUMENTOR",
+			"PX_DEBUG",
+			"PX_USE_IMGUI",
+			"PX_USE_LOGGING",
+			"PX_USE_INSTRUMENTOR",
 
 		}
 		runtime "Debug"
@@ -231,8 +231,8 @@ project "Retro-Editor"
 	filter "configurations:Release"
 		defines 
 		{
-			"RGF_RELEASE",
-			"RGF_USE_IMGUI",
+			"PX_RELEASE",
+			"PX_USE_IMGUI",
 
 		}
 		runtime "Release"
@@ -242,7 +242,7 @@ project "Retro-Editor"
 	filter "configurations:Distribute"
 		defines
 		{
-			 "RGF_DISTRIBUTE"
+			 "PX_DISTRIBUTE"
 
 		}
 		runtime "Release"
@@ -275,8 +275,8 @@ project "Sandbox"
 
 	includedirs
 	{
-		"RetroGameFramework/src",
-		"RetroGameFramework/vendor",
+		"Pixelate/src",
+		"Pixelate/vendor",
 		"%{IncludeDir.Glm}",
 		"%{IncludeDir.OpenAL_Soft}/include",
 		"%{IncludeDir.OpenAL_Soft}/src/common",
@@ -290,7 +290,7 @@ project "Sandbox"
 
 	links
 	{
-		"RetroGameFramework"
+		"Pixelate"
 	}
 	
 	filter "system:windows"
@@ -302,16 +302,16 @@ project "Sandbox"
 			"_CRT_SECURE_NO_WARNINGS",
 			"NOMINMAX",
 			"GLFW_INCLUDE_NONE",
-			"RGF_PLATFORM_WINDOWS",
+			"PX_PLATFORM_WINDOWS",
 			"AL_LIBTYPE_STATIC"
 		}
 		
 	filter "configurations:Debug"
 		defines { 
-			"RGF_DEBUG",
-			"RGF_USE_IMGUI",
-			"RGF_USE_LOGGING",
-			"RGF_USE_INSTRUMENTOR",
+			"PX_DEBUG",
+			"PX_USE_IMGUI",
+			"PX_USE_LOGGING",
+			"PX_USE_INSTRUMENTOR",
 
 		}
 		runtime "Debug"
@@ -321,10 +321,10 @@ project "Sandbox"
 	filter "configurations:Release"
 		defines 
 		{
-			"RGF_RELEASE",
-			"RGF_USE_IMGUI",
-			"RGF_USE_LOGGING",
-			"RGF_USE_INSTRUMENTOR",
+			"PX_RELEASE",
+			"PX_USE_IMGUI",
+			"PX_USE_LOGGING",
+			"PX_USE_INSTRUMENTOR",
 		}
 		runtime "Release"
 		optimize "on"
@@ -333,7 +333,7 @@ project "Sandbox"
 	filter "configurations:Distribute"
 		defines
 		{
-			 "RGF_DISTRIBUTE"
+			 "PX_DISTRIBUTE"
 
 		}
 		runtime "Release"
