@@ -26,6 +26,7 @@ IncludeDir["OpenAL_Soft"] = "Pixelate/vendor/OpenAL_Soft"
 IncludeDir["MiniMp3"] = "Pixelate/vendor/MiniMp3"
 IncludeDir["Box2D"] = "Pixelate/vendor/Box2D"
 IncludeDir["entt"] = "Pixelate/vendor/entt"
+IncludeDir["mono"] = "Pixelate-Scripting/Pixelate-Scripting/include/mono-2.0/"
 
 
 IncludeDir["NativeFileDialog"] = "Pixelate-Editor/vendor/NativeFileDialog"
@@ -103,7 +104,9 @@ project "Pixelate"
 		"%{IncludeDir.OpenAL_Soft}/src/al",
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
-		"%{IncludeDir.entt}/vendor/entt/"
+		"%{IncludeDir.entt}/vendor/entt/",
+		"%{IncludeDir.mono}"
+
 
 
 	}
@@ -193,7 +196,8 @@ project "Pixelate-Editor"
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
 		"%{IncludeDir.NativeFileDialog}src/include",
-		"%{IncludeDir.entt}/vendor/entt/"
+		"%{IncludeDir.entt}/vendor/entt/",
+		"%{IncludeDir.mono}"
 
 	}
 
@@ -274,7 +278,7 @@ project "Pixelate-Scripting"
 
 project "Sandbox-CSharpApp"
 	location "Sandbox-CSharpApp"
-	kind "ConsoleApp"
+	kind "SharedLib"
 	language "C#"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")

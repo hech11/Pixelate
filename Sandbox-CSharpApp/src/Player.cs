@@ -1,25 +1,26 @@
 using System;
-using Pixelate;
 
+namespace test
+{
 
-
-public class Player {
-
-    public Testing test;
-
-    void OnCreate()
+    public class Player
     {
-        test = new Testing();
-        test.Print();
+        Player()
+        {
+            Console.WriteLine("Player constructed!");
+
+        }
+
+
+        public void Print()
+        {
+            Console.WriteLine("Hello world!");
+        }
+
     }
 
 
-    static void Main(string[] args)
-    {
 
-        Player player = new Player();
-
-        player.OnCreate();
-    }
-    
 }
+
+

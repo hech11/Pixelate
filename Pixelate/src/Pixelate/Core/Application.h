@@ -21,7 +21,7 @@
 
 #include "Pixelate/Physics/PhysicsDebugDraw.h"
 
-
+#include "Pixelate/Scripting/ScriptingMaster.h"
 
 // This would be inherited from another class from CLIENT side.
 // The application class is the main 'hub' of all PX components.
