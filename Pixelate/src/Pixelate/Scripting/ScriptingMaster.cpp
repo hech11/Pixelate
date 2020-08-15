@@ -25,16 +25,32 @@ namespace Pixelate {
 		MonoImage* AppAssemblyImage;
 
 
-		// test
-		MonoObject* m_TestObject;
-		MonoClass* m_TestClass;
-		MonoMethod* m_TestMethod;
-		unsigned int m_ObjectHandle;
-
 	};
 
 	static ScriptingMasterData s_MonoData;
 
+	void ScriptBehaviour::InitBehaviours() {
+
+		OnCreateFunc = CreateMethod(ClassName + ":OnCreate()");
+		OnUpdateFunc = CreateMethod(ClassName + ":OnUpdate(single)");
+		OnDestroyFunc = CreateMethod(ClassName + ":OnDestroy()");
+
+	}
+
+	MonoMethod* ScriptBehaviour::CreateMethod(const std::string& methodDesc) {
+		MonoMethodDesc* desc = mono_method_desc_new(methodDesc.c_str(), NULL);
+		if (!desc)
+			PX_CORE_ERROR("Desc failed!\n");
+
+
+		MonoMethod* method = mono_method_desc_search_in_image(desc, s_MonoData.AppAssemblyImage);
+
+		if (!method)
+			PX_CORE_ERROR("Method failed!\n");
+
+		return method;
+	}
+	
 
 	void ScriptingMaster::Init(const std::string& assemblyPath) {
 		s_MonoData.AssemblyPath = assemblyPath;
@@ -87,12 +103,35 @@ namespace Pixelate {
 
 	void ScriptingMaster::Shutdown() {
 		mono_jit_cleanup(s_MonoData.Domain);
+	
 	}
 
 
-	void ScriptingMaster::OnUpdate() {
+
+	void ScriptingMaster::OnEntityCreate(const ScriptBehaviour& sb, void** params) {
+
 		MonoObject* exc = 0;
-		mono_runtime_invoke(s_MonoData.m_TestMethod, s_MonoData.m_TestObject, nullptr, &exc);
+		if(sb.OnCreateFunc)
+			mono_runtime_invoke(sb.OnCreateFunc, mono_gchandle_get_target(sb.Handle), params, &exc);
+	}
+	void ScriptingMaster::OnEntityUpdate(const ScriptBehaviour& sb, void** params) {
+
+		MonoObject* exc = 0;
+		if(sb.OnUpdateFunc)
+			mono_runtime_invoke(sb.OnUpdateFunc, mono_gchandle_get_target(sb.Handle), params, &exc);
+	}
+	void ScriptingMaster::OnEntityDestroy(const ScriptBehaviour& sb, void** params) {
+
+		MonoObject* exc = 0;
+		if(sb.OnDestroyFunc)
+			mono_runtime_invoke(sb.OnDestroyFunc, mono_gchandle_get_target(sb.Handle), params, &exc);
+	}
+
+
+	bool ScriptingMaster::ClassExists(const std::string& className)
+	{
+		auto c = mono_class_from_name(s_MonoData.AppAssemblyImage, "", className.c_str());
+		return c != nullptr;
 	}
 
 	void ScriptingMaster::OnImguiRender()
@@ -100,37 +139,40 @@ namespace Pixelate {
 
 	}
 	
-	void ScriptingMaster::RegisterAll() {
-		// add all of Pixelate's functions and components here
+	void ScriptingMaster::CreateEntityScript(ScriptBehaviour& sb) {
+		
 
-		s_MonoData.m_TestClass = mono_class_from_name(s_MonoData.CoreAssemblyImage, "", "Player");
-		if (!s_MonoData.m_TestClass) {
-			PX_CORE_ERROR("Creating a class!\n");
+		if (sb.Class != nullptr) {
+			mono_runtime_set_shutting_down();
 		}
 
-		s_MonoData.m_TestObject = mono_object_new(s_MonoData.Domain, s_MonoData.m_TestClass);
 
-		if (!s_MonoData.m_TestObject) {
+		sb.Class = mono_class_from_name(s_MonoData.AppAssemblyImage, "", sb.ClassName.c_str());
+		if (sb.Class == nullptr) {
+			PX_CORE_ERROR("Creating a class!\n");
+			return;
+		}
+
+		MonoObject* obj = mono_object_new(s_MonoData.Domain, sb.Class);
+		if (!obj) {
 			PX_CORE_ERROR("Creating a object failed!\n");
 
 		}
-		mono_runtime_object_init(s_MonoData.m_TestObject);
-		s_MonoData.m_ObjectHandle = mono_gchandle_new(s_MonoData.m_TestObject, false);
+		mono_runtime_object_init(obj);
+		mono_runtime_set_shutting_down();
+		sb.Handle = mono_gchandle_new(obj, false);
 
-		MonoMethodDesc* desc = mono_method_desc_new("Player:Print()", NULL);
-		if (!desc)
-			PX_CORE_ERROR("Desc failed!\n");
+		sb.InitBehaviours();
+	}
 
+	void ScriptingMaster::RegisterAll() {
+		// add all of Pixelate's functions and components here
 
-		s_MonoData.m_TestMethod = mono_method_desc_search_in_image(desc, s_MonoData.CoreAssemblyImage);
-
-
-
-
-		if (!s_MonoData.m_TestMethod)
-			PX_CORE_ERROR("Method failed!\n");
+		
 
 	}
+
+	
 
 	
 

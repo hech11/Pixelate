@@ -540,6 +540,44 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 			});
 
+
+			DrawEntityComponents<ScriptingBehaviourComponent>("Scripting Behaviour", m_CurrentlySelectedEntity, [](ScriptingBehaviourComponent& sbc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Script name");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				char buffer[255];
+				memset(buffer, 0, 255);
+				memcpy(buffer, sbc.Behaviour.ClassName.c_str(), sbc.Behaviour.ClassName.length());
+				if (ImGui::InputText("##scriptName", buffer, 255)) {
+					sbc.Behaviour.ClassName = std::string(buffer);
+
+					if(ScriptingMaster::ClassExists(sbc.Behaviour.ClassName))
+						ScriptingMaster::CreateEntityScript(sbc.Behaviour);
+
+
+				}
+				//ImGui::DragFloat2("##center", glm::value_ptr(bcc.Center), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Size");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				//ImGui::DragFloat2("##size", glm::value_ptr(bcc.Size), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Is trigger");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+//				ImGui::Checkbox("##istrigger", &bcc.IsTrigger);
+				ImGui::PopItemWidth();
+
+				});
+
+
+
 			if (ImGui::Button("Add component", { 200, 50 })) {
 				ImGui::OpenPopup("AddComponentPopup");
 			}
@@ -577,7 +615,14 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						m_CurrentlySelectedEntity.AddComponent <BoxColliderComponent>(glm::vec2(0.0f, 0.0f), glm::vec2(transformScale.x / 2, transformScale.y /2 ), false);
 						ImGui::CloseCurrentPopup();
 					}
+				}
 
+				if (!m_CurrentlySelectedEntity.HasComponent<ScriptingBehaviourComponent>()) {
+
+					if (ImGui::Button("Scripting Behaviour")) {
+						m_CurrentlySelectedEntity.AddComponent <ScriptingBehaviourComponent>();
+						ImGui::CloseCurrentPopup();
+					}
 				}
 				ImGui::EndPopup();
 			}

@@ -1,26 +1,22 @@
 using System;
 
-namespace test
+public class Player 
 {
 
-    public class Player
+
+    public void OnCreate()
     {
-        Player()
-        {
-            Console.WriteLine("Player constructed!");
-
-        }
-
-
-        public void Print()
-        {
-            Console.WriteLine("Hello world!");
-        }
-
+        Console.WriteLine("Player::OnCreate!");
+    }
+    public void OnUpdate(float ts)
+    {
+        Console.WriteLine("Player::OnUpdate!: " + ts);
     }
 
-
-
+    public void OnDestroy()
+    {
+        Console.WriteLine("Player::OnDestory!");
+    }
 }
 
 

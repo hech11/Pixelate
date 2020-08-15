@@ -8,6 +8,7 @@
 #include "glm/gtx/matrix_decompose.hpp"
 
 #include "Pixelate/Physics/RigidBody.h"
+#include "Pixelate/Scripting/ScriptingMaster.h"
 
 
 namespace Pixelate {
@@ -133,6 +134,21 @@ namespace Pixelate {
 
 	//TODO: Need to support the other colliders such as polygon, edge and circle
 
+///////////////////////////////////////////////////// Scripting components /////////////////////////////////////////////////////
+
+	struct ScriptingBehaviourComponent {
+
+		ScriptBehaviour Behaviour;
+
+		ScriptingBehaviourComponent() = default;
+		ScriptingBehaviourComponent(const std::string& className) 
+		{
+			Behaviour.ClassName = className;
+		}
+		ScriptingBehaviourComponent(const ScriptingBehaviourComponent& comp)
+			: Behaviour(comp.Behaviour)
+		{}
+	};
 
 
 }

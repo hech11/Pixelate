@@ -1,20 +1,21 @@
 ﻿using System;
 
+namespace Pixelate
+{
 
-    public class Player
-    {
-        Player()
+    public class Entity {
+        public int Health = 5;
+
+        ~Entity()
         {
-            Console.WriteLine("Player constructed!");
 
         }
 
-
-        public void Print()
-        {
-            Console.WriteLine("Hello world!");
+        public void PrintHealth() {
+            Console.WriteLine(Health);
         }
 
     }
 
 
+}

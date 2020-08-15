@@ -161,9 +161,29 @@ namespace Pixelate {
 			}
 
 		}
+
+		auto sbcView = m_Reg.view<ScriptingBehaviourComponent>();
+		for (auto entity : sbcView) {
+			Entity e{ entity, this };
+			auto& sbc = e.GetComponent<ScriptingBehaviourComponent>();
+
+			ScriptingMaster::OnEntityCreate(sbc.Behaviour);
+		}
+
+
 	}
 
 	void Scene::OnRuntimeUpdate(float ts) {
+		// Updating Scripts
+
+		auto sbcView = m_Reg.view<ScriptingBehaviourComponent>();
+		for (auto entity : sbcView) {
+			Entity e{ entity, this };
+			auto& sbc = e.GetComponent<ScriptingBehaviourComponent>();
+			void* params = &ts;
+
+			ScriptingMaster::OnEntityUpdate(sbc.Behaviour, &params);
+		}
 
 
 
@@ -205,6 +225,20 @@ namespace Pixelate {
 	}
 
 	void Scene::OnRuntimeStop() {
+
+
+
+		// calling on destroy in scripts
+		auto sbcView = m_Reg.view<ScriptingBehaviourComponent>();
+		for (auto entity : sbcView) {
+			Entity e{ entity, this };
+			auto& sbc = e.GetComponent<ScriptingBehaviourComponent>();
+
+			ScriptingMaster::OnEntityDestroy(sbc.Behaviour);
+		}
+
+
+
 		auto scene = m_Reg.view<PhysicsWorldComponent>();
 		auto& physicsWorld = m_Reg.get<PhysicsWorldComponent>(scene.front());
 

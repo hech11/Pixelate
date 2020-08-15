@@ -125,10 +125,10 @@ namespace Pixelate {
 	void Application::Run() {
 		PX_PROFILE_FUNCTION();
 
-		
 		float Time = 0.0f;
 
 		float LastTime = 0.0f;
+
 
 		m_AppTimer.Reset();
 		while (m_IsRunning) {
@@ -149,8 +149,6 @@ namespace Pixelate {
 
 
 			}
-
-			ScriptingMaster::OnUpdate();
 	#ifdef PX_USE_IMGUI
 			if (!m_IsMinimized) {
 				RenderImGui();
@@ -169,6 +167,8 @@ namespace Pixelate {
 #endif
 			}
 		}
+
+
 
 	}
 
