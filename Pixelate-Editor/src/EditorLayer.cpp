@@ -42,6 +42,7 @@ namespace Pixelate {
 
 		m_EditorScene = CreateRef<Scene>();
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
+		ScriptingMaster::SetSceneContext(m_EditorScene);
 
 
 		//Setting up both scene and game viewport panels
@@ -58,7 +59,7 @@ namespace Pixelate {
 		props.Size = &m_SceneViewportPanelSize;
 
 		m_EditorCamera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
-
+		m_EditorCamera->SetOrthographicSize(5.0f);
 
 		Renderer2D::SetBoundingBox(true);
 
@@ -145,14 +146,14 @@ namespace Pixelate {
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
 
-		if (e.GetKeyCode() == PX_KEY_Q) {
+		if (e.GetKeyCode() == (int)KeyCode::Q) {
 			m_Gizmo = ImGuizmo::TRANSLATE;
 		}
-		if (e.GetKeyCode() == PX_KEY_W) {
+		if (e.GetKeyCode() == (int)KeyCode::W) {
 			m_Gizmo = ImGuizmo::ROTATE;
 
 		}
-		if (e.GetKeyCode() == PX_KEY_E) {
+		if (e.GetKeyCode() == (int)KeyCode::E) {
 			m_Gizmo = ImGuizmo::SCALE;
 		}
 		return false;
@@ -161,7 +162,7 @@ namespace Pixelate {
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		if (e.GetButton() == PX_MOUSE_BUTTON_1 && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
+		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
 
 			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
 			for (auto s : allSpriteEntities) {
@@ -255,6 +256,13 @@ namespace Pixelate {
 				}
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Edit")) {
+				if (ImGui::MenuItem("Reload CSharp Assembly", "")) {
+					//ScriptingMaster::ReloadAssembly();
+				}
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 
@@ -394,7 +402,7 @@ namespace Pixelate {
 		m_IsSceneViewportHovered = ImGui::IsWindowHovered();
 		m_IsSceneViewportFocused = ImGui::IsWindowFocused();
 
-		if (m_IsSceneViewportHovered && (Input::IsMouseButtonDown(PX_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonDown(PX_MOUSE_BUTTON_MIDDLE))) {
+		if (m_IsSceneViewportHovered && (Input::IsMouseButtonDown(MouseButton::Right) || Input::IsMouseButtonDown(MouseButton::Middle))) {
 			m_IsSceneViewportFocused = true;
 			ImGui::SetWindowFocus();
 		}
@@ -454,7 +462,7 @@ namespace Pixelate {
 		m_IsGameViewportHovered = ImGui::IsWindowHovered();
 		m_IsGameViewportFocused = ImGui::IsWindowFocused();
 
-		if (m_IsGameViewportHovered && (Input::IsMouseButtonDown(PX_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonDown(PX_MOUSE_BUTTON_MIDDLE))) {
+		if (m_IsGameViewportHovered && (Input::IsMouseButtonDown(MouseButton::Right) || Input::IsMouseButtonDown(MouseButton::Middle))) {
 			m_IsGameViewportHovered = true;
 			ImGui::SetWindowFocus();
 		}

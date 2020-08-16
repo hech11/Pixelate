@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Pixelate/Core/Core.h"
+#include "Pixelate/Core/KeyCodes.h"
+#include "Pixelate/Core/MouseButtonCodes.h"
+
 
 
 // This represents the users input.
@@ -12,6 +15,8 @@
 
 // TODO: Does not support gamepad. Look at gamepad support?
 // TODO: This only gets the mouse and key button down. Add a "MouseButtonHeld" or "MouseButtonReleased" function? -- ( same with keyboard )
+
+
 namespace Pixelate {
 
 	class PX_API Input {
@@ -21,9 +26,9 @@ namespace Pixelate {
 				None = 0,
 				Locked
 			};
-			static bool IsKeyDown(int keycode);
+			static bool IsKeyDown(KeyCode keycode);
 
-			static bool IsMouseButtonDown(int button);
+			static bool IsMouseButtonDown(MouseButton button);
 			static int GetMousePosX();
 			static int GetMousePosY();
 			static std::pair<int, int> GetMousePos();

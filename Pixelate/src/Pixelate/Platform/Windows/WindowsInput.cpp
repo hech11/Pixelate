@@ -5,21 +5,22 @@
 #include "Pixelate/Core/Application.h"
 #include "GLFW/include/GLFW/glfw3.h"
 
+
 namespace Pixelate {
 	Input::MouseLockMode Input::m_LockmodeState;
 
 
-	bool Input::IsKeyDown(int keycode) {
+	bool Input::IsKeyDown(KeyCode keycode) {
 		auto win = static_cast<GLFWwindow*>(Application::GetApp().GetWindow().GetNativeWindow());
 
-		int state = glfwGetKey(win, keycode);
+		int state = glfwGetKey(win, (int)keycode);
 		return state == GLFW_PRESS;
 	}
 
-	bool Input::IsMouseButtonDown(int button) {
+	bool Input::IsMouseButtonDown(MouseButton button) {
 		auto win = static_cast<GLFWwindow*>(Application::GetApp().GetWindow().GetNativeWindow());
 
-		int state = glfwGetMouseButton(win, button);
+		int state = glfwGetMouseButton(win, (int)button);
 		return state == GLFW_PRESS;
 	}
 	int Input::GetMousePosX() {

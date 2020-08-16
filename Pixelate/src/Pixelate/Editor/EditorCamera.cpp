@@ -53,19 +53,19 @@ namespace Pixelate {
 			SetPosition({ m_CameraPosition.x, m_CameraPosition.y, 0.0f });
 		}
 		else {
-			const bool& IsAltHeld = (Input::IsKeyDown(PX_KEY_LEFT_ALT) || Input::IsKeyDown(PX_KEY_RIGHT));
-			if (Input::IsKeyDown(PX_KEY_A) && IsAltHeld) {
+			const bool& IsAltHeld = (Input::IsKeyDown(KeyCode::LeftAlt) || Input::IsKeyDown(KeyCode::Right));
+			if (Input::IsKeyDown(KeyCode::A) && IsAltHeld) {
 
 				Move({ -m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f, 0.0f});
 			}
-			else if (Input::IsKeyDown(PX_KEY_D) && IsAltHeld) {
+			else if (Input::IsKeyDown(KeyCode::D) && IsAltHeld) {
 				Move({ m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f, 0.0f });
 			}
 
-			if (Input::IsKeyDown(PX_KEY_W) && IsAltHeld) {
+			if (Input::IsKeyDown(KeyCode::W) && IsAltHeld) {
 				Move({ 0.0f, m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f });
 			}
-			else if (Input::IsKeyDown(PX_KEY_S) && IsAltHeld) {
+			else if (Input::IsKeyDown(KeyCode::S) && IsAltHeld) {
 				Move({ 0.0f, -m_CameraTranslationSpeed * ts * m_OrthographicSize, 0.0f });
 			}
 		}
@@ -118,7 +118,7 @@ namespace Pixelate {
 
 
 	bool EditorCamera::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
-		if (e.GetButton() == PX_MOUSE_BUTTON_RIGHT && e.GetRepeatCount() == 0) {
+		if (e.GetButton() == (int)MouseButton::Right && e.GetRepeatCount() == 0) {
 			auto& app = Application::GetApp();
 
 			m_OriginalMousePosition = GetMousePositionRelativeToViewportPanel();
@@ -133,7 +133,7 @@ namespace Pixelate {
 
 	bool EditorCamera::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
 
-		if (e.GetButton() == PX_MOUSE_BUTTON_RIGHT) {
+		if (e.GetButton() == (int)MouseButton::Right) {
 			m_Drag = false;
 			Input::SetMouseLockMode(Input::MouseLockMode::None);
 

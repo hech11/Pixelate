@@ -7,6 +7,10 @@
 #include "imgui.h"
 
 #include "Pixelate/Utility/File.h"
+#include <Pixelate\Scene\Components.h>
+#include "glm/gtc/type_ptr.inl"
+
+#include "Pixelate/Scene/Entity.h"
 
 namespace Pixelate {
 
@@ -23,6 +27,10 @@ namespace Pixelate {
 		// Client app
 		MonoAssembly* AppAssembly;
 		MonoImage* AppAssemblyImage;
+
+
+
+		Ref<Scene> ActiveSceneContext;
 
 
 	};
@@ -108,6 +116,21 @@ namespace Pixelate {
 
 
 
+	void ScriptingMaster::SetSceneContext(const Ref<Scene>& scene)
+	{
+		s_MonoData.ActiveSceneContext = scene;
+	}
+
+	Pixelate::Ref<Pixelate::Scene>& ScriptingMaster::GetActiveSceneContext() {
+		return s_MonoData.ActiveSceneContext;
+	}
+
+	void ScriptingMaster::ReloadAssembly() {
+// 		Shutdown();
+// 
+// 		Init(s_MonoData.AssemblyPath);
+	}
+
 	void ScriptingMaster::OnEntityCreate(const ScriptBehaviour& sb, void** params) {
 
 		MonoObject* exc = 0;
@@ -169,11 +192,74 @@ namespace Pixelate {
 		// add all of Pixelate's functions and components here
 
 		
-
+		mono_add_internal_call("Pixelate.Entity::GetTransform_CPP", Script::Pixelate_Entity_GetTransform);
+		mono_add_internal_call("Pixelate.Entity::SetTransform_CPP", Script::Pixelate_Entity_SetTransform);
+		mono_add_internal_call("Pixelate.Input::IsKeyDown_CPP", (void*)Script::Pixelate_Input_IsKeyDown);
+		mono_add_internal_call("Pixelate.Input::IsMouseButtonDown_CPP", (void*)Script::Pixelate_Input_IsMouseButtonDown);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::SetLinearVelocity_CPP", Script::Pixelate_RigidbodyComponent_SetLinearVelocity);
+		
 	}
 
-	
+	// TODO: Something I really need to revist with UUID's
+	namespace Script {
 
+		void Pixelate_Entity_SetTransform(glm::mat4* setTransform) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			
+			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+
+			auto sbcView = scene->GetReg().view<ScriptingBehaviourComponent>();
+			for (auto entity : sbcView) {
+
+				Entity e = { entity,  scene.get() };
+				auto& t = e.GetComponent<TransformComponent>();
+				memcpy(glm::value_ptr(t.Transform), setTransform, sizeof(glm::mat4));
+				return;
+			}
+
+			
+		}
+		void Pixelate_Entity_GetTransform(glm::mat4* getTransform) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+
+			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+
+			auto sbcView = scene->GetReg().view<ScriptingBehaviourComponent>();
+			for (auto entity : sbcView) {
+
+				Entity e = { entity,  scene.get() };
+				auto& t = e.GetComponent<TransformComponent>();
+				memcpy(getTransform, glm::value_ptr(t.Transform), sizeof(glm::mat4));
+				return;
+			}
+		}
+
+
+
+		bool Pixelate_Input_IsKeyDown(KeyCode* code) {
+			return Input::IsKeyDown(*code);
+		}
+
+		bool Pixelate_Input_IsMouseButtonDown(MouseButton* code) {
+			return Input::IsMouseButtonDown(*code);
+		}
+
+		void Pixelate_RigidbodyComponent_SetLinearVelocity(glm::vec2* velocity) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+
+			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+
+			auto rbcView = scene->GetReg().view<RigidBodyComponent>();
+			for (auto entity : rbcView) {
+
+				Entity e = { entity,  scene.get() };
+				auto& r = e.GetComponent<RigidBodyComponent>();
+				r.RigidBody.SetLinearVelocity(*velocity);
+				return;
+			}
+		}
+
+	}
 	
 
 }

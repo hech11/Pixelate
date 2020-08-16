@@ -178,7 +178,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					SetSelectedEntity(e);
 				}
 
-				if (Input::IsKeyDown(PX_KEY_DELETE))
+				if (Input::IsKeyDown(KeyCode::Deletekey))
 					deleteEntity = true;
 
 
@@ -202,10 +202,10 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		});
 
 
-		if (Pixelate::Input::IsMouseButtonDown(PX_MOUSE_BUTTON_2) && ImGui::IsWindowHovered()) {
+		if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right) && ImGui::IsWindowHovered()) {
 			ImGui::OpenPopup("ScenePopup");
 		}
-		if (Pixelate::Input::IsMouseButtonDown(PX_MOUSE_BUTTON_1) && ImGui::IsWindowHovered() && m_SelectedEntity) {
+		if (Pixelate::Input::IsMouseButtonDown(MouseButton::Left) && ImGui::IsWindowHovered() && m_SelectedEntity) {
 			SetSelectedEntity();
 		}
 		if (ImGui::BeginPopup("ScenePopup")) {
