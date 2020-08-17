@@ -17,6 +17,7 @@
 #include "../Core/KeyCodes.h"
 
 #include "Pixelate/Rendering/RenderCommand.h"
+#include "Pixelate/Audio/Audio.h"
 
 namespace Pixelate {
 
@@ -540,7 +541,44 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 			});
 
+			DrawEntityComponents<AudioSourceComponent>("Audio Source", m_CurrentlySelectedEntity, [](AudioSourceComponent& asc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
 
+				ImGui::Text("Source filepath");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				if (ImGui::Button("open")) {
+					nfdchar_t* outPath = NULL;
+					nfdresult_t result = NFD_OpenDialog("wav,ogg,mp3", NULL, &outPath);
+					if (result == NFD_OKAY) {
+						puts("Success!");
+
+						asc.Source = Audio::CreateAudioSource(outPath);
+						asc.FilePath = outPath;
+
+						free(outPath);
+					} else if (result == NFD_CANCEL) {
+						PX_CORE_MSG("User pressed cancel.\n");
+					} else {
+						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+					}
+				}
+
+				ImGui::SameLine();
+
+				if (asc.Source)
+					ImGui::InputText("##sourceFilepath", (char*)asc.FilePath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+				else
+					ImGui::InputText("##sourceFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
+
+				//ImGui::DragFloat2("##center", glm::value_ptr(bcc.Center), 0.1f);
+				ImGui::PopItemWidth();
+				});
+
+			DrawEntityComponents<AudioListenerComponent>("Audio Listener", m_CurrentlySelectedEntity, [](AudioListenerComponent& alc) {
+			
+			});
 			DrawEntityComponents<ScriptingBehaviourComponent>("Scripting Behaviour", m_CurrentlySelectedEntity, [](ScriptingBehaviourComponent& sbc) {
 				ImGui::Columns(2);
 				ImGui::SetColumnWidth(0, 150);
@@ -613,6 +651,21 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 					if (ImGui::Button("Box Collider")) {
 						m_CurrentlySelectedEntity.AddComponent <BoxColliderComponent>(glm::vec2(0.0f, 0.0f), glm::vec2(transformScale.x / 2, transformScale.y /2 ), false);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+				if (!m_CurrentlySelectedEntity.HasComponent<AudioSourceComponent>()) {
+
+					if (ImGui::Button("Audio Source")) {
+						m_CurrentlySelectedEntity.AddComponent <AudioSourceComponent>();
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				if (!m_CurrentlySelectedEntity.HasComponent<AudioListenerComponent>()) {
+
+					if (ImGui::Button("Audio Listener")) {
+						m_CurrentlySelectedEntity.AddComponent <AudioListenerComponent>();
 						ImGui::CloseCurrentPopup();
 					}
 				}

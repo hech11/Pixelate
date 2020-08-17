@@ -7,6 +7,8 @@
 
 #include "GLM/glm/glm.hpp"
 
+
+//TODO: This needs refactoring and redoing ( integrate into scene )
 namespace Pixelate {
 
 

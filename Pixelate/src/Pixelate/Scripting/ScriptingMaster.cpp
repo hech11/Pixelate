@@ -194,10 +194,15 @@ namespace Pixelate {
 		
 		mono_add_internal_call("Pixelate.Entity::GetTransform_CPP", Script::Pixelate_Entity_GetTransform);
 		mono_add_internal_call("Pixelate.Entity::SetTransform_CPP", Script::Pixelate_Entity_SetTransform);
+
 		mono_add_internal_call("Pixelate.Input::IsKeyDown_CPP", (void*)Script::Pixelate_Input_IsKeyDown);
 		mono_add_internal_call("Pixelate.Input::IsMouseButtonDown_CPP", (void*)Script::Pixelate_Input_IsMouseButtonDown);
+
 		mono_add_internal_call("Pixelate.RigidBodyComponent::SetLinearVelocity_CPP", Script::Pixelate_RigidbodyComponent_SetLinearVelocity);
-		
+
+
+		mono_add_internal_call("Pixelate.AudioSourceComponent::Play_CPP", (void*)Script::Pixelate_AudioSourceComponent_Play);
+
 	}
 
 	// TODO: Something I really need to revist with UUID's
@@ -244,6 +249,8 @@ namespace Pixelate {
 			return Input::IsMouseButtonDown(*code);
 		}
 
+
+
 		void Pixelate_RigidbodyComponent_SetLinearVelocity(glm::vec2* velocity) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
 
@@ -255,6 +262,22 @@ namespace Pixelate {
 				Entity e = { entity,  scene.get() };
 				auto& r = e.GetComponent<RigidBodyComponent>();
 				r.RigidBody.SetLinearVelocity(*velocity);
+				return;
+			}
+		}
+
+
+		void Pixelate_AudioSourceComponent_Play() {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+
+			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+
+			auto ascView = scene->GetReg().view<AudioSourceComponent>();
+			for (auto entity : ascView) {
+
+				Entity e = { entity,  scene.get() };
+				auto& a = e.GetComponent<AudioSourceComponent>();
+				a.Source->Play();
 				return;
 			}
 		}

@@ -10,6 +10,8 @@
 #include "Pixelate/Physics/RigidBody.h"
 #include "Pixelate/Scripting/ScriptingMaster.h"
 
+#include "Pixelate/Audio/AudioListener.h"
+#include "Pixelate/Audio/AudioSource.h"
 
 namespace Pixelate {
 	
@@ -95,10 +97,40 @@ namespace Pixelate {
 ///////////////////////////////////////////////////// Audio components /////////////////////////////////////////////////////
 
 	struct AudioListenerComponent {
+		Pixelate::AudioListener Listener;
+
+
+
+		AudioListenerComponent() = default;
+
+		AudioListenerComponent(const AudioListenerComponent& comp)
+			: Listener(comp.Listener)
+		{
+		}
+
+		AudioListenerComponent(const AudioListener& listener)
+			: Listener(listener)
+		{
+		}
 
 	};
 
-	struct AudioEmitterComponent {
+	struct AudioSourceComponent {
+		Ref<AudioSource> Source;
+		std::string FilePath;
+
+		AudioSourceComponent() = default;
+
+		AudioSourceComponent(const AudioSourceComponent& comp)
+			: Source(comp.Source), FilePath(comp.FilePath)
+		{ 	 
+		}
+
+		AudioSourceComponent(const Ref<AudioSource>& source, const std::string& filepath)
+			: Source(source), FilePath(filepath)
+		{
+		}
+
 
 	};
 

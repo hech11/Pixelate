@@ -16,7 +16,10 @@ public class Player : Entity
         {
             GetComponent<RigidBodyComponent>().SetLinearVelocity(new Vector2(0.0f, 5.0f));
         }
-
+        if (Input.IsMouseButtonDown(MouseButton.Right))
+        {
+            GetComponent<AudioSourceComponent>().Play();
+        }
         if (Input.IsKeyDown(KeyCode.D))
         {
             Matrix4x4 transform =  GetTransform();

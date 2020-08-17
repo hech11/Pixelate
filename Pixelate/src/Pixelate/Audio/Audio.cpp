@@ -11,25 +11,27 @@ namespace Pixelate {
 
 	struct AudioData {
 		Ref<AudioContext> Context;
-		Ref<AudioListener> Listener;
 
 		std::map<std::string, Ref<AudioBuffer>> AudioBuffers;
 	};
 
-	static AudioData s_Data;
+	static AudioData* s_Data;
 
 	void Audio::Init() {
 		PX_PROFILE_FUNCTION();
-		s_Data.Context = CreateRef<AudioContext>();
-		s_Data.Context->Init();
 
-		s_Data.Listener = CreateRef<AudioListener>();
+		s_Data = new AudioData;
+		s_Data->Context = CreateRef<AudioContext>();
+		s_Data->Context->Init();
+
 
 
 	}
 	void Audio::Shutdown() {
 		PX_PROFILE_FUNCTION();
-		s_Data.Context->Close();
+		s_Data->Context->Close();
+
+		delete s_Data;
 	}
 
 
@@ -39,16 +41,16 @@ namespace Pixelate {
 		Ref<AudioSource> source = CreateRef<AudioSource>();
 		source->SetLooping(shouldLoop);
 
-		if (s_Data.AudioBuffers.find(filepath) != s_Data.AudioBuffers.end()) {
+		if (s_Data->AudioBuffers.find(filepath) != s_Data->AudioBuffers.end()) {
 			PX_PROFILE_SCOPE("Audio::CreateAudioSource::.AudioBuffers.find(filepath) != s_Data.AudioBuffers.end()");
-			source->SetBufferData(s_Data.AudioBuffers[filepath]);
+			source->SetBufferData(s_Data->AudioBuffers[filepath]);
 			return source;
 		}
 
 		AudioFormatSpec specs = AudioFormatSpec::LoadAudioData(filepath);
 		Ref<AudioBuffer> buffer = CreateRef<AudioBuffer>(specs);
 
-		s_Data.AudioBuffers[filepath] = buffer;
+		s_Data->AudioBuffers[filepath] = buffer;
 		source->SetBufferData(buffer);
 
 		return source;

@@ -68,6 +68,8 @@ namespace Pixelate {
 
 		void Pixelate_RigidbodyComponent_SetLinearVelocity(glm::vec2* velocity);
 
+		void Pixelate_AudioSourceComponent_Play();
+
 	}
 
 
