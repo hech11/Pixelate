@@ -5,10 +5,11 @@
 
 #include <GLAD\include\glad.h>
 #include "Pixelate\Rendering\Renderer2D.h"
+#include "Pixelate\Rendering\RendererCapabilities.h"
 
 namespace Pixelate {
 
-	static RenderAPICapabilities s_RenderCaps;
+	static RenderAPIData s_APIData;
 
 	unsigned int GLRendererAPI::ConvertBlendFunctions(const BlendFunc& func) {
 		switch (func) {
@@ -45,13 +46,16 @@ namespace Pixelate {
 	void GLRendererAPI::Init() {
 
 
-			s_RenderCaps.VendorName = (const char*)glGetString(GL_VENDOR);
-			s_RenderCaps.RendererName = (const char*)glGetString(GL_RENDERER);
-			s_RenderCaps.Version = (const char*)glGetString(GL_VERSION);
-			s_RenderCaps.ContextName = "OpenGL";
+			s_APIData.VendorName = (const char*)glGetString(GL_VENDOR);
+			s_APIData.RendererName = (const char*)glGetString(GL_RENDERER);
+			s_APIData.Version = (const char*)glGetString(GL_VERSION);
+			s_APIData.ContextName = "OpenGL";
 			m_API = RendererAPI::API::OpenGL;
 
-			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &s_RenderCaps.MaxTextureSlots);
+			
+			auto& textureCap = RendererCapabilities::MaxTextureSlots;
+			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureCap);
+
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -59,11 +63,11 @@ namespace Pixelate {
 
 			PX_CORE_MSG("Rendering API : OpenGL\n");
 			PX_CORE_TRACE("----- Information -----\n");
-			PX_CORE_TRACE("Vendor: %s\n", s_RenderCaps.VendorName.c_str());
-			PX_CORE_TRACE("Version: %s\n", s_RenderCaps.Version.c_str());
+			PX_CORE_TRACE("Vendor: %s\n", s_APIData.VendorName.c_str());
+			PX_CORE_TRACE("Version: %s\n", s_APIData.Version.c_str());
 			PX_CORE_TRACE("Shading Language version: %s\n", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
-			PX_CORE_TRACE("GPU Card: %s\n", s_RenderCaps.RendererName.c_str());
-			PX_CORE_TRACE("Max texture slots: %d\n", s_RenderCaps.MaxTextureSlots);
+			PX_CORE_TRACE("GPU Card: %s\n", s_APIData.RendererName.c_str());
+			PX_CORE_TRACE("Max texture slots: %d\n", textureCap);
 			PX_CORE_TRACE("--------------------------\n\n");
 
 
@@ -142,8 +146,8 @@ namespace Pixelate {
 		}
 	}
 
-	const RenderAPICapabilities& GLRendererAPI::GetCaps() const {
-		return s_RenderCaps;
+	const RenderAPIData& GLRendererAPI::GetAPIData() const {
+		return s_APIData;
 	}
 
 

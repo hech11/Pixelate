@@ -30,7 +30,7 @@ namespace Pixelate {
 			void DrawElements(const Ref<VertexArray>& vao, PimitiveRenderType type, unsigned int count) override;
 
 
-			virtual const RenderAPICapabilities& GetCaps() const override;
+			virtual const RenderAPIData& GetAPIData() const override;
 
 
 

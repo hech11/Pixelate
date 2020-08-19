@@ -6,6 +6,7 @@
 #include "Pixelate/Physics/Physics.h"
 
 #include "glm/glm.hpp"
+#include "Pixelate/Core/UUID.h"
 
 namespace Pixelate {
 
@@ -37,6 +38,7 @@ namespace Pixelate {
 			}
 
 			const entt::entity& GetSceneEntity() const { return m_SceneEntity; }
+			std::unordered_map<UUID, Entity>& GetEntityMap() { return m_EntityMap; }
 
 			Entity CreateEntity(const std::string& name = "Entity");
 			void DeleteEntity(Entity entity);
@@ -45,6 +47,8 @@ namespace Pixelate {
 			entt::entity m_SceneEntity;
 			entt::registry m_Reg;
 			std::string m_Name;
+
+			std::unordered_map<Pixelate::UUID, Entity> m_EntityMap;
 
 			float m_AspectRatio;
 

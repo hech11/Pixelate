@@ -6,7 +6,9 @@
 #include "Pixelate/Rendering/RenderCommand.h"
 
 #include "Pixelate/Debug/Instrumentor.h"
+#include "Pixelate/Rendering/TextureManager.h"
 
+#include "Pixelate/Rendering/RendererCapabilities.h"
 
 
 
@@ -40,9 +42,6 @@ namespace Pixelate {
 		static const unsigned int MaxLineIndicesSize = MaxLines * 6;
 
 
-		// TODO: this should be set dynamically as this differs between platforms and GPUs
-		static const unsigned int MaxTextureSlots = 16;
-
 
 		Ref<VertexArray> SpriteVertexArray;
 		Ref<VertexBuffer> SpriteVertexBuffer;
@@ -67,21 +66,18 @@ namespace Pixelate {
 		Ref<Shader> SceneGridShader;
 
 		std::array<glm::vec4, 4> QuadPivotPointPositions;
-		std::array<glm::vec2, 4> TextureCoords;
-		std::array<Ref<Texture>, MaxTextureSlots> AllTextureSlots;
-		Ref<Texture> DefaultWhiteTexture;
-		unsigned int TextureSlotIndex = 1; // 0 = white texture
 		Renderer2D::RenderingStatistics m_Statistics;
 
 
 		glm::mat4 m_ViewMatrix;
-		//temp
-		int Samplers[MaxTextureSlots];
 
 		bool DrawBoundingBoxes = false;
 	};
 
 	static Renderer2DData SceneData;
+
+	int RendererCapabilities::MaxTextureSlots = 0; // This may need to be moved into its own translation unit potentially in the future
+
 
 	void Renderer2D::Init() {
 		PX_PROFILE_FUNCTION();
@@ -164,10 +160,7 @@ namespace Pixelate {
 
 			PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Texture");
 
-			SceneData.TextureCoords[0] = { 0.0f, 0.0f }; // -- bottom left
-			SceneData.TextureCoords[1] = { 1.0f, 0.0f }; // -- bottom right
-			SceneData.TextureCoords[2] = { 1.0f, 1.0f }; // -- top right
-			SceneData.TextureCoords[3] = { 0.0f, 1.0f }; // -- top left
+			TextureManager::Init();
 
 
 			SceneData.QuadPivotPointPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f }; // -- bottom left
@@ -175,13 +168,11 @@ namespace Pixelate {
 			SceneData.QuadPivotPointPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f}; // -- top right
 			SceneData.QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f}; // -- top left
 
-			SceneData.DefaultWhiteTexture = Texture::Create(1, 1, Texture::TextureProperties::Format::RGB);
-			unsigned int whiteTextureData = 0xffffffff;
-			SceneData.DefaultWhiteTexture->SetData(&whiteTextureData, 3);
 
-
-			for (unsigned int i = 0; i < SceneData.MaxTextureSlots; i++)
-				SceneData.Samplers[i] = i;
+			
+			int* samplers = new int[RendererCapabilities::MaxTextureSlots];
+			for (unsigned int i = 0; i < RendererCapabilities::MaxTextureSlots; i++)
+				samplers[i] = i;
 
 			{
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
@@ -189,12 +180,11 @@ namespace Pixelate {
 				SceneData.BatchRendererShader = Shader::Create();
 				SceneData.BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
 				SceneData.BatchRendererShader->Bind();
-				SceneData.BatchRendererShader->SetUniform1iArray("u_Textures", SceneData.MaxTextureSlots, SceneData.Samplers);
+				SceneData.BatchRendererShader->SetUniform1iArray("u_Textures", RendererCapabilities::MaxTextureSlots, samplers);
 				SceneData.BatchRendererShader->Unbind();
+
 			}
-
-
-			SceneData.AllTextureSlots[0] = SceneData.DefaultWhiteTexture;
+			delete[] samplers;
 
 		}
 
@@ -230,15 +220,14 @@ namespace Pixelate {
 	}
 
 	void Renderer2D::ShutDown() {
-
+		TextureManager::Shutdown();
 	}
 
 	void Renderer2D::BeginScene(Pixelate::OrthographicCamera* camera) {
 		PX_PROFILE_FUNCTION();
 
 		SceneData.m_ViewMatrix = camera->GetViewProjectionMatrix();
-		SceneData.TextureSlotIndex = 1;
-
+		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 
 		SceneData.SpriteIndexCount = 0;
@@ -266,9 +255,10 @@ namespace Pixelate {
 			SceneData.SpriteVertexArray->Bind();
 			SceneData.SpriteVertexArray->GetIbos().Bind();
 			SceneData.SpriteVertexBuffer->SetData(SceneData.SpriteVertexDataBase, quadSize);
-			for (unsigned int i = 0; i < SceneData.TextureSlotIndex; i++) {
-				SceneData.AllTextureSlots[i]->Bind(i);
-			}
+
+
+			TextureManager::BindAllTextures();
+
 			RenderCommand::DrawElements(SceneData.SpriteVertexArray, PimitiveRenderType::Triangles, SceneData.SpriteIndexCount);
 			SceneData.m_Statistics.DrawCalls += 1;
 		}
@@ -278,7 +268,7 @@ namespace Pixelate {
 			SceneData.LineVertexArray->Bind();
 			SceneData.LineVertexArray->GetIbos().Bind();
 			SceneData.LineVertexBuffer->SetData(SceneData.LineVertexDataBase, lineSize);
-			SceneData.AllTextureSlots[0]->Bind(0);
+			TextureManager::GetDefaultTexture()->Bind();
 			RenderCommand::SetLineThickness(4.0f);
 
 			RenderCommand::DrawElements(SceneData.LineVertexArray, PimitiveRenderType::Lines, SceneData.LineIndexCount);
@@ -309,7 +299,7 @@ namespace Pixelate {
 
 			SceneData.SpriteVertexDataPtr->Verticies = vertices[i];
 			SceneData.SpriteVertexDataPtr->Color = col;
-			SceneData.SpriteVertexDataPtr->TextureCoords = SceneData.TextureCoords[0];
+			SceneData.SpriteVertexDataPtr->TextureCoords = {0.0f, 0.0f};
 			SceneData.SpriteVertexDataPtr->TextureIndex = 0.0f;
 			SceneData.SpriteVertexDataPtr++;
 		}
@@ -400,7 +390,7 @@ namespace Pixelate {
 
 			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
 			SceneData.SpriteVertexDataPtr->Color = color;
-			SceneData.SpriteVertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
+			SceneData.SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
 			SceneData.SpriteVertexDataPtr->TextureIndex = 0.0f;
 			SceneData.SpriteVertexDataPtr++;
 		}
@@ -426,21 +416,15 @@ namespace Pixelate {
 		}
 
 
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < SceneData.TextureSlotIndex; i++) {
-			if (*SceneData.AllTextureSlots[i].get() == *textureBounds->GetTexture().get()) {
-				textureIndex = i;
-				break;
-			}
-		}
+		float textureIndex = TextureManager::IsTextureValid(textureBounds->GetTexture());
 
 		if (textureIndex == 0.0f) {
-			if (SceneData.TextureSlotIndex >= SceneData.MaxTextureSlots)
+			auto& manager = TextureManager::GetManagerData();
+			if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
 				BeginNewQuadBatch();
-			textureIndex = SceneData.TextureSlotIndex;
-			SceneData.AllTextureSlots[SceneData.TextureSlotIndex] = textureBounds->GetTexture();
-			SceneData.TextureSlotIndex++;
+
+			textureIndex = manager.TextureSlotIndex;
+			TextureManager::DirectAdd(textureBounds->GetTexture());
 		}
 
 
@@ -475,22 +459,14 @@ namespace Pixelate {
 			BeginNewQuadBatch();
 		}
 
-
-		float textureIndex = 0.0f;
-
-		for (unsigned int i = 1; i < SceneData.TextureSlotIndex; i++) {
-			if (*SceneData.AllTextureSlots[i].get() == *texture.get()) {
-				textureIndex = i;
-				break;
-			}
-		}
+		float textureIndex = TextureManager::IsTextureValid(texture);
 
 		if (textureIndex == 0.0f) {
-			if (SceneData.TextureSlotIndex >= SceneData.MaxTextureSlots)
+			auto& manager = TextureManager::GetManagerData();
+			if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
 				BeginNewQuadBatch();
-			textureIndex = SceneData.TextureSlotIndex;
-			SceneData.AllTextureSlots[SceneData.TextureSlotIndex] = texture;
-			SceneData.TextureSlotIndex++;
+			textureIndex = manager.TextureSlotIndex;
+			TextureManager::DirectAdd(texture);
 		}
 
 
@@ -499,7 +475,7 @@ namespace Pixelate {
 
 			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
 			SceneData.SpriteVertexDataPtr->Color = color;
-			SceneData.SpriteVertexDataPtr->TextureCoords = SceneData.TextureCoords[i];
+			SceneData.SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
 			SceneData.SpriteVertexDataPtr->TextureIndex = textureIndex;
 			SceneData.SpriteVertexDataPtr++;
 		}
@@ -591,9 +567,7 @@ namespace Pixelate {
 		unsigned int size = (unsigned char*)SceneData.SpriteVertexDataPtr - (unsigned char*)SceneData.SpriteVertexDataBase;
 		SceneData.SpriteVertexBuffer->SetData(SceneData.SpriteVertexDataBase, size);
 
-		for (unsigned int i = 0; i < SceneData.TextureSlotIndex; i++) {
-			SceneData.AllTextureSlots[i]->Bind(i);
-		}
+		TextureManager::BindAllTextures();
 
 		SceneData.SpriteVertexArray->Bind();
 		RenderCommand::DrawElements(SceneData.SpriteVertexArray, PimitiveRenderType::Triangles, SceneData.SpriteIndexCount);
@@ -601,7 +575,8 @@ namespace Pixelate {
 
 		SceneData.SpriteIndexCount = 0;
 		SceneData.SpriteVertexDataPtr = SceneData.SpriteVertexDataBase;
-		SceneData.TextureSlotIndex = 1;
+		TextureManager::GetManagerData().TextureSlotIndex = 1;
+
 	}
 
 	void Renderer2D::BeginNewLineBatch() {
@@ -610,16 +585,18 @@ namespace Pixelate {
 		unsigned int size = (unsigned char*)SceneData.LineQuadVertexData - (unsigned char*)SceneData.LineVertexDataBase;
 		SceneData.SpriteVertexBuffer->SetData(SceneData.LineVertexDataBase, size);
 
-		SceneData.AllTextureSlots[0]->Bind(0);
+		TextureManager::GetDefaultTexture()->Bind();
+
 		SceneData.LineVertexArray->Bind();
 		RenderCommand::DrawElements(SceneData.LineVertexArray, PimitiveRenderType::Lines, SceneData.LineIndexCount);
 
 
 		SceneData.LineIndexCount = 0;
 		SceneData.LineQuadVertexData = SceneData.LineVertexDataBase;
-		SceneData.TextureSlotIndex = 1;
-	}
 
+		TextureManager::GetManagerData().TextureSlotIndex = 1;
+
+	}
 
 	void Renderer2D::ResetStatistics() {
 		PX_PROFILE_FUNCTION();

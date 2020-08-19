@@ -23,6 +23,21 @@ namespace Pixelate {
 
 				return dist(eng);
 			}
+
+			static long long GetRandom() {
+				static std::random_device m_Rd;
+				std::mt19937 eng(m_Rd());
+				std::uniform_int_distribution<long long> dist;
+
+				return dist(eng);
+			}
+			static unsigned long long GetURandom() {
+				static std::random_device m_Rd;
+				std::mt19937 eng(m_Rd());
+				std::uniform_int_distribution<unsigned long long> dist;
+
+				return dist(eng);
+			}
 		private :
 	};
 

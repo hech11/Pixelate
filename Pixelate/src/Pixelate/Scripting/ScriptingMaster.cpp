@@ -11,6 +11,7 @@
 #include "glm/gtc/type_ptr.inl"
 
 #include "Pixelate/Scene/Entity.h"
+#include "Pixelate/Core/UUID.h"
 
 namespace Pixelate {
 
@@ -31,7 +32,6 @@ namespace Pixelate {
 
 
 		Ref<Scene> ActiveSceneContext;
-
 
 	};
 
@@ -82,7 +82,6 @@ namespace Pixelate {
 		#error "Dist builds do not support scripting!"
 		#endif
 
-		//s_MonoData.CoreAssembly = LoadAssemblyFromFile(filepath);
 		s_MonoData.CoreAssembly = mono_domain_assembly_open(s_MonoData.Domain, filepath.c_str());
 		if (!s_MonoData.CoreAssembly) {
 			PX_CORE_ERROR("Could not open the core assembly!");
@@ -93,7 +92,6 @@ namespace Pixelate {
 			PX_CORE_ERROR("Could not get core assembly image!");
 
 
-		//s_MonoData.AppAssembly = LoadAssemblyFromFile(assemblyPath);
 		s_MonoData.AppAssembly = mono_domain_assembly_open(s_MonoData.Domain, assemblyPath.c_str());
 		if (!s_MonoData.AppAssembly) {
 			PX_CORE_ERROR("Could not open the app assembly!");
@@ -162,7 +160,7 @@ namespace Pixelate {
 
 	}
 	
-	void ScriptingMaster::CreateEntityScript(ScriptBehaviour& sb) {
+	void ScriptingMaster::CreateEntityScript(Entity entity, ScriptBehaviour& sb) {
 		
 
 		if (sb.Class != nullptr) {
@@ -170,7 +168,14 @@ namespace Pixelate {
 		}
 
 
+
+		auto uuid = entity.GetComponent<UUIDComponent>().UUID;
+
 		sb.Class = mono_class_from_name(s_MonoData.AppAssemblyImage, "", sb.ClassName.c_str());
+
+		MonoProperty* entityIDPropery = mono_class_get_property_from_name(sb.Class, "UUID");
+		mono_property_get_get_method(entityIDPropery);
+		MonoMethod* entityIDSetMethod = mono_property_get_set_method(entityIDPropery);
 		if (sb.Class == nullptr) {
 			PX_CORE_ERROR("Creating a class!\n");
 			return;
@@ -184,6 +189,11 @@ namespace Pixelate {
 		mono_runtime_object_init(obj);
 		mono_runtime_set_shutting_down();
 		sb.Handle = mono_gchandle_new(obj, false);
+
+
+		MonoObject* exc = 0;
+		void* params = { &uuid };
+		mono_runtime_invoke(entityIDSetMethod, mono_gchandle_get_target(sb.Handle), &params, &exc);
 
 		sb.InitBehaviours();
 	}
@@ -205,38 +215,22 @@ namespace Pixelate {
 
 	}
 
-	// TODO: Something I really need to revist with UUID's
 	namespace Script {
 
-		void Pixelate_Entity_SetTransform(glm::mat4* setTransform) {
+		void Pixelate_Entity_SetTransform(unsigned long long entity, glm::mat4* setTransform) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
-			
-			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+			auto& entityMap = scene->GetEntityMap();
 
-			auto sbcView = scene->GetReg().view<ScriptingBehaviourComponent>();
-			for (auto entity : sbcView) {
-
-				Entity e = { entity,  scene.get() };
-				auto& t = e.GetComponent<TransformComponent>();
-				memcpy(glm::value_ptr(t.Transform), setTransform, sizeof(glm::mat4));
-				return;
-			}
-
+			auto& t = entityMap[entity].GetComponent<TransformComponent>();
+			memcpy(glm::value_ptr(t.Transform), setTransform, sizeof(glm::mat4));
 			
 		}
-		void Pixelate_Entity_GetTransform(glm::mat4* getTransform) {
+		void Pixelate_Entity_GetTransform(unsigned long long entity, glm::mat4* getTransform) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
 
-			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
-
-			auto sbcView = scene->GetReg().view<ScriptingBehaviourComponent>();
-			for (auto entity : sbcView) {
-
-				Entity e = { entity,  scene.get() };
-				auto& t = e.GetComponent<TransformComponent>();
-				memcpy(getTransform, glm::value_ptr(t.Transform), sizeof(glm::mat4));
-				return;
-			}
+			auto& t = entityMap[entity].GetComponent<TransformComponent>();
+			memcpy(getTransform, glm::value_ptr(t.Transform), sizeof(glm::mat4));
 		}
 
 
@@ -251,35 +245,25 @@ namespace Pixelate {
 
 
 
-		void Pixelate_RigidbodyComponent_SetLinearVelocity(glm::vec2* velocity) {
+		void Pixelate_RigidbodyComponent_SetLinearVelocity(unsigned long long entity, glm::vec2* velocity) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
 
-			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			r.RigidBody.SetLinearVelocity(*velocity);
 
-			auto rbcView = scene->GetReg().view<RigidBodyComponent>();
-			for (auto entity : rbcView) {
-
-				Entity e = { entity,  scene.get() };
-				auto& r = e.GetComponent<RigidBodyComponent>();
-				r.RigidBody.SetLinearVelocity(*velocity);
-				return;
-			}
 		}
 
 
-		void Pixelate_AudioSourceComponent_Play() {
+		void Pixelate_AudioSourceComponent_Play(unsigned long long entity) {
+
+
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
 
-			// Need to get the correct entity via a UUID but for now im getting the first entity with a script comp
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			e.Source->Play();
 
-			auto ascView = scene->GetReg().view<AudioSourceComponent>();
-			for (auto entity : ascView) {
-
-				Entity e = { entity,  scene.get() };
-				auto& a = e.GetComponent<AudioSourceComponent>();
-				a.Source->Play();
-				return;
-			}
 		}
 
 	}

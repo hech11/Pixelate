@@ -227,6 +227,13 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		ImGui::Begin("Entity Components");
 		if (m_SelectedEntity) {
 
+
+			if (m_CurrentlySelectedEntity.HasComponent<UUIDComponent>()) {
+				auto& id = m_CurrentlySelectedEntity.GetComponent<UUIDComponent>().UUID;
+				
+				ImGui::TextDisabled(std::to_string(id).c_str());
+			}
+
 			if (m_CurrentlySelectedEntity.HasComponent<NameComponent>()) {
 				auto& name = m_CurrentlySelectedEntity.GetComponent<NameComponent>().Name;
 				char buffer[255];
@@ -308,18 +315,17 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 					if (result == NFD_OKAY) {
 						puts("Success!");
-						if (!spriteRect) {
-							// this creates a texture and does not re use textures if the user decides to load a existing texture
-							// that is already loaded in the scene.
-							//TODO: Refactor the texture manager class and texture class to fix this issue.
-							auto texture = Texture::Create(outPath);
-							spriteComp.SpriteRect = CreateRef<TextureBounds>(texture, glm::u32vec4(0, 0, texture->GetWidth(), texture->GetHeight()));
-							spriteComp.TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+						Ref<Texture> tex;
+						if (auto id = TextureManager::IsTextureValid(outPath)) {
+							tex = TextureManager::GetTexture(id);
+						} else {
+							tex = Texture::Create(outPath);
+							TextureManager::DirectAdd(tex);
 						}
-						else {
-							spriteRect->GetTexture()->SetData(outPath);
-							spriteRect->SetBounds({ 0, 0, spriteRect->GetTexture()->GetWidth(), spriteRect->GetTexture()->GetHeight() });
-						}
+						spriteComp.SpriteRect = CreateRef<TextureBounds>(tex, glm::u32vec4(0, 0, tex->GetWidth(), tex->GetHeight()));
+						spriteComp.TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 
 						free(outPath);
 					}
@@ -341,24 +347,11 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::PopItemWidth();
 
 
+
+
+				
+
 				ImGui::NextColumn();
-
-
-				ImGui::Text("Sprite coordinates");
-				ImGui::NextColumn();
-				ImGui::PushItemWidth(-1);
-				if (spriteRect) {
-					ImGui::DragInt4("##spriteRect", (int*)glm::value_ptr(spriteRect->GetBounds()), 1.0f, 0);
-					LOCK_MOUSE_IF_NEEDED();
-					spriteRect->SetBounds(spriteRect->GetBounds());
-				}
-				else {
-					ImGui::Text("No texture loaded");
-				}
-
-				ImGui::PopItemWidth();
-				ImGui::NextColumn();
-
 				ImGui::Text("Tint color");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
@@ -368,35 +361,42 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
-
-
-
-				ImGui::Text("Texture");
-				ImGui::NextColumn();
-				ImGui::PushItemWidth(-1);
 				if (spriteRect) {
+					ImGui::Text("Sprite coordinates");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					ImGui::DragInt4("##spriteRect", (int*)glm::value_ptr(spriteRect->GetBounds()), 1.0f, 0);
+					LOCK_MOUSE_IF_NEEDED();
+					spriteRect->SetBounds(spriteRect->GetBounds());
+
+					ImGui::PopItemWidth();
+					ImGui::NextColumn();
+
+				}
+
+
+				if (spriteRect) {
+					ImGui::Text("Texture");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+
 					ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 });
+				
+					ImGui::PopItemWidth();
+					ImGui::NextColumn();
 				}
-				else {
-					ImGui::Text("No texture loaded");
-				}
-				ImGui::PopItemWidth();
-				ImGui::NextColumn();
 
 
-				ImGui::Text("Sprite rect");
-				ImGui::NextColumn();
-				ImGui::PushItemWidth(-1);
 				if (spriteRect) {
+					ImGui::Text("Sprite rect");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
 					ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 },
 						{ spriteRect->GetBoundsNormilized()[0].x, spriteRect->GetBoundsNormilized()[2].y },
 						{ spriteRect->GetBoundsNormilized()[2].x, spriteRect->GetBoundsNormilized()[0].y });
-				}
-				else {
-					ImGui::Text("No texture loaded");
-				}
 
-				ImGui::PopItemWidth();
+					ImGui::PopItemWidth();
+				}
 			});
 		
 			DrawEntityComponents<CameraComponent>("Orthographic Camera", m_CurrentlySelectedEntity, [](CameraComponent& cc) {
@@ -579,7 +579,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 			DrawEntityComponents<AudioListenerComponent>("Audio Listener", m_CurrentlySelectedEntity, [](AudioListenerComponent& alc) {
 			
 			});
-			DrawEntityComponents<ScriptingBehaviourComponent>("Scripting Behaviour", m_CurrentlySelectedEntity, [](ScriptingBehaviourComponent& sbc) {
+			DrawEntityComponents<ScriptingBehaviourComponent>("Scripting Behaviour", m_CurrentlySelectedEntity, [&](ScriptingBehaviourComponent& sbc) {
 				ImGui::Columns(2);
 				ImGui::SetColumnWidth(0, 150);
 
@@ -592,8 +592,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				if (ImGui::InputText("##scriptName", buffer, 255)) {
 					sbc.Behaviour.ClassName = std::string(buffer);
 
-					if(ScriptingMaster::ClassExists(sbc.Behaviour.ClassName))
-						ScriptingMaster::CreateEntityScript(sbc.Behaviour);
+					if (ScriptingMaster::ClassExists(sbc.Behaviour.ClassName)) {
+						ScriptingMaster::CreateEntityScript(m_CurrentlySelectedEntity ,sbc.Behaviour);
+					}
 
 
 				}

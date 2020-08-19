@@ -47,7 +47,7 @@ namespace Pixelate {
 
 			// used for testing
 			static void OnImguiRender();
-			static void CreateEntityScript(ScriptBehaviour& sb);
+			static void CreateEntityScript(Entity entity, ScriptBehaviour& sb);
 			
 		private :
 
@@ -60,15 +60,15 @@ namespace Pixelate {
 	// temp?
 	namespace Script {
 
-		void Pixelate_Entity_SetTransform(glm::mat4* setTransform);
-		void Pixelate_Entity_GetTransform(glm::mat4* getTransform);
+		void Pixelate_Entity_SetTransform(unsigned long long entity, glm::mat4* setTransform);
+		void Pixelate_Entity_GetTransform(unsigned long long entity, glm::mat4* getTransform);
 
 		bool Pixelate_Input_IsKeyDown(KeyCode* code);
 		bool Pixelate_Input_IsMouseButtonDown(MouseButton* code);
 
-		void Pixelate_RigidbodyComponent_SetLinearVelocity(glm::vec2* velocity);
+		void Pixelate_RigidbodyComponent_SetLinearVelocity(unsigned long long entity, glm::vec2* velocity);
 
-		void Pixelate_AudioSourceComponent_Play();
+		void Pixelate_AudioSourceComponent_Play(unsigned long long entity);
 
 	}
 

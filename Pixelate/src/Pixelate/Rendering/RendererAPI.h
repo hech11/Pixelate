@@ -6,10 +6,9 @@
 namespace Pixelate {
 
 
-	struct RenderAPICapabilities {
+	struct RenderAPIData {
 
 		std::string ContextName, VendorName, Version, RendererName;
-		int MaxTextureSlots;
 	};
 
 	enum class PimitiveRenderType {
@@ -62,7 +61,7 @@ namespace Pixelate {
 
 			virtual void DrawElements(const Ref<VertexArray>& vao, PimitiveRenderType type, unsigned int count) = 0;
 
-			virtual const RenderAPICapabilities& GetCaps() const = 0;
+			virtual const RenderAPIData& GetAPIData() const = 0;
 
 			inline static const API& GetAPI(){ return m_API; }
 

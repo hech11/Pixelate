@@ -12,12 +12,25 @@
 
 #include "Pixelate/Audio/AudioListener.h"
 #include "Pixelate/Audio/AudioSource.h"
+#include "Pixelate/Core/UUID.h"
+
 
 namespace Pixelate {
 	
-	//TODO: UUID Component 
+	
 
 ///////////////////////////////////////////////////// Misc components /////////////////////////////////////////////////////
+
+	struct UUIDComponent {
+		Pixelate::UUID UUID;
+
+		UUIDComponent() = default;
+		UUIDComponent(const UUIDComponent& other)
+			: UUID(other.UUID) {}
+		UUIDComponent(const Pixelate::UUID& uuid)
+			: UUID(uuid) {}
+	};
+
 	struct NameComponent
 	{
 		std::string Name;
@@ -91,9 +104,9 @@ namespace Pixelate {
 
 	};
 
-	struct ParticleEmmiterComponent {
-
-	};
+// 	struct ParticleEmmiterComponent {
+// 
+// 	};
 ///////////////////////////////////////////////////// Audio components /////////////////////////////////////////////////////
 
 	struct AudioListenerComponent {

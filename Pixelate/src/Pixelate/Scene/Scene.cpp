@@ -38,6 +38,7 @@ namespace Pixelate {
 
 		auto entity = CreateEntity("Camera");
 		entity.AddComponent<CameraComponent>();
+		entity.AddComponent<AudioListenerComponent>();
 	}
 
 	
@@ -262,6 +263,11 @@ namespace Pixelate {
 
 	Entity Scene::CreateEntity(const std::string& name) {
 		auto entity = Entity(m_Reg.create(), this);
+		entity.AddComponent<UUIDComponent>().UUID;
+		auto& id = entity.GetComponent<UUIDComponent>().UUID;
+
+		m_EntityMap[id] = entity;
+
 		entity.AddComponent<NameComponent>(name);
 		glm::mat4 transform = glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f,1.0f });
 		entity.AddComponent<TransformComponent>(transform);

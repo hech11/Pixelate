@@ -6,15 +6,20 @@ namespace Pixelate {
 
     public class Entity 
     {
+
+        public ulong UUID { 
+            get; private set; 
+        }
+
         ~Entity()
         {
 
         }
 
-        // Not sure if this is safe
-        public T GetComponent<T>() where T : new()
+        public T GetComponent<T>() where T : Component, new()
         {
             T comp = new T();
+            comp.Entity = this;
             return comp;
         }
 
@@ -22,21 +27,20 @@ namespace Pixelate {
         public Matrix4x4 GetTransform()
         {
             Matrix4x4 temp;
-            GetTransform_CPP(out temp);
+            GetTransform_CPP(UUID, out temp);
             return temp;
         }
 
         public void SetTransform(Matrix4x4 transform)
         {
-            SetTransform_CPP(ref transform);
+            SetTransform_CPP(UUID, ref transform);
         }
 
 
-        // assuming there is one script in the scene. TODO: Add entity UUID's
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void GetTransform_CPP(out Matrix4x4 matrix);
+        private static extern void GetTransform_CPP(ulong entity, out Matrix4x4 matrix);
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void SetTransform_CPP(ref Matrix4x4 matrix);
+        private static extern void SetTransform_CPP(ulong entity, ref Matrix4x4 matrix);
 
     }
 }

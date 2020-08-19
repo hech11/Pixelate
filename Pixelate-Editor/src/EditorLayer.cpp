@@ -352,9 +352,9 @@ namespace Pixelate {
 			time += 1.0f;
 			ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
 		}
-		std::string context = "Context: " + RenderCommand::GetCaps().ContextName;
-		std::string info = "GPU Info: " + RenderCommand::GetCaps().RendererName;
-		std::string version = "GPU Version: " + RenderCommand::GetCaps().Version;
+		std::string context = "Context: " + RenderCommand::GetAPIData().ContextName;
+		std::string info = "GPU Info: " + RenderCommand::GetAPIData().RendererName;
+		std::string version = "GPU Version: " + RenderCommand::GetAPIData().Version;
 		ImGui::Text(ts.c_str());
 		ImGui::Text(context.c_str());
 		ImGui::Text(info.c_str());

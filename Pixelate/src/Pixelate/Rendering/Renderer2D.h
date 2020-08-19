@@ -2,7 +2,7 @@
 
 #include "Pixelate/Core/Core.h"
 #include "Pixelate/Rendering/API/Shader/ShaderManager.h"
-#include "Pixelate/Rendering/API/TextureManager.h"
+#include "Pixelate/Rendering/TextureManager.h"
 
 #include "Pixelate/Rendering/OrthographicCamera.h"
 #include "Pixelate/Core/AABB.h"
@@ -51,7 +51,7 @@ namespace Pixelate {
 			static void SetBoundingBox(bool draw);
 			static const bool& ShouldDrawBoundingBox();
 
-			// temp
+			// temp -- should be in a scene renderer
 			static void DrawSceneGrid(float gridAlpha);
 
 			static void ResetStatistics();

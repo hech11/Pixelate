@@ -46,7 +46,7 @@ namespace Pixelate {
 			inline static void SetLineThickness(float width) { s_API->SetLineThickness(width); }
 
 			// Not sure how i feel about this being here..
-			inline static const RenderAPICapabilities& GetCaps() { return s_API->GetCaps(); }
+			inline static const RenderAPIData& GetAPIData() { return s_API->GetAPIData(); }
 
 			inline static void DrawElements(const Ref<VertexArray>& vao, PimitiveRenderType type, unsigned int count) { return s_API->DrawElements(vao, type, count); }
 
