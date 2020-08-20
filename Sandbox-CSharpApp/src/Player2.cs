@@ -3,6 +3,11 @@ using Pixelate;
 
 public class Player2 : Entity
 {
+    public int TestingVariable123;
+    public int TestingVariable456;
+    public int TestingVariable789;
+    public int TestingVariable10;
+    public int TestingVariable11;
 
 
     public void OnCreate()

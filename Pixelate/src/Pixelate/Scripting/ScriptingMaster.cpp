@@ -1,8 +1,6 @@
 #include "PXpch.h"
 #include "ScriptingMaster.h"
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/debug-helpers.h>
 
 #include "imgui.h"
 
@@ -42,6 +40,55 @@ namespace Pixelate {
 		OnCreateFunc = CreateMethod(ClassName + ":OnCreate()");
 		OnUpdateFunc = CreateMethod(ClassName + ":OnUpdate(single)");
 		OnDestroyFunc = CreateMethod(ClassName + ":OnDestroy()");
+
+	}
+
+	void ScriptBehaviour::InitFields() {
+		int numFields = mono_class_num_fields(Class);
+		AllFields.resize(numFields);
+		void* ptr = 0;
+		MonoClassField* it;
+
+
+		int i = 0;
+		while ((it = mono_class_get_fields(Class, &ptr)) != 0) {
+			
+			AllFields[i].Field = it;
+			AllFields[i].VariableName = mono_field_get_name(it);
+			MonoType* type = mono_field_get_type(it);
+			
+
+			switch (mono_type_get_type(type)) {
+				case MONO_TYPE_I4:
+					AllFields[i].Type = PropertyType::Int;
+					break;
+				case MONO_TYPE_BOOLEAN:
+					AllFields[i].Type = PropertyType::Bool;
+					break;
+				case MONO_TYPE_R4:
+					AllFields[i].Type = PropertyType::Float;
+					break;
+
+			}
+
+			mono_field_get_value(mono_gchandle_get_target(Handle), AllFields[i].Field, &AllFields[i].Value);
+
+			
+			i++;
+		}
+
+	}
+
+	void ScriptBehaviour::SetPropertyValue(void* value, MonoClassField* field)
+	{
+		mono_field_set_value(mono_gchandle_get_target(Handle), field, value);
+	}
+
+	void* ScriptBehaviour::GetFieldValue(MonoClassField* field)
+	{
+		void* ptr = nullptr;
+		mono_field_get_value(mono_gchandle_get_target(Handle), field, &ptr); // assert if cannot set the value for some reason?
+		return ptr;
 
 	}
 
@@ -109,7 +156,6 @@ namespace Pixelate {
 
 	void ScriptingMaster::Shutdown() {
 		mono_jit_cleanup(s_MonoData.Domain);
-	
 	}
 
 
@@ -176,6 +222,7 @@ namespace Pixelate {
 		MonoProperty* entityIDPropery = mono_class_get_property_from_name(sb.Class, "UUID");
 		mono_property_get_get_method(entityIDPropery);
 		MonoMethod* entityIDSetMethod = mono_property_get_set_method(entityIDPropery);
+
 		if (sb.Class == nullptr) {
 			PX_CORE_ERROR("Creating a class!\n");
 			return;
@@ -196,6 +243,7 @@ namespace Pixelate {
 		mono_runtime_invoke(entityIDSetMethod, mono_gchandle_get_target(sb.Handle), &params, &exc);
 
 		sb.InitBehaviours();
+		sb.InitFields();
 	}
 
 	void ScriptingMaster::RegisterAll() {
@@ -207,11 +255,25 @@ namespace Pixelate {
 
 		mono_add_internal_call("Pixelate.Input::IsKeyDown_CPP", (void*)Script::Pixelate_Input_IsKeyDown);
 		mono_add_internal_call("Pixelate.Input::IsMouseButtonDown_CPP", (void*)Script::Pixelate_Input_IsMouseButtonDown);
-
+		mono_add_internal_call("Pixelate.Input::GetMousePosition_CPP", (void*)Script::Pixelate_Input_GetMousePosition);
+		
 		mono_add_internal_call("Pixelate.RigidBodyComponent::SetLinearVelocity_CPP", Script::Pixelate_RigidbodyComponent_SetLinearVelocity);
 
 
+		mono_add_internal_call("Pixelate.CameraComponent::SetClearColor_CPP", Script::Pixelate_CamreaComponent_SetClearColor);
+		mono_add_internal_call("Pixelate.SpriteRendererComponent::SetTint_CPP", Script::Pixelate_SpriteRendererComponent_SetTint);
+		mono_add_internal_call("Pixelate.SpriteRendererComponent::GetTint_CPP", Script::Pixelate_SpriteRendererComponent_GetTint);
+
+
 		mono_add_internal_call("Pixelate.AudioSourceComponent::Play_CPP", (void*)Script::Pixelate_AudioSourceComponent_Play);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::IsPlaying_CPP", (void*)Script::Pixelate_AudioSourceComponent_IsPlaying);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::Pause_CPP", (void*)Script::Pixelate_AudioSourceComponent_Pause);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::Stop_CPP", (void*)Script::Pixelate_AudioSourceComponent_Stop);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::SetLooping_CPP", (void*)Script::Pixelate_AudioSourceComponent_SetLooping);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::SetGain_CPP", (void*)Script::Pixelate_AudioSourceComponent_SetGain);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::GetPitch_CPP", (void*)Script::Pixelate_AudioSourceComponent_GetPitch);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::GetGain_CPP", (void*)Script::Pixelate_AudioSourceComponent_GetGain);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::IsLooping_CPP", (void*)Script::Pixelate_AudioSourceComponent_IsLooping);
 
 	}
 
@@ -245,6 +307,12 @@ namespace Pixelate {
 
 
 
+		void Pixelate_Input_GetMousePosition(glm::vec2* position) {
+			auto pos = Input::GetMousePos();
+			position->x = pos.first;
+			position->y = pos.second;
+		}
+
 		void Pixelate_RigidbodyComponent_SetLinearVelocity(unsigned long long entity, glm::vec2* velocity) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
 			auto& entityMap = scene->GetEntityMap();
@@ -255,15 +323,113 @@ namespace Pixelate {
 		}
 
 
+		void Pixelate_CamreaComponent_SetClearColor(unsigned long long entity, glm::vec4* clearColor) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& c = entityMap[entity].GetComponent<CameraComponent>();
+			c.ClearColor = *clearColor;
+
+		}
+
+		void Pixelate_SpriteRendererComponent_SetTint(unsigned long long entity, glm::vec4* tint) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& sr = entityMap[entity].GetComponent<SpriteRendererComponent>();
+			sr.TintColor = *tint;
+
+		}
+
+		glm::vec4* Pixelate_SpriteRendererComponent_GetTint(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& sr = entityMap[entity].GetComponent<SpriteRendererComponent>();
+			return &sr.TintColor;
+		}
+
 		void Pixelate_AudioSourceComponent_Play(unsigned long long entity) {
-
-
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
 			auto& entityMap = scene->GetEntityMap();
 
 			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
 			e.Source->Play();
 
+		}
+
+		
+
+		void Pixelate_AudioSourceComponent_Pause(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			e.Source->Pause();
+		}
+
+		void Pixelate_AudioSourceComponent_Stop(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			e.Source->Stop();
+		}
+
+		void Pixelate_AudioSourceComponent_SetLooping(unsigned long long entity, bool loop)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			e.Source->SetLooping(loop);
+		}
+
+		void Pixelate_AudioSourceComponent_SetGain(unsigned long long entity, float gain)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			e.Source->SetGain(gain);
+		}
+
+		float Pixelate_AudioSourceComponent_GetPitch(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			return e.Source->GetPitch();
+		}
+
+		float Pixelate_AudioSourceComponent_GetGain(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			return e.Source->GetGain();
+		}
+
+		bool Pixelate_AudioSourceComponent_IsPlaying(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			return e.Source->IsPlaying();
+		}
+		bool Pixelate_AudioSourceComponent_IsLooping(unsigned long long entity)
+		{
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& e = entityMap[entity].GetComponent<AudioSourceComponent>();
+			return e.Source->IsLooping();
 		}
 
 	}

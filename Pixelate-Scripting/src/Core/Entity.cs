@@ -16,6 +16,9 @@ namespace Pixelate {
 
         }
 
+
+
+
         public T GetComponent<T>() where T : Component, new()
         {
             T comp = new T();
@@ -41,6 +44,7 @@ namespace Pixelate {
         private static extern void GetTransform_CPP(ulong entity, out Matrix4x4 matrix);
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void SetTransform_CPP(ulong entity, ref Matrix4x4 matrix);
+
 
     }
 }

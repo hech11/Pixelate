@@ -589,29 +589,82 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				char buffer[255];
 				memset(buffer, 0, 255);
 				memcpy(buffer, sbc.Behaviour.ClassName.c_str(), sbc.Behaviour.ClassName.length());
+
+				if(!ScriptingMaster::ClassExists(buffer)) {
+					ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, { 1, 0, 0,1 });
+				} else
+					ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, { 1, 1, 1,1 });
+
 				if (ImGui::InputText("##scriptName", buffer, 255)) {
 					sbc.Behaviour.ClassName = std::string(buffer);
 
 					if (ScriptingMaster::ClassExists(sbc.Behaviour.ClassName)) {
 						ScriptingMaster::CreateEntityScript(m_CurrentlySelectedEntity ,sbc.Behaviour);
-					}
-
+					} 
 
 				}
-				//ImGui::DragFloat2("##center", glm::value_ptr(bcc.Center), 0.1f);
+				
+				ImGui::PopStyleColor();
 				ImGui::PopItemWidth();
-				ImGui::NextColumn();
-				ImGui::Text("Size");
-				ImGui::NextColumn();
-				ImGui::PushItemWidth(-1);
-				//ImGui::DragFloat2("##size", glm::value_ptr(bcc.Size), 0.1f);
-				ImGui::PopItemWidth();
-				ImGui::NextColumn();
-				ImGui::Text("Is trigger");
-				ImGui::NextColumn();
-				ImGui::PushItemWidth(-1);
-//				ImGui::Checkbox("##istrigger", &bcc.IsTrigger);
-				ImGui::PopItemWidth();
+				
+				if (ScriptingMaster::ClassExists(sbc.Behaviour.ClassName)) {
+					// Draw all the scripts public variables here
+					for (unsigned int i = 0; i < sbc.Behaviour.AllFields.size(); i++) {
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+
+						ImGui::Text(sbc.Behaviour.AllFields[i].VariableName.c_str());
+
+						ImGui::PopItemWidth();
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+
+						
+						switch (sbc.Behaviour.AllFields[i].Type)
+						{
+						case PropertyType::Bool: {
+							sbc.Behaviour.AllFields[i].Value = sbc.Behaviour.GetFieldValue(sbc.Behaviour.AllFields[i].Field);
+							bool tempBool = (bool)sbc.Behaviour.AllFields[i].Value;
+							if (ImGui::Checkbox("##Bool", &tempBool)) {
+								sbc.Behaviour.AllFields[i].Value = (bool*)std::move(tempBool);
+								sbc.Behaviour.SetPropertyValue(&tempBool, sbc.Behaviour.AllFields[i].Field);
+							}
+						}
+							break;
+						case PropertyType::Float: {
+							sbc.Behaviour.AllFields[i].Value = sbc.Behaviour.GetFieldValue(sbc.Behaviour.AllFields[i].Field);
+							float tempFloat = *(float*)&sbc.Behaviour.AllFields[i].Value;
+							if(ImGui::InputFloat("##Float", &tempFloat)) {
+								sbc.Behaviour.AllFields[i].Value = std::move(&tempFloat);
+								sbc.Behaviour.SetPropertyValue(&tempFloat, sbc.Behaviour.AllFields[i].Field);
+							}
+						}
+							break;
+						case PropertyType::Int: {
+							sbc.Behaviour.AllFields[i].Value = sbc.Behaviour.GetFieldValue(sbc.Behaviour.AllFields[i].Field);
+							int tempInt = (int)sbc.Behaviour.AllFields[i].Value;
+							if (ImGui::InputInt("##Int", &tempInt)) {
+								sbc.Behaviour.AllFields[i].Value = (int*)std::move(tempInt);
+								sbc.Behaviour.SetPropertyValue(&tempInt, sbc.Behaviour.AllFields[i].Field);
+							}
+							break;
+						}
+						case PropertyType::Vec2:
+							break;
+						case PropertyType::Vec3:
+							break;
+						case PropertyType::Vec4:
+							break;
+						default:
+							break;
+						}
+
+						ImGui::PopItemWidth();
+
+					}
+				}
+				
+
 
 				});
 
