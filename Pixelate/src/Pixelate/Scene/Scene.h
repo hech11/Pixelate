@@ -44,6 +44,10 @@ namespace Pixelate {
 
 			Entity CreateEntity(const std::string& name = "Entity");
 			void DeleteEntity(Entity entity);
+
+			void SetName(const std::string& name) { m_Name = name; }
+			const std::string& GetName() const { return m_Name; }
+
 		private :
 
 			entt::entity m_SceneEntity;

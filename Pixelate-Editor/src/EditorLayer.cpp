@@ -10,6 +10,9 @@
 #include <Pixelate/Rendering/Renderer2D.h>
 #include <Pixelate/Rendering/RenderCommand.h>
 
+#include <Pixelate/Scene/SceneSerialization.h>
+
+
 #include <Imgui/imgui.h>
 
 #include <functional>
@@ -20,15 +23,14 @@
 #include "glm/ext/quaternion_common.hpp"
 #include "Pixelate/Imgui/ImGuizmo.h"
 #include "glm/gtx/matrix_decompose.hpp"
+#include "../../NativeFileDialog/src/include/nfd.h"
 
 
 namespace Pixelate {
 
 	void EditorLayer::Init() {
 
-		Application::GetApp().GetWindow().SetTitle("Pixelate-Editor");
 
-		
 
 		particleProps.VelocityVariation1 = { -2.0f, -2.0f };
 		particleProps.VelocityVariation2 = { 2.0f, 2.0f };
@@ -41,6 +43,11 @@ namespace Pixelate {
 
 
 		m_EditorScene = CreateRef<Scene>();
+
+
+		Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
+
+
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 		ScriptingMaster::SetSceneContext(m_EditorScene);
 
@@ -257,6 +264,43 @@ namespace Pixelate {
 				if (ImGui::MenuItem("Open Project", "")) {
 					m_OpeningModal = true;
 				}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Open Scene", "")) {
+
+					// m_EditorScene = 
+
+				}
+				if (ImGui::MenuItem("Save Scene", "")) {
+				
+
+					nfdchar_t* outPath = NULL;
+					nfdresult_t result = NFD_SaveDialog("PXScene", NULL, &outPath);
+					if (result == NFD_OKAY) {
+						puts("Success!");
+
+						std::string filepath = std::string(outPath);
+						std::string name;
+						size_t slashPos = filepath.rfind("\\") + 1;
+
+						name.append(filepath.substr(slashPos, filepath.length()));
+						m_EditorScene->SetName(name);
+
+						filepath.append(".PXScene");
+						Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
+						SceneSerialization::Serialize(m_EditorScene, filepath);
+
+						free(outPath);
+					}
+					else if (result == NFD_CANCEL) {
+						PX_CORE_MSG("User pressed cancel.\n");
+					}
+					else {
+						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+					}
+
+				}
+				ImGui::Separator();
+
 				if (ImGui::MenuItem("Exit", "")) {
 					Application::GetApp().Quit();
 				}
