@@ -99,6 +99,13 @@ namespace Pixelate {
 
 		// Rigidbody
 		void Pixelate_RigidbodyComponent_SetLinearVelocity(unsigned long long entity, glm::vec2* velocity);
+		void Pixelate_RigidbodyComponent_GetLinearVelocity(unsigned long long entity, glm::vec2* velocity);
+		void Pixelate_RigidbodyComponent_SetCollisionDetection(unsigned long long entity, CollisionDetectionMode* mode);
+		void Pixelate_RigidbodyComponent_GetCollisionDetection(unsigned long long entity, CollisionDetectionMode* mode);
+		void Pixelate_RigidbodyComponent_SetSleepingState(unsigned long long entity, SleepingState* state);
+		void Pixelate_RigidbodyComponent_GetSleepingState(unsigned long long entity, SleepingState* state);
+		void Pixelate_RigidbodyComponent_SetBodyType(unsigned long long entity, BodyType* type);
+		void Pixelate_RigidbodyComponent_GetBodyType(unsigned long long entity, BodyType* type);
 
 
 		// Camera

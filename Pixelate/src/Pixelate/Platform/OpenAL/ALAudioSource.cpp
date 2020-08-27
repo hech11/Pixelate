@@ -53,6 +53,8 @@ namespace Pixelate {
 
 	void AudioSource::SetGain(float gain) {
 		PX_PROFILE_FUNCTION();
+		if (gain > 0.1f)
+			gain = 0.1f;
 		m_Gain = gain;
 		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, gain));
 
@@ -70,7 +72,6 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		ALCall(alSourcei(m_AudioSourceID, AL_BUFFER, buffer->GetHandleID()));
 	}
-
 
 
 }

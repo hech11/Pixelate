@@ -13,9 +13,10 @@ namespace Pixelate {
 
 
 
-	RigidBody::RigidBody(Scene* scene, const RigidBodyDef& def) {
+	RigidBody::RigidBody(Scene* scene, const RigidBodyDef& def) : m_Definition(def) {
 		Init(scene, def);
 	}
+
 
 	void RigidBody::Init(Scene* scene, const RigidBodyDef& def) {
 		PX_PROFILE_FUNCTION();
@@ -37,6 +38,7 @@ namespace Pixelate {
 		m_BodyData = physicsWorld.World->CreateBody(&d);
 	}
 
+	
 	void RigidBody::Destroy() {
 		PX_PROFILE_FUNCTION();
 
@@ -83,27 +85,44 @@ namespace Pixelate {
 
 	void RigidBody::SetCollisionDetectionMode(CollisionDetectionMode mode) {
 		bool bullet = (mode == CollisionDetectionMode::Continuous ? true : false);
+		m_Definition.DetectionMode = mode;
 		m_BodyData->SetBullet(bullet);
 	}
 
+	CollisionDetectionMode RigidBody::GetCollisionDetectionMode() const {
+		return m_Definition.DetectionMode;
+	}
+
 	void RigidBody::SetSleepState(SleepingState mode) {
+		m_Definition.State = mode;
 		if (mode == SleepingState::NeverSleep) {
-			m_BodyData->SetSleepingAllowed(false);
-			m_BodyData->SetAwake(true);
+			if (m_BodyData != nullptr) {
+				m_BodyData->SetSleepingAllowed(false);
+				m_BodyData->SetAwake(true);
+			}
+
 			return;
 		}
+		if (m_BodyData != nullptr)
+			m_BodyData->SetSleepingAllowed(true);
 
-		m_BodyData->SetSleepingAllowed(true);
 		bool awake = false;
 		if (mode == SleepingState::Sleep) {
 			awake = false;
 		}
-		m_BodyData->SetAwake(awake);
+		if (m_BodyData != nullptr)
+			m_BodyData->SetAwake(awake);
 
+	}
+
+	SleepingState RigidBody::GetSleepingState() const {
+		return m_Definition.State;
 	}
 
 	void RigidBody::SetBodyType(BodyType type) {
 		b2BodyType b2type{};
+		m_Definition.Type = type;
+
 		switch (type)
 		{
 			case Pixelate::BodyType::Static:
@@ -116,21 +135,39 @@ namespace Pixelate {
 				b2type = b2_dynamicBody;
 				break;
 		}
-		m_BodyData->SetType(b2type);
+		if(m_BodyData != nullptr)
+			m_BodyData->SetType(b2type);
+	}
+
+	BodyType RigidBody::GetBodyType() const {
+		return m_Definition.Type;
 	}
 
 	void RigidBody::SetGravityScale(float scale)
 	{
-		m_BodyData->SetGravityScale(scale);
+		m_Definition.GravityScale = scale;
+		if (m_BodyData != nullptr)
+			m_BodyData->SetGravityScale(scale);
 	}
 
-	void RigidBody::CanRotate(bool rotate)
+	float RigidBody::GetGravityScale() const
 	{
-		m_BodyData->SetFixedRotation(rotate);
+		return m_Definition.GravityScale;
+	}
+
+	void RigidBody::ShouldRotate(bool rotate)
+	{
+		m_Definition.CanRotate = rotate;
+		if (m_BodyData != nullptr)
+			m_BodyData->SetFixedRotation(rotate);
+	}
+	bool RigidBody::CanRotate() const {
+		return m_Definition.CanRotate;
 	}
 
 	void RigidBody::SetTransform(const glm::vec3& positon, float angle) {
-		m_BodyData->SetTransform({ positon.x, positon.y }, angle);
+		if(m_BodyData != nullptr)
+			m_BodyData->SetTransform({ positon.x, positon.y }, angle);
 	}
 
 	void RigidBody::SetLinearVelocity(const glm::vec2& velocity)

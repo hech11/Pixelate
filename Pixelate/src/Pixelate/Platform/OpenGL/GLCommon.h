@@ -18,7 +18,7 @@ PX_ASSERT(Pixelate::GL::GLLogCall(#x, __FILE__, __LINE__), "");
 #endif
 
 namespace Pixelate { namespace GL {
-
+	//TODO: Replace this with opengl version 4.1(+) debugging code
 	static void GLClearError() {
 		while (glGetError() != GL_NO_ERROR);
 	}

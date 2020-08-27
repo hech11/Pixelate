@@ -36,6 +36,8 @@ namespace Pixelate {
 		bool CanRotate = false;
 	};
 
+
+
 	class RigidBody {
 		public :
 		
@@ -53,11 +55,20 @@ namespace Pixelate {
 			void RemoveCollider(b2Shape* collider);
 
 			void SetCollisionDetectionMode(CollisionDetectionMode mode);
+			CollisionDetectionMode GetCollisionDetectionMode() const;
+
 			void SetSleepState(SleepingState mode);
+			SleepingState GetSleepingState() const;
+
 			void SetBodyType(BodyType type);
+			BodyType GetBodyType() const;
 
 			void SetGravityScale(float scale);
-			void CanRotate(bool rotate);
+			float GetGravityScale() const;
+
+			void ShouldRotate(bool rotate);
+			bool CanRotate() const;
+
 
 			void SetTransform(const glm::vec3& positon, float angle);
 
@@ -67,8 +78,11 @@ namespace Pixelate {
 
 			float GetAngle() const;
 			glm::vec3 GetPosition() const;
+
+
 		private :
 			std::vector<b2Fixture*> m_Fixtures;
+			RigidBodyDef m_Definition;
 			b2Body* m_BodyData;
 			b2World* m_World;
 

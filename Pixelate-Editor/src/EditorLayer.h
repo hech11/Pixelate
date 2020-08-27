@@ -51,6 +51,8 @@ namespace Pixelate {
 			};
 
 			int m_Gizmo = -1;
+			bool m_OpeningModal = true; // temp
+			bool m_OpenPhysicsPanel = false;
 
 			SceneState m_SceneState = SceneState::Edit;
 

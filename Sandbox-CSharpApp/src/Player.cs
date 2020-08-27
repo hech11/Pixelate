@@ -9,6 +9,10 @@ public class Player : Entity
     public void OnCreate()
     {
     }
+    public void OnDestroy()
+    {
+    }
+
     public void OnUpdate(float ts)
     {
 
@@ -21,6 +25,9 @@ public class Player : Entity
         {
             //GetComponent<AudioSourceComponent>().Play();
         }
+
+
+
         if (Input.IsKeyDown(KeyCode.D))
         {
             Matrix4x4 transform =  GetTransform();
@@ -52,9 +59,6 @@ public class Player : Entity
 
     }
 
-    public void OnDestroy()
-    {
-    }
 }
 
 

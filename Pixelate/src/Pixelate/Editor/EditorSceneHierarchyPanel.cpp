@@ -293,7 +293,6 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::TreePop();
 
 				if (updateTransform) {
-
 					transformComp.Transform = glm::translate(glm::mat4(1.0f), transformPosition)
 						* glm::toMat4(glm::quat(glm::radians(rot)))
 						* glm::scale(glm::mat4(1.0f), transformScale);
@@ -433,7 +432,10 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::Text("Freeze Z rotation");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				ImGui::Checkbox("##FreezeZRotCheckmark", &rbc.Definition.CanRotate);
+				bool tCanRotate = rbc.RigidBody.CanRotate();
+				if (ImGui::Checkbox("##FreezeZRotCheckmark", &tCanRotate)) {
+					rbc.RigidBody.ShouldRotate(tCanRotate);
+				}
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
@@ -441,7 +443,10 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::Text("Gravity scale");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				ImGui::DragFloat("##gravScale", &rbc.Definition.GravityScale);
+				float tGravScale = rbc.RigidBody.GetGravityScale();
+				if (ImGui::DragFloat("##gravScale", &tGravScale)) {
+					rbc.RigidBody.SetGravityScale(tGravScale);
+				}
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
@@ -456,7 +461,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 
 
-				Pixelate::BodyType currentType = rbc.Definition.Type;
+				Pixelate::BodyType currentType = rbc.RigidBody.GetBodyType();
 
 				if (ImGui::BeginCombo("##Type", ConvertBodyTypeEnumToString(currentType).c_str()))
 				{
@@ -476,7 +481,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::EndCombo();
 				}
 				
-				rbc.Definition.Type = currentType;
+				rbc.RigidBody.SetBodyType(currentType);
+
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
@@ -486,7 +492,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
 
-				Pixelate::SleepingState currentState = rbc.Definition.State;
+				Pixelate::SleepingState currentState = rbc.RigidBody.GetSleepingState();
 
 				if (ImGui::BeginCombo("##State", ConvertSleepStateEnumToString(currentState).c_str()))
 				{
@@ -506,7 +512,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::EndCombo();
 				}
 
-				rbc.Definition.State = currentState;
+				rbc.RigidBody.SetSleepState(currentState);
 
 
 				ImGui::PopItemWidth();
@@ -572,12 +578,51 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				else
 					ImGui::InputText("##sourceFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
 
-				//ImGui::DragFloat2("##center", glm::value_ptr(bcc.Center), 0.1f);
 				ImGui::PopItemWidth();
+
+				if (asc.Source) {
+					ImGui::NextColumn();
+					ImGui::Text("Should Loop");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					bool loop = asc.Source->IsLooping();
+					if (ImGui::Checkbox("##ShouldLoop", &loop)) {
+						asc.Source->SetLooping(loop);
+					}
+					ImGui::PopItemWidth();
+
+					ImGui::NextColumn();
+					ImGui::Text("Gain");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					float gain = asc.Source->GetGain();
+					if (ImGui::DragFloat("##SetGain", &gain)) {
+						asc.Source->SetGain(gain);
+					}
+					ImGui::PopItemWidth();
+
+				}
+
+
+
 				});
 
 			DrawEntityComponents<AudioListenerComponent>("Audio Listener", m_CurrentlySelectedEntity, [](AudioListenerComponent& alc) {
-			
+
+
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Spatial");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				bool sAudio = alc.Listener.IsSpatial();
+				if (ImGui::Checkbox("##SpatialAudio", &sAudio)) {
+					alc.Listener.SetSpatial(sAudio);
+				}
+				ImGui::PopItemWidth();
+
+
 			});
 			DrawEntityComponents<ScriptingBehaviourComponent>("Scripting Behaviour", m_CurrentlySelectedEntity, [&](ScriptingBehaviourComponent& sbc) {
 				ImGui::Columns(2);

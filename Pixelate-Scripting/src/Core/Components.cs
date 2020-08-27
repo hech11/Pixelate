@@ -85,17 +85,85 @@ namespace Pixelate {
     ///////////////////////////////////////////////////// Physics components /////////////////////////////////////////////////////
 
 
-    // TODO
+    // TODO : Constraints?
     public class RigidBodyComponent : Component {
+
+        public enum  SleepingState
+        {
+            Sleep,
+		    Awake,
+		    NeverSleep
+        };
+        public enum CollisionDetectionMode
+        {
+            Continuous,
+    		Discrete
+        };
+        public enum BodyType
+        {
+            Static,
+	    	Kinematic,
+	    	Dynamic
+        };
+
 
         public void SetLinearVelocity(Vector2 velocity)
     	{
             SetLinearVelocity_CPP(Entity.UUID, ref velocity);
-
         }
+
+        public Vector2 GetLinearVelocity()
+        {
+            Vector2 temp = new Vector2();
+            GetLinearVelocity_CPP(Entity.UUID, out temp);
+            return temp;
+        }
+
+        public void SetCollisionDetection(CollisionDetectionMode mode) {
+            SetCollisionDetection_CPP(Entity.UUID, ref mode);
+        }
+        public CollisionDetectionMode GetCollisionDetection() {
+            CollisionDetectionMode temp;
+            GetCollisionDetection_CPP(Entity.UUID, out temp);
+            return temp;
+        }
+
+        public void SetSleepingState(SleepingState state) {
+            SetSleepingState_CPP(Entity.UUID, ref state);
+        }
+
+        public SleepingState GetSleepingState() {
+            SleepingState temp;
+            GetSleepingState_CPP(Entity.UUID, out temp);
+            return temp;
+        }
+
+        public void SetBodyType(BodyType type) {
+            SetBodyType_CPP(Entity.UUID, ref type);
+        }
+        public BodyType GetBodyType() {
+            BodyType temp;
+            GetBodyType_CPP(Entity.UUID, out temp);
+            return temp;
+        }
+
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void SetLinearVelocity_CPP(ulong entity, ref Vector2 vel);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetLinearVelocity_CPP(ulong entity, out Vector2 vel);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void SetCollisionDetection_CPP(ulong entity, ref CollisionDetectionMode mode);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetCollisionDetection_CPP(ulong entity, out CollisionDetectionMode mode);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void SetSleepingState_CPP(ulong entity, ref SleepingState vel);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetSleepingState_CPP(ulong entity, out SleepingState vel);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void SetBodyType_CPP(ulong entity, ref BodyType type);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetBodyType_CPP(ulong entity, out BodyType type);
     }
 
 

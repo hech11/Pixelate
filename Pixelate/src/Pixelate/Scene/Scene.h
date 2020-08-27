@@ -11,6 +11,8 @@
 namespace Pixelate {
 
 	class Entity;
+
+
 	class Scene {
 
 		public :
@@ -51,6 +53,8 @@ namespace Pixelate {
 			std::unordered_map<Pixelate::UUID, Entity> m_EntityMap;
 
 			float m_AspectRatio;
+
+			bool m_IsPlaying = false;
 
 	};
 

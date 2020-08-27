@@ -60,7 +60,6 @@ namespace Pixelate {
 		for (auto entity : renderGroup) {
 			auto[transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			// Does not support rotation yet
 			if (spriteComp.SpriteRect) {
 				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.SpriteRect, spriteComp.TintColor);
 			} else {
@@ -129,6 +128,8 @@ namespace Pixelate {
 	}
 
 	void Scene::OnRuntimeStart() {
+
+		// Init Physics
 		auto scene = m_Reg.view<PhysicsWorldComponent>();
 		auto& physicsWorld = m_Reg.get<PhysicsWorldComponent>(scene.front());
 
@@ -143,10 +144,12 @@ namespace Pixelate {
 			auto [pos, rotationQ, scale] = transformComp.DecomposeTransform();
 			float rotation = glm::degrees(glm::eulerAngles(rotationQ)).z;
 			
-			ridBodComp.Definition.Position = pos;
-			ridBodComp.Definition.Angle = rotation;
+			RigidBodyDef def;
 
-			ridBodComp.RigidBody.Init(this, ridBodComp.Definition);
+			def.Position = pos;
+			def.Angle = rotation;
+
+			ridBodComp.RigidBody.Init(this, def);
 			
 
 
@@ -163,6 +166,8 @@ namespace Pixelate {
 
 		}
 
+
+		// Init Scripts
 		auto sbcView = m_Reg.view<ScriptingBehaviourComponent>();
 		for (auto entity : sbcView) {
 			Entity e{ entity, this };
@@ -171,6 +176,8 @@ namespace Pixelate {
 			ScriptingMaster::OnEntityCreate(sbc.Behaviour);
 		}
 
+
+		m_IsPlaying = true;
 
 	}
 
@@ -186,6 +193,42 @@ namespace Pixelate {
 			ScriptingMaster::OnEntityUpdate(sbc.Behaviour, &params);
 		}
 
+
+		// Spatial Audio ----- TEMP
+
+		auto alcView = m_Reg.view<AudioListenerComponent>();
+		AudioListener* al = nullptr;
+		bool cont = true;
+		for (auto entity : alcView) {
+			if (cont) {
+
+				Entity e{ entity, this };
+				auto& alc = e.GetComponent<AudioListenerComponent>();
+
+				if (alc.Listener.IsSpatial()) {
+					auto& transform = e.GetComponent<TransformComponent>();
+					auto[pos, rot, scale] = transform.DecomposeTransform();
+					alc.Listener.SetPosition(pos);
+					al = &alc.Listener;
+					cont = false;
+				}
+			}
+
+		}
+
+		if (al != nullptr) {
+			auto ascView = m_Reg.view<AudioSourceComponent>();
+			for (auto entity : ascView) {
+
+				Entity e{ entity, this };
+				auto& asc = e.GetComponent<AudioSourceComponent>();
+				auto& transform = e.GetComponent<TransformComponent>();
+				auto [pos, rot, scale] = transform.DecomposeTransform();
+				asc.Source->SetPosition(pos);
+
+			}
+		}
+	
 
 
 		// Physics

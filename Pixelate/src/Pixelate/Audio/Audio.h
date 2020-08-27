@@ -8,7 +8,6 @@
 #include "GLM/glm/glm.hpp"
 
 
-//TODO: This needs refactoring and redoing ( integrate into scene )
 namespace Pixelate {
 
 
@@ -25,5 +24,7 @@ namespace Pixelate {
 			// This would be used for queuing buffers once streaming audio is implemented
 			static void Update() {}
 	};
+
+
 
 }

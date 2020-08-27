@@ -12,7 +12,7 @@ namespace Pixelate {
 	struct AudioData {
 		Ref<AudioContext> Context;
 
-		std::map<std::string, Ref<AudioBuffer>> AudioBuffers;
+		std::unordered_map<std::string, Ref<AudioBuffer>> AudioBuffers;
 	};
 
 	static AudioData* s_Data;

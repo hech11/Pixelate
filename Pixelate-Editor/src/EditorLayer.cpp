@@ -210,6 +210,9 @@ namespace Pixelate {
 		using namespace Pixelate;
 		
 
+
+
+
 /////////////////////// The dockspace and menu bar //////////////////////////////////
 		static bool opt_fullscreen_persistant = true;
 		static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
@@ -251,6 +254,9 @@ namespace Pixelate {
 			if (ImGui::BeginMenu("File"))
 			{
 				ImGui::Separator();
+				if (ImGui::MenuItem("Open Project", "")) {
+					m_OpeningModal = true;
+				}
 				if (ImGui::MenuItem("Exit", "")) {
 					Application::GetApp().Quit();
 				}
@@ -259,6 +265,13 @@ namespace Pixelate {
 			if (ImGui::BeginMenu("Edit")) {
 				if (ImGui::MenuItem("Reload CSharp Assembly", "")) {
 					//ScriptingMaster::ReloadAssembly();
+				}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Settings")) {
+				if (ImGui::MenuItem("Physics", "")) {
+					m_OpenPhysicsPanel = true;
 				}
 				ImGui::EndMenu();
 			}
@@ -275,28 +288,29 @@ namespace Pixelate {
 
 
 
-// 
-// 
+
+
+
+
 // 		static bool showDemoWindow = true;
 // 		ImGui::ShowDemoWindow(&showDemoWindow);
-// 
-// 
-// 	
-		ImGui::Begin("Physics");
-		unsigned int flags = 0;
-		static bool physicsDebugButton = false;
-		static bool shapeBit = false;
-		static bool jointBit = false;
-		static bool aabbBit = false;
-		static bool pairBit = false;
-		static bool centerOfMassBit = false;
 
-		ImGui::Checkbox("Physics debug", &physicsDebugButton);
-		ImGui::Checkbox("shapeBit", &shapeBit);
-		ImGui::Checkbox("jointBit", &jointBit);
-		ImGui::Checkbox("aabbBit", &aabbBit);
-		ImGui::Checkbox("pairBit", &pairBit);
-		ImGui::Checkbox("centerOfMassBit", &centerOfMassBit);
+	
+// 		ImGui::Begin("Physics");
+// 		unsigned int flags = 0;
+// 		static bool physicsDebugButton = false;
+// 		static bool shapeBit = false;
+// 		static bool jointBit = false;
+// 		static bool aabbBit = false;
+// 		static bool pairBit = false;
+// 		static bool centerOfMassBit = false;
+// 
+// 		ImGui::Checkbox("Physics debug", &physicsDebugButton);
+// 		ImGui::Checkbox("shapeBit", &shapeBit);
+// 		ImGui::Checkbox("jointBit", &jointBit);
+// 		ImGui::Checkbox("aabbBit", &aabbBit);
+// 		ImGui::Checkbox("pairBit", &pairBit);
+// 		ImGui::Checkbox("centerOfMassBit", &centerOfMassBit);
 // 		Physics::GetDebug().ShouldDrawVisuals(physicsDebugButton);
 // 
 // 		if (shapeBit)
@@ -317,7 +331,7 @@ namespace Pixelate {
 // 
 // 
 // 		Physics::GetDebug().SetDrawFlag(flags);
-		ImGui::End();
+// 		ImGui::End();
 
 		ImGui::Begin("Renderer stats");
 		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);
@@ -362,10 +376,25 @@ namespace Pixelate {
 		
 
 		ImGui::End();
-//		auto temp = ImGui::GetStyle().WindowTitleAlign;
-	//	ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5f, 0.5f);
 
-		ImGui::Begin("Toolbar" , 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12, 0));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12, 4));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
+
+
+		ImGui::Begin("Toolbar" , 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar);
+		
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+
+
 		ImGui::SetCursorPos({ ImGui::GetWindowSize().x / 2  + -161, ImGui::GetWindowSize().y /2  +  -23});
 		if (m_SceneState == SceneState::Play) {
 			if (ImGui::Button("Stop", { 145, 42 })) {
@@ -382,6 +411,7 @@ namespace Pixelate {
 		if (ImGui::Button("Pause", { 145, 42 })) {
 		}
 		
+		ImGui::Separator();
 		ImGui::End();
 
 		m_SceneHierarcyPanel->OnImguiRender();
@@ -436,7 +466,7 @@ namespace Pixelate {
 
 		// game viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
-		ImGui::Begin("Game Viewport", 0, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Begin("Game Viewport", 0, ImGuiWindowFlags_NoCollapse);
 
 		const char* items[] = { "Any Aspect", "16x9", "4x3" };
 		static const char* current_item = items[0];
@@ -493,6 +523,62 @@ namespace Pixelate {
 		ImGui::PopStyleVar();
 
 
+		// TODO: This should be moved into it's own class.
+		// This is referring to the settings of the physics, such as gravity for all objects. 
+		if (m_OpenPhysicsPanel) {
+
+			ImGui::Begin("Physics Properties", &m_OpenPhysicsPanel);
+
+			auto PhysicsWorldComp = m_EditorScene->GetAllEntitiesWith<PhysicsWorldComponent>();
+			for (auto s : PhysicsWorldComp) {
+				Entity e = { s, m_EditorScene.get() };
+				
+				auto& physicsComp = e.GetComponent<PhysicsWorldComponent>();
+				if(ImGui::InputFloat2("Gravity", glm::value_ptr(physicsComp.Gravity), "%.2f")) {
+					physicsComp.World->SetGravity({ physicsComp.Gravity.x, physicsComp.Gravity.y});
+				}
+				ImGui::InputFloat("Fixed Timestep", &physicsComp.FixedTimeStep, 0.0f, 0.0f, "%.2f");
+				ImGui::InputInt("Velocity Iterations", &physicsComp.VelocityIterations);
+				ImGui::InputInt("Position Iterations", &physicsComp.PositionIterations);
+
+
+				// TODO: physics collision layer matrix
+
+				
+
+			}
+
+
+			ImGui::End();
+
+		}
+
+
+
+// for creating and loading projects
+
+// 		if (m_OpeningModal) {
+// 			ImGui::OpenPopup("Load Project");
+// 			m_OpeningModal = false;
+// 		}
+// 
+// 		ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, {0.5f, 0.5f});
+// 		if (ImGui::BeginPopupModal("Load Project", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize)) {
+// 			auto& app = Application::GetApp();
+// 			
+// 			ImGui::SetWindowSize({ 300 * 16.0f / 9.0f, 300 });
+// 			ImVec2 windowSize = ImGui::GetWindowSize();
+// 
+// 			ImGui::SetWindowPos({ app.GetWindow().GetXPos() + Application::GetApp().GetWindow().GetWidth() / 2.0f - windowSize.x / 2.0f,
+// 				app.GetWindow().GetYPos() + Application::GetApp().GetWindow().GetHeight() / 2.0f  - windowSize.y / 2.0f });
+// 			
+// 
+// 			if (ImGui::Button("Close"))
+// 				ImGui::CloseCurrentPopup();
+// 
+// 			ImGui::EndPopup();
+// 		}
+// 		ImGui::PopStyleVar();
 
 
 

@@ -258,6 +258,14 @@ namespace Pixelate {
 		mono_add_internal_call("Pixelate.Input::GetMousePosition_CPP", (void*)Script::Pixelate_Input_GetMousePosition);
 		
 		mono_add_internal_call("Pixelate.RigidBodyComponent::SetLinearVelocity_CPP", Script::Pixelate_RigidbodyComponent_SetLinearVelocity);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::GetLinearVelocity_CPP", Script::Pixelate_RigidbodyComponent_GetLinearVelocity);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::SetCollisionDetection_CPP", Script::Pixelate_RigidbodyComponent_SetCollisionDetection);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::GetCollisionDetection_CPP", Script::Pixelate_RigidbodyComponent_GetCollisionDetection);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::SetSleepingState_CPP", Script::Pixelate_RigidbodyComponent_SetSleepingState);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::GetSleepingState_CPP", Script::Pixelate_RigidbodyComponent_GetSleepingState);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::SetBodyType_CPP", Script::Pixelate_RigidbodyComponent_SetBodyType);
+		mono_add_internal_call("Pixelate.RigidBodyComponent::GetBodyType_CPP", Script::Pixelate_RigidbodyComponent_GetBodyType);
+
 
 
 		mono_add_internal_call("Pixelate.CameraComponent::SetClearColor_CPP", Script::Pixelate_CamreaComponent_SetClearColor);
@@ -265,12 +273,12 @@ namespace Pixelate {
 		mono_add_internal_call("Pixelate.SpriteRendererComponent::GetTint_CPP", Script::Pixelate_SpriteRendererComponent_GetTint);
 
 
-		mono_add_internal_call("Pixelate.AudioSourceComponent::Play_CPP", (void*)Script::Pixelate_AudioSourceComponent_Play);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::Play_CPP", Script::Pixelate_AudioSourceComponent_Play);
 		mono_add_internal_call("Pixelate.AudioSourceComponent::IsPlaying_CPP", (void*)Script::Pixelate_AudioSourceComponent_IsPlaying);
-		mono_add_internal_call("Pixelate.AudioSourceComponent::Pause_CPP", (void*)Script::Pixelate_AudioSourceComponent_Pause);
-		mono_add_internal_call("Pixelate.AudioSourceComponent::Stop_CPP", (void*)Script::Pixelate_AudioSourceComponent_Stop);
-		mono_add_internal_call("Pixelate.AudioSourceComponent::SetLooping_CPP", (void*)Script::Pixelate_AudioSourceComponent_SetLooping);
-		mono_add_internal_call("Pixelate.AudioSourceComponent::SetGain_CPP", (void*)Script::Pixelate_AudioSourceComponent_SetGain);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::Pause_CPP", Script::Pixelate_AudioSourceComponent_Pause);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::Stop_CPP", Script::Pixelate_AudioSourceComponent_Stop);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::SetLooping_CPP", Script::Pixelate_AudioSourceComponent_SetLooping);
+		mono_add_internal_call("Pixelate.AudioSourceComponent::SetGain_CPP", Script::Pixelate_AudioSourceComponent_SetGain);
 		mono_add_internal_call("Pixelate.AudioSourceComponent::GetPitch_CPP", (void*)Script::Pixelate_AudioSourceComponent_GetPitch);
 		mono_add_internal_call("Pixelate.AudioSourceComponent::GetGain_CPP", (void*)Script::Pixelate_AudioSourceComponent_GetGain);
 		mono_add_internal_call("Pixelate.AudioSourceComponent::IsLooping_CPP", (void*)Script::Pixelate_AudioSourceComponent_IsLooping);
@@ -278,7 +286,7 @@ namespace Pixelate {
 	}
 
 	namespace Script {
-
+////////////////////////////////////// Transform Component ///////////////////////////////////////////////////
 		void Pixelate_Entity_SetTransform(unsigned long long entity, glm::mat4* setTransform) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
 			auto& entityMap = scene->GetEntityMap();
@@ -296,7 +304,7 @@ namespace Pixelate {
 		}
 
 
-
+////////////////////////////////////// Input ///////////////////////////////////////////////////
 		bool Pixelate_Input_IsKeyDown(KeyCode* code) {
 			return Input::IsKeyDown(*code);
 		}
@@ -313,6 +321,8 @@ namespace Pixelate {
 			position->y = pos.second;
 		}
 
+////////////////////////////////////// Rigidbody Component ///////////////////////////////////////////////////
+
 		void Pixelate_RigidbodyComponent_SetLinearVelocity(unsigned long long entity, glm::vec2* velocity) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
 			auto& entityMap = scene->GetEntityMap();
@@ -322,6 +332,60 @@ namespace Pixelate {
 
 		}
 
+		void Pixelate_RigidbodyComponent_GetLinearVelocity(unsigned long long entity, glm::vec2* velocity) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			velocity = &r.RigidBody.GetLinearVelocity();
+		}
+		void Pixelate_RigidbodyComponent_SetCollisionDetection(unsigned long long entity, CollisionDetectionMode* mode) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			r.RigidBody.SetCollisionDetectionMode(*mode);
+		}
+		void Pixelate_RigidbodyComponent_GetCollisionDetection(unsigned long long entity, CollisionDetectionMode* mode) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			*mode = r.RigidBody.GetCollisionDetectionMode();
+		}
+		void Pixelate_RigidbodyComponent_SetSleepingState(unsigned long long entity, SleepingState* state) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			r.RigidBody.SetSleepState(*state);
+		}
+		void Pixelate_RigidbodyComponent_GetSleepingState(unsigned long long entity, SleepingState* state) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			*state = r.RigidBody.GetSleepingState();
+		}
+		void Pixelate_RigidbodyComponent_SetBodyType(unsigned long long entity, BodyType* type) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			r.RigidBody.SetBodyType(*type);
+		}
+		void Pixelate_RigidbodyComponent_GetBodyType(unsigned long long entity, BodyType* type) {
+			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
+			auto& entityMap = scene->GetEntityMap();
+
+			auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
+			*type = r.RigidBody.GetBodyType();
+		}
+
+
+
+
+////////////////////////////////////// Camera Component ///////////////////////////////////////////////////
 
 		void Pixelate_CamreaComponent_SetClearColor(unsigned long long entity, glm::vec4* clearColor) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
@@ -331,6 +395,7 @@ namespace Pixelate {
 			c.ClearColor = *clearColor;
 
 		}
+////////////////////////////////////// Sprite Renderer Component ///////////////////////////////////////////////////
 
 		void Pixelate_SpriteRendererComponent_SetTint(unsigned long long entity, glm::vec4* tint) {
 			Ref<Scene>& scene = ScriptingMaster::GetActiveSceneContext();
@@ -360,6 +425,8 @@ namespace Pixelate {
 		}
 
 		
+
+////////////////////////////////////// Audio Source Component ///////////////////////////////////////////////////
 
 		void Pixelate_AudioSourceComponent_Pause(unsigned long long entity)
 		{

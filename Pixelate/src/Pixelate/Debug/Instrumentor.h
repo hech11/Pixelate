@@ -5,9 +5,10 @@
 
 
 
+// TODO: This needs to be re factored a litte
 namespace Pixelate {
 
-	// May want to add more information to print in a session but for now the name is stored
+
 	struct Session
 	{
 		std::string Name;
