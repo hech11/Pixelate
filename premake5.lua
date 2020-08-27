@@ -26,7 +26,10 @@ IncludeDir["OpenAL_Soft"] = "Pixelate/vendor/OpenAL_Soft"
 IncludeDir["MiniMp3"] = "Pixelate/vendor/MiniMp3"
 IncludeDir["Box2D"] = "Pixelate/vendor/Box2D"
 IncludeDir["entt"] = "Pixelate/vendor/entt"
+IncludeDir["yamlcpp"] = "Pixelate/vendor/yaml-cpp"
+
 IncludeDir["mono"] = "Pixelate-Scripting/Pixelate-Scripting/include/mono-2.0/"
+
 
 
 IncludeDir["NativeFileDialog"] = "Pixelate-Editor/vendor/NativeFileDialog"
@@ -40,6 +43,8 @@ group "Dependencies/Core/Audio"
 	include "Pixelate/vendor/OpenAL_Soft"
 group"Dependencies/Core/Physics"
 	include "Pixelate/vendor/Box2D"
+group "Dependencies/Core/Utilites"
+	include "Pixelate/vendor/yaml-cpp"
 group"Dependencies/Editor/"
 	include "Pixelate-Editor/vendor/NativeFileDialog"
 group ""
@@ -65,21 +70,18 @@ project "Pixelate"
 		"%{prj.name}/vendor/STB/IMAGE/**.cpp",
 		"%{prj.name}/vendor/GLM/glm/**.hpp",
 		"%{prj.name}/vendor/GLM/glm/**.inl",
-		"%{prj.name}/vendor/GLAD/**.h",
-		"%{prj.name}/vendor/GLAD/**.cpp",
 		"%{prj.name}/vendor/IMGUI/*.h",
 		"%{prj.name}/vendor/IMGUI/*.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_glfw.h",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.cpp",
 		"%{prj.name}/vendor/IMGUI/examples/imgui_impl_opengl3.h",
-		"%{prj.name}/vendor/OPENAL_SOFT/include/AL/**h",
-		"%{prj.name}/vendor/OPENAL_SOFT/src/common/**.h",
 		"%{prj.name}/vendor/MINIMP3/**.h",
 		"%{prj.name}/vendor/LIBOGG/include/**.h",
 		"%{prj.name}/vendor/VORBIS/include/**.h",
 		"%{prj.name}/vendor/VORBIS/lib/**.h",
 		"%{prj.name}/vendor/entt/**.hpp"
+		
 	}
 
 
@@ -105,7 +107,9 @@ project "Pixelate"
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
 		"%{IncludeDir.entt}/vendor/entt/",
-		"%{IncludeDir.mono}"
+		"%{IncludeDir.mono}",
+		"%{IncludeDir.yamlcpp}/include/"
+
 
 
 
@@ -117,6 +121,7 @@ project "Pixelate"
 		"Glfw",
 		"opengl32.lib",
 		"OpenAL_Soft",
+		"yaml-cpp",
 		"Box2D",
 	}
 
@@ -197,7 +202,9 @@ project "Pixelate-Editor"
 		"%{IncludeDir.Box2D}/include",
 		"%{IncludeDir.NativeFileDialog}src/include",
 		"%{IncludeDir.entt}/vendor/entt/",
-		"%{IncludeDir.mono}"
+		"%{IncludeDir.mono}",
+		"%{IncludeDir.yamlcpp}"
+
 
 	}
 
