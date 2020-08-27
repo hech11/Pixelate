@@ -36,9 +36,6 @@ namespace Pixelate {
 		m_SceneEntity = m_Reg.create();
 		m_Reg.emplace<PhysicsWorldComponent>(m_SceneEntity);
 
-		auto entity = CreateEntity("Camera");
-		entity.AddComponent<CameraComponent>();
-		entity.AddComponent<AudioListenerComponent>();
 	}
 
 	
@@ -314,6 +311,20 @@ namespace Pixelate {
 		entity.AddComponent<NameComponent>(name);
 		glm::mat4 transform = glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f,1.0f });
 		entity.AddComponent<TransformComponent>(transform);
+		return entity;
+	}
+
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name) {
+		auto entity = Entity(m_Reg.create(), this);
+		entity.AddComponent<UUIDComponent>().UUID;
+		auto& id = entity.GetComponent<UUIDComponent>().UUID = uuid;
+
+		m_EntityMap[id] = entity;
+
+		entity.AddComponent<NameComponent>(name);
+		glm::mat4 transform = glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f,1.0f });
+		entity.AddComponent<TransformComponent>(transform);
+
 		return entity;
 	}
 

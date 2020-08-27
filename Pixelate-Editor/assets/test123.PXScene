@@ -1,0 +1,19 @@
+Scene: test123
+Entities:
+  - Entity: 6781332492961021833
+    NameComponent:
+      Name: ffe
+  - Entity: 18395650585886769135
+    NameComponent:
+      Name: av
+  - Entity: 1141921454312492633
+    NameComponent:
+      Name: 123
+  - Entity: 13798982693036385569
+    NameComponent:
+      Name: Camera
+    CameraComponent:
+      OrthoSize: 1
+      Primary: true
+    AudioListenerComponent:
+      Spatial: false

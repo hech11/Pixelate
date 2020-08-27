@@ -1,0 +1,10 @@
+Scene: DefaultScene
+Entities:
+  - Entity: 13798982693036385569
+    NameComponent:
+      Name: Camera
+    CameraComponent:
+      OrthoSize: 1
+      Primary: true
+    AudioListenerComponent:
+      Spatial: false

@@ -43,6 +43,7 @@ namespace Pixelate {
 			std::unordered_map<UUID, Entity>& GetEntityMap() { return m_EntityMap; }
 
 			Entity CreateEntity(const std::string& name = "Entity");
+			Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "Entity");
 			void DeleteEntity(Entity entity);
 
 			void SetName(const std::string& name) { m_Name = name; }

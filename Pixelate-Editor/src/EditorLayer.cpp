@@ -42,14 +42,14 @@ namespace Pixelate {
 		particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
 
-		m_EditorScene = CreateRef<Scene>();
+		m_EditorScene = SceneSerialization::Deserialize("assets/scenes/DefaultScene.PXScene");
+		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
+		ScriptingMaster::SetSceneContext(m_EditorScene);
 
 
 		Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
 
 
-		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
-		ScriptingMaster::SetSceneContext(m_EditorScene);
 
 
 		//Setting up both scene and game viewport panels
@@ -267,7 +267,27 @@ namespace Pixelate {
 				ImGui::Separator();
 				if (ImGui::MenuItem("Open Scene", "")) {
 
-					// m_EditorScene = 
+
+					nfdchar_t* outPath = NULL;
+					nfdresult_t result = NFD_OpenDialog("PXScene", NULL, &outPath);
+					if (result == NFD_OKAY) {
+						puts("Success!");
+
+						m_EditorScene = SceneSerialization::Deserialize(outPath);
+						m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
+						ScriptingMaster::SetSceneContext(m_EditorScene);
+
+						Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
+
+						free(outPath);
+					}
+					else if (result == NFD_CANCEL) {
+						PX_CORE_MSG("User pressed cancel.\n");
+					}
+					else {
+						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+					}
+
 
 				}
 				if (ImGui::MenuItem("Save Scene", "")) {

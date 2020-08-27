@@ -36,6 +36,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 	void EditorSceneHierarchyPanel::SetSceneContext(const Ref<Scene>& scene)
 	{
 		m_SceneContext = scene;
+		m_SelectedEntity = false;
 	}
 	void EditorSceneHierarchyPanel::SetSelectedEntity(Entity entity) {
 		m_CurrentlySelectedEntity = entity;
