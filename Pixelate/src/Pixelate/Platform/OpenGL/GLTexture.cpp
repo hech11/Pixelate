@@ -72,7 +72,14 @@ namespace Pixelate {
 			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, PixData));
 		}
 		else {
+			// This generates a pink texture if the texture could not be loaded. This code should be moved else where
 			PX_ERROR("Failed to load '%s' !", filepath.c_str());
+			unsigned int pinkCol = 0xFF00FF;
+			m_Props.Width = 1;
+			m_Props.Height = 1;
+			m_Props.TexFormat = Texture::TextureProperties::Format::RGB;
+
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, &pinkCol));
 		}
 
 		stbi_image_free(PixData);

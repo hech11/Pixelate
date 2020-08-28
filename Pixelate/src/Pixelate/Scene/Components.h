@@ -152,11 +152,11 @@ namespace Pixelate {
 	struct RigidBodyComponent {
 
 		Pixelate::RigidBody RigidBody;
-
+		Pixelate::RigidBodyDef Definition;
 
 		RigidBodyComponent() = default;
 		RigidBodyComponent(const RigidBodyComponent& other) : 
-			RigidBody(other.RigidBody)
+			RigidBody(other.RigidBody), Definition(other.Definition)
 		{}
 
 		

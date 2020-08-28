@@ -13,7 +13,7 @@ namespace Pixelate {
 
 
 
-	RigidBody::RigidBody(Scene* scene, const RigidBodyDef& def) : m_Definition(def) {
+	RigidBody::RigidBody(Scene* scene, const RigidBodyDef& def) {
 		Init(scene, def);
 	}
 
@@ -33,7 +33,7 @@ namespace Pixelate {
 		if (d.allowSleep) {
 			d.awake = def.State == SleepingState::Awake ? true : false;
 		}
-		d.fixedRotation = !def.CanRotate;
+		d.fixedRotation = def.FixedRotation;
 		d.gravityScale = def.GravityScale;
 		m_BodyData = physicsWorld.World->CreateBody(&d);
 	}
@@ -45,7 +45,7 @@ namespace Pixelate {
 		for (auto& Fixture : m_Fixtures) {
 			m_BodyData->DestroyFixture(Fixture);
 		}
-		if(m_BodyData < 0)
+		if(m_BodyData != nullptr)
 			m_World->DestroyBody(m_BodyData);
 		m_BodyData = nullptr;
 		m_Fixtures.clear();
@@ -85,43 +85,45 @@ namespace Pixelate {
 
 	void RigidBody::SetCollisionDetectionMode(CollisionDetectionMode mode) {
 		bool bullet = (mode == CollisionDetectionMode::Continuous ? true : false);
-		m_Definition.DetectionMode = mode;
 		m_BodyData->SetBullet(bullet);
 	}
 
 	CollisionDetectionMode RigidBody::GetCollisionDetectionMode() const {
-		return m_Definition.DetectionMode;
+		return ( m_BodyData->IsBullet() ? CollisionDetectionMode::Continuous : CollisionDetectionMode::Discrete);
 	}
 
 	void RigidBody::SetSleepState(SleepingState mode) {
-		m_Definition.State = mode;
 		if (mode == SleepingState::NeverSleep) {
 			if (m_BodyData != nullptr) {
 				m_BodyData->SetSleepingAllowed(false);
-				m_BodyData->SetAwake(true);
 			}
 
 			return;
 		}
-		if (m_BodyData != nullptr)
-			m_BodyData->SetSleepingAllowed(true);
+		m_BodyData->SetSleepingAllowed(true);
 
 		bool awake = false;
 		if (mode == SleepingState::Sleep) {
 			awake = false;
 		}
-		if (m_BodyData != nullptr)
-			m_BodyData->SetAwake(awake);
+
+		m_BodyData->SetAwake(awake);
 
 	}
 
 	SleepingState RigidBody::GetSleepingState() const {
-		return m_Definition.State;
+		if(!m_BodyData->IsSleepingAllowed())
+			return Pixelate::SleepingState::NeverSleep;
+
+		if(m_BodyData->IsAwake())
+			return Pixelate::SleepingState::Awake;
+
+		return Pixelate::SleepingState::Sleep;
+
 	}
 
 	void RigidBody::SetBodyType(BodyType type) {
 		b2BodyType b2type{};
-		m_Definition.Type = type;
 
 		switch (type)
 		{
@@ -135,34 +137,30 @@ namespace Pixelate {
 				b2type = b2_dynamicBody;
 				break;
 		}
-		if(m_BodyData != nullptr)
-			m_BodyData->SetType(b2type);
+		m_BodyData->SetType(b2type);
 	}
 
 	BodyType RigidBody::GetBodyType() const {
-		return m_Definition.Type;
+		return (Pixelate::BodyType)m_BodyData->GetType();
 	}
 
 	void RigidBody::SetGravityScale(float scale)
 	{
-		m_Definition.GravityScale = scale;
-		if (m_BodyData != nullptr)
-			m_BodyData->SetGravityScale(scale);
+		m_BodyData->SetGravityScale(scale);
 	}
 
 	float RigidBody::GetGravityScale() const
 	{
-		return m_Definition.GravityScale;
+		return m_BodyData->GetGravityScale();
 	}
 
-	void RigidBody::ShouldRotate(bool rotate)
+	void RigidBody::SetFixedRotation(bool rotate)
 	{
-		m_Definition.CanRotate = rotate;
-		if (m_BodyData != nullptr)
-			m_BodyData->SetFixedRotation(rotate);
+		m_BodyData->SetFixedRotation(rotate);
 	}
-	bool RigidBody::CanRotate() const {
-		return m_Definition.CanRotate;
+
+	bool RigidBody::CanZRotate() const {
+		return m_BodyData->IsFixedRotation();
 	}
 
 	void RigidBody::SetTransform(const glm::vec3& positon, float angle) {

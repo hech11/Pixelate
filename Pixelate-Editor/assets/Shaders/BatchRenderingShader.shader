@@ -36,8 +36,73 @@ in vec2 v_UV;
 in float v_TexIndex;
 
 
-uniform sampler2D u_Textures[16];
+uniform sampler2D u_Textures[gl_MaxCombinedTextureImageUnits];
 
+#define GenTexCol(num) case num: texColor = texture(u_Textures[num], v_UV) * v_Color; break;
+//TODO: Temp
 void main() {
-	FragColor = texture(u_Textures[int(v_TexIndex)], v_UV) * v_Color;
+
+	vec4 texColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+	switch (int(v_TexIndex)) {
+
+		GenTexCol(0);
+		GenTexCol(1);
+		GenTexCol(2);
+		GenTexCol(3);
+		GenTexCol(4);
+		GenTexCol(5);
+		GenTexCol(6);
+		GenTexCol(7);
+		GenTexCol(8);
+		GenTexCol(9);
+
+		GenTexCol(10);
+		GenTexCol(11);
+		GenTexCol(12);
+		GenTexCol(13);
+		GenTexCol(14);
+		GenTexCol(15);
+		GenTexCol(16);
+		GenTexCol(17);
+		GenTexCol(18);
+		GenTexCol(19);
+		GenTexCol(20);
+
+		GenTexCol(21);
+		GenTexCol(22);
+		GenTexCol(23);
+		GenTexCol(24);
+		GenTexCol(25);
+		GenTexCol(26);
+		GenTexCol(27);
+		GenTexCol(28);
+		GenTexCol(29);
+		GenTexCol(30);
+
+		GenTexCol(31);
+		GenTexCol(32);
+		GenTexCol(33);
+		GenTexCol(34);
+		GenTexCol(35);
+		GenTexCol(36);
+		GenTexCol(37);
+		GenTexCol(38);
+		GenTexCol(39);
+		GenTexCol(40);
+
+		GenTexCol(41);
+		GenTexCol(42);
+		GenTexCol(43);
+		GenTexCol(44);
+		GenTexCol(45);
+		GenTexCol(46);
+		GenTexCol(47);
+		GenTexCol(48);
+		GenTexCol(49);
+		GenTexCol(50);
+
+	}
+
+
+	FragColor = texColor;
 }

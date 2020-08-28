@@ -42,7 +42,9 @@ namespace Pixelate {
 		particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
 
-		m_EditorScene = SceneSerialization::Deserialize("assets/scenes/DefaultScene.PXScene");
+		//m_EditorScene = SceneSerialization::Deserialize("assets/scenes/PhysicsTests.PXScene");
+		m_EditorScene = SceneSerialization::Deserialize("assets/scenes/test123.PXScene");
+		//m_EditorScene = SceneSerialization::Deserialize("assets/scenes/DefaultScene.PXScene");
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 		ScriptingMaster::SetSceneContext(m_EditorScene);
 
@@ -290,8 +292,8 @@ namespace Pixelate {
 
 
 				}
+
 				if (ImGui::MenuItem("Save Scene", "")) {
-				
 
 					nfdchar_t* outPath = NULL;
 					nfdresult_t result = NFD_SaveDialog("PXScene", NULL, &outPath);

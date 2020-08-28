@@ -48,6 +48,9 @@ namespace Pixelate {
 		}
 
 		AudioFormatSpec specs = AudioFormatSpec::LoadAudioData(filepath);
+		if (specs.Extention == AudioFormatSpec::FileFormat::None) {
+			return nullptr;
+		}
 		Ref<AudioBuffer> buffer = CreateRef<AudioBuffer>(specs);
 
 		s_Data->AudioBuffers[filepath] = buffer;

@@ -25,7 +25,7 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		AudioFormatSpec specs;
 		specs.Extention = DeduceFileFormat(filepath);
-
+		
 		switch (specs.Extention) {
 			case FileFormat::Mp3:
 				MP3Format::LoadData(filepath, &specs);
@@ -38,7 +38,8 @@ namespace Pixelate {
 				break;
 
 			default:
-				PX_ASSERT(false, "audio file type not supported!");
+				specs.Extention = FileFormat::None;
+				PX_CORE_WARN("Could not deduce audio file!\n");
 		}
 
 		return specs;

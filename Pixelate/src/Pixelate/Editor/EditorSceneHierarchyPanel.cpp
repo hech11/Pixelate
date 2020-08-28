@@ -160,6 +160,12 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		return "null";
 	}
 
+	static std::string ConvertColDetectionModeEnumToString(Pixelate::CollisionDetectionMode mode) {
+		if (mode == CollisionDetectionMode::Continuous)
+			return "Continuous";
+		else
+			return "Discrete";
+	}
 	void EditorSceneHierarchyPanel::OnImguiRender()
 	{
 		ImGui::Begin("Scene Hierarchy");
@@ -433,10 +439,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::Text("Freeze Z rotation");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				bool tCanRotate = rbc.RigidBody.CanRotate();
-				if (ImGui::Checkbox("##FreezeZRotCheckmark", &tCanRotate)) {
-					rbc.RigidBody.ShouldRotate(tCanRotate);
-				}
+				ImGui::Checkbox("##FreezeZRotCheckmark", &rbc.Definition.FixedRotation);
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
@@ -444,10 +447,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::Text("Gravity scale");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				float tGravScale = rbc.RigidBody.GetGravityScale();
-				if (ImGui::DragFloat("##gravScale", &tGravScale)) {
-					rbc.RigidBody.SetGravityScale(tGravScale);
-				}
+				ImGui::DragFloat("##gravScale", &rbc.Definition.GravityScale);
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
@@ -459,10 +459,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
 
-
-
-
-				Pixelate::BodyType currentType = rbc.RigidBody.GetBodyType();
+				Pixelate::BodyType currentType = rbc.Definition.Type;
 
 				if (ImGui::BeginCombo("##Type", ConvertBodyTypeEnumToString(currentType).c_str()))
 				{
@@ -482,7 +479,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::EndCombo();
 				}
 				
-				rbc.RigidBody.SetBodyType(currentType);
+				rbc.Definition.Type = currentType;
 
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
@@ -493,7 +490,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
 
-				Pixelate::SleepingState currentState = rbc.RigidBody.GetSleepingState();
+				Pixelate::SleepingState currentState = rbc.Definition.State;
 
 				if (ImGui::BeginCombo("##State", ConvertSleepStateEnumToString(currentState).c_str()))
 				{
@@ -513,13 +510,38 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::EndCombo();
 				}
 
-				rbc.RigidBody.SetSleepState(currentState);
+				rbc.Definition.State = currentState;
 
 
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
 
+				ImGui::Text("Collision Detection Mode");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+				Pixelate::CollisionDetectionMode currentMode = rbc.Definition.DetectionMode;
+
+				if (ImGui::BeginCombo("##Mode", ConvertColDetectionModeEnumToString(currentMode).c_str()))
+				{
+					bool cIsSelected = (currentMode == CollisionDetectionMode::Continuous);
+					bool dIsSelected = (currentMode == CollisionDetectionMode::Discrete);
+
+					if (ImGui::Selectable("Continuous", cIsSelected))
+						currentMode = CollisionDetectionMode::Continuous;
+
+					if (ImGui::Selectable("Discrete", dIsSelected))
+						currentMode = CollisionDetectionMode::Discrete;
+
+					ImGui::EndCombo();
+				}
+
+				rbc.Definition.DetectionMode = currentMode;
+
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
 			
 
 			});

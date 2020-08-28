@@ -33,7 +33,8 @@ namespace Pixelate {
 		CollisionDetectionMode DetectionMode = CollisionDetectionMode::Discrete;
 		BodyType Type = BodyType::Dynamic;
 
-		bool CanRotate = false;
+		bool FixedRotation = false;
+
 	};
 
 
@@ -66,8 +67,8 @@ namespace Pixelate {
 			void SetGravityScale(float scale);
 			float GetGravityScale() const;
 
-			void ShouldRotate(bool rotate);
-			bool CanRotate() const;
+			void SetFixedRotation(bool rotate);
+			bool CanZRotate() const;
 
 
 			void SetTransform(const glm::vec3& positon, float angle);
@@ -82,7 +83,6 @@ namespace Pixelate {
 
 		private :
 			std::vector<b2Fixture*> m_Fixtures;
-			RigidBodyDef m_Definition;
 			b2Body* m_BodyData;
 			b2World* m_World;
 

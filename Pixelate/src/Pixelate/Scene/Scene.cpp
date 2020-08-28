@@ -143,10 +143,10 @@ namespace Pixelate {
 			
 			RigidBodyDef def;
 
-			def.Position = pos;
-			def.Angle = rotation;
+			ridBodComp.Definition.Position = pos;
+			ridBodComp.Definition.Angle = rotation;
 
-			ridBodComp.RigidBody.Init(this, def);
+			ridBodComp.RigidBody.Init(this, ridBodComp.Definition);
 			
 
 
