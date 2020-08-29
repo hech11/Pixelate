@@ -44,7 +44,15 @@ namespace Pixelate {
 
 		//m_EditorScene = SceneSerialization::Deserialize("assets/scenes/PhysicsTests.PXScene");
 		m_EditorScene = SceneSerialization::Deserialize("assets/scenes/test123.PXScene");
+
 		//m_EditorScene = SceneSerialization::Deserialize("assets/scenes/DefaultScene.PXScene");
+
+// 		if (m_EditorScene == nullptr) {
+// 			m_EditorScene = CreateRef<Scene>("Empty Scene");
+// 			m_EditorScene->GenerateDefaultScene();
+// 		}
+
+
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 		ScriptingMaster::SetSceneContext(m_EditorScene);
 
@@ -276,6 +284,10 @@ namespace Pixelate {
 						puts("Success!");
 
 						m_EditorScene = SceneSerialization::Deserialize(outPath);
+						if (m_EditorScene == nullptr) {
+							m_EditorScene = CreateRef<Scene>("Empty Scene");
+							m_EditorScene->GenerateDefaultScene();
+						}
 						m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
 						ScriptingMaster::SetSceneContext(m_EditorScene);
 
@@ -350,54 +362,10 @@ namespace Pixelate {
 
 
 
-
-
-
-
-
-
-
-
 // 		static bool showDemoWindow = true;
 // 		ImGui::ShowDemoWindow(&showDemoWindow);
 
 	
-// 		ImGui::Begin("Physics");
-// 		unsigned int flags = 0;
-// 		static bool physicsDebugButton = false;
-// 		static bool shapeBit = false;
-// 		static bool jointBit = false;
-// 		static bool aabbBit = false;
-// 		static bool pairBit = false;
-// 		static bool centerOfMassBit = false;
-// 
-// 		ImGui::Checkbox("Physics debug", &physicsDebugButton);
-// 		ImGui::Checkbox("shapeBit", &shapeBit);
-// 		ImGui::Checkbox("jointBit", &jointBit);
-// 		ImGui::Checkbox("aabbBit", &aabbBit);
-// 		ImGui::Checkbox("pairBit", &pairBit);
-// 		ImGui::Checkbox("centerOfMassBit", &centerOfMassBit);
-// 		Physics::GetDebug().ShouldDrawVisuals(physicsDebugButton);
-// 
-// 		if (shapeBit)
-// 			flags = flags | PhysicsDebugDraw::DrawFlag::shapeBit;
-// 
-// 		if (jointBit)
-// 			flags = flags | PhysicsDebugDraw::DrawFlag::jointBit;
-// 
-// 		if (aabbBit)
-// 			flags = flags | PhysicsDebugDraw::DrawFlag::aabbBit;
-// 
-// 		if (pairBit)
-// 			flags = flags | PhysicsDebugDraw::DrawFlag::pairBit;
-// 
-// 		if (centerOfMassBit)
-// 			flags = flags | PhysicsDebugDraw::DrawFlag::centerOfMassBit;
-// 
-// 
-// 
-// 		Physics::GetDebug().SetDrawFlag(flags);
-// 		ImGui::End();
 
 		ImGui::Begin("Renderer stats");
 		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);

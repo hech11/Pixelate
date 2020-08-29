@@ -5,6 +5,8 @@ public class Player : Entity
 {
 
     public float MoveSpeed = 15.0f;
+    public int TempInt = 213;
+    public bool TempBool = true;
 
     public void OnCreate()
     {

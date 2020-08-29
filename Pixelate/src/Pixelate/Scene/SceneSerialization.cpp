@@ -224,7 +224,7 @@ namespace Pixelate {
 
 				
 			}
-			// Transform comp -- all entites that the user can create all have a transform
+			// Transform comp -- all entities that the user can create all have a transform
 			data << YAML::Key << "TransformComponent";
 
 			data << YAML::BeginMap;
@@ -313,9 +313,6 @@ namespace Pixelate {
 
 
 
-
-
-
 ///////////////////////////////////////////////////// Physics Components /////////////////////////////////////////////////////
 			if (e.HasComponent<RigidBodyComponent>()) {
 				data << YAML::Key << "RigidBodyComponent";
@@ -345,6 +342,57 @@ namespace Pixelate {
 
 
 
+
+///////////////////////////////////////////////////// Scripting Components /////////////////////////////////////////////////////
+			if (e.HasComponent<ScriptingBehaviourComponent>()) {
+				data << YAML::Key << "ScriptingBehaviourComponent";
+				auto& sbc = e.GetComponent<ScriptingBehaviourComponent>();
+
+				data << YAML::BeginMap;
+				data << YAML::Key << "ClassName" << sbc.Behaviour.ClassName;
+				auto& scriptFields = sbc.Behaviour.AllFields;
+				data << YAML::Key << "Fields" << YAML::Value;
+				data << YAML::BeginSeq;
+
+				for (unsigned int i = 0; i < scriptFields.size(); i++) {
+					data << YAML::BeginMap;
+					data << YAML::Key << "FieldName" << YAML::Value << scriptFields[i].VariableName;
+					data << YAML::Key << "FieldType" << YAML::Value << (int)scriptFields[i].Type;
+
+					switch (scriptFields[i].Type)
+					{
+						case PropertyType::Bool:
+							data << YAML::Key << "FieldValue" << YAML::Value << (bool)scriptFields[i].Value;
+							break;
+						case PropertyType::Float:
+							data << YAML::Key << "FieldValue" << YAML::Value << *(float*)&scriptFields[i].Value;
+							break;
+						case PropertyType::Int: {
+							data << YAML::Key << "FieldValue" << YAML::Value << (int)scriptFields[i].Value;
+							break;
+						}
+						case PropertyType::Vec2:
+							break;
+						case PropertyType::Vec3:
+							break;
+						case PropertyType::Vec4:
+							break;
+						default:
+							break;
+
+					}
+					data << YAML::EndMap;
+
+				}
+				data << YAML::EndSeq;
+				data << YAML::EndMap;
+
+
+///////////////////////////////////////////////////// -------- END -------- /////////////////////////////////////////////////////
+
+			}
+
+
 			data << YAML::EndMap;
 
 		});
@@ -363,12 +411,15 @@ namespace Pixelate {
 		std::ifstream file(filepath);
 		YAML::Node data = YAML::Load(file);
 
-		if (!data["Scene"])
-			PX_ASSERT(false, "Could not load scene!");
-
+		if (!data["Scene"]) {
+			PX_CORE_ERROR("Could not load scene!\n");
+			ScriptingMaster::SetSceneContext(nullptr);
+			return nullptr;
+		}
 		std::string name = data["Scene"].as<std::string>();
 
 		Ref<Scene> resultScene = CreateRef<Scene>(name);
+		ScriptingMaster::SetSceneContext(resultScene);
 
 
 		YAML::Node entities = data["Entities"];
@@ -478,6 +529,58 @@ namespace Pixelate {
 					comp.Size = bccYaml["Size"].as<glm::vec2>();
 					comp.IsTrigger = bccYaml["IsTrigger"].as<bool>();
 				}
+
+
+///////////////////////////////////////////////////// Scripting Components /////////////////////////////////////////////////////
+
+				if (auto sbcYaml = entity["ScriptingBehaviourComponent"]) {
+					auto& sbc = e.AddComponent<ScriptingBehaviourComponent>();
+
+					sbc.Behaviour = ScriptBehaviour();
+					sbc.Behaviour.ClassName = sbcYaml["ClassName"].as<std::string>();
+
+					ScriptingMaster::CreateEntityScript(e, sbc.Behaviour);
+					auto& allFields = sbc.Behaviour.AllFields;
+					const auto& fieldData = sbcYaml["Fields"];
+
+
+					int iterator = 0;
+					for (auto field : fieldData) {
+						
+						switch ((PropertyType)field["FieldType"].as<int>()) {
+							case PropertyType::Bool: {
+								bool temp = field["FieldValue"].as<bool>();
+								allFields[iterator].Value = std::move(&temp);
+								break;
+							}
+							case PropertyType::Float: {
+								float temp = field["FieldValue"].as<float>();
+								allFields[iterator].Value = std::move(&temp);
+								break;
+							}
+							case PropertyType::Int: {
+								int temp = field["FieldValue"].as<int>();
+								allFields[iterator].Value = std::move(&temp);
+								break;
+							}
+							case PropertyType::Vec2:
+								break;
+							case PropertyType::Vec3:
+								break;
+							case PropertyType::Vec4:
+								break;
+							default:
+								break;
+
+						}
+						sbc.Behaviour.SetPropertyValue(allFields[iterator].Value, allFields[iterator].Field);
+						iterator++;
+
+					}
+					
+				}
+
+
 			}
 		}
 

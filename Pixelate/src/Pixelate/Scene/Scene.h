@@ -20,7 +20,7 @@ namespace Pixelate {
 			~Scene();
 
 			void Init(); // Does nothing at the moment. This would init a scene from a file saved externally.
-
+			void GenerateDefaultScene(); // This could be moved into some SceneManager class 
 
 			// always update regardless of editor state
 			void OnUpdate(float ts, const Ref<EditorCamera>& camera);

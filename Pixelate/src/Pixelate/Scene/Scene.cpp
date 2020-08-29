@@ -30,16 +30,18 @@ namespace Pixelate {
 
 	void Scene::Init()
 	{
-		// TODO: Set stuff in here once reading the scene from a file.
-
-		// temp for now..?
 		m_SceneEntity = m_Reg.create();
-		m_Reg.emplace<PhysicsWorldComponent>(m_SceneEntity);
+
+		m_Reg.emplace<PhysicsWorldComponent>(m_SceneEntity); // temp for now...
 
 	}
 
-	
 
+	void Scene::GenerateDefaultScene() {
+		auto camEntity = CreateEntity("Camera");
+		camEntity.AddComponent<CameraComponent>();
+		camEntity.AddComponent<AudioListenerComponent>();
+	}
 
 	void Scene::OnUpdate(float ts, const Ref<EditorCamera>& camera)
 	{
