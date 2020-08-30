@@ -31,6 +31,7 @@
 #include <IMGUI/examples/imgui_impl_opengl3.h>
 
 #endif
+#include "Pixelate/Scene/SceneManager.h"
 
 
 namespace Pixelate {
@@ -189,6 +190,8 @@ namespace Pixelate {
 	}
 	void Application::Quit() {
 		m_IsRunning = false;
+
+		SceneManager::Shutdown();
 	}
 
 

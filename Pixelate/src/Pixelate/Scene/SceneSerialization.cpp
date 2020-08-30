@@ -413,13 +413,11 @@ namespace Pixelate {
 
 		if (!data["Scene"]) {
 			PX_CORE_ERROR("Could not load scene!\n");
-			ScriptingMaster::SetSceneContext(nullptr);
 			return nullptr;
 		}
 		std::string name = data["Scene"].as<std::string>();
 
 		Ref<Scene> resultScene = CreateRef<Scene>(name);
-		ScriptingMaster::SetSceneContext(resultScene);
 
 
 		YAML::Node entities = data["Entities"];

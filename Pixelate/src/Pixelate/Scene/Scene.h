@@ -11,8 +11,6 @@
 namespace Pixelate {
 
 	class Entity;
-
-
 	class Scene {
 
 		public :
@@ -50,7 +48,6 @@ namespace Pixelate {
 			const std::string& GetName() const { return m_Name; }
 
 		private :
-
 			entt::entity m_SceneEntity;
 			entt::registry m_Reg;
 			std::string m_Name;

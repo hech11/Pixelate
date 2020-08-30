@@ -62,9 +62,6 @@ namespace Pixelate {
 			static void Init(const std::string& assemblyPath);
 			static void Shutdown();
 
-			static void SetSceneContext(const Ref<Scene>& scene);
-			static Ref<Scene>& GetActiveSceneContext();
-
 			static void ReloadAssembly();
 
 			static void OnEntityCreate(const ScriptBehaviour& sb, void** params = nullptr);
@@ -91,6 +88,8 @@ namespace Pixelate {
 		void Pixelate_Entity_SetTransform(unsigned long long entity, glm::mat4* setTransform);
 		void Pixelate_Entity_GetTransform(unsigned long long entity, glm::mat4* getTransform);
 
+		// SceneManager
+		void Pixelate_SceneManager_LoadScene(MonoString* filepath);
 
 		// Input
 		bool Pixelate_Input_IsKeyDown(KeyCode* code);

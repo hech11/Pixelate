@@ -10,7 +10,7 @@
 #include <Pixelate/Rendering/Renderer2D.h>
 #include <Pixelate/Rendering/RenderCommand.h>
 
-#include <Pixelate/Scene/SceneSerialization.h>
+#include <Pixelate/Scene/SceneManager.h>
 
 
 #include <Imgui/imgui.h>
@@ -42,23 +42,12 @@ namespace Pixelate {
 		particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
 
 
-		//m_EditorScene = SceneSerialization::Deserialize("assets/scenes/PhysicsTests.PXScene");
-		m_EditorScene = SceneSerialization::Deserialize("assets/scenes/test123.PXScene");
-
-		//m_EditorScene = SceneSerialization::Deserialize("assets/scenes/DefaultScene.PXScene");
-
-// 		if (m_EditorScene == nullptr) {
-// 			m_EditorScene = CreateRef<Scene>("Empty Scene");
-// 			m_EditorScene->GenerateDefaultScene();
-// 		}
+		//m_EditorScene = SceneManager::LoadScene("assets/scenes/PhysicsTests.PXScene");
+		m_EditorScene = SceneManager::LoadScene("assets/scenes/test123.PXScene");
+		//m_EditorScene = SceneManager::LoadScene("assets/scenes/DefaultScene.PXScene");
 
 
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
-		ScriptingMaster::SetSceneContext(m_EditorScene);
-
-
-		Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
-
 
 
 
@@ -154,8 +143,13 @@ namespace Pixelate {
 		m_GameViewportFramebuffer->Unbind();
 
 		if (m_SceneState == SceneState::Play) {
-			m_EditorScene->OnRuntimeUpdate(dt); // does nothing at the moment.
+			m_EditorScene->OnRuntimeUpdate(dt);
 			Audio::Update();
+			bool updateHierarcy = false;
+			SceneManager::LoadAnyQueuedScenes(m_EditorScene, &updateHierarcy);
+			if (updateHierarcy)
+				m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
+			
 		}
 
 	
@@ -200,13 +194,16 @@ namespace Pixelate {
 
 	void EditorLayer::OnScenePlay() {
 		m_SceneState = SceneState::Play;
-
 		m_EditorScene->OnRuntimeStart();
+
+		SceneManager::SetPlayMode(true);
 	}
 
 	void EditorLayer::OnSceneStop() {
 		m_SceneState = SceneState::Edit;
 		m_EditorScene->OnRuntimeStop();
+
+		SceneManager::SetPlayMode(false);
 
 	}
 
@@ -283,15 +280,9 @@ namespace Pixelate {
 					if (result == NFD_OKAY) {
 						puts("Success!");
 
-						m_EditorScene = SceneSerialization::Deserialize(outPath);
-						if (m_EditorScene == nullptr) {
-							m_EditorScene = CreateRef<Scene>("Empty Scene");
-							m_EditorScene->GenerateDefaultScene();
-						}
+						m_EditorScene = SceneManager::LoadScene(outPath);
 						m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
-						ScriptingMaster::SetSceneContext(m_EditorScene);
 
-						Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
 
 						free(outPath);
 					}
@@ -320,8 +311,8 @@ namespace Pixelate {
 						m_EditorScene->SetName(name);
 
 						filepath.append(".PXScene");
-						Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + m_EditorScene->GetName());
-						SceneSerialization::Serialize(m_EditorScene, filepath);
+
+						SceneManager::SaveCurrentScene(filepath);
 
 						free(outPath);
 					}
@@ -348,6 +339,9 @@ namespace Pixelate {
 			}
 
 			if (ImGui::BeginMenu("Settings")) {
+				if (ImGui::MenuItem("Scenes", "")) {
+					m_OpenSceneManagerPanel = true;
+				}
 				if (ImGui::MenuItem("Physics", "")) {
 					m_OpenPhysicsPanel = true;
 				}
@@ -588,6 +582,33 @@ namespace Pixelate {
 		}
 
 
+		if (m_OpenSceneManagerPanel) {
+			ImGui::Begin("Scene Manager", &m_OpenSceneManagerPanel);
+			int iterator = 0;
+			ImGui::Columns(2);
+			ImGui::PushItemWidth(-1);
+			ImGui::Text("Scenes Filepath");
+			ImGui::NextColumn();
+			ImGui::Text("Scene Index");
+			ImGui::NextColumn();
+			for (auto& scene : SceneManager::GetAllProjectScenesFilepath()) {
+				ImGui::Separator();
+				ImGui::Text(scene.c_str());
+				ImGui::NextColumn();
+				ImGui::Text(std::to_string(iterator).c_str());
+
+				ImGui::NextColumn();
+				iterator++;
+			}
+
+			ImGui::Columns(1);
+			ImGui::Separator();
+			if (ImGui::Button("Add Current Scene To The Managers Database")) {
+				SceneManager::RegisterScene(SceneManager::GetActiveSceneFilepath());
+			}
+			ImGui::PopItemWidth();
+			ImGui::End();
+		}
 
 // for creating and loading projects
 

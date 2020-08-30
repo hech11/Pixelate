@@ -12,6 +12,7 @@
 
 
 #include "Pixelate/Core/Application.h"
+#include "Pixelate/Scene/SceneManager.h"
 
 
 namespace Pixelate {
@@ -127,7 +128,6 @@ namespace Pixelate {
 	}
 
 	void Scene::OnRuntimeStart() {
-
 		// Init Physics
 		auto scene = m_Reg.view<PhysicsWorldComponent>();
 		auto& physicsWorld = m_Reg.get<PhysicsWorldComponent>(scene.front());
@@ -263,7 +263,7 @@ namespace Pixelate {
 			
 		}
 
-
+		
 
 	}
 
@@ -295,7 +295,6 @@ namespace Pixelate {
 			ridBodComp.RigidBody.Destroy();
 
 		}
-		
 	}
 
 
