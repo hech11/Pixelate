@@ -194,9 +194,13 @@ namespace Pixelate {
 
 	void EditorLayer::OnScenePlay() {
 		m_SceneState = SceneState::Play;
+
+		SceneManager::StoreSceneBeforePlay();
+		SceneManager::SetPlayMode(true);
+
 		m_EditorScene->OnRuntimeStart();
 
-		SceneManager::SetPlayMode(true);
+
 	}
 
 	void EditorLayer::OnSceneStop() {
@@ -204,6 +208,8 @@ namespace Pixelate {
 		m_EditorScene->OnRuntimeStop();
 
 		SceneManager::SetPlayMode(false);
+		m_EditorScene = SceneManager::LoadStoredSceneAfterRuntimeStop();
+		m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
 
 	}
 

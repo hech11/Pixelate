@@ -13,7 +13,7 @@ namespace Pixelate {
 
 	struct SceneManagerData {
 			
-		Ref<Scene> ActiveScene;
+		Ref<Scene> ActiveScene, ActivePlayingScene;
 		std::string ActiveSceneFilepath;
 		std::string SceneFilepathToBeQueued;
 		std::vector<std::string> AllScenesInProject;
@@ -63,7 +63,11 @@ namespace Pixelate {
 	}
 
 	Ref<Scene> SceneManager::LoadRegisteredScene(const std::string& filepath) {
-		return LoadScene(filepath);
+		for (auto fp : s_SceneManagerData.AllScenesInProject) {
+			if(fp == filepath)
+				return LoadScene(filepath);
+		}
+		return GenerateDefaultScene();
 	}
 
 	Ref<Scene> SceneManager::LoadRegisteredScene(unsigned int index) {
@@ -122,6 +126,17 @@ namespace Pixelate {
 	void SceneManager::SaveCurrentScene(const std::string& filepath) {
 		if(s_SceneManagerData.ActiveScene != nullptr)
 			SaveScene(s_SceneManagerData.ActiveScene, filepath);
+	}
+
+
+	void SceneManager::StoreSceneBeforePlay()
+	{
+		SaveScene(s_SceneManagerData.ActiveScene, "assets/ACTIVESCENE.PXScene");
+	}
+
+	Ref<Scene> SceneManager::LoadStoredSceneAfterRuntimeStop()
+	{
+		return LoadScene("assets/ACTIVESCENE.PXScene");
 	}
 
 

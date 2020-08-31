@@ -297,7 +297,7 @@ namespace Pixelate {
 
 ////////////////////////////////////// SceneManager ///////////////////////////////////////////////////
 
-		std::string MonoStringToStdString(MonoString* str)
+		static std::string MonoStringToStdString(MonoString* str)
 		{
 			auto chl = mono_string_chars(str);
 			std::string result("");

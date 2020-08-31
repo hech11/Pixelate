@@ -27,6 +27,12 @@ namespace Pixelate {
 			static void SaveScene(const Ref<Scene>& scene, const std::string& filepath);
 			static void RegisterScene(const std::string& filepath);
 			static void SaveCurrentScene(const std::string& filepath);
+
+
+			// these are temp -- this stores the current scene before play mode so after 
+			// the user stops play mode the stored scene is used -- similar to how unity or unreal manage their scenes
+			static void StoreSceneBeforePlay();
+			static Ref<Scene> LoadStoredSceneAfterRuntimeStop();
 			
 
 			static std::vector<std::string>& const GetAllProjectScenesFilepath();
