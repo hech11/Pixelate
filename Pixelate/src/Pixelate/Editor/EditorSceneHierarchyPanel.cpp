@@ -194,6 +194,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::TextDisabled(std::to_string(id).c_str());
 			}
 
+
 			if (m_CurrentlySelectedEntity.HasComponent<NameComponent>()) {
 				auto& name = m_CurrentlySelectedEntity.GetComponent<NameComponent>().Name;
 				char buffer[255];
@@ -201,6 +202,18 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				memcpy(buffer, name.c_str(), name.length());
 				if (ImGui::InputText("##name", buffer, 255)) {
 					name = std::string(buffer);
+				}
+				ImGui::SameLine();
+			}
+
+
+			if (m_CurrentlySelectedEntity.HasComponent<TagComponent>()) {
+				auto& tag = m_CurrentlySelectedEntity.GetComponent<TagComponent>().Tag;
+				char buffer[255];
+				memset(buffer, 0, 255);
+				memcpy(buffer, tag.c_str(), tag.length());
+				if (ImGui::InputText("##tag", buffer, 255)) {
+					tag = std::string(buffer);
 				}
 			}
 

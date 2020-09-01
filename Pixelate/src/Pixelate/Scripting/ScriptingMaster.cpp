@@ -30,8 +30,6 @@ namespace Pixelate {
 		MonoAssembly* AppAssembly;
 		MonoImage* AppAssemblyImage;
 
-		std::unordered_map<UUID, unsigned int> AppAssemblyHandles;
-
 	};
 
 	static ScriptingMasterData s_MonoData;
@@ -110,6 +108,12 @@ namespace Pixelate {
 		return method;
 	}
 	
+
+	static MonoString* StdStringToMonoString(const std::string& str)
+	{
+		return mono_string_new(s_MonoData.Domain, str.c_str());
+
+	}
 
 	void ScriptingMaster::Init(const std::string& assemblyPath) {
 		s_MonoData.AssemblyPath = assemblyPath;
@@ -192,19 +196,29 @@ namespace Pixelate {
 			MonoMethod* entityIDSetMethod = mono_property_get_set_method(entityIDPropery);
 
 		
+			MonoProperty* entityTagPropery = mono_class_get_property_from_name(c, "Tag");
+			mono_property_get_get_method(entityIDPropery);
+			MonoMethod* entityTagSetMethod = mono_property_get_set_method(entityTagPropery);
+
+
+
 
 			MonoObject* obj = mono_object_new(s_MonoData.Domain, c);
 			mono_runtime_object_init(obj);
 			mono_runtime_set_shutting_down();
+			auto tag = StdStringToMonoString(SceneManager::GetActiveScene()->GetEntityMap()[params].GetComponent<TagComponent>().Tag);
 
 			MonoObject* exc = 0;
 			void* p = { &params };
+			void* t = tag;
 			unsigned int tempHandle = mono_gchandle_new(obj, false);
 			mono_runtime_invoke(entityIDSetMethod, obj, &p, &exc);
+			mono_runtime_invoke(entityTagSetMethod, obj, &t, &exc);
 
-			void* parameters = obj;
+			void* Parameters = obj;
+			
 
-			mono_runtime_invoke(sb.OnCollisionEnterFunc, mono_gchandle_get_target(sb.Handle), &parameters, &exc);
+			mono_runtime_invoke(sb.OnCollisionEnterFunc, mono_gchandle_get_target(sb.Handle), &Parameters, &exc);
 
 			mono_gchandle_free(tempHandle);
 		}
@@ -260,12 +274,16 @@ namespace Pixelate {
 
 
 		auto uuid = entity.GetComponent<UUIDComponent>().UUID;
+		auto tag = StdStringToMonoString(entity.GetComponent<TagComponent>().Tag);
 
 		sb.Class = mono_class_from_name(s_MonoData.AppAssemblyImage, "", sb.ClassName.c_str());
 
 		MonoProperty* entityIDPropery = mono_class_get_property_from_name(sb.Class, "UUID");
+		MonoProperty* entityTagPropery = mono_class_get_property_from_name(sb.Class, "Tag");
 		mono_property_get_get_method(entityIDPropery);
+		mono_property_get_get_method(entityTagPropery);
 		MonoMethod* entityIDSetMethod = mono_property_get_set_method(entityIDPropery);
+		MonoMethod* entityTagSetMethod = mono_property_get_set_method(entityTagPropery);
 
 		if (sb.Class == nullptr) {
 			PX_CORE_ERROR("Creating a class!\n");
@@ -280,12 +298,13 @@ namespace Pixelate {
 		mono_runtime_object_init(obj);
 		mono_runtime_set_shutting_down();
 		sb.Handle = mono_gchandle_new(obj, false);
-		s_MonoData.AppAssemblyHandles[uuid] = sb.Handle;
 
 
 		MonoObject* exc = 0;
-		void* params = { &uuid };
-		mono_runtime_invoke(entityIDSetMethod, mono_gchandle_get_target(sb.Handle), &params, &exc);
+		void* paramsid = { &uuid };
+		void* paramstag =  tag;
+		mono_runtime_invoke(entityIDSetMethod, mono_gchandle_get_target(sb.Handle), &paramsid, &exc);
+		mono_runtime_invoke(entityTagSetMethod, mono_gchandle_get_target(sb.Handle), &paramstag, &exc);
 
 		sb.InitBehaviours();
 		sb.InitFields();

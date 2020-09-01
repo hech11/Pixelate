@@ -11,6 +11,9 @@ namespace Pixelate {
             get; private set; 
         }
 
+        public string Tag { get; private set; }
+
+
         ~Entity()
         {
 

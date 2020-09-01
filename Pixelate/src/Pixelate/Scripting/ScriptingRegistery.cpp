@@ -87,6 +87,7 @@ namespace Pixelate { namespace Script {
 		}
 		return result;
 	}
+
 	void Pixelate_SceneManager_LoadScene(MonoString* filepath) {
 		SceneManager::QueueLoadedScene(MonoStringToStdString(filepath));
 	}

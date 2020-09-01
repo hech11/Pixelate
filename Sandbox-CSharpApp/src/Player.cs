@@ -10,6 +10,7 @@ public class Player : Entity
 
     public void OnCreate()
     {
+        Console.WriteLine(Tag);
     }
     public void OnDestroy()
     {
@@ -17,6 +18,7 @@ public class Player : Entity
 
     public void OnCollisionEnter(Entity collision)
     {
+        Console.WriteLine(collision.Tag);
     }
 
     public void OnCollisionExit(Entity collision)

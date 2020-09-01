@@ -31,6 +31,16 @@ namespace Pixelate {
 			: UUID(uuid) {}
 	};
 
+	struct TagComponent {
+		std::string Tag;
+
+		TagComponent() = default;
+		TagComponent(const TagComponent& other)
+			: Tag(other.Tag) {}
+		TagComponent(const std::string& tag)
+			: Tag(tag) {}
+	};
+
 	struct NameComponent
 	{
 		std::string Name;

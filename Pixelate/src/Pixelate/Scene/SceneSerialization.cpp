@@ -224,6 +224,17 @@ namespace Pixelate {
 
 				
 			}
+
+			if (e.HasComponent<TagComponent>()) {
+
+				data << YAML::Key << "TagComponent";
+
+				data << YAML::BeginMap;
+				data << YAML::Key << "Tag" << YAML::Value << e.GetComponent<TagComponent>().Tag;
+				data << YAML::EndMap;
+
+			}
+
 			// Transform comp -- all entities that the user can create all have a transform
 			data << YAML::Key << "TransformComponent";
 
@@ -424,15 +435,18 @@ namespace Pixelate {
 		if (entities) {
 			for (auto entity : entities) {
 				unsigned long long uuid = entity["Entity"].as<unsigned long long>();
-				std::string name;
+				std::string name, tag = "No tag";
 				if (auto nameComp = entity["NameComponent"]) {
 					name = nameComp["Name"].as<std::string>();
 				}
 
+				if (auto tagComp = entity["TagComponent"]) {
+					tag = tagComp["Tag"].as<std::string>();
+				}
 
 
 				Entity e = resultScene->CreateEntityWithUUID(uuid, name);
-
+				e.GetComponent<TagComponent>().Tag = tag;
 
 				// All created entities have a transform
 				auto transformComp = entity["TransformComponent"];

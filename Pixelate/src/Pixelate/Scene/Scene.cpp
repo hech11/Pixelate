@@ -337,7 +337,7 @@ namespace Pixelate {
 		auto& id = entity.GetComponent<UUIDComponent>().UUID;
 
 		m_EntityMap[id] = entity;
-
+		entity.AddComponent<TagComponent>("No tag");
 		entity.AddComponent<NameComponent>(name);
 		glm::mat4 transform = glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f,1.0f });
 		entity.AddComponent<TransformComponent>(transform);
@@ -351,6 +351,7 @@ namespace Pixelate {
 
 		m_EntityMap[id] = entity;
 
+		entity.AddComponent<TagComponent>("No tag");
 		entity.AddComponent<NameComponent>(name);
 		glm::mat4 transform = glm::scale(glm::mat4(1.0f), { 1.0f, 1.0f,1.0f });
 		entity.AddComponent<TransformComponent>(transform);
