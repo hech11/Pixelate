@@ -21,7 +21,7 @@ namespace Pixelate {
 			void GenerateDefaultScene(); // This could be moved into some SceneManager class 
 
 			// always update regardless of editor state
-			void OnUpdate(float ts, const Ref<EditorCamera>& camera);
+			void OnUpdate(float ts, const Ref<EditorCamera>& camera, Entity selectedEntity, bool hasEntityBeenSelected);
 			void OnGameViewportRender();
 
 			// Runtime functions

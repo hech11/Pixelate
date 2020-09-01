@@ -15,6 +15,15 @@ public class Player : Entity
     {
     }
 
+    public void OnCollisionEnter(Entity collision)
+    {
+    }
+
+    public void OnCollisionExit(Entity collision)
+    {
+    }
+
+
     public void OnUpdate(float ts)
     {
 

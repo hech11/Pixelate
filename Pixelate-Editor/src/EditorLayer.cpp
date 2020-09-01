@@ -76,41 +76,7 @@ namespace Pixelate {
 	void EditorLayer::ShutDown() {}
 
 	void EditorLayer::OnUpdate(float dt) {
-
-
 		
-			// TOOD: This should be its own component soon
-// 			if (m_ViewportPanel->IsHovered()) {
-// 				if (Input::IsMouseButtonDown(0)) {
-// 					float x = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().x;
-// 					float y = m_ViewportPanel->GetCamera()->GetMousePositionRelativeToViewportPanel().y;
-// 
-// 
-// 
-// 					float width = m_ViewportPanel->GetViewportSize().x;
-// 					float height = m_ViewportPanel->GetViewportSize().y;
-// 
-// 					auto bounds = m_ViewportPanel->GetCamera()->GetBounds();
-// 					auto pos = m_ViewportPanel->GetCamera()->GetCamera().GetPos();
-// 					x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
-// 					y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
-// 					particleProps.Position = { x + pos.x, y + pos.y };
-// 
-// 
-// 					for (unsigned int i = 0; i < particleSystem.InitData.SpawnRate; i++) {
-// 						particleSystem.Emit(particleProps);
-// 					}
-// 
-// 				}
-// 			}
-
-		
-
-			//particleSystem.OnUpdate(dt);
-			//particleSystem.OnRender();
-
-		
-
 
 		if (m_IsSceneViewportFocused) {
 			m_EditorCamera->OnUpdate(dt);
@@ -131,9 +97,8 @@ namespace Pixelate {
 		// Render scene viewport to the its fbo
 
 		m_SceneViewportFramebuffer->Bind();
-		m_EditorScene->OnUpdate(dt, m_EditorCamera);
-		// temp
-		m_SceneHierarcyPanel->OnUpdate(dt, m_EditorCamera);
+		m_EditorScene->OnUpdate(dt, m_EditorCamera, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
+
 
 		m_SceneViewportFramebuffer->Unbind();
 
@@ -396,10 +361,8 @@ namespace Pixelate {
 		ImGui::Begin("Application");
 		static float time = 0.0f;
 		static std::string ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
-		if (Application::GetApp().GetTime().GetElapsedSeconds() - time > 1.0f) {
-			time += 1.0f;
-			ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
-		}
+		ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
+		
 		std::string context = "Context: " + RenderCommand::GetAPIData().ContextName;
 		std::string info = "GPU Info: " + RenderCommand::GetAPIData().RendererName;
 		std::string version = "GPU Version: " + RenderCommand::GetAPIData().Version;

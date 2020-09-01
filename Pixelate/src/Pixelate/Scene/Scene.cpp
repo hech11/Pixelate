@@ -44,7 +44,7 @@ namespace Pixelate {
 		camEntity.AddComponent<AudioListenerComponent>();
 	}
 
-	void Scene::OnUpdate(float ts, const Ref<EditorCamera>& camera)
+	void Scene::OnUpdate(float ts, const Ref<EditorCamera>& camera, Entity selectedEntity,bool hasEntityBeenSelected)
 	{
 
 
@@ -58,12 +58,42 @@ namespace Pixelate {
 		auto renderGroup = m_Reg.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 
 		for (auto entity : renderGroup) {
+			Entity e{ entity, this };
 			auto[transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
 			if (spriteComp.SpriteRect) {
 				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.SpriteRect, spriteComp.TintColor);
 			} else {
 				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor);
+			}
+
+			if (hasEntityBeenSelected && selectedEntity == e) {
+				AABB boundingBox;
+				glm::vec4 color;
+
+				auto [Pos, Rot, Scale] = transformComp.DecomposeTransform();
+
+				if (e.HasComponent<BoxColliderComponent>()) {
+					auto& bcc = e.GetComponent<BoxColliderComponent>();
+					color = { 0.0f, 1.0f, 0.0f, 1.0f };
+
+					glm::vec2 transformPos = { Pos.x, Pos.y };
+					const auto Position = bcc.Center + transformPos;
+					const auto& Scale = bcc.Size;
+
+					boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
+					boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
+
+				} else {
+
+					boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
+					boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
+
+					color = { 0.0f, 1.0f, 1.0f, 1.0f };
+				}
+
+				Renderer2D::DrawAABB(boundingBox, color);
+
 			}
 
 		}
@@ -148,8 +178,7 @@ namespace Pixelate {
 			ridBodComp.Definition.Position = pos;
 			ridBodComp.Definition.Angle = rotation;
 
-			ridBodComp.RigidBody.Init(this, ridBodComp.Definition);
-			
+			ridBodComp.RigidBody.Init(physicsWorld, {(unsigned int)entity, this}, ridBodComp.Definition);
 
 
 			if (e.HasComponent<BoxColliderComponent>()) {

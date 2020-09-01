@@ -47,54 +47,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		m_SelectedEntity = false;
 	}
 
-
-	// Not sure if this should render the aabb of the entities should prob make a scene renderer or scene manager
-	// this is temp.
-	void EditorSceneHierarchyPanel::OnUpdate(float ts, const Ref<EditorCamera>& camera)
-	{
-		Renderer2D::BeginScene(camera.get());
-		if (Renderer2D::ShouldDrawBoundingBox() && m_SelectedEntity) {
-			auto& entity = m_CurrentlySelectedEntity;
-			if (entity.HasComponent<SpriteRendererComponent>()) {
-				auto& transformComp = entity.GetComponent<TransformComponent>();
-				AABB boundingBox;
-
-				auto [Position, rot, Scale] = transformComp.DecomposeTransform();
-
-				boundingBox.Min = { -Scale.x / 2.0f + Position.x, -Scale.y / 2.0f + Position.y, 1.0f };
-				boundingBox.Max = { Scale.x / 2.0f + Position.x, Scale.y / 2.0f + Position.y, 1.0f };
-
-				Renderer2D::DrawAABB(boundingBox, { 0.0f, 1.0f, 1.0f, 1.0f });
-			}
-
-
-			if (entity.HasComponent<BoxColliderComponent>()) {
-				auto& bcc = entity.GetComponent<BoxColliderComponent>();
-				auto& transformComp = entity.GetComponent<TransformComponent>();
-
-				AABB boundingBox;
-				auto [pos, rot, s] = transformComp.DecomposeTransform();
-				glm::vec2 transformPos = { pos.x, pos.y };
-				const auto Position = bcc.Center + transformPos;
-				const auto Scale = bcc.Size;
-
-				boundingBox.Min = { -Scale.x + Position.x, -Scale.y+ Position.y, 1.0f };
-				boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
-
-				Renderer2D::DrawAABB(boundingBox, { 0.0f, 1.0f, 0.0f, 1.0f });
-			}
-
-
-		}
-
-		Renderer2D::EndScene();
-
-	}
-
-	void EditorSceneHierarchyPanel::OnEvent()
-	{
-
-	}
+	
 
 
 	template<typename T, typename lamda>

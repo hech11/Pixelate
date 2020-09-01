@@ -49,6 +49,9 @@ group"Dependencies/Editor/"
 	include "Pixelate-Editor/vendor/NativeFileDialog"
 group ""
 
+
+group "Core"
+
 project "Pixelate"
 	location "Pixelate"
 	kind "StaticLib"
@@ -169,8 +172,8 @@ project "Pixelate"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
-
-
+group ""
+group "Tools"
 project "Pixelate-Editor"
 	location "Pixelate-Editor"
 	kind "ConsoleApp"
@@ -215,6 +218,12 @@ project "Pixelate-Editor"
 		"Pixelate"
 	}
 	
+	postbuildcommands 
+	{
+		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"/assets',
+		'{COPY} "../Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 
@@ -240,6 +249,7 @@ project "Pixelate-Editor"
 		symbols "on"
 		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
+
 	filter "configurations:Release"
 		defines 
 		{
@@ -250,6 +260,8 @@ project "Pixelate-Editor"
 		runtime "Release"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		
+
 
 	filter "configurations:Distribute"
 		defines
@@ -264,14 +276,15 @@ project "Pixelate-Editor"
 
 
 
+group ""
 
-
+group "Core"
 project "Pixelate-Scripting"
 	location "Pixelate-Scripting"
 	kind "SharedLib"
 	language "C#"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Pixelate-Editor/assets/scripts/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	
@@ -282,13 +295,15 @@ project "Pixelate-Scripting"
 	}
 
 
+group ""
 
+group "Tests"
 project "Sandbox-CSharpApp"
 	location "Sandbox-CSharpApp"
 	kind "SharedLib"
 	language "C#"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Pixelate-Editor/assets/scripts/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	
@@ -390,3 +405,6 @@ project "Sandbox"
 		runtime "Release"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
+
+		group ""

@@ -434,8 +434,6 @@ namespace Pixelate {
 				Entity e = resultScene->CreateEntityWithUUID(uuid, name);
 
 
-				//TODO: Support all components
-
 				// All created entities have a transform
 				auto transformComp = entity["TransformComponent"];
 				e.GetComponent<TransformComponent>().Transform = transformComp["Transform"].as<glm::mat4>();

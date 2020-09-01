@@ -15,8 +15,6 @@ namespace Pixelate {
 			void SetSelectedEntity(Entity entity);
 			void SetSelectedEntity();
 
-			void OnUpdate(float ts, const Ref<EditorCamera>& camera);
-			void OnEvent();
 
 			void OnImguiRender();
 

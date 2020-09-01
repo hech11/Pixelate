@@ -6,8 +6,6 @@
 
 namespace Pixelate {
 
-	class Scene;
-
 
 	enum class SleepingState {
 		Sleep,
@@ -37,20 +35,27 @@ namespace Pixelate {
 
 	};
 
+	struct PhysicsWorldComponent;
+	class Scene;
 
+	struct CollisionCallBack {
+		unsigned int Handle;
+		Scene* SceneRef;
+	};
 
 	class RigidBody {
 		public :
-		
-
-			
 			RigidBody() = default;
-			RigidBody(Scene* scene, const RigidBodyDef& def = RigidBodyDef());
+			RigidBody(PhysicsWorldComponent& physicsWorld, CollisionCallBack collisionHandle, const RigidBodyDef& def = RigidBodyDef());
 
 			~RigidBody();
 
-			void Init(Scene* scene, const RigidBodyDef& def = RigidBodyDef());
+			void Init(PhysicsWorldComponent& physicsWorld, CollisionCallBack collisionHandle, const RigidBodyDef& def = RigidBodyDef());
 			void Destroy();
+
+
+			void SetUserData(void* data);
+			void* GetUserData();
 
 			void AddCollider(b2Shape* collider, float density, float friction, bool isTrigger);
 			void RemoveCollider(b2Shape* collider);
@@ -70,7 +75,6 @@ namespace Pixelate {
 			void SetFixedRotation(bool rotate);
 			bool CanZRotate() const;
 
-
 			void SetTransform(const glm::vec3& positon, float angle);
 
 			void SetLinearVelocity(const glm::vec2& velocity);
@@ -86,6 +90,7 @@ namespace Pixelate {
 			b2Body* m_BodyData;
 			b2World* m_World;
 
+			CollisionCallBack m_CollisionHandle;
 	};
 
 }

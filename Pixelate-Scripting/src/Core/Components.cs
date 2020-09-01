@@ -9,8 +9,6 @@ namespace Pixelate {
 
 ///////////////////////////////////////////////////// Rendering components /////////////////////////////////////////////////////
 
-
-    // TODO: Texture bounds
     public class SpriteRendererComponent : Component
     {
         public void SetTint(Vector4 tint)
@@ -21,11 +19,23 @@ namespace Pixelate {
             return GetTint_CPP(Entity.UUID);
         }
 
+        public void SetTextureRect(Vector4 coords) {
+            SetTextureRect_CPP(Entity.UUID, ref coords);
+        }
+
+        public Vector4 GetTextureRect() {
+            return GetTextureRect_CPP(Entity.UUID);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void SetTint_CPP(ulong entity, ref Vector4 tint);
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern Vector4 GetTint_CPP(ulong entity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void SetTextureRect_CPP(ulong entity, ref Vector4 coords);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern Vector4 GetTextureRect_CPP(ulong entity);
     }
 
     public class CameraComponent : Component

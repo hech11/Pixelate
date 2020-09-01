@@ -4,8 +4,8 @@
 #include "Physics.h"
 
 #include "Pixelate/Debug/Instrumentor.h"
-#include "Pixelate/Scene/Scene.h"
 
+#include "Pixelate/Scene/Entity.h"
 
 
 namespace Pixelate {
@@ -13,15 +13,14 @@ namespace Pixelate {
 
 
 
-	RigidBody::RigidBody(Scene* scene, const RigidBodyDef& def) {
-		Init(scene, def);
+	RigidBody::RigidBody(PhysicsWorldComponent& physicsWorld, CollisionCallBack collisionHandle, const RigidBodyDef& def) {
+		Init(physicsWorld, collisionHandle, def);
 	}
 
 
-	void RigidBody::Init(Scene* scene, const RigidBodyDef& def) {
+	void RigidBody::Init(PhysicsWorldComponent& physicsWorld, CollisionCallBack collisionHandle, const RigidBodyDef& def) {
 		PX_PROFILE_FUNCTION();
-		auto entity = scene->GetSceneEntity();
-		auto& physicsWorld = scene->GetReg().get<PhysicsWorldComponent>(entity);
+
 		m_World = physicsWorld.World.get();
 
 		b2BodyDef d;
@@ -36,6 +35,9 @@ namespace Pixelate {
 		d.fixedRotation = def.FixedRotation;
 		d.gravityScale = def.GravityScale;
 		m_BodyData = physicsWorld.World->CreateBody(&d);
+
+		m_CollisionHandle = collisionHandle;
+		m_BodyData->SetUserData(&m_CollisionHandle);
 	}
 
 	
@@ -50,6 +52,18 @@ namespace Pixelate {
 		m_BodyData = nullptr;
 		m_Fixtures.clear();
 	}
+
+
+
+	void RigidBody::SetUserData(void* data) {
+		m_BodyData->SetUserData(data);
+	}
+	void* RigidBody::GetUserData() {
+		return m_BodyData->GetUserData();
+	}
+
+
+
 
 	RigidBody::~RigidBody()
 	{

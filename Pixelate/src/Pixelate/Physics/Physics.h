@@ -5,6 +5,7 @@
 
 #include "box2d/box2d.h"
 #include "PhysicsDebugDraw.h"
+#include "PhysicsCollisionCallback.h"
 
 
 namespace Pixelate {
@@ -15,6 +16,7 @@ namespace Pixelate {
 		PhysicsWorldComponent() {
 			World = CreateScoped<b2World>(b2Vec2(Gravity.x, Gravity.y));
 			World->SetDebugDraw(&DebugDraw);
+			World->SetContactListener(&CollisionCallback);
 		}
 
 
@@ -26,6 +28,7 @@ namespace Pixelate {
 
 		Scoped<b2World> World; 
 		PhysicsDebugDraw DebugDraw;
+		PhysicsCollisionCallback CollisionCallback;
 
 		std::vector<RigidBody> AllRigidbodiesInScene;
 

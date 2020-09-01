@@ -61,19 +61,7 @@ namespace Pixelate {
 		Renderer2D::Init();
 		Audio::Init();
 
-		// TODO: not ideal at all. fix this
-		#ifdef PX_DEBUG
-		ScriptingMaster::Init("../bin/Debug-windows-x86_64/Sandbox-CSharpApp/Sandbox-CSharpApp.dll");
-		#endif
-
-		#ifdef PX_RELEASE
-		ScriptingMaster::Init("../bin/Release-windows-x86_64/Sandbox-CSharpApp/Sandbox-CSharpApp.dll");
-		#endif
-
-		#ifdef PX_DISTRIBUTE
-		#error "Dist builds do not support scripting!"
-		#endif
-
+		ScriptingMaster::Init("assets/scripts/Sandbox-CSharpApp/Sandbox-CSharpApp.dll");
 
 		PX_CORE_WARN("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
 
