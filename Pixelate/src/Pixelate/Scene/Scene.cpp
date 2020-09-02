@@ -38,11 +38,7 @@ namespace Pixelate {
 	}
 
 
-	void Scene::GenerateDefaultScene() {
-		auto camEntity = CreateEntity("Camera");
-		camEntity.AddComponent<CameraComponent>();
-		camEntity.AddComponent<AudioListenerComponent>();
-	}
+	
 
 	void Scene::OnUpdate(float ts, const Ref<EditorCamera>& camera, Entity selectedEntity,bool hasEntityBeenSelected)
 	{

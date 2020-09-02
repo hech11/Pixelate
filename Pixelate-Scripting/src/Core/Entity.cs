@@ -21,7 +21,7 @@ namespace Pixelate {
 
 
 
-
+        //TODO: Implement HasComponent and CreateComponent
         public T GetComponent<T>() where T : Component, new()
         {
             T comp = new T();

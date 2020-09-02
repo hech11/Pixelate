@@ -43,9 +43,9 @@ namespace Pixelate {
 
 
 		//m_EditorScene = SceneManager::LoadScene("assets/scenes/PhysicsTests.PXScene");
-		m_EditorScene = SceneManager::LoadScene("assets/scenes/test123.PXScene");
+		//m_EditorScene = SceneManager::LoadScene("assets/scenes/test123.PXScene");
 		//m_EditorScene = SceneManager::LoadScene("assets/scenes/DefaultScene.PXScene");
-
+		m_EditorScene = SceneManager::GenerateDefaultScene();
 
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 
@@ -141,16 +141,20 @@ namespace Pixelate {
 		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
 
 			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
+			bool intersects = false;
 			for (auto s : allSpriteEntities) {
 				Entity e = { s, m_EditorScene.get() };
 				auto& transform = e.GetComponent<TransformComponent>();
 				auto [position, rot, scale] = transform.DecomposeTransform();
 
-				bool intersects = m_EditorCamera->IsIntersecting(position, scale);
+				intersects = m_EditorCamera->IsIntersecting(position, scale);
 				if (intersects) {
 					m_SceneHierarcyPanel->SetSelectedEntity({s, m_EditorScene.get()});
+					break;
 				} 
 			}
+			if (!intersects)
+				m_SceneHierarcyPanel->SetSelectedEntity();
 
 		}
 
