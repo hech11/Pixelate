@@ -287,7 +287,7 @@ namespace Pixelate {
 
 						filepath.append(".PXScene");
 
-						SceneManager::SaveCurrentScene(filepath);
+						SceneManager::SaveScene(m_EditorScene, filepath);
 
 						free(outPath);
 					}
