@@ -1,6 +1,5 @@
 # Pixelate
-Pixelate is a interactive application that is used to create 2D games currently being made for Windows 10 64 bit version.
-
+Pixelate is a interactive application that is used to create 2D games currently being made for Desktop PC platforms
 # How to setup
 
 **Pixelate can only be built on Windows 10 - specifically a 64bit version as of now**
