@@ -83,6 +83,17 @@ namespace Pixelate {
 	}
 
 
+	void Application::PopLayer(Layer* layer)
+	{
+		m_LayerStack.PopLayer(layer);
+	}
+
+	void Application::PopOverlay(Layer* overlay)
+	{
+		m_LayerStack.PopOverlay(overlay);
+
+	}
+
 	// Is bound to the function pointer in "m_Window". This function will be called when a event happens.
 	void Application::OnEvent(Event& e) {
 		PX_PROFILE_FUNCTION();
@@ -158,6 +169,9 @@ namespace Pixelate {
 		}
 
 
+		SceneManager::Shutdown();
+
+
 
 	}
 
@@ -179,7 +193,6 @@ namespace Pixelate {
 	void Application::Quit() {
 		m_IsRunning = false;
 
-		SceneManager::Shutdown();
 	}
 
 

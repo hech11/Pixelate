@@ -54,7 +54,11 @@ namespace Pixelate {
 
 			
 			auto& textureCap = RendererCapabilities::MaxTextureSlots;
-			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureCap);
+			//glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureCap);
+			// This is done because a bug sometimes occur on Nivida GPUs, so for now this is limited to 32.
+			// I think this is because GLAD only supports up to 32 texture units.
+			textureCap = 32; 
+
 
 
 			glEnable(GL_BLEND);

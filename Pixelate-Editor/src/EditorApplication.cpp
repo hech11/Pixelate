@@ -9,10 +9,13 @@ namespace Pixelate {
 
 		public :
 			EditorApplication() {
-				PushLayer(new EditorLayer);
+				PushLayer(instance = new EditorLayer);
 			}
-			~EditorApplication() {}
-
+			~EditorApplication() {
+				PopLayer(instance);
+			}
+		private :
+			Layer* instance;
 
 	};
 

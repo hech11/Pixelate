@@ -74,24 +74,24 @@ namespace Pixelate {
 		bool DrawBoundingBoxes = false;
 	};
 
-	static Renderer2DData SceneData;
+	static Renderer2DData* SceneData = nullptr;
 
 	int RendererCapabilities::MaxTextureSlots = 0; // This may need to be moved into its own translation unit potentially in the future
 
 
 	void Renderer2D::Init() {
 		PX_PROFILE_FUNCTION();
-
+		SceneData = new Renderer2DData;
 
 		{
 			PX_PROFILE_SCOPE("Renderer2D::Init::Setting-VertexBuffer");
 
-			SceneData.m_Statistics.MaxIndexBuferSize = SceneData.MaxIndiciesSize;
-			SceneData.m_Statistics.MaxVertexBufferSize = SceneData.MaxVerticiesSize;
-			SceneData.m_Statistics.MaxSprites = SceneData.MaxSprites;
+			SceneData->m_Statistics.MaxIndexBuferSize = SceneData->MaxIndiciesSize;
+			SceneData->m_Statistics.MaxVertexBufferSize = SceneData->MaxVerticiesSize;
+			SceneData->m_Statistics.MaxSprites = SceneData->MaxSprites;
 
-			SceneData.SpriteVertexArray = VertexArray::Create();
-			SceneData.SpriteVertexBuffer = VertexBuffer::Create(SceneData.MaxVerticiesSize * sizeof(SpriteVertexData));
+			SceneData->SpriteVertexArray = VertexArray::Create();
+			SceneData->SpriteVertexBuffer = VertexBuffer::Create(SceneData->MaxVerticiesSize * sizeof(SpriteVertexData));
 		
 
 			BufferLayout layout = 
@@ -103,31 +103,31 @@ namespace Pixelate {
 
 			};
 
-			SceneData.SpriteVertexBuffer->SetLayout(layout);
-			SceneData.SpriteVertexArray->PushVertexBuffer(SceneData.SpriteVertexBuffer);
+			SceneData->SpriteVertexBuffer->SetLayout(layout);
+			SceneData->SpriteVertexArray->PushVertexBuffer(SceneData->SpriteVertexBuffer);
 
-			SceneData.SpriteVertexDataBase = new SpriteVertexData[SceneData.MaxVerticiesSize];
+			SceneData->SpriteVertexDataBase = new SpriteVertexData[SceneData->MaxVerticiesSize];
 
 			// For lines
-			SceneData.LineVertexArray = VertexArray::Create();
-			SceneData.LineVertexBuffer = VertexBuffer::Create(SceneData.MaxLineVerticesSize * sizeof(LineVertexData));
+			SceneData->LineVertexArray = VertexArray::Create();
+			SceneData->LineVertexBuffer = VertexBuffer::Create(SceneData->MaxLineVerticesSize * sizeof(LineVertexData));
 
 
-			SceneData.LineVertexBuffer->SetLayout(layout);
-			SceneData.LineVertexArray->PushVertexBuffer(SceneData.LineVertexBuffer);
+			SceneData->LineVertexBuffer->SetLayout(layout);
+			SceneData->LineVertexArray->PushVertexBuffer(SceneData->LineVertexBuffer);
 
 
-			SceneData.LineVertexDataBase = new LineVertexData[SceneData.MaxLineVerticesSize];
+			SceneData->LineVertexDataBase = new LineVertexData[SceneData->MaxLineVerticesSize];
 
 		}
 
 		{
 
 			PX_PROFILE_SCOPE("Renderer2D::Init::Setting-IndexBuffer");
-			unsigned int* indices = new unsigned int[SceneData.MaxIndiciesSize];
+			unsigned int* indices = new unsigned int[SceneData->MaxIndiciesSize];
 
 			int offset = 0;
-			for (unsigned int i = 0; i < SceneData.MaxIndiciesSize; i += 6) {
+			for (unsigned int i = 0; i < SceneData->MaxIndiciesSize; i += 6) {
 				indices[i] = offset + 0;
 				indices[i + 1] = offset + 1;
 				indices[i + 2] = offset + 2;
@@ -139,21 +139,21 @@ namespace Pixelate {
 				offset += 4;
 			}
 
-			Ref<IndexBuffer> ibo = IndexBuffer::Create(indices, SceneData.MaxIndiciesSize);
-			SceneData.SpriteVertexArray->PushIndexBuffer(ibo);
-			SceneData.SpriteVertexArray->Unbind();
+			Ref<IndexBuffer> ibo = IndexBuffer::Create(indices, SceneData->MaxIndiciesSize);
+			SceneData->SpriteVertexArray->PushIndexBuffer(ibo);
+			SceneData->SpriteVertexArray->Unbind();
 			delete[] indices;
 
 			// for rendering lines
-			unsigned int* lineIndices = new unsigned int[SceneData.MaxLineIndicesSize];
-			for (unsigned int i = 0; i < SceneData.MaxLineIndicesSize; i++) {
+			unsigned int* lineIndices = new unsigned int[SceneData->MaxLineIndicesSize];
+			for (unsigned int i = 0; i < SceneData->MaxLineIndicesSize; i++) {
 				lineIndices[i] = i;
 			}
 
-			Ref<IndexBuffer> lineIbo = IndexBuffer::Create(lineIndices, SceneData.MaxLineIndicesSize);
-			SceneData.LineVertexArray->PushIndexBuffer(lineIbo);
+			Ref<IndexBuffer> lineIbo = IndexBuffer::Create(lineIndices, SceneData->MaxLineIndicesSize);
+			SceneData->LineVertexArray->PushIndexBuffer(lineIbo);
 
-			SceneData.LineVertexArray->Unbind();
+			SceneData->LineVertexArray->Unbind();
 			delete[] lineIndices;
 		}
 		{
@@ -163,10 +163,10 @@ namespace Pixelate {
 			TextureManager::Init();
 
 
-			SceneData.QuadPivotPointPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f }; // -- bottom left
-			SceneData.QuadPivotPointPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f}; // -- bottom right
-			SceneData.QuadPivotPointPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f}; // -- top right
-			SceneData.QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f}; // -- top left
+			SceneData->QuadPivotPointPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f }; // -- bottom left
+			SceneData->QuadPivotPointPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f}; // -- bottom right
+			SceneData->QuadPivotPointPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f}; // -- top right
+			SceneData->QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f}; // -- top left
 
 
 			
@@ -177,11 +177,11 @@ namespace Pixelate {
 			{
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
 
-				SceneData.BatchRendererShader = Shader::Create();
-				SceneData.BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
-				SceneData.BatchRendererShader->Bind();
-				SceneData.BatchRendererShader->SetUniform1iArray("u_Textures", RendererCapabilities::MaxTextureSlots, samplers);
-				SceneData.BatchRendererShader->Unbind();
+				SceneData->BatchRendererShader = Shader::Create();
+				SceneData->BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
+				SceneData->BatchRendererShader->Bind();
+				SceneData->BatchRendererShader->SetUniform1iArray("u_Textures", RendererCapabilities::MaxTextureSlots, samplers);
+				SceneData->BatchRendererShader->Unbind();
 
 			}
 			delete[] samplers;
@@ -195,16 +195,16 @@ namespace Pixelate {
 			 -10000.0f,  10000.0f, 0.0f, 0.0f, 1.0f
 
 		};
-		SceneData.SceneGridVertexArray = VertexArray::Create();
-		SceneData.SceneGridVertexBuffer = VertexBuffer::Create(gridVerticies,  sizeof(gridVerticies));
+		SceneData->SceneGridVertexArray = VertexArray::Create();
+		SceneData->SceneGridVertexBuffer = VertexBuffer::Create(gridVerticies,  sizeof(gridVerticies));
 		BufferLayout layout = {
 			{BufferLayoutTypes::Float3, "aPos"},
 			{BufferLayoutTypes::Float2, "aUV" }
 		};
 
 
-		SceneData.SceneGridVertexBuffer->SetLayout(layout);
-		SceneData.SceneGridVertexArray->PushVertexBuffer(SceneData.SceneGridVertexBuffer);
+		SceneData->SceneGridVertexBuffer->SetLayout(layout);
+		SceneData->SceneGridVertexArray->PushVertexBuffer(SceneData->SceneGridVertexBuffer);
 
 
 		unsigned int gridIndicies[] = {
@@ -212,29 +212,31 @@ namespace Pixelate {
 			2, 3, 0
 		};
 		Ref<IndexBuffer> aaa = IndexBuffer::Create(gridIndicies, 6);
-		SceneData.SceneGridVertexArray->PushIndexBuffer(aaa);
+		SceneData->SceneGridVertexArray->PushIndexBuffer(aaa);
 
-		SceneData.SceneGridShader = Shader::Create();
-		SceneData.SceneGridShader->LoadFromFile("assets/Shaders/SceneGrid.shader");
+		SceneData->SceneGridShader = Shader::Create();
+		SceneData->SceneGridShader->LoadFromFile("assets/Shaders/SceneGrid.shader");
 		
 	}
 
 	void Renderer2D::ShutDown() {
 		TextureManager::Shutdown();
+
+		delete SceneData;
 	}
 
 	void Renderer2D::BeginScene(Pixelate::OrthographicCamera* camera) {
 		PX_PROFILE_FUNCTION();
 
-		SceneData.m_ViewMatrix = camera->GetViewProjectionMatrix();
+		SceneData->m_ViewMatrix = camera->GetViewProjectionMatrix();
 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 
-		SceneData.SpriteIndexCount = 0;
-		SceneData.SpriteVertexDataPtr = SceneData.SpriteVertexDataBase;
+		SceneData->SpriteIndexCount = 0;
+		SceneData->SpriteVertexDataPtr = SceneData->SpriteVertexDataBase;
 
-		SceneData.LineIndexCount = 0;
-		SceneData.LineQuadVertexData = SceneData.LineVertexDataBase;
+		SceneData->LineIndexCount = 0;
+		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
 
 
 		
@@ -244,45 +246,45 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 
 
-		SceneData.BatchRendererShader->Bind();
-		SceneData.BatchRendererShader->SetUniformMatrix("u_ViewProj", SceneData.m_ViewMatrix);
+		SceneData->BatchRendererShader->Bind();
+		SceneData->BatchRendererShader->SetUniformMatrix("u_ViewProj", SceneData->m_ViewMatrix);
 
 
-		unsigned int quadSize = (unsigned char*)SceneData.SpriteVertexDataPtr - (unsigned char*)SceneData.SpriteVertexDataBase;
+		unsigned int quadSize = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
 		if (quadSize) {
 
 
-			SceneData.SpriteVertexArray->Bind();
-			SceneData.SpriteVertexArray->GetIbos().Bind();
-			SceneData.SpriteVertexBuffer->SetData(SceneData.SpriteVertexDataBase, quadSize);
+			SceneData->SpriteVertexArray->Bind();
+			SceneData->SpriteVertexArray->GetIbos().Bind();
+			SceneData->SpriteVertexBuffer->SetData(SceneData->SpriteVertexDataBase, quadSize);
 
 
 			TextureManager::BindAllTextures();
 
-			RenderCommand::DrawElements(SceneData.SpriteVertexArray, PimitiveRenderType::Triangles, SceneData.SpriteIndexCount);
-			SceneData.m_Statistics.DrawCalls += 1;
+			RenderCommand::DrawElements(SceneData->SpriteVertexArray, PimitiveRenderType::Triangles, SceneData->SpriteIndexCount);
+			SceneData->m_Statistics.DrawCalls += 1;
 		}
 
-		unsigned int lineSize = (unsigned char*)SceneData.LineQuadVertexData - (unsigned char*)SceneData.LineVertexDataBase;
+		unsigned int lineSize = (unsigned char*)SceneData->LineQuadVertexData - (unsigned char*)SceneData->LineVertexDataBase;
 		if (lineSize) {
-			SceneData.LineVertexArray->Bind();
-			SceneData.LineVertexArray->GetIbos().Bind();
-			SceneData.LineVertexBuffer->SetData(SceneData.LineVertexDataBase, lineSize);
+			SceneData->LineVertexArray->Bind();
+			SceneData->LineVertexArray->GetIbos().Bind();
+			SceneData->LineVertexBuffer->SetData(SceneData->LineVertexDataBase, lineSize);
 			TextureManager::GetDefaultTexture()->Bind();
 			RenderCommand::SetLineThickness(4.0f);
 
-			RenderCommand::DrawElements(SceneData.LineVertexArray, PimitiveRenderType::Lines, SceneData.LineIndexCount);
-			SceneData.m_Statistics.DrawCalls += 1;
+			RenderCommand::DrawElements(SceneData->LineVertexArray, PimitiveRenderType::Lines, SceneData->LineIndexCount);
+			SceneData->m_Statistics.DrawCalls += 1;
 
 		}
-		SceneData.m_Statistics.VertexSize = quadSize + lineSize;
+		SceneData->m_Statistics.VertexSize = quadSize + lineSize;
 
 	}
 
 
 	void Renderer2D::DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color) {
 
-		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
 			BeginNewQuadBatch();
 		}
 
@@ -297,16 +299,16 @@ namespace Pixelate {
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < vertexCount; i++) {
 
-			SceneData.SpriteVertexDataPtr->Verticies = vertices[i];
-			SceneData.SpriteVertexDataPtr->Color = col;
-			SceneData.SpriteVertexDataPtr->TextureCoords = {0.0f, 0.0f};
-			SceneData.SpriteVertexDataPtr->TextureIndex = 0.0f;
-			SceneData.SpriteVertexDataPtr++;
+			SceneData->SpriteVertexDataPtr->Verticies = vertices[i];
+			SceneData->SpriteVertexDataPtr->Color = col;
+			SceneData->SpriteVertexDataPtr->TextureCoords = {0.0f, 0.0f};
+			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData->SpriteVertexDataPtr++;
 		}
 
 
-		SceneData.SpriteIndexCount += 6;
-		SceneData.m_Statistics.IndexCount += 6;
+		SceneData->SpriteIndexCount += 6;
+		SceneData->m_Statistics.IndexCount += 6;
 
 
 		
@@ -380,7 +382,7 @@ namespace Pixelate {
 
 		unsigned int color = a << 24 | b << 16 | g << 8 | r;
 
-		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
 			BeginNewQuadBatch();
 		}
 
@@ -388,16 +390,16 @@ namespace Pixelate {
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
-			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
-			SceneData.SpriteVertexDataPtr->Color = color;
-			SceneData.SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
-			SceneData.SpriteVertexDataPtr->TextureIndex = 0.0f;
-			SceneData.SpriteVertexDataPtr++;
+			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
+			SceneData->SpriteVertexDataPtr->Color = color;
+			SceneData->SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
+			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData->SpriteVertexDataPtr++;
 		}
 
 
-		SceneData.SpriteIndexCount += 6;
-		SceneData.m_Statistics.IndexCount += 6;
+		SceneData->SpriteIndexCount += 6;
+		SceneData->m_Statistics.IndexCount += 6;
 	}
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor) {
@@ -411,7 +413,7 @@ namespace Pixelate {
 
 		unsigned int color = a << 24 | b << 16 | g << 8 | r;
 
-		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
 			BeginNewQuadBatch();
 		}
 
@@ -431,16 +433,16 @@ namespace Pixelate {
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
-			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
-			SceneData.SpriteVertexDataPtr->Color = color;
-			SceneData.SpriteVertexDataPtr->TextureCoords = textureBounds->GetBoundsNormilized()[i];
-			SceneData.SpriteVertexDataPtr->TextureIndex = textureIndex;
-			SceneData.SpriteVertexDataPtr++;
+			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
+			SceneData->SpriteVertexDataPtr->Color = color;
+			SceneData->SpriteVertexDataPtr->TextureCoords = textureBounds->GetBoundsNormilized()[i];
+			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData->SpriteVertexDataPtr++;
 		}
 
 
-		SceneData.SpriteIndexCount += 6;
-		SceneData.m_Statistics.IndexCount += 6;
+		SceneData->SpriteIndexCount += 6;
+		SceneData->m_Statistics.IndexCount += 6;
 	}
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor) {
@@ -455,7 +457,7 @@ namespace Pixelate {
 
 		unsigned int color = a << 24 | b << 16 | g << 8 | r;
 
-		if (SceneData.SpriteIndexCount >= SceneData.MaxIndiciesSize) {
+		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
 			BeginNewQuadBatch();
 		}
 
@@ -473,16 +475,16 @@ namespace Pixelate {
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 
-			SceneData.SpriteVertexDataPtr->Verticies = transform * SceneData.QuadPivotPointPositions[i];
-			SceneData.SpriteVertexDataPtr->Color = color;
-			SceneData.SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
-			SceneData.SpriteVertexDataPtr->TextureIndex = textureIndex;
-			SceneData.SpriteVertexDataPtr++;
+			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
+			SceneData->SpriteVertexDataPtr->Color = color;
+			SceneData->SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
+			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData->SpriteVertexDataPtr++;
 		}
 
 
-		SceneData.SpriteIndexCount += 6;
-		SceneData.m_Statistics.IndexCount += 6;
+		SceneData->SpriteIndexCount += 6;
+		SceneData->m_Statistics.IndexCount += 6;
 	}
 
 	void Renderer2D::DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color)
@@ -490,7 +492,7 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 
 
-		if (SceneData.LineIndexCount >= SceneData.MaxLineIndicesSize)
+		if (SceneData->LineIndexCount >= SceneData->MaxLineIndicesSize)
 			BeginNewLineBatch();
 
 		unsigned char r = color.r * 255.0f;
@@ -501,19 +503,19 @@ namespace Pixelate {
 		unsigned int c = a << 24 | b << 16 | g << 8 | r;
 
 
-		SceneData.LineQuadVertexData->Verticies = p1;
-		SceneData.LineQuadVertexData->Color = c;
-		SceneData.LineQuadVertexData->TextureIndex = 0.0f;
-		SceneData.LineQuadVertexData++;
+		SceneData->LineQuadVertexData->Verticies = p1;
+		SceneData->LineQuadVertexData->Color = c;
+		SceneData->LineQuadVertexData->TextureIndex = 0.0f;
+		SceneData->LineQuadVertexData++;
 
-		SceneData.LineQuadVertexData->Verticies = p2;
-		SceneData.LineQuadVertexData->Color = c;
-		SceneData.LineQuadVertexData->TextureIndex = 0.0f;
-		SceneData.LineQuadVertexData++;
+		SceneData->LineQuadVertexData->Verticies = p2;
+		SceneData->LineQuadVertexData->Color = c;
+		SceneData->LineQuadVertexData->TextureIndex = 0.0f;
+		SceneData->LineQuadVertexData++;
 
 
-		SceneData.LineIndexCount += 2;
-		SceneData.m_Statistics.IndexCount += 2;
+		SceneData->LineIndexCount += 2;
+		SceneData->m_Statistics.IndexCount += 2;
 
 	}
 
@@ -534,26 +536,26 @@ namespace Pixelate {
 	}
 
 	void Renderer2D::SetBoundingBox(bool draw) {
-		SceneData.DrawBoundingBoxes = draw;
+		SceneData->DrawBoundingBoxes = draw;
 	}
 	const bool& Renderer2D::ShouldDrawBoundingBox() {
-		return SceneData.DrawBoundingBoxes;
+		return SceneData->DrawBoundingBoxes;
 	}
 
 	void Renderer2D::DrawSceneGrid(float gridAlpha) {
 
-		SceneData.SceneGridShader->Bind();
-		SceneData.SceneGridShader->SetUniformMatrix("u_ViewProj", SceneData.m_ViewMatrix);
-		SceneData.SceneGridShader->SetUniform1f("u_SceneCameraZoom", gridAlpha);
+		SceneData->SceneGridShader->Bind();
+		SceneData->SceneGridShader->SetUniformMatrix("u_ViewProj", SceneData->m_ViewMatrix);
+		SceneData->SceneGridShader->SetUniform1f("u_SceneCameraZoom", gridAlpha);
 
-		SceneData.SceneGridVertexArray->Bind();
-		SceneData.SceneGridVertexArray->GetIbos().Bind();
+		SceneData->SceneGridVertexArray->Bind();
+		SceneData->SceneGridVertexArray->GetIbos().Bind();
 
-		RenderCommand::DrawElements(SceneData.SceneGridVertexArray, PimitiveRenderType::Triangles, SceneData.SceneGridVertexArray->GetIbos().GetCount());
+		RenderCommand::DrawElements(SceneData->SceneGridVertexArray, PimitiveRenderType::Triangles, SceneData->SceneGridVertexArray->GetIbos().GetCount());
 
-		SceneData.SceneGridShader->Unbind();
-		SceneData.SceneGridVertexArray->Unbind();
-		SceneData.SceneGridVertexArray->GetIbos().Unbind();
+		SceneData->SceneGridShader->Unbind();
+		SceneData->SceneGridVertexArray->Unbind();
+		SceneData->SceneGridVertexArray->GetIbos().Unbind();
 
 
 		
@@ -564,17 +566,17 @@ namespace Pixelate {
 	void Renderer2D::BeginNewQuadBatch() {
 		PX_PROFILE_FUNCTION();
 
-		unsigned int size = (unsigned char*)SceneData.SpriteVertexDataPtr - (unsigned char*)SceneData.SpriteVertexDataBase;
-		SceneData.SpriteVertexBuffer->SetData(SceneData.SpriteVertexDataBase, size);
+		unsigned int size = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
+		SceneData->SpriteVertexBuffer->SetData(SceneData->SpriteVertexDataBase, size);
 
 		TextureManager::BindAllTextures();
 
-		SceneData.SpriteVertexArray->Bind();
-		RenderCommand::DrawElements(SceneData.SpriteVertexArray, PimitiveRenderType::Triangles, SceneData.SpriteIndexCount);
+		SceneData->SpriteVertexArray->Bind();
+		RenderCommand::DrawElements(SceneData->SpriteVertexArray, PimitiveRenderType::Triangles, SceneData->SpriteIndexCount);
 
 
-		SceneData.SpriteIndexCount = 0;
-		SceneData.SpriteVertexDataPtr = SceneData.SpriteVertexDataBase;
+		SceneData->SpriteIndexCount = 0;
+		SceneData->SpriteVertexDataPtr = SceneData->SpriteVertexDataBase;
 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 	}
@@ -582,17 +584,17 @@ namespace Pixelate {
 	void Renderer2D::BeginNewLineBatch() {
 		PX_PROFILE_FUNCTION();
 
-		unsigned int size = (unsigned char*)SceneData.LineQuadVertexData - (unsigned char*)SceneData.LineVertexDataBase;
-		SceneData.SpriteVertexBuffer->SetData(SceneData.LineVertexDataBase, size);
+		unsigned int size = (unsigned char*)SceneData->LineQuadVertexData - (unsigned char*)SceneData->LineVertexDataBase;
+		SceneData->SpriteVertexBuffer->SetData(SceneData->LineVertexDataBase, size);
 
 		TextureManager::GetDefaultTexture()->Bind();
 
-		SceneData.LineVertexArray->Bind();
-		RenderCommand::DrawElements(SceneData.LineVertexArray, PimitiveRenderType::Lines, SceneData.LineIndexCount);
+		SceneData->LineVertexArray->Bind();
+		RenderCommand::DrawElements(SceneData->LineVertexArray, PimitiveRenderType::Lines, SceneData->LineIndexCount);
 
 
-		SceneData.LineIndexCount = 0;
-		SceneData.LineQuadVertexData = SceneData.LineVertexDataBase;
+		SceneData->LineIndexCount = 0;
+		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
 
 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
@@ -600,13 +602,13 @@ namespace Pixelate {
 
 	void Renderer2D::ResetStatistics() {
 		PX_PROFILE_FUNCTION();
-		SceneData.m_Statistics.DrawCalls = 0;
-		SceneData.m_Statistics.IndexCount = 0;
-		SceneData.m_Statistics.VertexSize = 0;
+		SceneData->m_Statistics.DrawCalls = 0;
+		SceneData->m_Statistics.IndexCount = 0;
+		SceneData->m_Statistics.VertexSize = 0;
 	}
 
 	Pixelate::Renderer2D::RenderingStatistics& Renderer2D::GetStats() {
-		return SceneData.m_Statistics;
+		return SceneData->m_Statistics;
 	}
 
 	

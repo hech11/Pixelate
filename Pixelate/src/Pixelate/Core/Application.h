@@ -50,6 +50,9 @@ namespace Pixelate {
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
 
+			void PopLayer(Layer* layer);
+			void PopOverlay(Layer* overlay);
+
 			// TODO: This is temp, may need to refactor some of these components / systems
 #ifdef PX_USE_IMGUI
 			ImguiLayer& GetImguiLayer() { return *m_ImguiLayer; }
