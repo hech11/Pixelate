@@ -15,12 +15,14 @@
 #include <Pixelate/Events/KeyEvents.h>
 #include <Pixelate/Editor/EditorCamera.h>
 #include <Pixelate/Editor/EditorSceneHierarchyPanel.h>
+#include <Pixelate/Editor/EditorConsoleLogger.h>
 
 #include <Pixelate/Scene/Scene.h>
 #include <Pixelate/Scene/Components.h>
 #include <Pixelate/Scene/Entity.h>
 
 #include <Pixelate/Core/AABB.h>
+
 
 namespace Pixelate {
 
@@ -88,6 +90,7 @@ namespace Pixelate {
 
 			Ref<EditorSceneHierarchyPanel> m_SceneHierarcyPanel;
 			Ref<EditorCamera> m_EditorCamera;
+			Ref<EditorConsoleLogger> m_ConsoleLog;
 
 			ParticleSystem particleSystem;
 			ParticleProperties particleProps;

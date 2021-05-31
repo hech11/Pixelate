@@ -159,7 +159,7 @@ namespace Pixelate {
 
 			m_Window->OnUpdate();
 			if (m_AppTimer.GetElapsedSeconds() - Time > 1.0f) {
-				PX_CORE_MSG("%f: timestep\n", m_Timestep *1000.0f);
+				PX_CORE_TRACE("%f: timestep\n", m_Timestep *1000.0f);
 				Time += 1.0f;
 
 #ifdef PX_DISTRIBUTE

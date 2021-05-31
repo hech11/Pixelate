@@ -86,6 +86,11 @@ namespace Pixelate {
 		camEntity.AddComponent<CameraComponent>();
 		camEntity.AddComponent<AudioListenerComponent>();
 
+		
+		s_SceneManagerData.ActiveScene = temp;
+
+		Application::GetApp().GetWindow().SetTitle("Pixelate-Editor | " + temp->GetName());
+
 		return temp;
 
 	}

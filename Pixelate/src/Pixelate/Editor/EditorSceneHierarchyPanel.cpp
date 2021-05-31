@@ -286,7 +286,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					nfdresult_t result = NFD_OpenDialog("png,jpeg,jpg", NULL, &outPath);
 
 					if (result == NFD_OKAY) {
-						puts("Success!");
+						PX_CORE_TRACE("Success!");
 
 						Ref<Texture> tex;
 						if (auto id = TextureManager::IsTextureValid(outPath)) {
@@ -547,7 +547,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					nfdchar_t* outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("wav,ogg,mp3", NULL, &outPath);
 					if (result == NFD_OKAY) {
-						puts("Success!");
+						PX_CORE_TRACE("Success!");
 
 						asc.Source = Audio::CreateAudioSource(outPath);
 						asc.FilePath = outPath;

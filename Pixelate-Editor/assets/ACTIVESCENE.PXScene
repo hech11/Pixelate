@@ -1,91 +1,6 @@
-Scene: test123
+Scene: Scene
 Entities:
-  - Entity: 16110879849073823610
-    NameComponent:
-      Name: Floor
-    TagComponent:
-      Tag: Floor
-    TransformComponent:
-      Transform: [8.84615421, 0, 0, 0, 0, 3.67999983, 0, 0, 0, 0, 3.67999983, 0, 0, -4.8504982, 0, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: None
-      TextureBounds:
-        Bounds: 0
-      TintColor: [0.321568638, 0.333333343, 0.458823532, 1]
-    RigidBodyComponent:
-      GravityScale: 5
-      SleepingState: 1
-      CollisionDetectionMode: 1
-      BodyType: 0
-      FixedRotation: false
-    BoxColliderComponent:
-      Center: [0, 0]
-      Size: [4.42307711, 1.83999991]
-      IsTrigger: false
-  - Entity: 6878974417716146763
-    NameComponent:
-      Name: Physics entity
-    TagComponent:
-      Tag: Player
-    TransformComponent:
-      Transform: [0.999987185, 0, 0, 0, 0, 0.999987185, 0, 0, 0, 0, 1, 0, -0.431863934, 4.35942936, -1, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: None
-      TextureBounds:
-        Bounds: 0
-      TintColor: [1, 1, 1, 1]
-    RigidBodyComponent:
-      GravityScale: 5
-      SleepingState: 1
-      CollisionDetectionMode: 0
-      BodyType: 2
-      FixedRotation: true
-    BoxColliderComponent:
-      Center: [0, 0]
-      Size: [0.5, 0.5]
-      IsTrigger: false
-  - Entity: 6781332492961021833
-    NameComponent:
-      Name: ffe
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1.23593569, -2.67156124, 0, 0, 2.67156124, 1.23593569, 0, 0, 0, 0, 2.94359994, 0, 2.03765249, -0.930232406, -1, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: D:\Dev\Pixelate\Pixelate-Editor\assets\graphics\TestSpritesheet.png
-      TextureBounds:
-        Bounds: [0, 0, 128, 128]
-      TintColor: [0.674509823, 0.180392161, 0, 0.56078434]
-  - Entity: 18395650585886769135
-    NameComponent:
-      Name: av
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -2.35880423, 2.42524934, -1, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: D:\Dev\Pixelate\Pixelate-Editor\assets\graphics\sprite.png
-      TextureBounds:
-        Bounds: [0, 0, 16, 16]
-      TintColor: [1, 0.4627451, 1, 1]
-  - Entity: 1141921454312492633
-    NameComponent:
-      Name: 123
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1.50609076, -0.874861479, -1, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: None
-      TextureBounds:
-        Bounds: 0
-      TintColor: [0.313725501, 1, 1, 1]
-  - Entity: 13798982693036385569
+  - Entity: 335053652993294722
     NameComponent:
       Name: Camera
     TagComponent:
@@ -94,18 +9,7 @@ Entities:
       Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     CameraComponent:
       ClearColor: [0.25, 0.5, 0.699999988, 1]
-      OrthoSize: 6.80000019
+      OrthoSize: 1
       Primary: true
     AudioListenerComponent:
       Spatial: false
-  - Entity: 17351783509408610182
-    NameComponent:
-      Name: NOISE
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -6.42303467, 5.95238256, -1, 1]
-    AudioSourceComponent:
-      Filepath: D:\Dev\Pixelate\Pixelate-Editor\assets\audio\tone-ogg.ogg
-      Gain: 0.100000001
-      ShouldLoop: false

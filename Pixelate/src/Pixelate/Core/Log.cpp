@@ -57,37 +57,67 @@ namespace Pixelate {
 
 	void Log::Logger::Trace(const char* message, ...) {
 
-		if ((m_Level != LogLevels::LAll && m_Level != LogLevels::LTrace) || m_Level == LogLevels::LNone)
+		if (!IsEqualToLevel(LogLevels::LTrace))
 			return;
+
 		CHANGE_CONSOLE_COLOR(COLOR_ID::GREEN);
 		PRINT_MSG("Trace", GetSystemTime(), message);
+
+		if(m_Callbacks.Trace != nullptr)
+			m_Callbacks.Trace("Trace", GetSystemTime(), message, m_Name.c_str(), args);
+
 	}
 	void Log::Logger::Message(const char* message, ...) {
 
-		if ((m_Level != LogLevels::LAll && m_Level != LogLevels::LMsg) || m_Level == LogLevels::LNone)
+		if (!IsEqualToLevel(LogLevels::LMsg))
 			return;
+
+
+
 		CHANGE_CONSOLE_COLOR(COLOR_ID::WHITE);
 		PRINT_MSG("Msg", GetSystemTime(), message);
 
+		if(m_Callbacks.Message != nullptr)
+			m_Callbacks.Message("Msg", GetSystemTime(), message, m_Name.c_str(), args);
 	}
 	void Log::Logger::Warn(const char* message, ...) { 
 
-		if ((m_Level != LogLevels::LAll && m_Level != LogLevels::LWarn) || m_Level == LogLevels::LNone)
+		if (!IsEqualToLevel(LogLevels::LWarn))
 			return;
+
+
+
 		CHANGE_CONSOLE_COLOR(COLOR_ID::YELLOW);
 		PRINT_MSG("Warn", GetSystemTime(), message);
+
+
+		if (m_Callbacks.Warn != nullptr)
+			m_Callbacks.Warn("Warn", GetSystemTime(), message, m_Name.c_str(), args);
 	}
 	void Log::Logger::Error(const char* message, ...) {
 
-		if ((m_Level != LogLevels::LAll && m_Level != LogLevels::LError) || m_Level == LogLevels::LNone)
+		if (!IsEqualToLevel(LogLevels::LError))
 			return;
+
+
+
+
 		CHANGE_CONSOLE_COLOR(COLOR_ID::RED);
 		PRINT_MSG("Error", GetSystemTime(), message);
+		
+		if (m_Callbacks.Error != nullptr)
+			m_Callbacks.Error("Error", GetSystemTime(), message, m_Name.c_str(), args);
 	}
 	void Log::Logger::Critical(const char* message, ...) {
 
+		
+
 		CHANGE_CONSOLE_COLOR(COLOR_ID::RED);
 		PRINT_MSG("Crit", GetSystemTime(), message);
+
+		if (m_Callbacks.Critical != nullptr)
+			m_Callbacks.Critical("Crit", GetSystemTime(), message, m_Name.c_str(), args);
+
 	}
 
 }

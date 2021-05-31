@@ -67,6 +67,8 @@ namespace Pixelate {
 		m_EditorCamera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
 		m_EditorCamera->SetOrthographicSize(5.0f);
 
+		m_ConsoleLog = CreateRef<EditorConsoleLogger>(true);
+
 		Renderer2D::SetBoundingBox(true);
 
 		m_Gizmo = ImGuizmo::TRANSLATE;
@@ -253,7 +255,7 @@ namespace Pixelate {
 					nfdchar_t* outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("PXScene", NULL, &outPath);
 					if (result == NFD_OKAY) {
-						puts("Success!");
+						PX_CORE_TRACE("Success!");
 
 						m_EditorScene = SceneManager::LoadScene(outPath);
 						m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
@@ -582,6 +584,8 @@ namespace Pixelate {
 			ImGui::PopItemWidth();
 			ImGui::End();
 		}
+
+		m_ConsoleLog->OnImguiRender();
 
 // for creating and loading projects
 
