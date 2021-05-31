@@ -33,6 +33,8 @@
 #endif
 #include "Pixelate/Scene/SceneManager.h"
 
+#include <Glfw/glfw3.h> // to get the time
+
 
 namespace Pixelate {
 
@@ -133,10 +135,10 @@ namespace Pixelate {
 		m_AppTimer.Reset();
 		while (m_IsRunning) {
 			PX_PROFILE_SCOPE("Application::Run::m_IsRunning::Loop");
-			float time = m_AppTimer.GetElapsedSeconds();
+			float time = (float)glfwGetTime();
 			m_Timestep = time - LastTime;
 			LastTime = time;
-
+			
 
 			if (!m_IsMinimized) {
 
