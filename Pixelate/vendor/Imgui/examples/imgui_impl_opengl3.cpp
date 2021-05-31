@@ -99,7 +99,7 @@
 #include <GLAD/include/glad.h>
 
 #else
-#include <GLAD/include/glad.h>
+#include <glad/glad.h>
 //#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
 #endif

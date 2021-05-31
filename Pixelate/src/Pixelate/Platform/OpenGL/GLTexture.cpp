@@ -1,7 +1,7 @@
 #include "PXpch.h"
 #include "GLTexture.h"
 
-#include <GLAD/include/glad.h>
+#include <glad/glad.h>
 #include <STB/IMAGE/stb_image.h>
 
 #include "GLCommon.h"

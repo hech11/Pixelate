@@ -3,7 +3,7 @@
 
 #include "GLCommon.h"
 
-#include <GLAD\include\glad.h>
+#include <glad/glad.h>
 #include "Pixelate\Rendering\Renderer2D.h"
 #include "Pixelate\Rendering\RendererCapabilities.h"
 
@@ -61,6 +61,7 @@ namespace Pixelate {
 
 
 
+
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -74,6 +75,7 @@ namespace Pixelate {
 			PX_CORE_TRACE("Max texture slots: %d\n", textureCap);
 			PX_CORE_TRACE("--------------------------\n\n");
 
+			Pixelate::GL::InitDebugCallback();
 
 	}
 

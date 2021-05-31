@@ -7,7 +7,7 @@
 #include "Pixelate/Events/MouseEvents.h"
 
 
-#include <GLAD/include/glad.h>
+#include <glad/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
 #include "Pixelate/Debug/Instrumentor.h"
@@ -44,8 +44,10 @@ namespace Pixelate {
 		int glfwValidation = glfwInit();
 		PX_ASSERT(glfwValidation, "Failed to init GLFW!\n");
 		
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
 		m_Window = glfwCreateWindow(m_Data.props.Width, m_Data.props.Height, m_Data.props.Title.c_str(), nullptr, nullptr);
+
 		PX_ASSERT(m_Window, "Failed to create the window");
 
 		m_Context = Pixelate::RenderingContext::CreateContext(Pixelate::RenderingContext::ContextAPI::OPENGL);
@@ -56,6 +58,7 @@ namespace Pixelate {
 
 		glfwSetWindowPos(m_Window, m_Data.props.xPos, m_Data.props.yPos);
 		glfwSetWindowUserPointer(m_Window, &m_Data); // Used to access "m_Data" for sending the events to "OnEvent" in "Application".
+
 
 
 

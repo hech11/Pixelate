@@ -8,7 +8,7 @@
 #include <IMGUI/examples/imgui_impl_glfw.h>
 #include <IMGUI/examples/imgui_impl_opengl3.h>
 
-#include <GLAD/include/glad.h>
+#include <glad/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
 

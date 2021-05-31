@@ -1,7 +1,7 @@
 #include "PXpch.h"
 #include "GLShader.h"
 
-#include <GLAD/include/glad.h>
+#include <glad/glad.h>
 
 #include <GLM/glm/gtc/type_ptr.hpp>
 #include "Pixelate/Core/Application.h"

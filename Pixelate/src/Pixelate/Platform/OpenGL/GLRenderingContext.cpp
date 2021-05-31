@@ -6,7 +6,7 @@
 #include "Pixelate/Core/Application.h"
 
 #include "Pixelate/Rendering/RenderCommand.h"
-#include <GLAD/include/glad.h>
+#include <glad/glad.h>
 #include <GLFW/include/GLFW/glfw3.h>
 
 #include "Pixelate/Rendering/RendererAPI.h"

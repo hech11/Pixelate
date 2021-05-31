@@ -1,7 +1,7 @@
 #include "PXpch.h"
 #include "GLFrameBuffer.h"
 
-#include "glad.h"
+#include "glad/glad.h"
 
 #include "GLCommon.h"
 #include "Pixelate/Rendering/Renderer2D.h"

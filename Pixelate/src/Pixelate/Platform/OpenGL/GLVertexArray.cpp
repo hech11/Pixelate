@@ -49,10 +49,10 @@ namespace Pixelate {
 		PX_ASSERT(buffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		GLCall(glBindVertexArray(m_RendererID));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer->GetRendererID()))
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer->GetRendererID()));
 
 
-			unsigned int index = 0;
+		unsigned int index = 0;
 		const auto& layout = buffer->GetLayout();
 		for (const auto& element : layout)
 		{
