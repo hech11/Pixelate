@@ -20,11 +20,12 @@ namespace Pixelate {
         }
 
         public void SetTextureRect(Vector4 coords) {
-            SetTextureRect_CPP(Entity.UUID, ref coords);
+            //SetTextureRect_CPP(Entity.UUID, ref coords);
         }
 
         public Vector4 GetTextureRect() {
-            return GetTextureRect_CPP(Entity.UUID);
+            return new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+            //return GetTextureRect_CPP(Entity.UUID);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]

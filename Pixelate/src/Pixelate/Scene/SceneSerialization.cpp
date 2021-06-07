@@ -112,6 +112,28 @@ namespace YAML {
 		}
 	};
 
+
+	template<>
+	struct convert<glm::uvec2> {
+		static Node encode(const glm::uvec2& other) {
+			Node node;
+			node.push_back(other.x);
+			node.push_back(other.y);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::uvec2& other) {
+			if (!node.IsSequence() || node.size() != 2) {
+				return false;
+			}
+
+			other.x = node[0].as<unsigned int>();
+			other.y = node[1].as<unsigned int>();
+			return true;
+		}
+	};
+
+
 	template<>
 	struct convert<glm::mat4> {
 
@@ -257,24 +279,21 @@ namespace Pixelate {
 				data << YAML::Key << "Texture";
 				data << YAML::BeginMap;
 
-				if (src.SpriteRect)
-					data << YAML::Key << "Filepath" << YAML::Value << src.SpriteRect->GetTexture()->GetFilepath();
+				if (src.Texture)
+					data << YAML::Key << "Filepath" << YAML::Value << src.Texture->GetFilepath();
 				else
 					data << YAML::Key << "Filepath" << "None";
 
 				data << YAML::EndMap;
 
 
-				// Texture bounds
-				data << YAML::Key << "TextureBounds";
+				// Sprite rect
+				data << YAML::Key << "Rect";
 				data << YAML::BeginMap;
 
-				if (src.SpriteRect) {
-					data << YAML::Key << "Bounds" << YAML::Value << src.SpriteRect->GetBounds();
-				}
-				else {
-					data << YAML::Key << "Bounds" << 0;
-				}
+				data << YAML::Key << "Position" << YAML::Value << src.Rect.Position;
+				data << YAML::Key << "Scale" << YAML::Value << src.Rect.Scale;
+				
 
 				data << YAML::EndMap;
 				data << YAML::Key << "TintColor" << YAML::Value << src.TintColor;
@@ -470,7 +489,11 @@ namespace Pixelate {
 							TextureManager::DirectAdd(tex);
 						}
 						
-						comp.SpriteRect = CreateRef<TextureBounds>(tex, glm::u32vec4(0, 0, tex->GetWidth(), tex->GetHeight()));
+
+
+						comp.Texture = tex;
+						auto r = spriteRendererComp["Rect"];
+						comp.Rect = Rect(r["Position"].as<glm::uvec2>(), r["Scale"].as<glm::uvec2>());
 					}
 					comp.TintColor = spriteRendererComp["TintColor"].as<glm::vec4>();
 

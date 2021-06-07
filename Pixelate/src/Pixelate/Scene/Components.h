@@ -13,6 +13,7 @@
 #include "Pixelate/Audio/AudioListener.h"
 #include "Pixelate/Audio/AudioSource.h"
 #include "Pixelate/Core/UUID.h"
+#include "Pixelate/Core/Rect.h"
 
 
 namespace Pixelate {
@@ -88,15 +89,17 @@ namespace Pixelate {
 ///////////////////////////////////////////////////// Rendering components /////////////////////////////////////////////////////
 	struct SpriteRendererComponent {
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-		Ref<TextureBounds> SpriteRect;
+		Pixelate::Rect Rect;
+		Ref<Pixelate::Texture> Texture;
+
 
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent& other) 
-			: TintColor(other.TintColor), SpriteRect(other.SpriteRect) {}
+			: TintColor(other.TintColor), Rect(other.Rect), Texture(other.Texture) {}
 
-		SpriteRendererComponent(const glm::vec4& tintColor, const Ref<TextureBounds>& spriteRect)
-			: TintColor(tintColor), SpriteRect(spriteRect) {}
+		SpriteRendererComponent(const glm::vec4& tintColor, const Pixelate::Rect& rect, const Ref<Pixelate::Texture>& texture)
+			: TintColor(tintColor), Rect(rect), Texture(texture) {}
 
 
 	};

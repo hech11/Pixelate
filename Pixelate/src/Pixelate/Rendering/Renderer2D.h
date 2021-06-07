@@ -6,7 +6,9 @@
 
 #include "Pixelate/Rendering/OrthographicCamera.h"
 #include "Pixelate/Core/AABB.h"
+#include "Pixelate/Core/Rect.h"
 
+#include "Pixelate/Scene/Components.h"
 
 
 // Renderer2D interface.
@@ -38,15 +40,15 @@ namespace Pixelate {
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 
-			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
-			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 
 			static void DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
-			static void DrawSprite(const glm::mat4& transform, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
 
 			static void DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
 			static void DrawAABB(const AABB& aabb, const glm::vec4& color);
+
+			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor);
+			static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite);
 
 			static void SetBoundingBox(bool draw);
 			static const bool& ShouldDrawBoundingBox();
@@ -59,6 +61,8 @@ namespace Pixelate {
 		private :
 			static void BeginNewQuadBatch();
 			static void BeginNewLineBatch();
+
+			static std::array<glm::vec2, 4> NormalizedCoordinates(const Rect& rect, const Ref<Texture>& texture);
 
 	};
 

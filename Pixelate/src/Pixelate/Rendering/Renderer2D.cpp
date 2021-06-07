@@ -352,22 +352,6 @@ namespace Pixelate {
 
 	
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor) {
-		DrawSprite(position, 0.0f, size, textureBounds, tintColor);
-	}
-
-
-	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor /*= { 1.0f, 1.0f, 1.0f, 1.0f }*/)
-	{
-		PX_PROFILE_FUNCTION();
-
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(glm::mat4(1.0f), size);
-		DrawSprite(transform, textureBounds, tintColor);
-		
-	}
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor) {
 		PX_PROFILE_FUNCTION();
@@ -402,48 +386,6 @@ namespace Pixelate {
 		SceneData->m_Statistics.IndexCount += 6;
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<TextureBounds>& textureBounds, const glm::vec4& tintColor) {
-		constexpr unsigned int VertexCount = 4;
-
-
-		unsigned char r = tintColor.r * 255.0f;
-		unsigned char g = tintColor.g * 255.0f;
-		unsigned char b = tintColor.b * 255.0f;
-		unsigned char a = tintColor.a * 255.0f;
-
-		unsigned int color = a << 24 | b << 16 | g << 8 | r;
-
-		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
-			BeginNewQuadBatch();
-		}
-
-
-		float textureIndex = TextureManager::IsTextureValid(textureBounds->GetTexture());
-
-		if (textureIndex == 0.0f) {
-			auto& manager = TextureManager::GetManagerData();
-			if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
-				BeginNewQuadBatch();
-
-			textureIndex = manager.TextureSlotIndex;
-			TextureManager::DirectAdd(textureBounds->GetTexture());
-		}
-
-
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < VertexCount; i++) {
-
-			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
-			SceneData->SpriteVertexDataPtr->Color = color;
-			SceneData->SpriteVertexDataPtr->TextureCoords = textureBounds->GetBoundsNormilized()[i];
-			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
-			SceneData->SpriteVertexDataPtr++;
-		}
-
-
-		SceneData->SpriteIndexCount += 6;
-		SceneData->m_Statistics.IndexCount += 6;
-	}
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor) {
 
@@ -485,6 +427,53 @@ namespace Pixelate {
 
 		SceneData->SpriteIndexCount += 6;
 		SceneData->m_Statistics.IndexCount += 6;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor) {
+		constexpr unsigned int VertexCount = 4;
+
+
+		unsigned char r = tintColor.r * 255.0f;
+		unsigned char g = tintColor.g * 255.0f;
+		unsigned char b = tintColor.b * 255.0f;
+		unsigned char a = tintColor.a * 255.0f;
+
+		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
+			BeginNewQuadBatch();
+		}
+
+		float textureIndex = TextureManager::IsTextureValid(texture);
+
+		if (textureIndex == 0.0f) {
+			auto& manager = TextureManager::GetManagerData();
+			if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
+				BeginNewQuadBatch();
+			textureIndex = manager.TextureSlotIndex;
+			TextureManager::DirectAdd(texture);
+		}
+
+		const auto& texCoords = NormalizedCoordinates(rect, texture);
+		// Vertex order = bottom left -> bottom right -> top right -> top left
+		for (unsigned int i = 0; i < VertexCount; i++) {
+
+			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
+			SceneData->SpriteVertexDataPtr->Color = color;
+			SceneData->SpriteVertexDataPtr->TextureCoords = texCoords[i];
+			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData->SpriteVertexDataPtr++;
+		}
+
+
+		SceneData->SpriteIndexCount += 6;
+		SceneData->m_Statistics.IndexCount += 6;
+	}
+
+	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite)
+	{
+		PX_PROFILE_FUNCTION();
+		DrawSprite(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor);
 	}
 
 	void Renderer2D::DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color)
@@ -597,6 +586,26 @@ namespace Pixelate {
 		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
 
 		TextureManager::GetManagerData().TextureSlotIndex = 1;
+
+	}
+
+	std::array<glm::vec2, 4> Renderer2D::NormalizedCoordinates(const Rect& rect, const Ref<Texture>& texture) {
+		std::array<glm::vec2, 4> result;
+
+		float xOffset = (float)rect.Position.x / texture->GetWidth();
+		float yOffset = (float)rect.Position.y / texture->GetHeight();
+
+		float xSize = (float)rect.Scale.x / texture->GetWidth();
+		float ySize = (float)rect.Scale.y / texture->GetHeight();
+
+
+
+		result[0] = { xOffset, 1.0f - (yOffset + ySize) }; // bottom left
+		result[1] = { xOffset + xSize, 1.0f - (yOffset + ySize) }; // bottom right
+		result[2] = { xOffset + xSize, 1.0f - yOffset }; // top right
+		result[3] = { xOffset, 1.0f - yOffset }; // top left
+
+		return result;
 
 	}
 

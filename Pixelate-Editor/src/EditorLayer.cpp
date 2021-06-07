@@ -28,6 +28,9 @@
 
 namespace Pixelate {
 
+
+	static bool GoTo2ndClip = false;
+	static bool GoTo1stClip = false;
 	void EditorLayer::Init() {
 
 
@@ -49,6 +52,66 @@ namespace Pixelate {
 
 		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 
+
+
+		// testing animation //
+		animationTest = m_EditorScene->CreateEntity("Animation test entity");
+		animationTest.AddComponent<SpriteRendererComponent>();
+		animationTest.GetComponent<SpriteRendererComponent>().Texture = Texture::Create("assets/graphics/TestSpritesheet.png");
+		animationTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
+
+
+		AnimationClip clip, clip2;
+		AnimationFrame frame, frame2, frame3;
+		AnimationFrame frame1, frame12, frame13;
+
+		frame.FrameRect = { {0, 0}, {16, 16} };
+		frame.FrameTiming = 0.0f;
+
+		clip.AddFrame(frame);
+
+		frame2.FrameRect = { {0, 0}, {16, 16} };
+		frame2.FrameTiming = 1.0f;
+
+		clip.AddFrame(frame2);
+
+		frame3.FrameRect = { {16, 0}, {16, 16} };
+		frame3.FrameTiming = 2.0f;
+
+
+		clip.AddFrame(frame3);
+
+
+		anim.AddClip(clip);
+
+
+
+
+
+
+
+		frame1.FrameRect = { {0, 0}, {16, 16} };
+		frame1.FrameTiming = 0.0f;
+
+		clip2.AddFrame(frame1);
+
+		frame12.FrameRect = { {0, 0}, {16, 16} };
+		frame12.FrameTiming = 1.0f;
+
+		clip2.AddFrame(frame12);
+
+		frame13.FrameRect = { {0, 16}, {16, 16} };
+		frame13.FrameTiming = 2.0f;
+
+
+		clip2.AddFrame(frame13);
+
+
+		anim.AddClip(clip2);
+
+
+		anim.AddTransition({ clip, clip2, []() {return GoTo2ndClip; } });
+		anim.AddTransition({ clip2, clip, []() {return GoTo1stClip; } });
 
 
 		//Setting up both scene and game viewport panels
@@ -101,6 +164,14 @@ namespace Pixelate {
 		m_SceneViewportFramebuffer->Bind();
 		m_EditorScene->OnUpdate(dt, m_EditorCamera, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
 
+		anim.Update(dt);
+
+
+		Renderer2D::BeginScene(m_EditorCamera.get());
+		
+		animationTest.GetComponent<SpriteRendererComponent>().Rect = anim.GetCurrentClip().GetCurrentFrameRect();
+		Renderer2D::DrawSprite(animationTest.GetComponent<TransformComponent>(), animationTest.GetComponent<SpriteRendererComponent>());
+		Renderer2D::EndScene();
 
 		m_SceneViewportFramebuffer->Unbind();
 
@@ -337,6 +408,18 @@ namespace Pixelate {
 // 		ImGui::ShowDemoWindow(&showDemoWindow);
 
 	
+
+		ImGui::Begin("Animation test");
+		if (ImGui::Button("Play2ndClip")) {
+			GoTo2ndClip = true;
+			GoTo1stClip = false;
+		}
+		if (ImGui::Button("Play1stClip")) {
+			GoTo2ndClip = false;
+			GoTo1stClip = true;
+		}
+		ImGui::End();
+
 
 		ImGui::Begin("Renderer stats");
 		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);

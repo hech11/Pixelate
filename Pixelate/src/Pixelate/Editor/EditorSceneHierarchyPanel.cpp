@@ -273,7 +273,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 			}
 
 			DrawEntityComponents<SpriteRendererComponent>("Sprite Renderer", m_CurrentlySelectedEntity, [](SpriteRendererComponent& spriteComp) {
-				const auto& spriteRect = spriteComp.SpriteRect;
+				const auto& spriteRect = spriteComp.Texture;
 				ImGui::Columns(2);
 				ImGui::SetColumnWidth(0, 150);
 
@@ -295,7 +295,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 							tex = Texture::Create(outPath);
 							TextureManager::DirectAdd(tex);
 						}
-						spriteComp.SpriteRect = CreateRef<TextureBounds>(tex, glm::u32vec4(0, 0, tex->GetWidth(), tex->GetHeight()));
+						spriteComp.Texture = tex;
+						spriteComp.Rect = Rect({ 0.0f, 0.0f }, { tex->GetWidth(), tex->GetHeight() });
 						spriteComp.TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 
@@ -312,7 +313,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::SameLine();
 
 				if (spriteRect)
-					ImGui::InputText("##spriteFilepath", (char*)spriteRect->GetTexture()->GetFilepath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+					ImGui::InputText("##spriteFilepath", (char*)spriteRect->GetFilepath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
 				else
 					ImGui::InputText("##spriteFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
 
@@ -337,9 +338,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::Text("Sprite coordinates");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
-					ImGui::DragInt4("##spriteRect", (int*)glm::value_ptr(spriteRect->GetBounds()), 1.0f, 0);
+					ImGui::DragInt4("##spriteRect", (int*)glm::value_ptr(spriteComp.Rect.Position), 1.0f, 0);
 					LOCK_MOUSE_IF_NEEDED();
-					spriteRect->SetBounds(spriteRect->GetBounds());
 
 					ImGui::PopItemWidth();
 					ImGui::NextColumn();
@@ -352,7 +352,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
 
-					ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 });
+					ImGui::Image((void*)spriteRect->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 });
 				
 					ImGui::PopItemWidth();
 					ImGui::NextColumn();
@@ -363,9 +363,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::Text("Sprite rect");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
-					ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 },
-						{ spriteRect->GetBoundsNormilized()[0].x, spriteRect->GetBoundsNormilized()[2].y },
-						{ spriteRect->GetBoundsNormilized()[2].x, spriteRect->GetBoundsNormilized()[0].y });
+					//ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 },
+						//{ spriteRect->GetBoundsNormilized()[0].x, spriteRect->GetBoundsNormilized()[2].y },
+						//{ spriteRect->GetBoundsNormilized()[2].x, spriteRect->GetBoundsNormilized()[0].y });
 
 					ImGui::PopItemWidth();
 				}

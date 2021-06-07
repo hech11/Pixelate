@@ -204,22 +204,25 @@ namespace Pixelate { namespace Script {
 	}
 
 
-	void Pixelate_SpriteRendererComponent_SetTextureRect(unsigned long long entity, glm::vec4* coords) {
-		Ref<Scene>& scene = SceneManager::GetActiveScene();
-		auto& entityMap = scene->GetEntityMap();
+	// TODO: This needs to be extended when animation is introduced
 
-		auto& sr = entityMap[entity].GetComponent<SpriteRendererComponent>();
-		sr.SpriteRect->SetBounds(*coords);
+	void Pixelate_SpriteRendererComponent_SetTextureRect(unsigned long long entity, glm::vec4* coords) {
+// 		Ref<Scene>& scene = SceneManager::GetActiveScene();
+// 		auto& entityMap = scene->GetEntityMap();
+// 
+// 		auto& sr = entityMap[entity].GetComponent<SpriteRendererComponent>();
+// 		sr.SpriteRect->SetBounds(*coords);
 
 	}
 
 	glm::vec4* Pixelate_SpriteRendererComponent_GetTextureRect(unsigned long long entity)
 	{
-		Ref<Scene>& scene = SceneManager::GetActiveScene();
-		auto& entityMap = scene->GetEntityMap();
-
-		auto& sr = entityMap[entity].GetComponent<SpriteRendererComponent>();
-		glm::vec4 temp = { sr.SpriteRect->GetBounds().x, sr.SpriteRect->GetBounds().y, sr.SpriteRect->GetBounds().z, sr.SpriteRect->GetBounds().w };
+// 		Ref<Scene>& scene = SceneManager::GetActiveScene();
+// 		auto& entityMap = scene->GetEntityMap();
+// 
+// 		auto& sr = entityMap[entity].GetComponent<SpriteRendererComponent>();
+// 		glm::vec4 temp = { sr.SpriteRect->GetBounds().x, sr.SpriteRect->GetBounds().y, sr.SpriteRect->GetBounds().z, sr.SpriteRect->GetBounds().w };
+ 		glm::vec4 temp = {0.0f, 0.0f, 0.0f, 0.0f};
 		return &temp;
 	}
 

@@ -57,8 +57,8 @@ namespace Pixelate {
 			Entity e{ entity, this };
 			auto[transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			if (spriteComp.SpriteRect) {
-				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.SpriteRect, spriteComp.TintColor);
+			if (spriteComp.Texture) {
+				Renderer2D::DrawSprite(transformComp, spriteComp);
 			} else {
 				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor);
 			}
@@ -137,13 +137,13 @@ namespace Pixelate {
 			for (auto entity : renderGroup) {
 				auto [transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				// Does not support rotation yet
-				if (spriteComp.SpriteRect) {
-					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.SpriteRect, spriteComp.TintColor);
+				if (spriteComp.Texture) {
+					Renderer2D::DrawSprite(transformComp, spriteComp);
 				}
 				else {
 					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor);
 				}
+
 
 			}
 			Renderer2D::EndScene();

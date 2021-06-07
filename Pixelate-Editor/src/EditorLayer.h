@@ -22,11 +22,12 @@
 #include <Pixelate/Scene/Entity.h>
 
 #include <Pixelate/Core/AABB.h>
+#include <Pixelate/Animation/Animation.h>
 
 
 namespace Pixelate {
 
-	
+
 	class EditorLayer : public Pixelate::Layer {
 		public:
 			virtual void Init() override;
@@ -95,8 +96,9 @@ namespace Pixelate {
 			ParticleSystem particleSystem;
 			ParticleProperties particleProps;
 			Ref<Scene> m_EditorScene;
-			
-
+		
+			Animator anim;
+			Entity animationTest;
 	};
 
 
