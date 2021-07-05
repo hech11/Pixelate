@@ -56,6 +56,7 @@ namespace Pixelate {
 }
 
 #define BIT(x) (1 << x)
+#define STRINGIFY(x) #x
 
 
 // TODO: move this when i decide to create a custom memory allocator

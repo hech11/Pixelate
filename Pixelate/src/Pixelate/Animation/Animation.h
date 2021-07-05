@@ -12,7 +12,7 @@ namespace Pixelate {
 
 	struct AnimationFrame {
 		Rect FrameRect;
-		float FrameTiming;
+		float FrameTiming = 0.0f;
 
 		bool operator==(const AnimationFrame& other) {
 			return this->FrameRect == other.FrameRect && this->FrameTiming == other.FrameTiming;
@@ -35,11 +35,21 @@ namespace Pixelate {
 
 			}
 
+			
+			void SetName(const std::string& name) {
+				m_DebugName = name;
+			}
+			const std::string& GetName() const { return m_DebugName; }
+
 			const Rect& GetCurrentFrameRect() const {
 				return m_Frames[m_CurrentFrame].FrameRect;
 			}
 
 			inline const std::vector<AnimationFrame>& GetAllFrames() const {
+				return m_Frames;
+			}
+
+			inline std::vector<AnimationFrame>& GetAllFrames() {
 				return m_Frames;
 			}
 
@@ -86,6 +96,7 @@ namespace Pixelate {
 			int m_CurrentFrame = 0;
 			int m_MaxFrames;
 
+			std::string m_DebugName = "Clip";
 			UUID m_UUID;
 
 	};
@@ -135,6 +146,9 @@ namespace Pixelate {
 			}
 
 			AnimationClip GetCurrentClip() const { return m_CurrentClip; }
+			inline const std::vector<AnimationClip>& GetAllClips() const { return m_Clips; }
+			inline std::vector<AnimationClip>& GetAllClips() { return m_Clips; }
+
 			void Update(float dt) {
 				m_CurrentClip.Update(dt);
 

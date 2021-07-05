@@ -9,43 +9,43 @@
 #include "Pixelate/Rendering/Renderer2D.h"
 
 namespace Pixelate {
-	static unsigned int GLConvertWrap(Texture::TextureProperties::Wrap wrap) {
+	static unsigned int GLConvertWrap(TextureProperties::Wrap wrap) {
 		switch (wrap) {
-			case Texture::TextureProperties::Wrap::Clamp_To_Edge:
+			case TextureProperties::Wrap::Clamp_To_Edge:
 				return GL_CLAMP_TO_EDGE;
 
-			case Texture::TextureProperties::Wrap::Repeat:
+			case TextureProperties::Wrap::Repeat:
 				return GL_REPEAT;
 		}
 	}
 
 
-	static unsigned int GLConvertFilter(Texture::TextureProperties::Filter filter) {
+	static unsigned int GLConvertFilter(TextureProperties::Filter filter) {
 		switch (filter) {
-		case Texture::TextureProperties::Filter::Nearest:
+		case TextureProperties::Filter::Nearest:
 			return GL_NEAREST;
 
-		case Texture::TextureProperties::Filter::Linear:
+		case TextureProperties::Filter::Linear:
 			return GL_LINEAR;
 		}
 	}
 
-	static unsigned int GLConvertFormat(Texture::TextureProperties::Format format) {
+	static unsigned int GLConvertFormat(TextureProperties::Format format) {
 		switch (format) {
-		case Texture::TextureProperties::Format::RGB:
+		case TextureProperties::Format::RGB:
 			return GL_RGB;
 
-		case Texture::TextureProperties::Format::RGBA:
+		case TextureProperties::Format::RGBA:
 			return GL_RGBA;
 		}
 	}
 
-	static unsigned int GLConvertFormatToBPP(Texture::TextureProperties::Format& format) {
+	static unsigned int GLConvertFormatToBPP(TextureProperties::Format& format) {
 		switch (format) {
-			case Texture::TextureProperties::Format::RGB:
+			case TextureProperties::Format::RGB:
 				return 3;
 
-			case Texture::TextureProperties::Format::RGBA:
+			case TextureProperties::Format::RGBA:
 				return 4;
 			}
 	}
@@ -77,7 +77,7 @@ namespace Pixelate {
 			unsigned int pinkCol = 0xFF00FF;
 			m_Props.Width = 1;
 			m_Props.Height = 1;
-			m_Props.TexFormat = Texture::TextureProperties::Format::RGB;
+			m_Props.TexFormat = TextureProperties::Format::RGB;
 
 			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, &pinkCol));
 		}
@@ -87,7 +87,7 @@ namespace Pixelate {
 
 
 	}
-	GLTexture::GLTexture(unsigned int width, unsigned int height, Texture::TextureProperties::Format format) {
+	GLTexture::GLTexture(unsigned int width, unsigned int height, TextureProperties::Format format) {
 		m_Props.Width = width;
 		m_Props.Height = height;
 		m_Props.TexFormat = format;

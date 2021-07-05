@@ -50,15 +50,30 @@ namespace Pixelate {
 		//m_EditorScene = SceneManager::LoadScene("assets/scenes/DefaultScene.PXScene");
 		m_EditorScene = SceneManager::GenerateDefaultScene();
 
-		m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene);
 
+		auto& PanelManager = EditorPanelManager::Get();
+		PanelManager.RegisterPanel("SceneHierarcy", m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene));
+		PanelManager.RegisterPanel("TextureInspector" ,m_TextureInspector = CreateRef<EditorTextureInspector>(), false);
+		PanelManager.RegisterPanel("ConsoleLog", m_ConsoleLog = CreateRef<EditorConsoleLogger>(true));
+
+
+		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
 
 
 		// testing animation //
 		animationTest = m_EditorScene->CreateEntity("Animation test entity");
+		animationComponentTest = m_EditorScene->CreateEntity("Animator component test entity");
+
 		animationTest.AddComponent<SpriteRendererComponent>();
 		animationTest.GetComponent<SpriteRendererComponent>().Texture = Texture::Create("assets/graphics/TestSpritesheet.png");
 		animationTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
+
+		animationComponentTest.AddComponent<AnimatorComponent>();
+
+		animationComponentTest.AddComponent<SpriteRendererComponent>();
+		animationComponentTest.GetComponent<SpriteRendererComponent>().Texture = animationTest.GetComponent<SpriteRendererComponent>().Texture;
+		animationComponentTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
+		animationComponentTest.GetComponent<TransformComponent>().SetPosition({ 1, 0, 0 });
 
 
 		AnimationClip clip, clip2;
@@ -83,10 +98,6 @@ namespace Pixelate {
 
 
 		anim.AddClip(clip);
-
-
-
-
 
 
 
@@ -130,7 +141,6 @@ namespace Pixelate {
 		m_EditorCamera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
 		m_EditorCamera->SetOrthographicSize(5.0f);
 
-		m_ConsoleLog = CreateRef<EditorConsoleLogger>(true);
 
 		Renderer2D::SetBoundingBox(true);
 
@@ -141,7 +151,8 @@ namespace Pixelate {
 	void EditorLayer::ShutDown() {}
 
 	void EditorLayer::OnUpdate(float dt) {
-		
+		auto& PanelManager = EditorPanelManager::Get();
+
 
 		if (m_IsSceneViewportFocused) {
 			m_EditorCamera->OnUpdate(dt);
@@ -165,12 +176,15 @@ namespace Pixelate {
 		m_EditorScene->OnUpdate(dt, m_EditorCamera, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
 
 		anim.Update(dt);
+		PanelManager.OnUpdate(dt);
 
 
 		Renderer2D::BeginScene(m_EditorCamera.get());
 		
-		animationTest.GetComponent<SpriteRendererComponent>().Rect = anim.GetCurrentClip().GetCurrentFrameRect();
-		Renderer2D::DrawSprite(animationTest.GetComponent<TransformComponent>(), animationTest.GetComponent<SpriteRendererComponent>());
+		//animationTest.GetComponent<SpriteRendererComponent>().Rect = anim.GetCurrentClip().GetCurrentFrameRect();
+		//Renderer2D::DrawSprite(animationTest.GetComponent<TransformComponent>(), animationTest.GetComponent<SpriteRendererComponent>());
+
+
 		Renderer2D::EndScene();
 
 		m_SceneViewportFramebuffer->Unbind();
@@ -211,6 +225,8 @@ namespace Pixelate {
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
+		auto& PanelManager = EditorPanelManager::Get();
+
 		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
 
 			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
@@ -222,12 +238,14 @@ namespace Pixelate {
 
 				intersects = m_EditorCamera->IsIntersecting(position, scale);
 				if (intersects) {
-					m_SceneHierarcyPanel->SetSelectedEntity({s, m_EditorScene.get()});
+					PanelManager.SetSelectedEntity({s, m_EditorScene.get()});
 					break;
 				} 
 			}
-			if (!intersects)
-				m_SceneHierarcyPanel->SetSelectedEntity();
+			if (!intersects) {
+				PanelManager.SetSelectedEntity({});
+				//m_AnimatorPanel->SetEntityContext();
+			}
 
 		}
 
@@ -246,17 +264,23 @@ namespace Pixelate {
 	}
 
 	void EditorLayer::OnSceneStop() {
+		auto& PanelManager = EditorPanelManager::Get();
 		m_SceneState = SceneState::Edit;
 		m_EditorScene->OnRuntimeStop();
 
 		SceneManager::SetPlayMode(false);
 		m_EditorScene = SceneManager::LoadStoredSceneAfterRuntimeStop();
-		m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
+
+
+		PanelManager.SetSceneContext(m_EditorScene);
 
 	}
 
 	void EditorLayer::OnEvent(Event& e) {
 		m_EditorCamera->OnEvent(e);
+
+		auto& PanelManager = EditorPanelManager::Get();
+		PanelManager.OnEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(std::bind(&EditorLayer::OnKeyPressedEvent, this, std::placeholders::_1));
@@ -270,7 +294,8 @@ namespace Pixelate {
 	void EditorLayer::OnImguiRender() {
 #ifdef PX_USE_IMGUI
 		using namespace Pixelate;
-		
+		auto& PanelManager = EditorPanelManager::Get();
+
 
 
 
@@ -329,7 +354,7 @@ namespace Pixelate {
 						PX_CORE_TRACE("Success!");
 
 						m_EditorScene = SceneManager::LoadScene(outPath);
-						m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
+						PanelManager.SetSceneContext(m_EditorScene);
 
 
 						free(outPath);
@@ -500,8 +525,8 @@ namespace Pixelate {
 		ImGui::Separator();
 		ImGui::End();
 
-		m_SceneHierarcyPanel->OnImguiRender();
-		
+		PanelManager.OnImguiRender();
+
 
 
 		// scene viewport panel
@@ -524,18 +549,20 @@ namespace Pixelate {
 		}
 
 
-		Application::GetApp().GetImguiLayer().ShouldBlockEvents(!m_IsSceneViewportHovered);
+		Application::GetApp().GetImguiLayer().ShouldBlockEvents(false);
 
 		m_SceneViewportPanelPosition = *((glm::vec2*) & ImGui::GetWindowPos());
 		m_SceneViewportPanelPosition += *((glm::vec2*) & ImGui::GetCursorPos());
 		m_SceneViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
 		ImGui::Image((void*)sceneViewportColorAttachment, { m_SceneViewportSize.x, m_SceneViewportSize.y }, { 0, 1 }, { 1, 0 });
 
-		if (m_SceneHierarcyPanel->HasAnEntitySelected()) {
+		auto& hierarcy = PanelManager.GetPanel("SceneHierarcy");
+
+		if (hierarcy->HasAnEntitySelected()) {
 			ImGuizmo::SetDrawlist();
 
 			ImGuizmo::SetRect(m_SceneViewportPanelPosition.x, m_SceneViewportPanelPosition.y, m_SceneViewportPanelSize.x, m_SceneViewportPanelSize.y);
-			auto& transformComp = m_SceneHierarcyPanel->CurrentlySelectedEntity().GetComponent<TransformComponent>();
+			auto& transformComp = hierarcy->CurrentlySelectedEntity().GetComponent<TransformComponent>();
 
 			ImGuizmo::Manipulate(glm::value_ptr(m_EditorCamera->GetViewMatrix()), glm::value_ptr(m_EditorCamera->GetProjectionMatrix()), (ImGuizmo::OPERATION) m_Gizmo, ImGuizmo::LOCAL, glm::value_ptr(transformComp.Transform));
 
@@ -544,7 +571,6 @@ namespace Pixelate {
 
 		ImGui::End();
 		ImGui::PopStyleVar();
-
 
 
 
@@ -668,7 +694,6 @@ namespace Pixelate {
 			ImGui::End();
 		}
 
-		m_ConsoleLog->OnImguiRender();
 
 // for creating and loading projects
 

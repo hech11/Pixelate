@@ -15,6 +15,7 @@
 #include "Pixelate/Core/UUID.h"
 #include "Pixelate/Core/Rect.h"
 
+#include "Pixelate/Animation/Animation.h"
 
 namespace Pixelate {
 	
@@ -115,6 +116,13 @@ namespace Pixelate {
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent& other) : Camera(other.Camera), ClearColor(other.ClearColor), PrimaryCamera(other.PrimaryCamera) {}
 
+	};
+
+
+	struct AnimatorComponent {
+		Pixelate::Animator Animator;
+		AnimatorComponent() = default;
+		AnimatorComponent(const AnimatorComponent& other) : Animator(other.Animator) {}
 	};
 
 // 	struct ParticleEmmiterComponent {

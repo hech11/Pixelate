@@ -26,6 +26,8 @@ namespace Pixelate {
 		bool operator==(const Rect& other) {
 			return this->Position == other.Position && this->Scale == other.Scale;
 		}
+
+
 	};
 
 

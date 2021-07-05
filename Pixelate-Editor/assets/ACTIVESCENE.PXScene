@@ -1,6 +1,20 @@
 Scene: Scene
 Entities:
-  - Entity: 12641085171240386856
+  - Entity: 6692048998823874224
+    NameComponent:
+      Name: Animator component test entity
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        Filepath: assets/graphics/TestSpritesheet.png
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      TintColor: [1, 1, 1, 1]
+  - Entity: 14018433804863325734
     NameComponent:
       Name: Animation test entity
     TagComponent:
@@ -12,9 +26,9 @@ Entities:
         Filepath: assets/graphics/TestSpritesheet.png
       Rect:
         Position: [0, 0]
-        Scale: [16, 16]
+        Scale: [128, 128]
       TintColor: [1, 1, 1, 1]
-  - Entity: 920686755485669384
+  - Entity: 16192610343378117668
     NameComponent:
       Name: Camera
     TagComponent:

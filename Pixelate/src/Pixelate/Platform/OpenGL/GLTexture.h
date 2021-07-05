@@ -13,18 +13,24 @@ namespace Pixelate {
 
 		public:
 			GLTexture(const std::string& filepath, TextureProperties props);
-			GLTexture(unsigned int width, unsigned int height, Texture::TextureProperties::Format format);
+			GLTexture(unsigned int width, unsigned int height, TextureProperties::Format format);
 
 			virtual ~GLTexture();
 
 			void Bind(unsigned char slot = 0) const override;
 			void Unbind() const override;
 
+			void SetProperties(TextureProperties& props) { m_Props = props; }
+
+
 			void SetData(void* data, unsigned int size) override;
 			void SetData(const std::string& filepath) override;
 
 			
 			unsigned int GetHandleID() const override { return m_RendererID; };
+
+			const TextureProperties& GetTextureProps() const override { return m_Props; }
+
 
 
 			bool operator==(const Texture& other) const override { return m_RendererID == other.GetHandleID(); };

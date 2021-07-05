@@ -42,7 +42,7 @@ namespace Pixelate {
 		s_ManagerData->TextureCoords[2] = { 1.0f, 1.0f }; // -- top right
 		s_ManagerData->TextureCoords[3] = { 0.0f, 1.0f }; // -- top left
 
-		s_ManagerData->DefaultWhiteTexture = Texture::Create(1, 1, Texture::TextureProperties::Format::RGB);
+		s_ManagerData->DefaultWhiteTexture = Texture::Create(1, 1, TextureProperties::Format::RGB);
 
 		unsigned int whiteTextureData = 0xffffffff;
 		s_ManagerData->DefaultWhiteTexture->SetData(&whiteTextureData, 3);

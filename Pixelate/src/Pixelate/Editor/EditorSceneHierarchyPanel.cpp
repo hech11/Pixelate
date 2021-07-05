@@ -18,6 +18,7 @@
 
 #include "Pixelate/Rendering/RenderCommand.h"
 #include "Pixelate/Audio/Audio.h"
+#include "EditorTextureInspector.h"
 
 namespace Pixelate {
 
@@ -29,22 +30,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 }
 
 	EditorSceneHierarchyPanel::EditorSceneHierarchyPanel(const Ref<Scene>& scene)
-		:m_SceneContext(scene)
-	{
-	}
-
-	void EditorSceneHierarchyPanel::SetSceneContext(const Ref<Scene>& scene)
 	{
 		m_SceneContext = scene;
-		m_SelectedEntity = false;
-	}
-	void EditorSceneHierarchyPanel::SetSelectedEntity(Entity entity) {
-		m_CurrentlySelectedEntity = entity;
-		m_SelectedEntity = true;
-	}
-	void EditorSceneHierarchyPanel::SetSelectedEntity() {
-		m_CurrentlySelectedEntity = {};
-		m_SelectedEntity = false;
 	}
 
 	
@@ -130,7 +117,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 			if (e.HasComponent<NameComponent>()) {
 				std::string name = e.GetComponent<NameComponent>().Name;
 
-				ImGuiTreeNodeFlags node_flags = ((e == m_CurrentlySelectedEntity) && m_SelectedEntity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+				ImGuiTreeNodeFlags node_flags = ((e == m_CurrentlySelectedEntity) && m_CurrentlySelectedEntity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 				if (ImGui::TreeNodeEx((void*)(unsigned int)e, node_flags, name.c_str())) {
 					ImGui::TreePop();
 				}
@@ -151,7 +138,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				if (deleteEntity) {
 					if (e == m_CurrentlySelectedEntity) {
-						SetSelectedEntity();
+						SetSelectedEntity({});
 						m_SceneContext->DeleteEntity(e);
 						deleteEntity = false;
 					}
@@ -166,8 +153,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right) && ImGui::IsWindowHovered()) {
 			ImGui::OpenPopup("ScenePopup");
 		}
-		if (Pixelate::Input::IsMouseButtonDown(MouseButton::Left) && ImGui::IsWindowHovered() && m_SelectedEntity) {
-			SetSelectedEntity();
+		if (Pixelate::Input::IsMouseButtonDown(MouseButton::Left) && ImGui::IsWindowHovered() && m_HasSelectedEntity) {
+			SetSelectedEntity({});
 		}
 		if (ImGui::BeginPopup("ScenePopup")) {
 			if (ImGui::Button("Create Empty Entity")) {
@@ -185,7 +172,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 		// display all components that the selected entity has
 		ImGui::Begin("Entity Components");
-		if (m_SelectedEntity) {
+		if (m_HasSelectedEntity) {
 
 
 			if (m_CurrentlySelectedEntity.HasComponent<UUIDComponent>()) {
@@ -352,7 +339,13 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
 
-					ImGui::Image((void*)spriteRect->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 });
+					if (ImGui::ImageButton((void*)spriteRect->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 })) {
+						const auto& inspector = std::dynamic_pointer_cast<EditorTextureInspector>(EditorPanelManager::Get().GetPanel("TextureInspector"));
+
+						inspector->SetOpenPanel(true);
+						inspector->SetTextureContext(spriteRect);
+
+					}
 				
 					ImGui::PopItemWidth();
 					ImGui::NextColumn();

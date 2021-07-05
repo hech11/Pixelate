@@ -4,28 +4,16 @@
 #include "Pixelate/Scene/Entity.h"
 
 #include "Pixelate/Editor/EditorCamera.h"
+#include "Pixelate/Editor/EditorPanel.h"
 
 namespace Pixelate {
 
-	class EditorSceneHierarchyPanel {
+	class EditorSceneHierarchyPanel : public EditorPanel {
 		public :
 
 			EditorSceneHierarchyPanel(const Ref<Scene>& scene);
-			void SetSceneContext(const Ref<Scene>& scene);
-			void SetSelectedEntity(Entity entity);
-			void SetSelectedEntity();
 
-
-			void OnImguiRender();
-
-			Entity& CurrentlySelectedEntity() { return m_CurrentlySelectedEntity; };
-			bool& HasAnEntitySelected() { return m_SelectedEntity; };
-
-		private :
-			Ref<Scene> m_SceneContext;
-			Entity m_CurrentlySelectedEntity;
-			bool m_SelectedEntity = false;
-
+			void OnImguiRender() override;
 	};
 
 }

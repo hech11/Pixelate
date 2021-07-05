@@ -15,7 +15,10 @@
 #include <Pixelate/Events/KeyEvents.h>
 #include <Pixelate/Editor/EditorCamera.h>
 #include <Pixelate/Editor/EditorSceneHierarchyPanel.h>
+#include <Pixelate/Editor/EditorAnimationPanel.h>
 #include <Pixelate/Editor/EditorConsoleLogger.h>
+#include <Pixelate/Editor/EditorTextureInspector.h>
+#include <Pixelate/Editor/EditorPanel.h>
 
 #include <Pixelate/Scene/Scene.h>
 #include <Pixelate/Scene/Components.h>
@@ -37,6 +40,7 @@ namespace Pixelate {
 			virtual void OnEvent(Pixelate::Event& e) override;
 		
 			virtual void OnImguiRender() override;
+
 		
 		private: 
 			bool OnKeyPressedEvent(KeyPressedEvent& e);
@@ -44,6 +48,7 @@ namespace Pixelate {
 
 			void OnScenePlay();
 			void OnSceneStop();
+
 		private : 
 
 			enum class SceneState {
@@ -88,10 +93,13 @@ namespace Pixelate {
 
 			//
 
-
+// 
 			Ref<EditorSceneHierarchyPanel> m_SceneHierarcyPanel;
 			Ref<EditorCamera> m_EditorCamera;
 			Ref<EditorConsoleLogger> m_ConsoleLog;
+			Ref<EditorAnimationPanel> m_AnimatorPanel;
+			Ref<EditorTextureInspector> m_TextureInspector;
+
 
 			ParticleSystem particleSystem;
 			ParticleProperties particleProps;
@@ -99,6 +107,7 @@ namespace Pixelate {
 		
 			Animator anim;
 			Entity animationTest;
+			Entity animationComponentTest;
 	};
 
 
