@@ -21,6 +21,9 @@ namespace Pixelate {
 			void ShowCurrentFileLocation();
 			void RenameItem();
 			void DeleteItem();
+
+			void RenderTopBar();
+
 		private :
 
 			bool m_DeleteItem = false;
