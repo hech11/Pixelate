@@ -25,6 +25,7 @@
 #include "glm/gtx/matrix_decompose.hpp"
 #include "../../NativeFileDialog/src/include/nfd.h"
 
+#include <Pixelate/Editor/EditorContentBrowser.h>
 
 namespace Pixelate {
 
@@ -55,6 +56,7 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("SceneHierarcy", m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene));
 		PanelManager.RegisterPanel("TextureInspector" ,m_TextureInspector = CreateRef<EditorTextureInspector>(), false);
 		PanelManager.RegisterPanel("ConsoleLog", m_ConsoleLog = CreateRef<EditorConsoleLogger>(true));
+		PanelManager.RegisterPanel("ContentBrowser", CreateRef<EditorContentBrowser>());
 
 
 		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
