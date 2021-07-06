@@ -7,6 +7,9 @@
 
 namespace Pixelate {
 
+
+	
+
 	class EditorContentBrowser : public EditorPanel {
 
 
@@ -15,6 +18,14 @@ namespace Pixelate {
 
 			void OnImguiRender() override;
 		private :
+			void ShowCurrentFileLocation();
+			void RenameItem();
+			void DeleteItem();
+		private :
+
+			bool m_DeleteItem = false;
 			std::filesystem::path m_CurrentDirectory;
+			std::filesystem::path m_CurrentContextItem;
+
 	};
 }
