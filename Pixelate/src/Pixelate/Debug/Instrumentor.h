@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PXpch.h"
-#include "Pixelate/Utility/File.h"
+#include "Pixelate/Utility/FileSystem.h"
 
 
 
@@ -35,7 +35,6 @@ namespace Pixelate {
 
 			void BeginSession(const std::string& name, const std::string& filepath = "results.json") {
 	
-				FileIO::Get().CreateDir(filepath);
 				m_OutputStream.open(filepath);
 				WriteHeader();
 				m_CurrentSession = new Session{ name };

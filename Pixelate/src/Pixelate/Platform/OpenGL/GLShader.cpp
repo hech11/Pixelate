@@ -41,10 +41,7 @@ namespace Pixelate {
 	}
 
 	GLShader::ShaderSource GLShader::PraseShader(const std::string& shaderFile) {
-		std::string data = FileIO::Get().ReadFromStorage(shaderFile);
-		if (data == "Error") {
-			PX_ASSERT(false, "Cannot find shader!\n");
-		}
+		std::string data; FileSystem::ReadText(shaderFile, data);
 		return PraseShader(data.c_str());
 	}
 
