@@ -56,6 +56,7 @@ namespace Pixelate {
 			virtual void Bind(unsigned char slot = 0) const = 0;
 			virtual void Unbind() const = 0;
 
+			virtual uint32_t GetRendererID() const=0;
 
 			virtual void SetProperties(TextureProperties& props) = 0;
 

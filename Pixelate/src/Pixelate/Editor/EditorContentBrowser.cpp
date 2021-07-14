@@ -17,6 +17,8 @@ namespace Pixelate {
 	EditorContentBrowser::EditorContentBrowser()
 		: m_CurrentDirectory(s_AssetDirectory)
 	{
+		m_FolderIcon = Texture::Create("resources/icons/content-browser/folder.png");
+		m_FileIcon = Texture::Create("resources/icons/content-browser/file.png");
 	}
 
 	void EditorContentBrowser::RenderDirectory(const std::filesystem::path& dir) {
@@ -60,15 +62,136 @@ namespace Pixelate {
 
 		ImGui::BeginChild("##topbar", ImVec2(0, 30));
 		{
-			if (m_CurrentDirectory != s_AssetDirectory) {
-				if (ImGui::Button("Back")) {
-					m_CurrentDirectory = m_CurrentDirectory.parent_path();
-
-				}
+			if (ImGui::Button("<--")) {
+				BackButton();
 			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("-->")) {
+				ForwardButton();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("Search")) {
+				PX_CORE_WARN("The search button doesn't do anything at the moment!\n");
+			}
+
+			ImGui::SameLine();
+
+
+			char buffer[255];
+			memset(buffer, 0, 255);
+			memcpy(buffer, m_CurrentSearchItem.c_str(), m_CurrentSearchItem.length());
+			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+			if (ImGui::InputText("##Search", buffer, 255)) {
+				m_CurrentSearchItem = buffer;
+			}
+			ImGui::PopStyleColor(3);
+
 			ImGui::EndChild();
 
+			if (m_CurrentSearchItem != "") {
+				m_SearchForItemMode = true;
+			} else {
+				m_SearchForItemMode = false;
+			}
+
 		}
+
+	}
+
+	void EditorContentBrowser::RenderItem(std::filesystem::path path) {
+
+
+		auto relPath = std::filesystem::relative(path, s_AssetDirectory);
+		std::string fileName = relPath.filename().string();
+
+		bool isDirectory = FileSystem::IsDirectory(path);
+
+		Ref<Texture> icon = (isDirectory ? m_FolderIcon : m_FileIcon);
+		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0, 0, 0, 0 });
+		ImGui::ImageButton((ImTextureID)icon->GetRendererID(), { m_ThumbnailSize, m_ThumbnailSize }, { 0, 1 }, { 1, 0 });
+		if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
+			if (isDirectory) {
+				m_CurrentDirectory /= path.filename();
+
+				if (!m_PreviousDirectories.empty()) {
+					m_PreviousDirectoryIndex = -1;
+				}
+
+			}
+			else {
+				FileSystem::OpenFileExternally(path);
+
+			}
+
+
+			m_SearchForItemMode = false;
+			m_CurrentSearchItem = "";
+
+		}
+
+		ImGui::PopStyleColor();
+		float thumbnailXPosition = ImGui::GetCursorPosX();
+
+		if (ImGui::IsItemHovered() && m_IfHoveredOverItem) {
+			if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right)) {
+				m_CurrentContextItem = s_AssetDirectory / relPath;
+				m_CurrentFileName = fileName;
+
+				m_OpenContextPopup = true;
+			}
+		}
+
+		ImVec2 texSize = ImGui::CalcTextSize(fileName.c_str());
+		float fileNameTextPosition = (thumbnailXPosition + m_ThumbnailSize / 2) - (texSize.x / 2);
+
+		bool textShouldWrap = (fileNameTextPosition < thumbnailXPosition);
+
+
+		if (m_RenameMode) {
+			if (m_CurrentFileName == fileName) {
+				char buffer[255];
+				memset(buffer, 0, 255);
+				memcpy(buffer, m_CurrentFileName.c_str(), m_CurrentFileName.length());
+				std::string temp = "##" + m_CurrentFileName;
+				ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+				ImGui::InputText(temp.c_str(), buffer, 255);
+
+				ImGui::PopStyleColor(3);
+
+				if (Input::IsKeyDown(KeyCode::Enter) || (ImGui::IsMouseDoubleClicked(0) && !ImGui::IsItemHovered())) {
+					RenameItem(buffer);
+					m_RenameMode = false;
+				}
+			}
+			else {
+				if (!textShouldWrap) {
+					ImGui::SetCursorPosX(fileNameTextPosition);
+					ImGui::Text(fileName.c_str());
+
+				}
+				else
+					ImGui::TextWrapped(fileName.c_str());
+
+			}
+		}
+		else {
+			if (!textShouldWrap) {
+				ImGui::SetCursorPosX(fileNameTextPosition);
+				ImGui::Text(fileName.c_str());
+			}
+			else
+				ImGui::TextWrapped(fileName.c_str());
+
+		}
+
 
 	}
 
@@ -131,6 +254,27 @@ namespace Pixelate {
 		}
 	}
 
+	void EditorContentBrowser::BackButton()
+	{
+		if (m_CurrentDirectory != s_AssetDirectory) {
+			m_PreviousDirectoryIndex++;
+			m_PreviousDirectories.emplace(m_PreviousDirectories.begin() + m_PreviousDirectoryIndex, m_CurrentDirectory);
+
+			m_CurrentDirectory = m_CurrentDirectory.parent_path();
+		}
+	}
+
+	void EditorContentBrowser::ForwardButton()
+	{
+		if (!m_PreviousDirectories.empty()) {
+			m_CurrentDirectory = m_PreviousDirectories[m_PreviousDirectoryIndex];
+			m_PreviousDirectories.erase(m_PreviousDirectories.begin() + m_PreviousDirectoryIndex);
+			m_PreviousDirectoryIndex--;
+			if (m_PreviousDirectoryIndex <= -1)
+				m_PreviousDirectoryIndex = -1;
+		}
+	}
+
 	void EditorContentBrowser::OnImguiRender()
 	{
 		ImGui::Begin("Content Browser");
@@ -164,71 +308,33 @@ namespace Pixelate {
 					m_OpenWindowContextPopup = true;
 			}
 
-			ImGui::Columns(4, 0, false);
+			float cellSize = m_ThumbnailSize + m_Padding;
+			int Columns = (int)(ImGui::GetContentRegionAvail().x / cellSize);
+			if (Columns < 1)
+				Columns = 1;
+
+
+			ImGui::Columns(Columns, 0, false);
+
+
 			for (auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
 
-				auto relPath = std::filesystem::relative(entry.path(), s_AssetDirectory);
-				std::string fileName = relPath.filename().string();
+				if (!m_SearchForItemMode) {
+ 					RenderItem(entry.path());
+					ImGui::NextColumn();
 
-				if (!m_RenameMode) {
-					if (entry.is_directory()) {
-						if (ImGui::Button(fileName.c_str())) {
-							m_CurrentDirectory /= entry.path().filename();
-						}
-
-					} else {
-						if(ImGui::Button(fileName.c_str())){
-							FileSystem::OpenFileExternally(entry.path());
-						}
-					}
-				} else {
-					if (m_CurrentFileName == fileName)
-					{
-						char buffer[255];
-						memset(buffer, 0, 255);
-						memcpy(buffer, m_CurrentFileName.c_str(), m_CurrentFileName.length());
-						std::string temp = "##" + m_CurrentFileName;
-						ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-						ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-						ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-						ImGui::InputText(temp.c_str(), buffer, 255);
-
-
-						if (Input::IsKeyDown(KeyCode::Enter) || (Input::IsMouseButtonDown(MouseButton::Left) && !ImGui::IsItemHovered())) {
-							RenameItem(buffer);
-							m_RenameMode = false;
-						}
-
-
-						ImGui::PopStyleColor(3);
-					} else {
-						if (entry.is_directory()) {
-							if (ImGui::Button(fileName.c_str())) {
-								m_CurrentDirectory /= entry.path().filename();
-							}
-						}
-						else {
-							if(ImGui::Button(fileName.c_str())){
-								FileSystem::OpenFileExternally(entry.path());
-							}
-
-						}
+				}
+ 				else {
+					std::filesystem::path itemDir = m_CurrentDirectory / m_CurrentSearchItem;
+					if (strstr(entry.path().string().c_str(), itemDir.string().c_str())) {
+						RenderItem(entry.path());
+						ImGui::NextColumn();
 					}
 				}
 
 
-				
-				if (ImGui::IsItemHovered() && m_IfHoveredOverItem) {
-
-					if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right)) {
-						m_CurrentContextItem = s_AssetDirectory / relPath;
-						m_CurrentFileName = fileName;
-
-						m_OpenContextPopup = true;
-					}
-				}
-				ImGui::NextColumn();
 			}
+
 			ImGui::Text(m_CurrentContextItem.string().c_str());
 			
 
@@ -245,8 +351,9 @@ namespace Pixelate {
 			DrawWindowContext();
 
 
-			ImGui::EndChild();
 			ImGui::Columns(1);
+			ImGui::EndChild();
+			ImGui::SliderFloat("Thumbnail Size", &m_ThumbnailSize, 64.0f, 512.0f, "%.2f");
 
 
 			if (m_DeleteItem) {
@@ -261,16 +368,10 @@ namespace Pixelate {
 				m_IfHoveredOverItem = false;
 			}
 
-
-			std::stringstream hovered;
-			hovered << "is hovered: " << (m_IfHoveredOverItem ? "true" : "false");
-			ImGui::Text(hovered.str().c_str());
 			ImGui::End();
 
 
 		}
-
-		
 
 	}
 

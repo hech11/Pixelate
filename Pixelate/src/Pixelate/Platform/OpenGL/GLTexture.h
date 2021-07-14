@@ -17,6 +17,9 @@ namespace Pixelate {
 
 			virtual ~GLTexture();
 
+			uint32_t GetRendererID() const override { return m_RendererID; }
+
+
 			void Bind(unsigned char slot = 0) const override;
 			void Unbind() const override;
 
