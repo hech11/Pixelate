@@ -1,0 +1,43 @@
+Scene: Scene
+Entities:
+  - Entity: 16344948743593250558
+    NameComponent:
+      Name: Animator component test entity
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        Filepath: assets/graphics/TestSpritesheet.png
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      TintColor: [1, 1, 1, 1]
+  - Entity: 13501659895099149523
+    NameComponent:
+      Name: Animation test entity
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        Filepath: assets/graphics/TestSpritesheet.png
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      TintColor: [1, 1, 1, 1]
+  - Entity: 6176331919781289252
+    NameComponent:
+      Name: Camera
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    CameraComponent:
+      ClearColor: [0.25, 0.5, 0.699999988, 1]
+      OrthoSize: 1
+      Primary: true
+    AudioListenerComponent:
+      Spatial: false

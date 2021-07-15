@@ -2,6 +2,7 @@
 #include "EditorContentBrowser.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include "Pixelate/Utility/FileSystem.h"
 
 namespace Pixelate {
@@ -76,6 +77,7 @@ namespace Pixelate {
 				PX_CORE_WARN("The search button doesn't do anything at the moment!\n");
 			}
 
+			
 			ImGui::SameLine();
 
 
@@ -85,12 +87,38 @@ namespace Pixelate {
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
 			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
-
+			ImGui::PushItemWidth(350);
 			if (ImGui::InputText("##Search", buffer, 255)) {
 				m_CurrentSearchItem = buffer;
 			}
+			ImGui::PopItemWidth();
 			ImGui::PopStyleColor(3);
 
+
+			ImGui::SameLine();
+
+			int dirIterations = 0;
+
+			std::filesystem::path shorcutPath;
+			for (auto& p : m_CurrentDirectory) {
+				shorcutPath /= p;
+
+				if (dirIterations > 0) {
+					ImGui::Text("\\");
+					ImGui::SameLine();
+				}
+
+				ImGui::PushStyleColor(ImGuiCol_Button, { 1, 1, 1, 0 });
+				if (ImGui::Button(p.filename().string().c_str())) {
+					m_CurrentDirectory = shorcutPath;
+					ImGui::PopStyleColor();
+					break;
+				}
+				ImGui::PopStyleColor();
+
+				ImGui::SameLine();
+				dirIterations++;
+			}
 			ImGui::EndChild();
 
 			if (m_CurrentSearchItem != "") {
@@ -98,6 +126,8 @@ namespace Pixelate {
 			} else {
 				m_SearchForItemMode = false;
 			}
+
+			
 
 		}
 
@@ -112,8 +142,60 @@ namespace Pixelate {
 		bool isDirectory = FileSystem::IsDirectory(path);
 
 		Ref<Texture> icon = (isDirectory ? m_FolderIcon : m_FileIcon);
+		ImGui::PushID(path.filename().string().c_str());
+
 		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Button, { 0, 0, 0, 0 });
+
 		ImGui::ImageButton((ImTextureID)icon->GetRendererID(), { m_ThumbnailSize, m_ThumbnailSize }, { 0, 1 }, { 1, 0 });
+
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+			std::string dragID;
+			if (isDirectory) {
+				dragID = "DirectoryPayload";
+			} else {
+				// TODO: Determine what type of asset this is.
+
+				dragID = "AssetPayload";
+			}
+
+			// TODO: replace this with the asset manager by using asset handles instead of paths
+			std::string relPath = path.string();
+			int length = strlen(relPath.c_str());
+
+
+			ImGui::SetDragDropPayload(dragID.c_str(), relPath.c_str(), strlen(relPath.c_str()));
+			ImGui::Text("Path: %s", path.relative_path().string().c_str());
+			ImGui::EndDragDropSource();
+		}
+
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* dirPayload = ImGui::AcceptDragDropPayload("DirectoryPayload"))
+			{
+
+				std::string directory;
+				
+				directory = static_cast<const char*>(dirPayload->Data);
+				directory.resize(dirPayload->DataSize);
+
+				
+				PX_CORE_MSG("Moved %s into %s\n", directory.c_str(), path.string().c_str());
+				FileSystem::MoveDirectory(directory, path.string());
+			}
+			else if (const ImGuiPayload* dirPayload = ImGui::AcceptDragDropPayload("AssetPayload")) {
+				std::string directory;
+
+				directory = static_cast<const char*>(dirPayload->Data);
+				directory.resize(dirPayload->DataSize);
+
+
+				PX_CORE_MSG("Moved %s into %s\n", directory.c_str(), path.string().c_str());
+				FileSystem::MoveFile(directory, path.string());
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		if (ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemHovered()) {
 			if (isDirectory) {
 				m_CurrentDirectory /= path.filename();
@@ -167,7 +249,8 @@ namespace Pixelate {
 				ImGui::PopStyleColor(3);
 
 				if (Input::IsKeyDown(KeyCode::Enter) || (ImGui::IsMouseDoubleClicked(0) && !ImGui::IsItemHovered())) {
-					RenameItem(buffer);
+					std::filesystem::path renamedPath = path.relative_path().replace_filename(buffer);
+					RenameItem(renamedPath.string());
 					m_RenameMode = false;
 				}
 			}
@@ -192,6 +275,7 @@ namespace Pixelate {
 
 		}
 
+		ImGui::PopID();
 
 	}
 
@@ -277,102 +361,109 @@ namespace Pixelate {
 
 	void EditorContentBrowser::OnImguiRender()
 	{
-		ImGui::Begin("Content Browser");
-		ImGui::Columns(2);
-		ImGui::SetColumnOffset(1, 300.0f);
-		ImGui::BeginChild("##folders");
-		{
-			if (ImGui::CollapsingHeader("Content", 0, ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen)) {
-		
+		bool show = true;
+		ImGui::ShowDemoWindow(&show);
 
-				for (auto& entry : std::filesystem::directory_iterator(s_AssetDirectory)) {
-					RenderDirectory(entry.path());
-				}
-			}
-
-
-
-			ImGui::EndChild();
+		if (!ImGui::Begin("Content Browser")) {
+			ImGui::End();
 		}
-
-		ImGui::NextColumn();
-
-		ImGui::BeginChild("##dir", ImVec2(0, ImGui::GetWindowHeight() - 65));
-		{
-			RenderTopBar();
-			ImGui::Separator();
+		else {
+			ImGui::Columns(2);
+			ImGui::SetColumnOffset(1, 300.0f);
 
 
-			if (!m_IfHoveredOverItem) {
-				if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))
-					m_OpenWindowContextPopup = true;
-			}
-
-			float cellSize = m_ThumbnailSize + m_Padding;
-			int Columns = (int)(ImGui::GetContentRegionAvail().x / cellSize);
-			if (Columns < 1)
-				Columns = 1;
+			ImGui::BeginChild("##folders");
+			{
+				if (ImGui::CollapsingHeader("Content", 0, ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen)) {
 
 
-			ImGui::Columns(Columns, 0, false);
-
-
-			for (auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-
-				if (!m_SearchForItemMode) {
- 					RenderItem(entry.path());
-					ImGui::NextColumn();
-
-				}
- 				else {
-					std::filesystem::path itemDir = m_CurrentDirectory / m_CurrentSearchItem;
-					if (strstr(entry.path().string().c_str(), itemDir.string().c_str())) {
-						RenderItem(entry.path());
-						ImGui::NextColumn();
+					for (auto& entry : std::filesystem::directory_iterator(s_AssetDirectory)) {
+						RenderDirectory(entry.path());
 					}
 				}
 
 
+
+				ImGui::EndChild();
 			}
 
-			ImGui::Text(m_CurrentContextItem.string().c_str());
-			
+			ImGui::NextColumn();
 
-			if (m_OpenContextPopup) {
-				ImGui::OpenPopup("ContextPopup");
-				m_OpenContextPopup = false;
+			ImGui::BeginChild("##dir", ImVec2(0, ImGui::GetWindowHeight() - 65));
+			{
+				RenderTopBar();
+				ImGui::Separator();
+
+
+				if (!m_IfHoveredOverItem) {
+					if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))
+						m_OpenWindowContextPopup = true;
+				}
+
+				float cellSize = m_ThumbnailSize + m_Padding;
+				int Columns = (int)(ImGui::GetContentRegionAvail().x / cellSize);
+				if (Columns < 1)
+					Columns = 1;
+
+
+				ImGui::Columns(Columns, 0, false);
+
+
+				for (auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
+
+					if (!m_SearchForItemMode) {
+						RenderItem(entry.path());
+						ImGui::NextColumn();
+
+					}
+					else {
+						std::filesystem::path itemDir = m_CurrentDirectory / m_CurrentSearchItem;
+						if (strstr(entry.path().string().c_str(), itemDir.string().c_str())) {
+							RenderItem(entry.path());
+							ImGui::NextColumn();
+						}
+					}
+
+
+				}
+
+				if (m_OpenContextPopup) {
+					ImGui::OpenPopup("ContextPopup");
+					m_OpenContextPopup = false;
+				}
+				if (m_OpenWindowContextPopup) {
+					ImGui::OpenPopup("WindowContextPopup");
+					m_OpenWindowContextPopup = false;
+				}
+
+				DrawItemContext();
+				DrawWindowContext();
+
+
+				ImGui::Columns(1);
+				ImGui::EndChild();
+				ImGui::SliderFloat("Thumbnail Size", &m_ThumbnailSize, 64.0f, 512.0f, "%.2f");
+
+
+				if (m_DeleteItem) {
+					DeleteItem();
+					m_DeleteItem = false;
+				}
+
+				if (ImGui::IsAnyItemHovered()) {
+					m_IfHoveredOverItem = true;
+				}
+				else {
+					m_IfHoveredOverItem = false;
+				}
+
+				ImGui::End();
+
+
 			}
-			if (m_OpenWindowContextPopup) {
-				ImGui::OpenPopup("WindowContextPopup");
-				m_OpenWindowContextPopup = false;
-			}
-
-			DrawItemContext();
-			DrawWindowContext();
-
-
-			ImGui::Columns(1);
-			ImGui::EndChild();
-			ImGui::SliderFloat("Thumbnail Size", &m_ThumbnailSize, 64.0f, 512.0f, "%.2f");
-
-
-			if (m_DeleteItem) {
-				DeleteItem();
-				m_DeleteItem = false;
-			}
-
-			if (ImGui::IsAnyItemHovered()) {
-				m_IfHoveredOverItem = true;
-			}
-			else {
-				m_IfHoveredOverItem = false;
-			}
-
-			ImGui::End();
-
 
 		}
-
+		
 	}
 
 	void EditorContentBrowser::ShowCurrentFileLocation()

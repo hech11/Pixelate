@@ -14,6 +14,7 @@
 
 
 #include <Imgui/imgui.h>
+#include <Imgui/imgui_internal.h>
 
 #include <functional>
 #include <Glm/gtc/type_ptr.hpp>
@@ -279,7 +280,8 @@ namespace Pixelate {
 	}
 
 	void EditorLayer::OnEvent(Event& e) {
-		m_EditorCamera->OnEvent(e);
+		if(m_IsSceneViewportFocused)
+			m_EditorCamera->OnEvent(e);
 
 		auto& PanelManager = EditorPanelManager::Get();
 		PanelManager.OnEvent(e);
@@ -534,10 +536,55 @@ namespace Pixelate {
 		// scene viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
 		ImGui::Begin("Scene Viewport", 0, ImGuiWindowFlags_NoCollapse);
+
+
 		static glm::vec4 sceneColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 		ImGui::PushItemWidth(250);
 		ImGui::ColorEdit4("Scene color", glm::value_ptr(sceneColor));
+		float ColorRectYSize = ImGui::GetItemRectSize().y;
 		ImGui::PopItemWidth();
+
+
+		ImVec2 vMin = ImGui::GetWindowContentRegionMin();
+		ImVec2 vMax = ImGui::GetWindowContentRegionMax();
+
+		vMin.x += ImGui::GetWindowPos().x;
+		vMin.y += ImGui::GetWindowPos().y + ColorRectYSize;
+		vMax.x += ImGui::GetWindowPos().x;
+		vMax.y += ImGui::GetWindowPos().y;
+
+		ImRect dragAreaRect = { vMin , vMax };
+		auto sceneViewportID = ImGui::GetID("Scene Viewport");
+
+		
+		if (ImGui::BeginDragDropTargetCustom(dragAreaRect, sceneViewportID)) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetPayload"))
+			{
+
+
+				std::string directory;
+
+				directory = static_cast<const char*>(payload->Data);
+				directory.resize(payload->DataSize);
+
+
+				PX_CORE_MSG("Scene viewport recieved '%s'!\n", directory.c_str());
+				std::filesystem::path path(directory);
+				std::string extension = path.extension().string();
+
+
+				if (extension == ".PXScene") {
+
+					m_EditorScene = SceneManager::LoadScene(path.string());
+					PanelManager.SetSceneContext(m_EditorScene);
+
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+
+
 		RenderCommand::SetClearColor(sceneColor.r, sceneColor.g, sceneColor.b, sceneColor.a);
 		ImGui::Separator();
 		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachment();

@@ -60,7 +60,7 @@ namespace Pixelate {
 			Ref<Texture> m_FileIcon;
 
 
-			float m_ThumbnailSize = 128.0f;
+			float m_ThumbnailSize = 64.0f;
 			float m_Padding = 16.0f;
 
 	};

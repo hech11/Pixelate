@@ -19,7 +19,6 @@ namespace Pixelate {
 			static void RenameDirectory(const std::string& oldDirectory, const std::string& newName);
 			static void RenameDirectory(const std::filesystem::path& oldDirectory, const std::string& newName);
 
-			static void MoveDirectory(const std::string& oldDirectory, const std::string& newDirectory);
 			static void MoveDirectory(const std::filesystem::path& oldDirectory, const std::filesystem::path& newDirectory);
 
 			static void CopyDirectory(const std::string& oldDirectory, const std::string& newDirectory);

@@ -31,31 +31,23 @@ namespace Pixelate {
 
 	void FileSystem::RenameDirectory(const std::filesystem::path& oldDirectory, const std::string& newName)
 	{
-		std::filesystem::path newDir = oldDirectory;
-		newDir = newDir.parent_path();
-		newDir /= newName;
-		std::filesystem::rename(oldDirectory, newDir);
+		std::filesystem::rename(oldDirectory, newName);
 	}
 
 	void FileSystem::RenameDirectory(const std::string& oldDirectory, const std::string& newName)
 	{
-		std::filesystem::path newDir = oldDirectory;
-		newDir = newDir.parent_path();
-		newDir /= newName;
-		std::filesystem::rename(oldDirectory, newDir);
+		std::filesystem::rename(oldDirectory, newName);
 	}
 
-	void FileSystem::MoveDirectory(const std::string& oldDirectory, const std::string& newDirectory)
-	{
-		auto copyOptions = std::filesystem::copy_options::update_existing | std::filesystem::copy_options::recursive;
-		std::filesystem::copy(oldDirectory, newDirectory, copyOptions);
-		DeleteDirectory(oldDirectory);
-	}
 
 	void FileSystem::MoveDirectory(const std::filesystem::path& oldDirectory, const std::filesystem::path& newDirectory)
 	{
 		auto copyOptions = std::filesystem::copy_options::update_existing | std::filesystem::copy_options::recursive;
-		std::filesystem::copy(oldDirectory, newDirectory, copyOptions);
+		std::filesystem::path path = newDirectory / oldDirectory.filename();
+
+		CreateDirectory(path);
+
+		std::filesystem::copy(oldDirectory, path, copyOptions);
 		DeleteDirectory(oldDirectory);
 	}
 
