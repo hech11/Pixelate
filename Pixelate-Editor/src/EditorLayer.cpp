@@ -27,6 +27,7 @@
 #include "../../NativeFileDialog/src/include/nfd.h"
 
 #include <Pixelate/Editor/EditorContentBrowser.h>
+#include <Pixelate/Asset/AssetManager.h>
 
 namespace Pixelate {
 
@@ -148,10 +149,16 @@ namespace Pixelate {
 		Renderer2D::SetBoundingBox(true);
 
 		m_Gizmo = ImGuizmo::TRANSLATE;
+
+		AssetManager::Init();
+
 	}
 
 
-	void EditorLayer::ShutDown() {}
+	void EditorLayer::ShutDown() {
+		AssetManager::Shutdown();
+
+	}
 
 	void EditorLayer::OnUpdate(float dt) {
 		auto& PanelManager = EditorPanelManager::Get();
@@ -530,6 +537,7 @@ namespace Pixelate {
 		ImGui::End();
 
 		PanelManager.OnImguiRender();
+		AssetManager::OnImguiRender(true);
 
 
 
