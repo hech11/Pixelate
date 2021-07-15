@@ -361,8 +361,6 @@ namespace Pixelate {
 
 	void EditorContentBrowser::OnImguiRender()
 	{
-		bool show = true;
-		ImGui::ShowDemoWindow(&show);
 
 		if (!ImGui::Begin("Content Browser")) {
 			ImGui::End();
