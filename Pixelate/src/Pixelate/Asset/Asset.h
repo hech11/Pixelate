@@ -12,7 +12,7 @@ namespace std {
 	struct hash<std::filesystem::path> {
 
 		std::size_t operator()(const std::filesystem::path& path) const {
-			return hash<unsigned long long>()((unsigned long long)std::filesystem::hash_value(path));
+			return hash_value(path);
 		}
 	};
 
@@ -22,14 +22,16 @@ namespace Pixelate {
 
 	using AssetHandle = UUID;
 
+
+
 	enum class AssetType {
 		None = -1,
 		Texture,
 		Audio,
 		Scene,
 		Shader,
-		Asset // Doesn't make any sense is just used for testing
 	};
+
 
 	enum class AssetFlag {
 		None = 0,

@@ -1,5 +1,6 @@
 #include "PXpch.h"
 #include "AssetManager.h"
+#include "AssetTypes.h"
 
 #include <imgui.h>
 
@@ -33,7 +34,7 @@ namespace Pixelate {
 		AssetMetadata metadata;
 		metadata.Handle = AssetHandle();
 		metadata.Filepath = path;
-		metadata.Type = AssetType::Asset; // TODO: conversion function
+		metadata.Type = Pixelate::Utils::ConvertStringToAssetType(path.string());
 
 		s_AssetRegistry.GetRegistry()[metadata.Filepath] = metadata;
 
@@ -71,7 +72,7 @@ namespace Pixelate {
 
 			ImGui::Text("Handle: %d", metadata.Handle);
 			ImGui::Text("Filepath: %s", metadata.Filepath.string().c_str());
-			//ImGui::Text("Type: %s", metadata.Type);
+			ImGui::Text("Type: %s", Pixelate::Utils::ConvertAssetTypeToString(metadata.Type).c_str());
 			ImGui::Separator();
 
 		}
