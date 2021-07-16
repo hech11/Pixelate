@@ -15,11 +15,18 @@ namespace Pixelate {
 
 	void AssetManager::Init()
 	{
-		ReloadAssets();
+		bool succsess = s_AssetRegistry.Deserialize();
+		if (!succsess) {
+			ReloadAssets();
+			s_AssetRegistry.Serialize();
+		}
+
 	}
 
 	void AssetManager::Shutdown()
 	{
+		//ReloadAssets();
+		s_AssetRegistry.Serialize();
 		s_AssetRegistry.GetRegistry().clear();
 	}
 
@@ -32,11 +39,17 @@ namespace Pixelate {
 
 
 		AssetMetadata metadata;
-		metadata.Handle = AssetHandle();
-		metadata.Filepath = path;
-		metadata.Type = Pixelate::Utils::ConvertStringToAssetType(path.string());
+		metadata.Handle = 0;
 
-		s_AssetRegistry.GetRegistry()[metadata.Filepath] = metadata;
+		AssetType type = Pixelate::Utils::StringToAssetTypeExtension(path.string());
+		if (type != AssetType::None) {
+			metadata.Handle = AssetHandle();
+			metadata.Filepath = path;
+			metadata.Type = type;
+
+			s_AssetRegistry.GetRegistry()[metadata.Filepath] = metadata;
+		}
+
 
 
 		return metadata.Handle;
@@ -46,6 +59,7 @@ namespace Pixelate {
 	void AssetManager::ReloadAssets()
 	{
 		ProcessDirectoryWhenReloading(s_AssetPath);
+
 	}
 
 
@@ -70,9 +84,9 @@ namespace Pixelate {
 
 		for (const auto& [path, metadata] : s_AssetRegistry.GetRegistry()) {
 
-			ImGui::Text("Handle: %d", metadata.Handle);
+			ImGui::Text("Handle: %s", std::to_string(metadata.Handle).c_str());
 			ImGui::Text("Filepath: %s", metadata.Filepath.string().c_str());
-			ImGui::Text("Type: %s", Pixelate::Utils::ConvertAssetTypeToString(metadata.Type).c_str());
+			ImGui::Text("Type: %s", Pixelate::Utils::AssetTypeToString(metadata.Type).c_str());
 			ImGui::Separator();
 
 		}

@@ -12,6 +12,10 @@ namespace Pixelate {
 	class AssetRegistry {
 		public :
 
+			void Serialize();
+			bool Deserialize();
+
+
 			inline std::unordered_map<std::filesystem::path, AssetMetadata>& const GetRegistry() { return m_Registry; }
 
 		private :

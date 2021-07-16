@@ -22,6 +22,27 @@ namespace Pixelate {
 
 			static void OnImguiRender(bool open);
 
+
+
+			template<typename T>
+			static Ref<T> GetAsset(const std::string& filepath) {
+				auto& metadata = s_AssetRegistry.GetRegistry()[filepath];
+
+				Ref<Asset> asset = nullptr;
+				if (!metadata.IsLoaded)
+				{
+
+					// TODO: loadData(metadata, asset);
+					// store the loaded data into cache
+
+				} else {
+					// load it from a cache
+				}
+
+
+				return Ref<T>(*asset);
+			}
+
 		private :
 			static void ProcessDirectoryWhenReloading(const std::filesystem::path& dir);
 		private :

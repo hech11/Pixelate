@@ -150,14 +150,11 @@ namespace Pixelate {
 
 		m_Gizmo = ImGuizmo::TRANSLATE;
 
-		AssetManager::Init();
 
 	}
 
 
 	void EditorLayer::ShutDown() {
-		AssetManager::Shutdown();
-
 	}
 
 	void EditorLayer::OnUpdate(float dt) {

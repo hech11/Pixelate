@@ -30,6 +30,7 @@ namespace Pixelate {
 		Audio,
 		Scene,
 		Shader,
+		AssetRegistry
 	};
 
 
