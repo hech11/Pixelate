@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Pixelate/Core/Core.h"
+#include "Pixelate/Asset/Asset.h"
 
 #include "PXpch.h"
 #include <GLM/glm/glm.hpp>
@@ -46,7 +47,7 @@ namespace Pixelate {
 
 
 
-	class PX_API Texture {
+	class PX_API Texture : public Asset {
 
 		public :
 					
@@ -78,6 +79,10 @@ namespace Pixelate {
 			virtual const TextureProperties& GetTextureProps() const = 0;
 
 			virtual bool operator==(const Texture& other) const = 0;
+
+
+
+			SETUP_ASSET_PROPERTIES(AssetType::Texture);
 
 		public :
 			static Ref<Texture> Create(const std::string& filepath, TextureProperties props = TextureProperties());

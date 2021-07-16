@@ -1,28 +1,5 @@
-Scene: test123_Scripts
+Scene: test123_Scripts_123213213.PXScene
 Entities:
-  - Entity: 15400159705665729347
-    NameComponent:
-      Name: ScriptingEntity
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2.09302306, 3.61018848, -1, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: None
-      TextureBounds:
-        Bounds: 0
-      TintColor: [0, 1, 0, 1]
-    ScriptingBehaviourComponent:
-      ClassName: Player
-      Fields:
-        - FieldName: MoveSpeed
-          FieldType: 2
-          FieldValue: 213.119995
-        - FieldName: TempInt
-          FieldType: 1
-          FieldValue: 207
-        - FieldName: TempBool
-          FieldType: 0
-          FieldValue: false
   - Entity: 16110879849073823610
     NameComponent:
       Name: Floor
@@ -115,6 +92,6 @@ Entities:
     TransformComponent:
       Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -6.42303467, 5.95238256, -1, 1]
     AudioSourceComponent:
-      Filepath: D:\Dev\Pixelate\Pixelate-Editor\assets\audio\tone-ogg.ogg
+      Filepath: D:\Dev\Pixelate-master\Pixelate-Editor\assets\audio\tone-ogg.ogg
       Gain: 0.100000001
       ShouldLoop: false

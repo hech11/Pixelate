@@ -1,5 +1,19 @@
 Scene: PXT-spriteRect
 Entities:
+  - Entity: 8050326995426331511
+    NameComponent:
+      Name: Entity
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        AssetHandle: 18069192197029962527
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      TintColor: [1, 1, 1, 1]
   - Entity: 14947022863331304405
     NameComponent:
       Name: Camera
@@ -13,17 +27,3 @@ Entities:
       Primary: true
     AudioListenerComponent:
       Spatial: false
-  - Entity: 8050326995426331511
-    NameComponent:
-      Name: Entity
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-    SpriteRendererComponent:
-      Texture:
-        Filepath: D:\Dev\Pixelate-master\Pixelate-Editor\assets\graphics\TestSpritesheet.png
-      Rect:
-        Position: [0, 0]
-        Scale: [52, 128]
-      TintColor: [1, 1, 1, 1]

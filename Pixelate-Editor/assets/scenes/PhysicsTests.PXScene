@@ -7,7 +7,7 @@ Entities:
       Transform: [0.999987185, 0, 0, 0, 0, 0.999987185, 0, 0, 0, 0, 1, 0, -0.0243340302, 7.07369375, -1, 1]
     SpriteRendererComponent:
       Texture:
-        Filepath: None
+        AssetHandle: 0
       TextureBounds:
         Bounds: 0
       TintColor: [1, 1, 1, 1]
@@ -28,7 +28,7 @@ Entities:
       Transform: [7.83333063, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1.37873769, 0, 1]
     SpriteRendererComponent:
       Texture:
-        Filepath: None
+        AssetHandle: 0
       TextureBounds:
         Bounds: 0
       TintColor: [1, 1, 1, 1]

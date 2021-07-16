@@ -63,70 +63,78 @@ namespace Pixelate {
 
 		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
 
+		// testing asset handles direcly
+
+		assetHandleTestEntity = m_EditorScene->CreateEntity("Texture loaded via asset handle");
+		assetHandleTestEntity.AddComponent<SpriteRendererComponent>();
+		assetHandleTestEntity.GetComponent<SpriteRendererComponent>().Texture = AssetManager::GetAsset<Texture>((AssetHandle)18069192197029962527);
+		assetHandleTestEntity.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, {128, 128});
+
+
 
 		// testing animation //
-		animationTest = m_EditorScene->CreateEntity("Animation test entity");
-		animationComponentTest = m_EditorScene->CreateEntity("Animator component test entity");
-
-		animationTest.AddComponent<SpriteRendererComponent>();
-		animationTest.GetComponent<SpriteRendererComponent>().Texture = Texture::Create("assets/graphics/TestSpritesheet.png");
-		animationTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
-
-		animationComponentTest.AddComponent<AnimatorComponent>();
-
-		animationComponentTest.AddComponent<SpriteRendererComponent>();
-		animationComponentTest.GetComponent<SpriteRendererComponent>().Texture = animationTest.GetComponent<SpriteRendererComponent>().Texture;
-		animationComponentTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
-		animationComponentTest.GetComponent<TransformComponent>().SetPosition({ 1, 0, 0 });
-
-
-		AnimationClip clip, clip2;
-		AnimationFrame frame, frame2, frame3;
-		AnimationFrame frame1, frame12, frame13;
-
-		frame.FrameRect = { {0, 0}, {16, 16} };
-		frame.FrameTiming = 0.0f;
-
-		clip.AddFrame(frame);
-
-		frame2.FrameRect = { {0, 0}, {16, 16} };
-		frame2.FrameTiming = 1.0f;
-
-		clip.AddFrame(frame2);
-
-		frame3.FrameRect = { {16, 0}, {16, 16} };
-		frame3.FrameTiming = 2.0f;
-
-
-		clip.AddFrame(frame3);
-
-
-		anim.AddClip(clip);
-
-
-
-		frame1.FrameRect = { {0, 0}, {16, 16} };
-		frame1.FrameTiming = 0.0f;
-
-		clip2.AddFrame(frame1);
-
-		frame12.FrameRect = { {0, 0}, {16, 16} };
-		frame12.FrameTiming = 1.0f;
-
-		clip2.AddFrame(frame12);
-
-		frame13.FrameRect = { {0, 16}, {16, 16} };
-		frame13.FrameTiming = 2.0f;
-
-
-		clip2.AddFrame(frame13);
-
-
-		anim.AddClip(clip2);
-
-
-		anim.AddTransition({ clip, clip2, []() {return GoTo2ndClip; } });
-		anim.AddTransition({ clip2, clip, []() {return GoTo1stClip; } });
+// 		animationTest = m_EditorScene->CreateEntity("Animation test entity");
+// 		animationComponentTest = m_EditorScene->CreateEntity("Animator component test entity");
+// 
+// 		animationTest.AddComponent<SpriteRendererComponent>();
+// 		animationTest.GetComponent<SpriteRendererComponent>().Texture = Texture::Create("assets/graphics/TestSpritesheet.png");
+// 		animationTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
+// 
+// 		animationComponentTest.AddComponent<AnimatorComponent>();
+// 
+// 		animationComponentTest.AddComponent<SpriteRendererComponent>();
+// 		animationComponentTest.GetComponent<SpriteRendererComponent>().Texture = animationTest.GetComponent<SpriteRendererComponent>().Texture;
+// 		animationComponentTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
+// 		animationComponentTest.GetComponent<TransformComponent>().SetPosition({ 1, 0, 0 });
+// 
+// 
+// 		AnimationClip clip, clip2;
+// 		AnimationFrame frame, frame2, frame3;
+// 		AnimationFrame frame1, frame12, frame13;
+// 
+// 		frame.FrameRect = { {0, 0}, {16, 16} };
+// 		frame.FrameTiming = 0.0f;
+// 
+// 		clip.AddFrame(frame);
+// 
+// 		frame2.FrameRect = { {0, 0}, {16, 16} };
+// 		frame2.FrameTiming = 1.0f;
+// 
+// 		clip.AddFrame(frame2);
+// 
+// 		frame3.FrameRect = { {16, 0}, {16, 16} };
+// 		frame3.FrameTiming = 2.0f;
+// 
+// 
+// 		clip.AddFrame(frame3);
+// 
+// 
+// 		anim.AddClip(clip);
+// 
+// 
+// 
+// 		frame1.FrameRect = { {0, 0}, {16, 16} };
+// 		frame1.FrameTiming = 0.0f;
+// 
+// 		clip2.AddFrame(frame1);
+// 
+// 		frame12.FrameRect = { {0, 0}, {16, 16} };
+// 		frame12.FrameTiming = 1.0f;
+// 
+// 		clip2.AddFrame(frame12);
+// 
+// 		frame13.FrameRect = { {0, 16}, {16, 16} };
+// 		frame13.FrameTiming = 2.0f;
+// 
+// 
+// 		clip2.AddFrame(frame13);
+// 
+// 
+// 		anim.AddClip(clip2);
+// 
+// 
+// 		anim.AddTransition({ clip, clip2, []() {return GoTo2ndClip; } });
+// 		anim.AddTransition({ clip2, clip, []() {return GoTo1stClip; } });
 
 
 		//Setting up both scene and game viewport panels
@@ -182,7 +190,7 @@ namespace Pixelate {
 		m_SceneViewportFramebuffer->Bind();
 		m_EditorScene->OnUpdate(dt, m_EditorCamera, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
 
-		anim.Update(dt);
+		//anim.Update(dt);
 		PanelManager.OnUpdate(dt);
 
 

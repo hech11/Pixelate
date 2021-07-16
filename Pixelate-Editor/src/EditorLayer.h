@@ -108,6 +108,7 @@ namespace Pixelate {
 			Animator anim;
 			Entity animationTest;
 			Entity animationComponentTest;
+			Entity assetHandleTestEntity;
 	};
 
 

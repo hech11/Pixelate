@@ -9,7 +9,7 @@ namespace Pixelate { namespace Utils {
 
 	// are these tables needed? or should we use a switch/case inside a method instead.....
 
-	inline static std::unordered_map<std::string, AssetType> s_AssetTypesTable = {
+	inline static std::unordered_map<std::string, AssetType> s_AssetExtensionTypesTable = {
 		{".PXScene",	AssetType::Scene },
 		{".shader",		AssetType::Shader },
 		{".Shader",		AssetType::Shader },
@@ -43,8 +43,8 @@ namespace Pixelate { namespace Utils {
 		std::filesystem::path path(filepath);
 		std::string extension = path.extension().string();
 
-		if (s_AssetTypesTable.find(extension) != s_AssetTypesTable.end()) {
-			return s_AssetTypesTable[extension];
+		if (s_AssetExtensionTypesTable.find(extension) != s_AssetExtensionTypesTable.end()) {
+			return s_AssetExtensionTypesTable[extension];
 		}
 
 		return AssetType::None;

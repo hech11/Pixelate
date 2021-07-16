@@ -51,10 +51,20 @@ namespace Pixelate {
 		bool IsValid() const { return Handle != 0; }
 	};
 
+
+#define SETUP_ASSET_PROPERTIES(assetType) virtual AssetType GetType() const override { return assetType; }\
+										  static AssetType GetStaticType() {return assetType; }
+
 	class Asset {
 		public :
+			virtual ~Asset(){}
+
 			AssetHandle Handle;
 			AssetFlag Flags = AssetFlag::None;
+
+			virtual bool operator==(const Asset& other)const { return Handle == other.Handle; }
+			virtual bool operator!=(const Asset& other)const { return !(*this == other); }
+
 
 			virtual AssetType GetType() const { return AssetType::None; }
 

@@ -11,6 +11,7 @@
 
 #include <fstream>
 #include "glm/gtc/type_ptr.inl"
+#include "../Asset/AssetManager.h"
 
 
 namespace YAML {
@@ -280,9 +281,9 @@ namespace Pixelate {
 				data << YAML::BeginMap;
 
 				if (src.Texture)
-					data << YAML::Key << "Filepath" << YAML::Value << src.Texture->GetFilepath();
+					data << YAML::Key << "AssetHandle" << YAML::Value << (UUID)AssetManager::GetMetadata(src.Texture->Handle).Handle;
 				else
-					data << YAML::Key << "Filepath" << "None";
+					data << YAML::Key << "AssetHandle" << (AssetHandle)0;
 
 				data << YAML::EndMap;
 
@@ -477,18 +478,26 @@ namespace Pixelate {
 				if (auto spriteRendererComp = entity["SpriteRendererComponent"]) {
 					auto& comp = e.AddComponent<SpriteRendererComponent>();
 					auto texture = spriteRendererComp["Texture"];
-					if (texture["Filepath"].as<std::string>() != "None") {
+					if (texture["AssetHandle"].as<uint64_t>() != 0) {
 						Ref<Texture> tex;
-						std::string filepath = texture["Filepath"].as<std::string>();
 
-						if (auto id = TextureManager::IsTextureValid(filepath)) {
-							tex = TextureManager::GetTexture(id);
+
+						AssetHandle handle = texture["AssetHandle"].as<uint64_t>();
+
+						if (AssetManager::IsAssetHandleValid(handle)) {
+							tex = AssetManager::GetAsset<Texture>(handle);
 						}
-						else {
-							tex = Texture::Create(filepath);
-							TextureManager::DirectAdd(tex);
-						}
-						
+
+						//TODO: Texture manager needs a redo
+// 						if (auto id = TextureManager::IsTextureValid(filepath)) {
+// 							tex = TextureManager::GetTexture(id);
+// 
+// 						}
+// 						else {
+// 							tex = Texture::Create(filepath);
+// 							TextureManager::DirectAdd(tex);
+// 						}
+// 						
 
 
 						comp.Texture = tex;
