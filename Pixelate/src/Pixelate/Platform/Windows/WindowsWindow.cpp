@@ -11,6 +11,7 @@
 #include <GLFW/include/GLFW/glfw3.h>
 
 #include "Pixelate/Debug/Instrumentor.h"
+#include "STB/IMAGE/stb_image.h"
 
 
 
@@ -60,6 +61,11 @@ namespace Pixelate {
 		glfwSetWindowUserPointer(m_Window, &m_Data); // Used to access "m_Data" for sending the events to "OnEvent" in "Application".
 		
 		glfwMaximizeWindow(m_Window);
+		GLFWimage icon[1];
+		int bbp;
+		icon[0].pixels = stbi_load("resources/icons/window/Pixelate_Logo.png", &icon[0].width, &icon[0].height, &bbp, 4);
+		glfwSetWindowIcon(m_Window, 1, icon);
+		stbi_image_free(icon[0].pixels);
 
 		// Setting glfw callbacks.
 		// First create the event, set this window's variables to the callbacks data, call the "OnEvent" function in "Application" and pass the created event by ref.

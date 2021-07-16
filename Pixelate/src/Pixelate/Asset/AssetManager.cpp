@@ -3,6 +3,7 @@
 #include "AssetTypes.h"
 
 #include <imgui.h>
+#include "Pixelate/Debug/Instrumentor.h"
 
 
 namespace Pixelate {
@@ -23,25 +24,27 @@ namespace Pixelate {
 
 	void AssetManager::Init()
 	{
+		PX_PROFILE_FUNCTION();
 		s_NullMetadata.Type = AssetType::None;
 
-		bool succsess = s_AssetRegistry.Deserialize();
-		if (!succsess) {
-			ReloadAssets();
-			s_AssetRegistry.Serialize();
-		}
+		s_AssetRegistry.Deserialize();
+		ReloadAssets();
+		s_AssetRegistry.Serialize();
+		
 
 	}
 
 	void AssetManager::Shutdown()
 	{
-		//ReloadAssets();
+		PX_PROFILE_FUNCTION();
 		s_AssetRegistry.Serialize();
 		s_AssetRegistry.GetRegistry().clear();
+		s_LoadedAssets.clear();
 	}
 
 	AssetMetadata& AssetManager::GetMetadata(AssetHandle handle)
 	{
+		PX_PROFILE_FUNCTION();
 		for (auto& [filepath, metadata] : s_AssetRegistry.GetRegistry()) {
 			if (metadata.Handle == handle)
 				return metadata;
@@ -52,10 +55,12 @@ namespace Pixelate {
 
 	AssetHandle AssetManager::ImportAsset(const std::filesystem::path& filepath) {
 
+		PX_PROFILE_FUNCTION();
 		auto path = std::filesystem::relative(filepath, s_AssetPath); // should be the asset directory
 
-		// TODO: If we already have this asset then theres no need to reimport it again.
-		// if(has asset already...)
+		if (s_AssetRegistry.GetRegistry().find(path) != s_AssetRegistry.GetRegistry().end()) {
+			return s_AssetRegistry.GetRegistry()[path].Handle;
+		}
 
 
 		AssetMetadata metadata;
@@ -78,6 +83,7 @@ namespace Pixelate {
 
 	void AssetManager::ReloadAssets()
 	{
+		PX_PROFILE_FUNCTION();
 		ProcessDirectoryWhenReloading(s_AssetPath);
 
 	}
@@ -86,6 +92,7 @@ namespace Pixelate {
 
 	void AssetManager::ProcessDirectoryWhenReloading(const std::filesystem::path& dir)
 	{
+		PX_PROFILE_FUNCTION();
 		for (auto& path : std::filesystem::directory_iterator(dir)) {
 
 			if (path.is_directory())
