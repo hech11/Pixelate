@@ -7,13 +7,15 @@
 
 #include "AudioBuffer.h"
 
+#include "Pixelate/Asset/Asset.h"
+
 // Audio source contains both buffer and the source audio data. In the future I may want to separate the buffer and the audio
 // source into different classes
 
 namespace Pixelate {
 	
 
-	class AudioSource {
+	class AudioSource : public Asset {
 		public:
 			AudioSource();
 			~AudioSource();
@@ -34,6 +36,9 @@ namespace Pixelate {
 			float GetPitch() { return m_Pitch; }
 			float GetGain() { return m_Gain;}
 			bool IsLooping() { return m_IsLooping; }
+
+			SETUP_ASSET_PROPERTIES(AssetType::Audio);
+
 
 		private:
 			bool m_IsPlaying = false, m_IsSpatial = false, m_IsLooping = false;

@@ -49,6 +49,9 @@ namespace Pixelate {
 			void OnScenePlay();
 			void OnSceneStop();
 
+			void OpenScene();
+			void SaveScene();
+
 		private : 
 
 			enum class SceneState {

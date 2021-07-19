@@ -224,16 +224,58 @@ namespace Pixelate {
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
 
-		if (e.GetKeyCode() == (int)KeyCode::Q) {
-			m_Gizmo = ImGuizmo::TRANSLATE;
-		}
-		if (e.GetKeyCode() == (int)KeyCode::W) {
-			m_Gizmo = ImGuizmo::ROTATE;
+		if (e.GetKeyCode() == (int)KeyCode::LeftControl) {
+			if (e.GetKeyCode() == (int)KeyCode::O) {
+				OpenScene();
+			}
 
 		}
-		if (e.GetKeyCode() == (int)KeyCode::E) {
-			m_Gizmo = ImGuizmo::SCALE;
+
+		bool lCtrl = Input::IsKeyDown(KeyCode::LeftControl);
+		bool lShift = Input::IsKeyDown(KeyCode::LeftShift);
+
+		switch ((KeyCode)e.GetKeyCode())
+		{
+			case KeyCode::O:
+			{
+				if (lCtrl) {
+					OpenScene();
+					break;
+				}
+			}
+
+			case KeyCode::S:
+			{
+				if (lCtrl && lShift) {
+					SaveScene();
+					break;
+				}
+			}
+
+			case KeyCode::Q: {
+				if (!ImGuizmo::IsUsing()) {
+					m_Gizmo = ImGuizmo::TRANSLATE;
+					break;
+				}
+			}
+
+			case KeyCode::W: {
+				if (!ImGuizmo::IsUsing()) {
+					m_Gizmo = ImGuizmo::ROTATE;
+					break;
+				}
+			}
+
+			case KeyCode::E: {
+				if (!ImGuizmo::IsUsing()) {
+					m_Gizmo = ImGuizmo::SCALE;
+					break;
+				}
+			}
+
+
 		}
+
 		return false;
 	}
 
@@ -288,6 +330,58 @@ namespace Pixelate {
 
 
 		PanelManager.SetSceneContext(m_EditorScene);
+
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		auto& PanelManager = EditorPanelManager::Get();
+
+		nfdchar_t* outPath = NULL;
+		nfdresult_t result = NFD_OpenDialog("PXScene", NULL, &outPath);
+		if (result == NFD_OKAY) {
+			PX_CORE_TRACE("Success!");
+
+			m_EditorScene = SceneManager::LoadScene(outPath);
+			PanelManager.SetSceneContext(m_EditorScene);
+
+
+			free(outPath);
+		}
+		else if (result == NFD_CANCEL) {
+			PX_CORE_MSG("User pressed cancel.\n");
+		}
+		else {
+			PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		nfdchar_t* outPath = NULL;
+		nfdresult_t result = NFD_SaveDialog("PXScene", NULL, &outPath);
+		if (result == NFD_OKAY) {
+			puts("Success!");
+
+			std::string filepath = std::string(outPath);
+			std::string name;
+			size_t slashPos = filepath.rfind("\\") + 1;
+
+			name.append(filepath.substr(slashPos, filepath.length()));
+			m_EditorScene->SetName(name);
+
+			filepath.append(".PXScene");
+
+			SceneManager::SaveScene(m_EditorScene, filepath);
+
+			free(outPath);
+		}
+		else if (result == NFD_CANCEL) {
+			PX_CORE_MSG("User pressed cancel.\n");
+		}
+		else {
+			PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+		}
 
 	}
 
@@ -361,56 +455,12 @@ namespace Pixelate {
 					m_OpeningModal = true;
 				}
 				ImGui::Separator();
-				if (ImGui::MenuItem("Open Scene", "")) {
-
-
-					nfdchar_t* outPath = NULL;
-					nfdresult_t result = NFD_OpenDialog("PXScene", NULL, &outPath);
-					if (result == NFD_OKAY) {
-						PX_CORE_TRACE("Success!");
-
-						m_EditorScene = SceneManager::LoadScene(outPath);
-						PanelManager.SetSceneContext(m_EditorScene);
-
-
-						free(outPath);
-					}
-					else if (result == NFD_CANCEL) {
-						PX_CORE_MSG("User pressed cancel.\n");
-					}
-					else {
-						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
-					}
-
-
+				if (ImGui::MenuItem("Open Scene...", "Ctr+O")) {
+					OpenScene();
 				}
 
-				if (ImGui::MenuItem("Save Scene", "")) {
-
-					nfdchar_t* outPath = NULL;
-					nfdresult_t result = NFD_SaveDialog("PXScene", NULL, &outPath);
-					if (result == NFD_OKAY) {
-						puts("Success!");
-
-						std::string filepath = std::string(outPath);
-						std::string name;
-						size_t slashPos = filepath.rfind("\\") + 1;
-
-						name.append(filepath.substr(slashPos, filepath.length()));
-						m_EditorScene->SetName(name);
-
-						filepath.append(".PXScene");
-
-						SceneManager::SaveScene(m_EditorScene, filepath);
-
-						free(outPath);
-					}
-					else if (result == NFD_CANCEL) {
-						PX_CORE_MSG("User pressed cancel.\n");
-					}
-					else {
-						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
-					}
+				if (ImGui::MenuItem("Save Scene...", "Ctr+Shift+S")) {
+					SaveScene();
 
 				}
 				ImGui::Separator();
@@ -574,24 +624,43 @@ namespace Pixelate {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetPayload"))
 			{
 
-
-				std::string directory;
-
-				directory = static_cast<const char*>(payload->Data);
-				directory.resize(payload->DataSize);
-
-
-				PX_CORE_MSG("Scene viewport recieved '%s'!\n", directory.c_str());
-				std::filesystem::path path(directory);
-				std::string extension = path.extension().string();
+				
+				AssetMetadata& metadata = *(AssetMetadata*)payload->Data;
+				std::filesystem::path filepath = AssetManager::GetFilePath(metadata);
+				
 
 
-				if (extension == ".PXScene") {
+				PX_CORE_MSG("Scene viewport recieved '%s'!\n", filepath.c_str());
 
-					m_EditorScene = SceneManager::LoadScene(path.string());
-					PanelManager.SetSceneContext(m_EditorScene);
+				switch (metadata.Type)
+				{
+					case AssetType::Scene: 
+					{
+						m_EditorScene = SceneManager::LoadScene(filepath.string());
+						PanelManager.SetSceneContext(m_EditorScene);
+						break;
+					}
+					case AssetType::Texture:
+					{
+						Entity entity = m_EditorScene->CreateEntity(filepath.stem().string());
+						entity.GetComponent<TransformComponent>().SetPosition(m_EditorCamera->GetPos());
+						SpriteRendererComponent& comp = entity.AddComponent<SpriteRendererComponent>();
+						comp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
+						comp.Rect = { {0, 0}, {comp.Texture->GetWidth(), comp.Texture->GetHeight()} };
+						break;
+					}
+					case AssetType::Audio:
+					{
+						Entity entity = m_EditorScene->CreateEntity(filepath.stem().string());
+						entity.GetComponent<TransformComponent>().SetPosition(m_EditorCamera->GetPos());
+						AudioSourceComponent& comp = entity.AddComponent<AudioSourceComponent>();
+						comp.Source = AssetManager::GetAsset<AudioSource>(metadata.Handle);
+						comp.FilePath = metadata.Filepath.string();
+						break;
+					}
 
 				}
+
 			}
 			ImGui::EndDragDropTarget();
 		}

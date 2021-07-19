@@ -55,7 +55,7 @@ namespace Pixelate {
 		m_Context->Init(m_Window);
 
 
-		SetVsync(true);
+		SetVsync(false);
 
 		glfwSetWindowPos(m_Window, m_Data.props.xPos, m_Data.props.yPos);
 		glfwSetWindowUserPointer(m_Window, &m_Data); // Used to access "m_Data" for sending the events to "OnEvent" in "Application".

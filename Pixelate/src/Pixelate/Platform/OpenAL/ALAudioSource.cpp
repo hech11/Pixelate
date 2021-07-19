@@ -55,6 +55,9 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		if (gain > 0.1f)
 			gain = 0.1f;
+
+		if (gain < 0.0f)
+			gain = 0.0f;
 		m_Gain = gain;
 		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, gain));
 

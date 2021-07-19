@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include "Pixelate/Utility/FileSystem.h"
+#include "../Asset/AssetManager.h"
 
 namespace Pixelate {
 
@@ -152,19 +153,24 @@ namespace Pixelate {
 			std::string dragID;
 			if (isDirectory) {
 				dragID = "DirectoryPayload";
-			} else {
-				// TODO: Determine what type of asset this is.
 
+				std::string relPath = path.string();
+				int length = strlen(relPath.c_str());
+
+				ImGui::SetDragDropPayload(dragID.c_str(), relPath.c_str(), strlen(relPath.c_str()));
+				ImGui::Text("Path: %s", path.relative_path().string().c_str());
+
+			} else {
 				dragID = "AssetPayload";
+
+				std::filesystem::path p = std::filesystem::relative(path, s_AssetDirectory);
+
+				AssetMetadata& metadata = AssetManager::Registry().GetRegistry()[p];
+				ImGui::SetDragDropPayload(dragID.c_str(), &metadata, sizeof(AssetMetadata));
+				ImGui::Text("Path: %s", path.relative_path().string().c_str());
+
 			}
 
-			// TODO: replace this with the asset manager by using asset handles instead of paths
-			std::string relPath = path.string();
-			int length = strlen(relPath.c_str());
-
-
-			ImGui::SetDragDropPayload(dragID.c_str(), relPath.c_str(), strlen(relPath.c_str()));
-			ImGui::Text("Path: %s", path.relative_path().string().c_str());
 			ImGui::EndDragDropSource();
 		}
 
@@ -184,14 +190,13 @@ namespace Pixelate {
 				FileSystem::MoveDirectory(directory, path.string());
 			}
 			else if (const ImGuiPayload* dirPayload = ImGui::AcceptDragDropPayload("AssetPayload")) {
-				std::string directory;
 
-				directory = static_cast<const char*>(dirPayload->Data);
-				directory.resize(dirPayload->DataSize);
+				AssetMetadata metadata = *(AssetMetadata*)dirPayload->Data;
 
-
-				PX_CORE_MSG("Moved %s into %s\n", directory.c_str(), path.string().c_str());
-				FileSystem::MoveFile(directory, path.string());
+				if (std::filesystem::is_directory(path)) {
+					PX_CORE_MSG("Moved %s into %s\n", metadata.Filepath.string().c_str(), path.string().c_str());
+					FileSystem::MoveFile(metadata.Filepath.string().c_str(), path.string());
+				}
 			}
 			ImGui::EndDragDropTarget();
 		}

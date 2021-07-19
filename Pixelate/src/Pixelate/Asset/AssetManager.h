@@ -31,6 +31,7 @@ namespace Pixelate {
 
 			static void OnImguiRender(bool open);
 
+			static AssetRegistry& Registry() { return s_AssetRegistry; }
 
 			template<typename T>
 			static Ref<T> GetAsset(const std::string& filepath) {

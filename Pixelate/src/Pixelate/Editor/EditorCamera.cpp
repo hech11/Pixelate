@@ -123,7 +123,7 @@ namespace Pixelate {
 
 			m_OriginalMousePosition = GetMousePositionRelativeToViewportPanel();
 			m_OriginalCamPos = GetPos();
-			Input::SetMouseLockMode(Input::MouseLockMode::Locked);
+			//Input::SetMouseLockMode(Input::MouseLockMode::Locked);
 
 			m_Drag = true;
 		}
@@ -135,7 +135,7 @@ namespace Pixelate {
 
 		if (e.GetButton() == (int)MouseButton::Right) {
 			m_Drag = false;
-			Input::SetMouseLockMode(Input::MouseLockMode::None);
+			//Input::SetMouseLockMode(Input::MouseLockMode::None);
 
 		}
 

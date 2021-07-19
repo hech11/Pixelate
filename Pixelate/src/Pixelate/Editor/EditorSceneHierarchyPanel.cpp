@@ -19,6 +19,9 @@
 #include "Pixelate/Rendering/RenderCommand.h"
 #include "Pixelate/Audio/Audio.h"
 #include "EditorTextureInspector.h"
+#include <Imgui\imgui_internal.h>
+#include "../Asset/AssetManager.h"
+#include "../Asset/Asset.h"
 
 namespace Pixelate {
 
@@ -106,6 +109,31 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		else
 			return "Discrete";
 	}
+
+
+	template<typename lamda>
+	static void BeginDragDrop(lamda func) {
+
+		ImVec2 vMin = ImGui::GetItemRectMin();
+		ImVec2 vMax = ImGui::GetItemRectMax();
+
+		ImRect dragAreaRect = { vMin , vMax };
+		auto viewportID = ImGui::GetID("Entity Components");
+
+		if (ImGui::BeginDragDropTargetCustom(dragAreaRect, viewportID)) {
+			if (const ImGuiPayload * payload = ImGui::AcceptDragDropPayload("AssetPayload"))
+			{
+				AssetMetadata& metadata = *(AssetMetadata*)payload->Data;
+				std::filesystem::path filepath = AssetManager::GetFilePath(metadata);
+
+				func(metadata);
+
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+	}
+
 	void EditorSceneHierarchyPanel::OnImguiRender()
 	{
 		ImGui::Begin("Scene Hierarchy");
@@ -266,6 +294,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 
 				ImGui::Text("FilePath");
+
+
+
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
 				if (ImGui::Button("open")) {
@@ -304,12 +335,19 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				else
 					ImGui::InputText("##spriteFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
 
+
+				BeginDragDrop([&](AssetMetadata& metadata) {
+					if (metadata.Type == AssetType::Texture) {
+						spriteComp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
+						spriteComp.Rect = { {0, 0}, {spriteComp.Texture->GetWidth(), spriteComp.Texture->GetHeight()} };
+
+					}
+				});
+
+
+
 				ImGui::PopItemWidth();
 
-
-
-
-				
 
 				ImGui::NextColumn();
 				ImGui::Text("Tint color");
@@ -346,6 +384,14 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						inspector->SetTextureContext(spriteRect);
 
 					}
+
+					BeginDragDrop([&](AssetMetadata& metadata) {
+						if (metadata.Type == AssetType::Texture) {
+							spriteComp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
+							spriteComp.Rect = { {0, 0}, {spriteComp.Texture->GetWidth(), spriteComp.Texture->GetHeight()} };
+
+						}
+					});
 				
 					ImGui::PopItemWidth();
 					ImGui::NextColumn();

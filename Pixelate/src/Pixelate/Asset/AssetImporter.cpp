@@ -4,6 +4,7 @@
 #include "AssetManager.h"
 
 #include "Pixelate/Rendering/API/Texture.h"
+#include "Pixelate/Audio/Audio.h"
 
 
 
@@ -21,6 +22,16 @@ namespace Pixelate {
 			return true;
 		}
 
+		if (metadata.Type == AssetType::Audio) {
+			asset = Audio::CreateAudioSource(AssetManager::GetFilePathString(metadata), false);
+			asset->Handle = metadata.Handle;
+
+			return true;
+
+		}
+
+
+		return false;
 	}
 
 }
