@@ -294,12 +294,12 @@ namespace Pixelate {
 				auto [position, rot, scale] = transform.DecomposeTransform();
 
 				intersects = m_EditorCamera->IsIntersecting(position, scale);
-				if (intersects) {
+				if (intersects && (!ImGuizmo::IsOver() || !ImGuizmo::IsUsing())) {
 					PanelManager.SetSelectedEntity({s, m_EditorScene.get()});
 					break;
 				} 
 			}
-			if (!intersects) {
+			if (!intersects && !ImGuizmo::IsOver()) {
 				PanelManager.SetSelectedEntity({});
 				//m_AnimatorPanel->SetEntityContext();
 			}
