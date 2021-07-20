@@ -143,9 +143,16 @@ namespace Pixelate {
 		ViewportSpecs.Width = 960;
 		ViewportSpecs.Height = 540;
 
+		FramebufferSpecs sceneSpecs;
+		sceneSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INT, FramebufferTextureFormat::Depth };
+		sceneSpecs.Width = 960;
+		sceneSpecs.Height = 540;
 
 
-		m_SceneViewportFramebuffer = Framebuffer::Create(ViewportSpecs);
+
+
+
+		m_SceneViewportFramebuffer = Framebuffer::Create(sceneSpecs);
 		m_GameViewportFramebuffer = Framebuffer::Create(ViewportSpecs);
 
 		FramebufferPool::Add(m_SceneViewportFramebuffer);
@@ -193,24 +200,33 @@ namespace Pixelate {
 		// Render scene viewport to the its fbo
 
 		m_SceneViewportFramebuffer->Bind();
+
+		RenderCommand::Clear();
+		m_SceneViewportFramebuffer->ClearColorAttachment(1, -1);
+
 		m_EditorScene->OnUpdate(dt, m_EditorCamera, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
 
 		//anim.Update(dt);
 		PanelManager.OnUpdate(dt);
 
 
-		Renderer2D::BeginScene(m_EditorCamera.get());
+		//Renderer2D::BeginScene(m_EditorCamera.get());
 		
 		//animationTest.GetComponent<SpriteRendererComponent>().Rect = anim.GetCurrentClip().GetCurrentFrameRect();
 		//Renderer2D::DrawSprite(animationTest.GetComponent<TransformComponent>(), animationTest.GetComponent<SpriteRendererComponent>());
 
 
-		Renderer2D::EndScene();
+		//Renderer2D::EndScene();
+
+
+	
 
 		m_SceneViewportFramebuffer->Unbind();
 
 		// Render game viewport to the its fbo
 		m_GameViewportFramebuffer->Bind();
+
+
 		m_EditorScene->OnGameViewportRender();
 		m_GameViewportFramebuffer->Unbind();
 
@@ -289,25 +305,45 @@ namespace Pixelate {
 	{
 		auto& PanelManager = EditorPanelManager::Get();
 
+// 		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
+// 
+// 			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
+// 			bool intersects = false;
+// 			for (auto s : allSpriteEntities) {
+// 				Entity e = { s, m_EditorScene.get() };
+// 				auto& transform = e.GetComponent<TransformComponent>();
+// 				auto [position, rot, scale] = transform.DecomposeTransform();
+// 
+// 				intersects = m_EditorCamera->IsIntersecting(position, scale);
+// 				if (intersects && (!ImGuizmo::IsOver() || !ImGuizmo::IsUsing())) {
+// 					PanelManager.SetSelectedEntity({s, m_EditorScene.get()});
+// 					break;
+// 				} 
+// 			}
+// 			if (!intersects && !ImGuizmo::IsOver()) {
+// 				PanelManager.SetSelectedEntity({});
+// 				//m_AnimatorPanel->SetEntityContext();
+// 			}
+// 
+// 		}
+
 		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
 
-			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
-			bool intersects = false;
-			for (auto s : allSpriteEntities) {
-				Entity e = { s, m_EditorScene.get() };
-				auto& transform = e.GetComponent<TransformComponent>();
-				auto [position, rot, scale] = transform.DecomposeTransform();
-
-				intersects = m_EditorCamera->IsIntersecting(position, scale);
-				if (intersects && (!ImGuizmo::IsOver() || !ImGuizmo::IsUsing())) {
-					PanelManager.SetSelectedEntity({s, m_EditorScene.get()});
-					break;
-				} 
+			auto [mx, my] = ImGui::GetMousePos();
+			mx -= m_SceneViewportPanelPosition.x;
+			my -= m_SceneViewportPanelPosition.y;
+			my = m_SceneViewportPanelSize.y - my;
+			m_SceneViewportFramebuffer->Bind();
+			int px = m_SceneViewportFramebuffer->ReadPixel(1, (int)mx, (int)my);
+			PX_CORE_MSG("Entity handle: %d\n", px);
+			if (px != -1 && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {
+				Entity e = { (entt::entity)px, m_EditorScene.get() };
+				EditorPanelManager::Get().SetSelectedEntity(e);
 			}
-			if (!intersects && !ImGuizmo::IsOver()) {
-				PanelManager.SetSelectedEntity({});
-				//m_AnimatorPanel->SetEntityContext();
+			else if(!ImGuizmo::IsUsing() && !ImGuizmo::IsOver()){
+				EditorPanelManager::Get().SetSelectedEntity({});
 			}
+			m_SceneViewportFramebuffer->Unbind();
 
 		}
 
@@ -674,7 +710,6 @@ namespace Pixelate {
 
 		RenderCommand::SetClearColor(sceneColor.r, sceneColor.g, sceneColor.b, sceneColor.a);
 		ImGui::Separator();
-		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachmentRenderID(0);
 
 		m_IsSceneViewportHovered = ImGui::IsWindowHovered();
 		m_IsSceneViewportFocused = ImGui::IsWindowFocused();
@@ -690,6 +725,8 @@ namespace Pixelate {
 		m_SceneViewportPanelPosition = *((glm::vec2*) & ImGui::GetWindowPos());
 		m_SceneViewportPanelPosition += *((glm::vec2*) & ImGui::GetCursorPos());
 		m_SceneViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+
+		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachmentRenderID(0);
 		ImGui::Image((void*)sceneViewportColorAttachment, { m_SceneViewportSize.x, m_SceneViewportSize.y }, { 0, 1 }, { 1, 0 });
 
 		auto& hierarcy = PanelManager.GetPanel("SceneHierarcy");
@@ -735,7 +772,6 @@ namespace Pixelate {
 
 
 		int padding = ImGui::GetCursorPosY();
-		auto gameViewportColorAttachment = m_GameViewportFramebuffer->GetColorAttachmentRenderID(0);
 
 		m_IsGameViewportHovered = ImGui::IsWindowHovered();
 		m_IsGameViewportFocused = ImGui::IsWindowFocused();
@@ -765,6 +801,8 @@ namespace Pixelate {
 		cursorPos.x *= 0.5f;
 		cursorPos.y *= 0.5f;
 		ImGui::SetCursorPos({ cursorPos.x, cursorPos.y });
+
+		uint64_t gameViewportColorAttachment = m_GameViewportFramebuffer->GetColorAttachmentRenderID(0);
 		ImGui::Image((void*)gameViewportColorAttachment, { m_GameViewportSize.x, m_GameViewportSize.y }, { 0, 1 }, { 1, 0 });
 
 		ImGui::End();

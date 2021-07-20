@@ -46,12 +46,12 @@ namespace Pixelate {
 		: m_Specs(specs), m_Width(m_Specs.Width), m_Height(m_Specs.Height), m_RendererID(0)
 	{
 
-		for (auto& attachment : m_Specs.Attachments.Attachments) {
-			if (attachment.Format != FramebufferTextureFormat::Depth24Stencil8) {
+		for (auto attachment : m_Specs.Attachments.Attachments) {
+			if (attachment.Format != FramebufferTextureFormat::Depth) {
 				m_ColorTextureSpecs.emplace_back(attachment);
 			}
 			else {
-				m_DepthAttachmentSpecs = attachment.Format;
+				m_DepthAttachmentSpecs = attachment;
 			}
 		}
 
@@ -80,8 +80,8 @@ namespace Pixelate {
 			PX_CORE_WARN("Framebuffer attempted to resize to %fx%f!\n", m_Width, m_Height);
 			return;
 		}
-		GLCall(glViewport(0, 0, m_Width, m_Height));
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID));
+		GLCall(glViewport(0, 0, m_Width, m_Height));
 	}
 
 	void GLFramebuffer::Unbind() const {
@@ -101,6 +101,10 @@ namespace Pixelate {
 			GLCall(glDeleteFramebuffers(1, &m_RendererID));
 			glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
 			GLCall(glDeleteTextures(1, &m_DepthAttachment));
+
+			m_ColorAttachments.clear();
+			m_DepthAttachment = 0;
+
 		}
 		
 
@@ -121,6 +125,10 @@ namespace Pixelate {
 					case Pixelate::FramebufferTextureFormat::RGBA8:
 						AttachColorAttachment(m_ColorAttachments[i], GL_RGBA8, GL_RGBA, width, height, i);
 						break;
+
+					case Pixelate::FramebufferTextureFormat::RED_INT:
+						AttachColorAttachment(m_ColorAttachments[i], GL_R32I, GL_RED_INTEGER, width, height, i);
+						break;
 				}
 
 			}
@@ -132,19 +140,20 @@ namespace Pixelate {
 				glBindTexture(GL_TEXTURE_2D, m_DepthAttachment);
 				switch (m_DepthAttachmentSpecs.Format)
 				{
-					case Pixelate::FramebufferTextureFormat::RGBA8:
-						AttachDepthAttachment(m_DepthAttachment, GL_DEPTH24_STENCIL8, GL_DEPTH_ATTACHMENT, width, height);
+					case Pixelate::FramebufferTextureFormat::Depth24Stencil8:
+						AttachDepthAttachment(m_DepthAttachment, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, width, height);
 						break;
 				}
 
 			}
 		}
 
-		if (!m_ColorAttachments.empty()) {
-			GLenum attachments[4] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2,GL_COLOR_ATTACHMENT3 };
+		if (m_ColorAttachments.size()>1) {
+			PX_ASSERT(m_ColorAttachments.size() <= 4, "");
+			GLenum attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 			glDrawBuffers(m_ColorAttachments.size(), attachments);
 		}
-		else {
+		else if(m_ColorAttachments.empty()){
 			glDrawBuffer(GL_NONE); // this is a depth only pass
 		}
 
@@ -162,5 +171,25 @@ namespace Pixelate {
 	}
 
 
+	static GLenum FBTextureFormatToGL(FramebufferTextureFormat& format) {
+		switch (format)
+		{
+			case FramebufferTextureFormat::RGBA8: return GL_RGBA8;
+			case FramebufferTextureFormat::RED_INT: return GL_RED_INTEGER;
+		}
+	}
+	void GLFramebuffer::ClearColorAttachment(uint32_t attachment, int value)
+	{
+		PX_ASSERT(attachment < m_ColorAttachments.size(), "");
+		glClearTexImage(m_ColorAttachments[attachment], 0, FBTextureFormatToGL(m_ColorTextureSpecs[attachment].Format), GL_INT, &value);
+
+	}
+
+	int GLFramebuffer::ReadPixel(uint32_t colAttachment, int x, int y) {
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + colAttachment);
+		int data;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &data);
+		return data;
+	}
 
 }

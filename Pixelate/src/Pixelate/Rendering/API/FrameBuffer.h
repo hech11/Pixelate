@@ -57,6 +57,8 @@ namespace Pixelate {
 
 			virtual void BindTexture(uint32_t attachmentID, uint32_t slot = 0) const = 0;
 
+			virtual void ClearColorAttachment(uint32_t attachment, int value) = 0;
+			virtual int ReadPixel(uint32_t colAttachment, int x, int y) = 0;
 
 			virtual uint32_t GetColorAttachmentRenderID(uint32_t index) const = 0;
 			virtual uint32_t GetDepthAttachmentRenderID() const = 0;

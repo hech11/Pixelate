@@ -35,20 +35,20 @@ namespace Pixelate {
 
 			static void DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color);
 
-			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
-			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color);
-			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
-			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color, int entityID);
+			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color, int entityID);
+			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID);
+			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID);
 
 
-			static void DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
-			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor = { 1.0f, 1.0f, 1.0f, 1.0f });
+			static void DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor, int entityID);
+			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID);
 
 			static void DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
 			static void DrawAABB(const AABB& aabb, const glm::vec4& color);
 
-			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor);
-			static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite);
+			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor, int entityID);
+			static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID);
 
 			static void SetBoundingBox(bool draw);
 			static const bool& ShouldDrawBoundingBox();

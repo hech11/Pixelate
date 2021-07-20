@@ -22,6 +22,7 @@ namespace Pixelate {
 		unsigned int Color;
 		glm::vec2 TextureCoords;
 		float TextureIndex;
+		int EntityID;
 	};
 
 
@@ -30,6 +31,7 @@ namespace Pixelate {
 		unsigned int Color;
 		glm::vec2 TextureCoords;
 		float TextureIndex;
+		int EntityID;
 	};
 
 	struct Renderer2DData {
@@ -100,7 +102,8 @@ namespace Pixelate {
 				{ BufferLayoutTypes::Float3, "aPos"},
 				{ BufferLayoutTypes::UChar4, "aColor", true},
 				{ BufferLayoutTypes::Float2, "aTexCoords"},
-				{ BufferLayoutTypes::Float, "aTexIndex"}
+				{ BufferLayoutTypes::Float, "aTexIndex"},
+				{ BufferLayoutTypes::Int, "aEntityID" }
 
 			};
 
@@ -274,7 +277,7 @@ namespace Pixelate {
 			SceneData->LineVertexArray->GetIbos().Bind();
 			SceneData->LineVertexBuffer->SetData(SceneData->LineVertexDataBase, lineSize);
 			TextureManager::GetDefaultTexture()->Bind();
-			RenderCommand::SetLineThickness(4.0f);
+			RenderCommand::SetLineThickness(1.0f);
 
 			RenderCommand::DrawElements(SceneData->LineVertexArray, PimitiveRenderType::Lines, SceneData->LineIndexCount);
 			SceneData->m_Statistics.DrawCalls += 1;
@@ -319,44 +322,44 @@ namespace Pixelate {
 	}
 
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color) {
+	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color, int entityID) {
 		PX_PROFILE_FUNCTION();
-		DrawSprite(position, 0.0f, size, color);
+		DrawSprite(position, 0.0f, size, color, entityID);
 	}
 
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color) {
+	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color, int entityID) {
 		PX_PROFILE_FUNCTION();
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
 			glm::scale(glm::mat4(1.0f), size);
 
-		DrawSprite(transform, color);
+		DrawSprite(transform, color, entityID);
 
 	}
 
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor) {
+	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID) {
 		PX_PROFILE_FUNCTION();
-		DrawSprite(position, 0.0f, size, texture, tintColor);
+		DrawSprite(position, 0.0f, size, texture, tintColor, entityID);
 	}
 
 
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor) {
+	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID) {
 		PX_PROFILE_FUNCTION();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
 			glm::scale(glm::mat4(1.0f), size);
 
-		DrawSprite(transform, texture, tintColor);
+		DrawSprite(transform, texture, tintColor, entityID);
 	}
 
 	
 
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor) {
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor, int entityID) {
 		PX_PROFILE_FUNCTION();
 
 		constexpr unsigned int VertexCount = 4;
@@ -381,6 +384,7 @@ namespace Pixelate {
 			SceneData->SpriteVertexDataPtr->Color = color;
 			SceneData->SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
 			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData->SpriteVertexDataPtr->EntityID = entityID;
 			SceneData->SpriteVertexDataPtr++;
 		}
 
@@ -390,7 +394,7 @@ namespace Pixelate {
 	}
 
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor) {
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID) {
 
 		constexpr unsigned int VertexCount = 4;
 
@@ -424,6 +428,7 @@ namespace Pixelate {
 			SceneData->SpriteVertexDataPtr->Color = color;
 			SceneData->SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
 			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData->SpriteVertexDataPtr->EntityID = entityID;
 			SceneData->SpriteVertexDataPtr++;
 		}
 
@@ -432,7 +437,7 @@ namespace Pixelate {
 		SceneData->m_Statistics.IndexCount += 6;
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor) {
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor, int entityID) {
 		constexpr unsigned int VertexCount = 4;
 
 
@@ -465,6 +470,7 @@ namespace Pixelate {
 			SceneData->SpriteVertexDataPtr->Color = color;
 			SceneData->SpriteVertexDataPtr->TextureCoords = texCoords[i];
 			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
+			SceneData->SpriteVertexDataPtr->EntityID = entityID;
 			SceneData->SpriteVertexDataPtr++;
 		}
 
@@ -473,10 +479,10 @@ namespace Pixelate {
 		SceneData->m_Statistics.IndexCount += 6;
 	}
 
-	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite)
+	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID)
 	{
 		PX_PROFILE_FUNCTION();
-		DrawSprite(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor);
+		DrawSprite(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor, entityID);
 	}
 
 	void Renderer2D::DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color)
@@ -498,11 +504,13 @@ namespace Pixelate {
 		SceneData->LineQuadVertexData->Verticies = p1;
 		SceneData->LineQuadVertexData->Color = c;
 		SceneData->LineQuadVertexData->TextureIndex = 0.0f;
+		SceneData->LineQuadVertexData->EntityID = -1;
 		SceneData->LineQuadVertexData++;
 
 		SceneData->LineQuadVertexData->Verticies = p2;
 		SceneData->LineQuadVertexData->Color = c;
 		SceneData->LineQuadVertexData->TextureIndex = 0.0f;
+		SceneData->LineQuadVertexData->EntityID = -1;
 		SceneData->LineQuadVertexData++;
 
 

@@ -57,12 +57,21 @@ namespace Pixelate {
 		for (const auto& element : layout)
 		{
 			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-				element.GetComponentCount(),
-				BufferLayoutDataTypeToOpenGLType(element.type),
-				(element.normilized ? GL_TRUE : GL_FALSE),
-				layout.GetStride(),
-				(const void*)element.offset);
+			if (element.type == BufferLayoutTypes::Int) {
+				glVertexAttribIPointer(index,
+					element.GetComponentCount(),
+					BufferLayoutDataTypeToOpenGLType(element.type),
+					layout.GetStride(),
+					(const void*)element.offset);
+			}
+			else {
+				glVertexAttribPointer(index,
+					element.GetComponentCount(),
+					BufferLayoutDataTypeToOpenGLType(element.type),
+					(element.normilized ? GL_TRUE : GL_FALSE),
+					layout.GetStride(),
+					(const void*)element.offset);
+			}
 			index++;
 		}
 

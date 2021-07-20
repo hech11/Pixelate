@@ -67,7 +67,7 @@ namespace Pixelate {
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
 
-		ImGui_ImplOpenGL3_Init("#version 400");
+		ImGui_ImplOpenGL3_Init("#version 410");
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 
 		auto* font = io.Fonts->AddFontFromFileTTF("../Pixelate/src/Pixelate/Editor/Misc/bahnschrift.ttf", 15.0f);

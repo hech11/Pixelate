@@ -45,7 +45,6 @@ namespace Pixelate {
 
 
 		// Rendering the scene editor viewport
-		RenderCommand::Clear();
 		Renderer2D::ResetStatistics();
 
 		Renderer2D::BeginScene(camera.get());
@@ -58,9 +57,9 @@ namespace Pixelate {
 			auto[transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
 			if (spriteComp.Texture) {
-				Renderer2D::DrawSprite(transformComp, spriteComp);
+				Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
 			} else {
-				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor);
+				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
 			}
 
 			if (hasEntityBeenSelected && selectedEntity == e) {
@@ -126,7 +125,9 @@ namespace Pixelate {
 
 		// if there was no camera found in the scene
 		if (renderCam != nullptr) {
+
 			RenderCommand::SetClearColor(renderCam->ClearColor.r, renderCam->ClearColor.g, renderCam->ClearColor.b, renderCam->ClearColor.a);
+
 			RenderCommand::Clear();
 			Renderer2D::ResetStatistics();
 
@@ -138,17 +139,16 @@ namespace Pixelate {
 				auto [transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
 
 				if (spriteComp.Texture) {
-					Renderer2D::DrawSprite(transformComp, spriteComp);
+					Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
 				}
 				else {
-					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor);
+					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
 				}
 
 
 			}
 			Renderer2D::EndScene();
 		} else {
-			RenderCommand::Clear();
 			PX_CORE_WARN("Currently no primary camera in the scene!\n");
 		}
 	}

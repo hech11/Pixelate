@@ -55,7 +55,7 @@ namespace Pixelate {
 			float life = particle.LifeRemaining / particle.LifeTime;
 			float size = glm::lerp(particle.SizeEnd, particle.SizeBegin, life);
 
-			Renderer2D::DrawSprite({ particle.Position.x,particle.Position.y, 1.0f }, particle.Rotation, {size, size, 1.0f}, glm::lerp(particle.ColorEnd, particle.ColorBegin, life));
+			Renderer2D::DrawSprite({ particle.Position.x,particle.Position.y, 1.0f }, particle.Rotation, {size, size, 1.0f}, glm::lerp(particle.ColorEnd, particle.ColorBegin, life), -1);
 		}
 	}
 

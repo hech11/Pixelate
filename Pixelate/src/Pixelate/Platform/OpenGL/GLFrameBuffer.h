@@ -21,11 +21,19 @@ namespace Pixelate {
 
 			void BindTexture(uint32_t attachmentID, uint32_t slot = 0) const override;
 
+			void ClearColorAttachment(uint32_t attachment, int value) override;
+			int ReadPixel(uint32_t colAttachment, int x, int y) override;
+
+
 			unsigned int GetRendererID() const override { return m_RendererID; }
 
 			const FramebufferSpecs& GetSpecs() const override { return m_Specs; }
 
-			uint32_t GetColorAttachmentRenderID(uint32_t index) const override { return m_ColorAttachments[index]; }
+			uint32_t GetColorAttachmentRenderID(uint32_t index) const override {
+				int a = 12;
+				int b = a + 12;
+				return m_ColorAttachments[index]; 
+			}
 			uint32_t GetDepthAttachmentRenderID() const override { return m_DepthAttachment; }
 
 			uint32_t GetWidth() const override { return m_Width; }
