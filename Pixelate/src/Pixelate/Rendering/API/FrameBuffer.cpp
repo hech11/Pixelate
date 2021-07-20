@@ -1,17 +1,35 @@
 #include "PXpch.h"
-#include "FrameBuffer.h"
+#include "Framebuffer.h"
 
 #include "Pixelate/Rendering/RendererAPI.h"
-#include "Pixelate/Platform/OpenGL/GLFrameBuffer.h"
+#include "Pixelate/Platform/OpenGL/GLFramebuffer.h"
 
 
 namespace Pixelate {
 
-	Ref<FrameBuffer> FrameBuffer::Create(const FrameBufferSpecs& specs) {
+	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecs& specs) {
 		switch (RendererAPI::GetAPI()) {
 			case RendererAPI::API::OpenGL:
-				return CreateRef<GLFrameBuffer>(specs);
+				return CreateRef<GLFramebuffer>(specs);
 		}
+	}
+
+
+
+	std::vector<Pixelate::Ref<Pixelate::Framebuffer>> FramebufferPool::m_FbPool;
+	void FramebufferPool::Init(uint32_t initSize)
+	{
+		m_FbPool.reserve(initSize);
+	}
+
+	void FramebufferPool::Destroy()
+	{
+		m_FbPool.clear();
+	}
+
+	void FramebufferPool::Add(const Ref<Framebuffer>& fb)
+	{
+		m_FbPool.emplace_back(fb);
 	}
 
 

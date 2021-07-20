@@ -6,7 +6,7 @@
 
 #include <Pixelate/Rendering/API/Texture.h>
 #include <Pixelate/Rendering/ParticleSystem.h>
-#include <Pixelate/Rendering/API/FrameBuffer.h>
+#include <Pixelate/Rendering/API/Framebuffer.h>
 
 #include <Pixelate/Audio/AudioSource.h>
 
@@ -72,7 +72,7 @@ namespace Pixelate {
 			// Scene Viewport panel 
 
 
-			Ref<FrameBuffer> m_SceneViewportFramebuffer;
+			Ref<Framebuffer> m_SceneViewportFramebuffer;
 
 			glm::vec2 m_SceneViewportSize = { 0.0f, 0.0f };
 			glm::vec2 m_SceneViewportPanelSize = { 0.0f, 0.0f };
@@ -85,7 +85,7 @@ namespace Pixelate {
 
 			// Game Viewport panel 
 
-			Ref<FrameBuffer> m_GameViewportFramebuffer;
+			Ref<Framebuffer> m_GameViewportFramebuffer;
 
 			glm::vec2 m_GameViewportSize = { 0.0f, 0.0f };
 			glm::vec2 m_GameViewportPanelSize = { 0.0f, 0.0f };

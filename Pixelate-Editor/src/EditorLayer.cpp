@@ -138,13 +138,18 @@ namespace Pixelate {
 
 
 		//Setting up both scene and game viewport panels
-		FrameBufferSpecs ViewportSpecs;
+		FramebufferSpecs ViewportSpecs;
+		ViewportSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
 		ViewportSpecs.Width = 960;
 		ViewportSpecs.Height = 540;
 
 
-		m_SceneViewportFramebuffer = FrameBuffer::Create(ViewportSpecs);
-		m_GameViewportFramebuffer = FrameBuffer::Create(ViewportSpecs);
+
+		m_SceneViewportFramebuffer = Framebuffer::Create(ViewportSpecs);
+		m_GameViewportFramebuffer = Framebuffer::Create(ViewportSpecs);
+
+		FramebufferPool::Add(m_SceneViewportFramebuffer);
+		FramebufferPool::Add(m_GameViewportFramebuffer);
 
 		ViewportPanelProps props;
 		props.Position = &m_SceneViewportPanelPosition;
@@ -669,7 +674,7 @@ namespace Pixelate {
 
 		RenderCommand::SetClearColor(sceneColor.r, sceneColor.g, sceneColor.b, sceneColor.a);
 		ImGui::Separator();
-		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachment();
+		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachmentRenderID(0);
 
 		m_IsSceneViewportHovered = ImGui::IsWindowHovered();
 		m_IsSceneViewportFocused = ImGui::IsWindowFocused();
@@ -730,7 +735,7 @@ namespace Pixelate {
 
 
 		int padding = ImGui::GetCursorPosY();
-		auto gameViewportColorAttachment = m_GameViewportFramebuffer->GetColorAttachment();
+		auto gameViewportColorAttachment = m_GameViewportFramebuffer->GetColorAttachmentRenderID(0);
 
 		m_IsGameViewportHovered = ImGui::IsWindowHovered();
 		m_IsGameViewportFocused = ImGui::IsWindowFocused();

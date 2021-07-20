@@ -42,7 +42,7 @@
 #include "Pixelate/Rendering/API/Shader/ShaderManager.h"
 #include "Pixelate/Rendering/API/Shader/ShaderUniforms.h"
 #include "Pixelate/Rendering/API/Texture.h"
-#include "Pixelate/Rendering/API/FrameBuffer.h"
+#include "Pixelate/Rendering/API/Framebuffer.h"
 
 #include "Pixelate/Rendering/RendererAPI.h"
 #include "Pixelate/Rendering/OrthographicCamera.h"

@@ -9,6 +9,7 @@
 #include "Pixelate/Rendering/TextureManager.h"
 
 #include "Pixelate/Rendering/RendererCapabilities.h"
+#include "API/FrameBuffer.h"
 
 
 
@@ -82,7 +83,7 @@ namespace Pixelate {
 	void Renderer2D::Init() {
 		PX_PROFILE_FUNCTION();
 		SceneData = new Renderer2DData;
-
+		FramebufferPool::Init();
 		{
 			PX_PROFILE_SCOPE("Renderer2D::Init::Setting-VertexBuffer");
 
@@ -221,6 +222,8 @@ namespace Pixelate {
 
 	void Renderer2D::ShutDown() {
 		TextureManager::Shutdown();
+		FramebufferPool::Destroy();
+
 
 		delete SceneData;
 	}
