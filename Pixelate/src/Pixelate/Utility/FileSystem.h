@@ -48,12 +48,15 @@ namespace Pixelate {
 			static bool IsDirectory(const std::string& filepath);
 			static bool IsDirectory(const std::filesystem::path& filepath);
 
-			// To be implemented in "Platform/[OS]/[OS]File.cpp... for example, the windows code is at Platform/Windows/WindowsFile.cpp"
+			// To be implemented in "Platform/[OS]/[OS]FileSystem.cpp... for example, the windows code is at Platform/Windows/WindowsFile.cpp"
 			static bool ShowFileInExplorer(const std::filesystem::path& path);
 			static bool OpenFileExternally(const std::filesystem::path& path);
 
+			static void StartWatching();
+			static void StopWatching();
 
-
+		private :
+			static unsigned long Watch(void* paramenters);
 	};
 
 }

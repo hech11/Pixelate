@@ -1,21 +1,21 @@
 Assets:
-  - Handle: 16809476356410631126
-    Filepath: ACTIVESCENE.PXScene
-    Type: Scene
   - Handle: 6178634255179218755
     Filepath: audio\noise.wav
     Type: Audio
-  - Handle: 16875867529767079503
-    Filepath: AssetRegistry.pxar
-    Type: Asset Registry
+  - Handle: 16809476356410631126
+    Filepath: ACTIVESCENE.PXScene
+    Type: Scene
   - Handle: 15041485019424937686
     Filepath: graphics\test.png
     Type: Texture
-  - Handle: 5767884922789449816
-    Filepath: audio\tone-mp3.mp3
-    Type: Audio
+  - Handle: 16875867529767079503
+    Filepath: AssetRegistry.pxar
+    Type: Asset Registry
   - Handle: 16072470196708842148
     Filepath: audio\tone-ogg.ogg
+    Type: Audio
+  - Handle: 5767884922789449816
+    Filepath: audio\tone-mp3.mp3
     Type: Audio
   - Handle: 4020195025803029489
     Filepath: scenes\test123_Scripts.PXScene
@@ -26,12 +26,12 @@ Assets:
   - Handle: 17852406961718864975
     Filepath: graphics\sprite.png
     Type: Texture
-  - Handle: 18069192197029962527
-    Filepath: graphics\TestSpritesheet.png
-    Type: Texture
   - Handle: 4993231541211841246
     Filepath: scenes\newAssetManager.PXScene
     Type: Scene
+  - Handle: 18069192197029962527
+    Filepath: graphics\TestSpritesheet.png
+    Type: Texture
   - Handle: 884871052580740198
     Filepath: scenes\DefaultScene.PXScene
     Type: Scene
@@ -44,12 +44,12 @@ Assets:
   - Handle: 16622705045210201503
     Filepath: scenes\PXT-spriteRect.PXScene
     Type: Scene
-  - Handle: 3437332282220260737
-    Filepath: scenes\test123.PXScene
-    Type: Scene
   - Handle: 5242380248460763380
     Filepath: Shaders\SceneGrid.Shader
     Type: Shader
+  - Handle: 3437332282220260737
+    Filepath: scenes\test123.PXScene
+    Type: Scene
   - Handle: 12510560170843226036
     Filepath: scenes\test123_LoadingOtherScenes.PXScene
     Type: Scene

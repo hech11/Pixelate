@@ -171,10 +171,13 @@ namespace Pixelate {
 		m_Gizmo = ImGuizmo::TRANSLATE;
 
 
+		FileSystem::StartWatching(); // Should move this when projects are introduced.
+
 	}
 
 
 	void EditorLayer::ShutDown() {
+		FileSystem::StopWatching(); // Should move this when projects are introduced.
 	}
 
 	void EditorLayer::OnUpdate(float dt) {
