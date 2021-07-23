@@ -73,7 +73,7 @@ namespace Pixelate {
 		}
 		else {
 			// This generates a pink texture if the texture could not be loaded. This code should be moved else where
-			PX_ERROR("Failed to load '%s' !", filepath.c_str());
+			PX_CORE_ERROR("Failed to load '%s' !", filepath.c_str());
 			unsigned int pinkCol = 0xFF00FF;
 			m_Props.Width = 1;
 			m_Props.Height = 1;
@@ -161,6 +161,43 @@ namespace Pixelate {
 		}
 		else {
 			PX_ERROR("Failed to load '%s' !", filepath.c_str());
+		}
+
+		stbi_image_free(PixData);
+
+	}
+
+	void GLTexture::Reload()
+	{
+		unsigned char* PixData = stbi_load(m_Props.FilePath.c_str(), &m_Props.Width, &m_Props.Height, &m_Props.BPP, 4);
+
+		if (PixData) {
+
+			GLCall(glDeleteTextures(1, &m_RendererID));
+
+
+			GLCall(glGenTextures(1, &m_RendererID));
+			GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GLConvertWrap(m_Props.TexWrap)));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GLConvertWrap(m_Props.TexWrap)));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GLConvertFilter(m_Props.TexFilter)));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GLConvertFilter(m_Props.TexFilter)));
+
+
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, PixData));
+
+		}
+		else {
+
+			PX_CORE_ERROR("Could not reload '%s' !", m_Props.FilePath.c_str());
+			unsigned int pinkCol = 0xFF00FF;
+			m_Props.Width = 1;
+			m_Props.Height = 1;
+			m_Props.TexFormat = TextureProperties::Format::RGB;
+
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GLConvertFormat(m_Props.TexFormat), m_Props.Width, m_Props.Height, 0, GLConvertFormat(m_Props.TexFormat), GL_UNSIGNED_BYTE, &pinkCol));
+
 		}
 
 		stbi_image_free(PixData);

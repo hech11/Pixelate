@@ -67,6 +67,8 @@ namespace Pixelate {
 
 			virtual unsigned int GetHandleID() const = 0;
 
+			virtual void Reload() = 0;
+
 
 			//TODO: Should this be stored in the platform specific classes or in this class?
 			inline int GetWidth() const { return m_Props.Width; }

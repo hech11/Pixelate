@@ -31,7 +31,7 @@ namespace Pixelate {
 	}
 
 	void FileSystem::StopWatching() {
-		auto result = WaitForSingleObject(s_WatcherThread, 10000);
+		auto result = WaitForSingleObject(s_WatcherThread, 5000);
 		if (result == WAIT_TIMEOUT)
 			TerminateThread(s_WatcherThread, 0);
 		CloseHandle(s_WatcherThread);
@@ -74,7 +74,7 @@ namespace Pixelate {
 				&overlapped,
 				NULL);
 
-			DWORD waiting = WaitForSingleObject(overlapped.hEvent, 10000);
+			DWORD waiting = WaitForSingleObject(overlapped.hEvent, 5000);
 			if (waiting != WAIT_OBJECT_0)
 				continue;
 
@@ -87,8 +87,9 @@ namespace Pixelate {
 				FILE_NOTIFY_INFORMATION& fInfo = *(FILE_NOTIFY_INFORMATION*)data;
 				ZeroMemory(filename, sizeof(filename));
 				WideCharToMultiByte(0, 0, fInfo.FileName, fInfo.FileNameLength / sizeof(WCHAR), filename, sizeof(filename), 0, 0);
-				std::filesystem::path filepath = std::string(filename);
-
+				std::filesystem::path f = std::string(filename);
+				std::filesystem::path filepath = s_AssetDirectory / f;
+				
 				FileWatcherCallbackData callbackData;
 				callbackData.Filepath = filepath;
 				callbackData.NewFilename = filepath.filename().string();

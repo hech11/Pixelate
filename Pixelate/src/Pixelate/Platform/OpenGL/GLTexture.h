@@ -34,6 +34,7 @@ namespace Pixelate {
 
 			const TextureProperties& GetTextureProps() const override { return m_Props; }
 
+			void Reload();
 
 
 			bool operator==(const Texture& other) const override { return m_RendererID == other.GetHandleID(); };

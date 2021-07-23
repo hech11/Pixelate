@@ -243,7 +243,7 @@ namespace Pixelate {
 			
 		}
 
-	
+		AssetManager::ApplyAssetChanges();
 	}
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
@@ -674,7 +674,7 @@ namespace Pixelate {
 				
 
 
-				PX_CORE_MSG("Scene viewport recieved '%s'!\n", filepath.c_str());
+				PX_CORE_MSG("Scene viewport recieved '%s'!\n", filepath.string().c_str());
 
 				switch (metadata.Type)
 				{

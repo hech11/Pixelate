@@ -4,7 +4,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include "Pixelate/Utility/FileSystem.h"
-#include "../Asset/AssetManager.h"
+#include "Pixelate/Asset/AssetManager.h"
+#include <mutex>
 
 namespace Pixelate {
 
@@ -22,7 +23,7 @@ namespace Pixelate {
 		m_FolderIcon = Texture::Create("resources/icons/content-browser/folder.png");
 		m_FileIcon = Texture::Create("resources/icons/content-browser/file.png");
 
-		FileSystem::SetFileWatcherCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
+		AssetManager::SetAssetChangeCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
 	}
 
 	void EditorContentBrowser::RenderDirectory(const std::filesystem::path& dir) {
@@ -357,12 +358,17 @@ namespace Pixelate {
 
 	void EditorContentBrowser::OnFileWatcherAction(FileWatcherCallbackData data)
 	{
-		switch (data.Action)
-		{
-			case FileSystemAction::Added: PX_CORE_MSG("Added %s\n", data.Filepath.string().c_str()); break;
-			case FileSystemAction::Renamed: PX_CORE_MSG("Renamed %s to %s\n", data.OldFilename.c_str(), data.NewFilename.c_str()); break;
-			case FileSystemAction::Deleted: PX_CORE_MSG("Added %s\n", data.Filepath.string().c_str()); break;
-		}
+
+		// could cache the directories and display those rather than querying the asset directory
+		// over and over
+
+// 
+// 		switch (data.Action)
+// 		{
+// 			case FileSystemAction::Added: PX_CORE_MSG("Added %s\n", data.Filepath.string().c_str()); break;
+// 			case FileSystemAction::Renamed: PX_CORE_MSG("Renamed %s to %s\n", data.OldFilename.c_str(), data.NewFilename.c_str()); break;
+// 			case FileSystemAction::Deleted: PX_CORE_MSG("Added %s\n", data.Filepath.string().c_str()); break;
+// 		}
 	}
 
 	void EditorContentBrowser::ForwardButton()

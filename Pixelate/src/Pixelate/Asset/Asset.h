@@ -57,14 +57,13 @@ namespace Pixelate {
 
 	class Asset {
 		public :
-			virtual ~Asset(){}
+			virtual ~Asset()= default;
 
 			AssetHandle Handle;
 			AssetFlag Flags = AssetFlag::None;
 
 			virtual bool operator==(const Asset& other)const { return Handle == other.Handle; }
 			virtual bool operator!=(const Asset& other)const { return !(*this == other); }
-
 
 			virtual AssetType GetType() const { return AssetType::None; }
 
