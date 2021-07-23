@@ -6,6 +6,19 @@
 
 namespace Pixelate {
 
+
+	enum class FileSystemAction { None = -1, Added, Deleted, Modified, Renamed };
+
+	struct FileWatcherCallbackData {
+		FileSystemAction Action;
+		std::filesystem::path Filepath;
+		std::string NewFilename;
+		std::string OldFilename;
+		bool IsDirectory;
+	};
+
+	using FileWatcherCallback = std::function<void(FileWatcherCallbackData)>;
+
 	//TODO: Support buffer streams and not just c++ strings
 	class FileSystem {
 
@@ -47,6 +60,9 @@ namespace Pixelate {
 
 			static bool IsDirectory(const std::string& filepath);
 			static bool IsDirectory(const std::filesystem::path& filepath);
+			
+
+			static void SetFileWatcherCallback(const FileWatcherCallback& callback) { s_Callback = callback; }
 
 			// To be implemented in "Platform/[OS]/[OS]FileSystem.cpp... for example, the windows code is at Platform/Windows/WindowsFile.cpp"
 			static bool ShowFileInExplorer(const std::filesystem::path& path);
@@ -57,6 +73,8 @@ namespace Pixelate {
 
 		private :
 			static unsigned long Watch(void* paramenters);
+		private :
+			static FileWatcherCallback s_Callback;
 	};
 
 }

@@ -37,6 +37,8 @@ namespace Pixelate {
 			void ForwardButton();
 			void BackButton();
 
+
+			void OnFileWatcherAction(FileWatcherCallbackData data);
 		private :
 
 			bool m_DeleteItem = false;

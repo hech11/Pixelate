@@ -21,6 +21,8 @@ namespace Pixelate {
 	{
 		m_FolderIcon = Texture::Create("resources/icons/content-browser/folder.png");
 		m_FileIcon = Texture::Create("resources/icons/content-browser/file.png");
+
+		FileSystem::SetFileWatcherCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
 	}
 
 	void EditorContentBrowser::RenderDirectory(const std::filesystem::path& dir) {
@@ -350,6 +352,16 @@ namespace Pixelate {
 			m_PreviousDirectories.emplace(m_PreviousDirectories.begin() + m_PreviousDirectoryIndex, m_CurrentDirectory);
 
 			m_CurrentDirectory = m_CurrentDirectory.parent_path();
+		}
+	}
+
+	void EditorContentBrowser::OnFileWatcherAction(FileWatcherCallbackData data)
+	{
+		switch (data.Action)
+		{
+			case FileSystemAction::Added: PX_CORE_MSG("Added %s\n", data.Filepath.string().c_str()); break;
+			case FileSystemAction::Renamed: PX_CORE_MSG("Renamed %s to %s\n", data.OldFilename.c_str(), data.NewFilename.c_str()); break;
+			case FileSystemAction::Deleted: PX_CORE_MSG("Added %s\n", data.Filepath.string().c_str()); break;
 		}
 	}
 

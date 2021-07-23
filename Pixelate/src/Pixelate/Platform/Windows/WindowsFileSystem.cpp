@@ -8,6 +8,8 @@ namespace Pixelate {
 	static HANDLE s_WatcherThread;
 	static std::string s_AssetDirectory = "assets";
 
+	FileWatcherCallback FileSystem::s_Callback;
+
 	bool FileSystem::ShowFileInExplorer(const std::filesystem::path& path) {
 		int result = (int)ShellExecute(NULL, L"open", path.wstring().c_str(), NULL, NULL, SW_NORMAL);
 		return (result >= 32);
@@ -87,36 +89,48 @@ namespace Pixelate {
 				WideCharToMultiByte(0, 0, fInfo.FileName, fInfo.FileNameLength / sizeof(WCHAR), filename, sizeof(filename), 0, 0);
 				std::filesystem::path filepath = std::string(filename);
 
+				FileWatcherCallbackData callbackData;
+				callbackData.Filepath = filepath;
+				callbackData.NewFilename = filepath.filename().string();
+				callbackData.OldFilename = filepath.filename().string();
+				callbackData.IsDirectory = IsDirectory(filepath);
+
+
 				// dispatch events
 				switch (fInfo.Action)
 				{
-				case FILE_ACTION_ADDED:
-				{
-					PX_CORE_MSG("Added file: %s\n", filepath.string().c_str());
-					break;
-				}
-				case FILE_ACTION_REMOVED:
-				{
-					PX_CORE_MSG("Removed file: %s\n", filepath.string().c_str());
-					break;
-				}
-				case FILE_ACTION_MODIFIED:
-				{
-					PX_CORE_MSG("Modified file: %s\n", filepath.string().c_str());
-					break;
-				}
-				case FILE_ACTION_RENAMED_NEW_NAME:
-				{
+					case FILE_ACTION_ADDED:
+					{
+						callbackData.Action = FileSystemAction::Added;
+						s_Callback(callbackData);
+						break;
+					}
+					case FILE_ACTION_REMOVED:
+					{
+						callbackData.Action = FileSystemAction::Deleted;
+						s_Callback(callbackData);
+						break;
+					}
+					case FILE_ACTION_MODIFIED:
+					{
+						callbackData.Action = FileSystemAction::Modified;
+						s_Callback(callbackData);
+						break;
+					}
+					case FILE_ACTION_RENAMED_NEW_NAME:
+					{
+						callbackData.Action = FileSystemAction::Renamed;
+						callbackData.OldFilename = oldPath;
 
-					PX_CORE_MSG("File changed %s to %s\n", oldPath.c_str(), filepath.string().c_str());
+						s_Callback(callbackData);
 
-					break;
-				}
-				case FILE_ACTION_RENAMED_OLD_NAME:
-				{
-					oldPath = filepath.filename().string();
-					break;
-				}
+						break;
+					}
+					case FILE_ACTION_RENAMED_OLD_NAME:
+					{
+						oldPath = filepath.filename().string();
+						break;
+					}
 
 				}
 
