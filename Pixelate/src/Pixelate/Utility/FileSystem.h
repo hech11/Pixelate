@@ -12,8 +12,7 @@ namespace Pixelate {
 	struct FileWatcherCallbackData {
 		FileSystemAction Action;
 		std::filesystem::path Filepath;
-		std::string NewFilename;
-		std::string OldFilename;
+		std::filesystem::path OldFilepath;
 		bool IsDirectory;
 	};
 

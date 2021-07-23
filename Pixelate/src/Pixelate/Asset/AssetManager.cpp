@@ -58,7 +58,7 @@ namespace Pixelate {
 				case FileSystemAction::Added: ImportAsset(data.Filepath); break;
 				case FileSystemAction::Deleted: RemoveAssetFromRegistry(data.Filepath); break;
 				case FileSystemAction::Modified: ReloadAsset(data.Filepath); break;
-				case FileSystemAction::Renamed: break;
+				case FileSystemAction::Renamed: OnAssetRenamed(data.OldFilepath, data.Filepath); break;
 			}
 		}
 	}
@@ -164,6 +164,17 @@ namespace Pixelate {
 
 	}
 
+
+	void AssetManager::OnAssetRenamed(const std::filesystem::path& oldPath, const std::filesystem::path& newPath) {
+		auto oPath = std::filesystem::relative(oldPath, s_AssetPath);
+		auto nPath = std::filesystem::relative(newPath, s_AssetPath);
+
+		AssetMetadata metadata = s_AssetRegistry.GetRegistry()[oPath];
+		metadata.Filepath = nPath;
+		s_AssetRegistry.GetRegistry().erase(oPath);
+		s_AssetRegistry.GetRegistry().insert({ nPath, metadata });
+
+	}
 
 	void AssetManager::OnImguiRender(bool open)
 	{

@@ -90,6 +90,7 @@ namespace Pixelate {
 			static void ProcessDirectoryWhenReloading(const std::filesystem::path& dir);
 			static void ReloadAsset(const std::filesystem::path& filepath);
 			static void RemoveAssetFromRegistry(const std::filesystem::path& filepath);
+			static void OnAssetRenamed(const std::filesystem::path& oldPath, const std::filesystem::path& newPath);
 
 		private :
 			static std::filesystem::path s_AssetPath; //TODO: add to a "project" class

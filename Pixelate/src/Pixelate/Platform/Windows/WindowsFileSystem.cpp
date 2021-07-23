@@ -78,7 +78,7 @@ namespace Pixelate {
 			if (waiting != WAIT_OBJECT_0)
 				continue;
 
-			std::string oldPath;
+			std::filesystem::path oldPath;
 			char filename[1024 * 10] = "";
 			char* data = buffer.data();
 
@@ -92,8 +92,7 @@ namespace Pixelate {
 				
 				FileWatcherCallbackData callbackData;
 				callbackData.Filepath = filepath;
-				callbackData.NewFilename = filepath.filename().string();
-				callbackData.OldFilename = filepath.filename().string();
+				callbackData.OldFilepath = filepath;
 				callbackData.IsDirectory = IsDirectory(filepath);
 
 
@@ -121,7 +120,7 @@ namespace Pixelate {
 					case FILE_ACTION_RENAMED_NEW_NAME:
 					{
 						callbackData.Action = FileSystemAction::Renamed;
-						callbackData.OldFilename = oldPath;
+						callbackData.OldFilepath = oldPath;
 
 						s_Callback(callbackData);
 
@@ -129,7 +128,7 @@ namespace Pixelate {
 					}
 					case FILE_ACTION_RENAMED_OLD_NAME:
 					{
-						oldPath = filepath.filename().string();
+						oldPath = filepath;
 						break;
 					}
 
