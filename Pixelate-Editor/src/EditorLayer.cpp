@@ -240,7 +240,7 @@ namespace Pixelate {
 			SceneManager::LoadAnyQueuedScenes(m_EditorScene, &updateHierarcy);
 			if (updateHierarcy)
 				m_SceneHierarcyPanel->SetSceneContext(m_EditorScene);
-			
+
 		}
 
 		AssetManager::ApplyAssetChanges();

@@ -19,10 +19,11 @@ namespace Pixelate {
 
 
 			static Ref<AudioSource> CreateAudioSource(const std::string& filepath, bool shouldLoop = false, bool streaming = false);
+			static void Reload(const AssetMetadata& metadata);
 
+			static void StopAllSources(); // instead of stopping why not restart all sources?
 
-			// This would be used for queuing buffers once streaming audio is implemented
-			static void Update() {}
+			static void Update();
 	};
 
 

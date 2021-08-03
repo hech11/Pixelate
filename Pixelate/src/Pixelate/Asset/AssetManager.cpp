@@ -5,6 +5,8 @@
 #include <imgui.h>
 #include "Pixelate/Debug/Instrumentor.h"
 #include "Pixelate/Rendering/API/Texture.h"
+#include "Pixelate/Audio/AudioSource.h"
+#include "../Audio/Audio.h"
 
 
 namespace Pixelate {
@@ -31,6 +33,8 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		s_NullMetadata.Type = AssetType::None;
 
+		AssetImporter::Init();
+
 		FileSystem::SetFileWatcherCallback(AssetManager::OnFileWatcherAction);
 
 		s_AssetRegistry.Deserialize();
@@ -43,6 +47,9 @@ namespace Pixelate {
 	void AssetManager::Shutdown()
 	{
 		PX_PROFILE_FUNCTION();
+		AssetImporter::Shutdown();
+
+
 		s_AssetRegistry.Serialize();
 		s_AssetRegistry.GetRegistry().clear();
 		s_LoadedAssets.clear();
@@ -52,6 +59,7 @@ namespace Pixelate {
 	{
 
 		s_Callback(data);
+		Audio::StopAllSources();
 		if (!data.IsDirectory) {
 			switch (data.Action)
 			{
@@ -227,11 +235,7 @@ namespace Pixelate {
 			s_ShouldReloadAssetList = false;
 
 			for (auto& asset : s_AssetsToBeReloaded) {
-
-				if (asset->GetType() == AssetType::Texture) {
-					Ref<Texture> texture = std::dynamic_pointer_cast<Texture>(s_LoadedAssets[asset->Handle]);
-					texture->Reload();
-				}
+				AssetImporter::Reload(asset);
 			}
 
 			s_AssetsToBeReloaded.clear();

@@ -1,7 +1,4 @@
 Assets:
-  - Handle: 6178634255179218755
-    Filepath: audio\noise.wav
-    Type: Audio
   - Handle: 16809476356410631126
     Filepath: ACTIVESCENE.PXScene
     Type: Scene
@@ -62,6 +59,9 @@ Assets:
   - Handle: 13053056233834121195
     Filepath: graphics\cross.png
     Type: Texture
-  - Handle: 13628538262074164678
+  - Handle: 11872943128402416174
     Filepath: ""
     Type: Texture
+  - Handle: 15401950371930225587
+    Filepath: audio\noise.wav
+    Type: Audio

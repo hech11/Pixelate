@@ -606,6 +606,14 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				else
 					ImGui::InputText("##sourceFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
 
+
+				BeginDragDrop([&](AssetMetadata& metadata) {
+					if (metadata.Type == AssetType::Audio) {
+						asc.Source = AssetManager::GetAsset<AudioSource>(metadata.Handle);
+						asc.FilePath = AssetManager::GetFilePathString(metadata);
+					}
+					});
+
 				ImGui::PopItemWidth();
 
 				if (asc.Source) {

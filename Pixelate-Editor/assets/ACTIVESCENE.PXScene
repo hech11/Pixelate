@@ -1,6 +1,35 @@
 Scene: Scene
 Entities:
-  - Entity: 15012910597305132762
+  - Entity: 18215620664740721770
+    NameComponent:
+      Name: Entity
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    AudioSourceComponent:
+      AssetHandle: 5767884922789449816
+      Gain: 1
+      ShouldLoop: false
+    ScriptingBehaviourComponent:
+      ClassName: PlayAudio
+      Fields:
+        []
+  - Entity: 5103362913921790397
+    NameComponent:
+      Name: Texture loaded via asset handle
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        AssetHandle: 18069192197029962527
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      TintColor: [1, 1, 1, 1]
+  - Entity: 8856579346166015251
     NameComponent:
       Name: Camera
     TagComponent:
@@ -13,31 +42,3 @@ Entities:
       Primary: true
     AudioListenerComponent:
       Spatial: false
-  - Entity: 7653945416961499754
-    NameComponent:
-      Name: Texture loaded via asset handle
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -0.614161789, 0, 1]
-    SpriteRendererComponent:
-      Texture:
-        AssetHandle: 18069192197029962527
-      Rect:
-        Position: [0, 0]
-        Scale: [128, 128]
-      TintColor: [1, 1, 1, 1]
-  - Entity: 16019730143795846303
-    NameComponent:
-      Name: test
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0.137283206, 0, 1]
-    SpriteRendererComponent:
-      Texture:
-        AssetHandle: 15041485019424937686
-      Rect:
-        Position: [0, 0]
-        Scale: [819, 460]
-      TintColor: [1, 1, 1, 1]

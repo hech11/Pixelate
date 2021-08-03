@@ -67,9 +67,6 @@ namespace Pixelate {
 
 			virtual unsigned int GetHandleID() const = 0;
 
-			virtual void Reload() = 0;
-
-
 			//TODO: Should this be stored in the platform specific classes or in this class?
 			inline int GetWidth() const { return m_Props.Width; }
 			inline int GetHeight() const { return m_Props.Height; }
@@ -82,7 +79,7 @@ namespace Pixelate {
 
 			virtual bool operator==(const Texture& other) const = 0;
 
-
+			virtual void Reload() = 0;
 
 			SETUP_ASSET_PROPERTIES(AssetType::Texture);
 
