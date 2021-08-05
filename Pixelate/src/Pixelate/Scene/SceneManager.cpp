@@ -7,6 +7,7 @@
 #include "Components.h"
 #include "Entity.h"
 
+#include "Pixelate/Audio/Audio.h"
 
 
 namespace Pixelate {
@@ -36,6 +37,8 @@ namespace Pixelate {
 		auto& scene = s_SceneManagerData.ActiveScene;
 		auto& app = Application::GetApp();
 
+		Audio::DestroyAllActiveSources();
+
 		if (s_SceneManagerData.PlayMode) {
 			scene->OnRuntimeStop();
 			scene  = SceneSerialization::Deserialize(filepath);
@@ -50,6 +53,7 @@ namespace Pixelate {
 		s_SceneManagerData.ActiveScene = scene;
 		app.GetWindow().SetTitle("Pixelate-Editor | " + scene->GetName());
 		
+
 		return scene;
 
 	}

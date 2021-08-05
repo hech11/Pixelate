@@ -19,15 +19,17 @@ namespace Pixelate {
 
 
 
-	void AudioContext::Init() {
+	bool AudioContext::Init() {
 		PX_PROFILE_FUNCTION();
 
 		m_Context = ContextAPI::OpenAL;
 
 		s_AudioDevice = alcOpenDevice(NULL);
 
-		if (!s_AudioDevice)
-			PX_ASSERT(false, "Could not open an audio device!");
+		if (!s_AudioDevice) {
+			PX_CORE_ERROR("Could not open an audio device! Is the audio driver perhaps disabled?");
+			return false;
+		}
 
 		s_Context = alcCreateContext(s_AudioDevice, NULL);
 		if (s_Context == nullptr || alcMakeContextCurrent(s_Context) == ALC_FALSE)
@@ -35,7 +37,8 @@ namespace Pixelate {
 			if (s_Context != nullptr)
 				alcDestroyContext(s_Context);
 			alcCloseDevice(s_AudioDevice);
-			PX_ASSERT(false, "Could not set a context!");
+			PX_CORE_ERROR("Could not set a openal context!\n");
+			return false;
 		}
 
 		// print device information..
@@ -47,7 +50,7 @@ namespace Pixelate {
 		PX_CORE_TRACE("Available Stereo: %d\n", s_AudioDevice->NumStereoSources);
 		PX_CORE_TRACE("--------------------------\n\n");
 
-
+		return true;
 	}
 
 	void AudioContext::Close() {

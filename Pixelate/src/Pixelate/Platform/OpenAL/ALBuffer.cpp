@@ -15,7 +15,13 @@ namespace Pixelate {
 	}
 
 
-	AudioBuffer::AudioBuffer(const AudioFormatSpec& specs) {
+	AudioBuffer::AudioBuffer() {
+		PX_PROFILE_FUNCTION();
+		ALCall(alGenBuffers(1, &m_AudioID));
+	}
+
+
+	AudioBuffer::AudioBuffer(const AudioFileSpecification& specs) {
 		PX_PROFILE_FUNCTION();
 		ALCall(alGenBuffers(1, &m_AudioID));
 		SetData(specs);
@@ -27,7 +33,7 @@ namespace Pixelate {
 		ALCall(alDeleteBuffers(1, &m_AudioID));
 	}
 
-	void AudioBuffer::SetData(const AudioFormatSpec& specs) {
+	void AudioBuffer::SetData(const AudioFileSpecification& specs) {
 
 		PX_PROFILE_FUNCTION();
 		ALCall(alBufferData(m_AudioID, DeduceALFormat(specs.Channels),

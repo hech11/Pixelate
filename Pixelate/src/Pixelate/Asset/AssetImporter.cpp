@@ -5,6 +5,7 @@
 
 #include "Pixelate/Rendering/API/Texture.h"
 #include "Pixelate/Audio/Audio.h"
+#include "Pixelate/Audio/AudioLoader.h"
 
 
 
@@ -78,7 +79,7 @@ namespace Pixelate {
 	////////////// --------- AudioImporter --------- ////////////// 
 	bool AudioImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)
 	{
-		asset = Audio::CreateAudioSource(AssetManager::GetFilePathString(metadata), false);
+		asset = CreateRef<AudioBuffer>(AudioLoader::Load(AssetManager::GetFilePathString(metadata)));
 		asset->Handle = metadata.Handle;
 
 		return true;
@@ -87,7 +88,7 @@ namespace Pixelate {
 
 	void AudioImporter::Reload(Ref<Asset>& asset)
 	{
-		Audio::Reload(AssetManager::GetMetadata(asset->Handle));
+		//Audio::Reload(AssetManager::GetMetadata(asset->Handle));
 	}
 
 }

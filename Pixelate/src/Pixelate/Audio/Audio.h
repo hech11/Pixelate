@@ -17,13 +17,20 @@ namespace Pixelate {
 			static void Init();
 			static void Shutdown();
 
+			static bool HasInitializedProperly();
 
-			static Ref<AudioSource> CreateAudioSource(const std::string& filepath, bool shouldLoop = false, bool streaming = false);
+
+			static Ref<AudioSource> CreateAudioSource(const Ref<AudioBuffer>& buffer);
+
+
 			static void Reload(const AssetMetadata& metadata);
 
-			static void StopAllSources(); // instead of stopping why not restart all sources?
+			static void StopAllSources();
+			static void DestroyAllActiveSources();
+
 
 			static void Update();
+		
 	};
 
 

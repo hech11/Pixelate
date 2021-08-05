@@ -23,4 +23,8 @@ namespace Pixelate {
 		PX_CORE_TRACE("Shutting down..\n");
 	}
 
+	bool IsBigEndian() {
+		int a = 1;
+		return !((char*)&a);
+	}
 }

@@ -5,6 +5,7 @@
 #include "Pixelate/Rendering/API/Texture.h"
 
 #include <filesystem>
+#include "Pixelate/Utility/FileSystem.h"
 
 namespace Pixelate {
 

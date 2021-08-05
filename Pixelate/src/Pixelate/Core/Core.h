@@ -53,6 +53,8 @@ namespace Pixelate {
 	void InitEngine();
 	void ShutdownEngine();
 
+	bool IsBigEndian();
+
 }
 
 #define BIT(x) (1 << x)

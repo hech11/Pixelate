@@ -47,7 +47,7 @@ namespace Pixelate {
 				Ref<Asset> asset = nullptr;
 				if (!metadata.IsLoaded)
 				{
-					metadata.IsLoaded = AssetImporter::LoadData(metadata, asset);
+					metadata.IsLoaded = AssetImporter::TryLoadData(metadata, asset);
 					if (!metadata.IsLoaded)
 						return nullptr;
 

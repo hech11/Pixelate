@@ -326,7 +326,7 @@ namespace Pixelate {
 
 				if (asc.Source) {
 					data << YAML::BeginMap;
-					data << YAML::Key << "AssetHandle" << YAML::Value << (UUID)AssetManager::GetMetadata(asc.Source->Handle).Handle;
+					data << YAML::Key << "AssetHandle" << YAML::Value << (UUID)AssetManager::GetMetadata(asc.Source->GetBufferData()->Handle).Handle;
 					data << YAML::Key << "Gain" << YAML::Value << asc.Source->GetGain();
 					data << YAML::Key << "ShouldLoop" << YAML::Value << asc.Source->IsLooping();
 					data << YAML::EndMap;
@@ -529,9 +529,8 @@ namespace Pixelate {
 						bool loop = ascYaml["ShouldLoop"].as<bool>();
 						float gain = ascYaml["Gain"].as<float>();
 
-						comp.Source = AssetManager::GetAsset<AudioSource>(metadata.Handle);
+						comp.Source = Audio::CreateAudioSource(AssetManager::GetAsset<AudioBuffer>(metadata.Handle));
 						comp.Source->SetLooping(loop);
-
 						if(comp.Source == nullptr)
 							comp.FilePath = "";
 						else

@@ -1,91 +1,27 @@
 #pragma once
 
 
-#include <string>
-
-#include "minimp3.h"
-
-#include "Pixelate/Debug/Instrumentor.h"
+#include "Pixelate/Audio/AudioLoader.h"
+#include "Pixelate/Asset/Asset.h"
 
 
 namespace Pixelate {
 
-
-
-		
-	struct AudioFormatSpec {
-			enum class FileFormat {
-				None = -1,
-				Wav,
-				Mp3,
-				Ogg
-			};
-
-			int Channels, SampleRate, Bps, Size;
-			FileFormat Extention;
-			void* Data;
-
-			static AudioFormatSpec LoadAudioData(const std::string& filepath);
-
-		private :
-			static FileFormat DeduceFileFormat(const std::string& filepath);
-	};
-
-
-
-	struct WavFormat {
-		
-		public :
-			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
-		private:
-			static bool IsBigEndian() {
-				PX_PROFILE_FUNCTION();
-				int a = 1;
-				return !((char*)& a)[0];
-			}
-			static int ConvertToInt(char* buffer, int len) {
-				PX_PROFILE_FUNCTION();
-				int a = 0;
-				if (!IsBigEndian())
-					for (int i = 0; i < len; i++)
-						((char*)& a)[i] = buffer[i];
-				else
-					for (int i = 0; i < len; i++)
-						((char*)& a)[3 - i] = buffer[i];
-				return a;
-			}
-
-	};
-
-
-	struct MP3Format {
-		public :
-			MP3Format();
-
-			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
-
-		private :
-			static mp3dec_t mp3d;
-	};
-
-	struct OggFormat {
-		public:
-			static void LoadData(const std::string& filepath, AudioFormatSpec* specs);
-	};
-
-
-
-
-	class AudioBuffer {
+	class AudioBuffer : public Asset {
 
 		public:
 
-			AudioBuffer(const AudioFormatSpec& spec);
+			AudioBuffer();
+			AudioBuffer(const AudioFileSpecification& spec);
+
 			~AudioBuffer();
 
-			void SetData(const AudioFormatSpec& spec);
+			void SetData(const AudioFileSpecification& spec);
 
 			unsigned int GetHandleID() const { return m_AudioID; }
+
+			SETUP_ASSET_PROPERTIES(AssetType::Audio);
+
 		private:
 			unsigned int m_AudioID;
 	};

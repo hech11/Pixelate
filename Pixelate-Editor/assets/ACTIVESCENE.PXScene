@@ -1,19 +1,21 @@
 Scene: Scene
 Entities:
-  - Entity: 16686796731445220731
+  - Entity: 7803769482041168964
     NameComponent:
-      Name: Camera
+      Name: tone-ogg
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-    CameraComponent:
-      ClearColor: [0.25, 0.5, 0.699999988, 1]
-      OrthoSize: 1
-      Primary: true
-    AudioListenerComponent:
-      Spatial: false
-  - Entity: 8144810522894257779
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2.28600001, 0.108000003, 0, 1]
+    AudioSourceComponent:
+      AssetHandle: 16072470196708842148
+      Gain: 1
+      ShouldLoop: false
+    ScriptingBehaviourComponent:
+      ClassName: PlayAudio
+      Fields:
+        []
+  - Entity: 734928659955555577
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
@@ -27,18 +29,16 @@ Entities:
         Position: [0, 0]
         Scale: [128, 128]
       TintColor: [1, 1, 1, 1]
-  - Entity: 2390554016705974813
+  - Entity: 14051248508056008312
     NameComponent:
-      Name: tone-mp3
+      Name: Camera
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.49100006, 0.0300000012, 0, 1]
-    AudioSourceComponent:
-      AssetHandle: 5767884922789449816
-      Gain: 1
-      ShouldLoop: false
-    ScriptingBehaviourComponent:
-      ClassName: PlayAudio
-      Fields:
-        []
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    CameraComponent:
+      ClearColor: [0.25, 0.5, 0.699999988, 1]
+      OrthoSize: 1
+      Primary: true
+    AudioListenerComponent:
+      Spatial: false

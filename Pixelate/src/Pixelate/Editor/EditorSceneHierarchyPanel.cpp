@@ -588,7 +588,10 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					if (result == NFD_OKAY) {
 						PX_CORE_TRACE("Success!");
 
-						asc.Source = Audio::CreateAudioSource(outPath);
+						auto path = std::filesystem::relative("assets/", outPath);
+
+						Ref<AudioBuffer> buffer = AssetManager::GetAsset<AudioBuffer>(AssetManager::GetFilePathString(AssetManager::GetMetadata(path)));
+						asc.Source = Audio::CreateAudioSource(buffer);
 						asc.FilePath = outPath;
 
 						free(outPath);

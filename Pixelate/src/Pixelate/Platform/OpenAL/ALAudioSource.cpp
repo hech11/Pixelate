@@ -53,12 +53,17 @@ namespace Pixelate {
 
 	void AudioSource::SetGain(float gain) {
 		PX_PROFILE_FUNCTION();
+
+		// 1.0f - 0.0f -> 0.1f - 0.0;
+		gain *= 0.1f;
+
 		if (gain > 0.1f)
 			gain = 0.1f;
 
 		if (gain < 0.0f)
 			gain = 0.0f;
 		m_Gain = gain;
+
 		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, gain));
 
 	}
@@ -71,8 +76,13 @@ namespace Pixelate {
 		ALCall(alSource3f(m_AudioSourceID, AL_POSITION, position.x, position.y, position.z));
 	}
 
+	const Ref<AudioBuffer>& AudioSource::GetBufferData() const
+	{
+		return m_AudioBuffer;
+	}
 	void AudioSource::SetBufferData(const Ref<AudioBuffer>& buffer) {
 		PX_PROFILE_FUNCTION();
+		m_AudioBuffer = buffer;
 		ALCall(alSourcei(m_AudioSourceID, AL_BUFFER, buffer->GetHandleID()));
 	}
 

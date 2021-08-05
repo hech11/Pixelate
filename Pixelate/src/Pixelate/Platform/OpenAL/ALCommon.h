@@ -6,6 +6,8 @@
 #include "Pixelate/Core/Core.h"
 #include <OPENAL_SOFT/include/AL/al.h>
 
+#include "Pixelate/Audio/Audio.h"
+
 // This is used to debug OpenAL code.
 
 #ifdef PX_DISTRIBUTE
@@ -40,11 +42,14 @@ namespace Pixelate { namespace AL {
 
 	static bool ALLogCall(const char* function, const char* file, int line) {
 		ALenum error;
-		if ((error = alGetError()) != AL_NO_ERROR) {
-			PX_CORE_ERROR("OpenAL Error! : %s", GetALErrorName(error));
-			return false;
-		}
+		if (Audio::HasInitializedProperly()) {
+			if ((error = alGetError()) != AL_NO_ERROR) {
+				PX_CORE_ERROR("OpenAL Error! : %s", GetALErrorName(error));
+				return false;
+			}
 
+			return true;
+		}
 		return true;
 	}
 	

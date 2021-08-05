@@ -698,7 +698,10 @@ namespace Pixelate {
 						Entity entity = m_EditorScene->CreateEntity(filepath.stem().string());
 						entity.GetComponent<TransformComponent>().SetPosition(m_EditorCamera->GetPos());
 						AudioSourceComponent& comp = entity.AddComponent<AudioSourceComponent>();
-						comp.Source = AssetManager::GetAsset<AudioSource>(metadata.Handle);
+
+						Ref<AudioBuffer> buffer = AssetManager::GetAsset<AudioBuffer>(metadata.Handle);
+						comp.Source = Audio::CreateAudioSource(buffer);
+
 						comp.FilePath = metadata.Filepath.string();
 						break;
 					}
