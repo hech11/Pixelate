@@ -15,8 +15,10 @@
 #else 
  // This is to be wrapped around every openal code. Example : AlCall(....);
 
-#define ALCall(x) x;\
-PX_ASSERT(Pixelate::AL::ALLogCall(#x, __FILE__, __LINE__), "");
+#define ALCall(x) if (Audio::HasInitializedProperly()) {\
+						x;\
+						PX_ASSERT(Pixelate::AL::ALLogCall(#x, __FILE__, __LINE__), "");\
+				  }\
 
 #endif
 
