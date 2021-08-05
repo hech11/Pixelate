@@ -13,11 +13,12 @@
 
 #include "Pixelate/Core/Application.h"
 #include "Pixelate/Scene/SceneManager.h"
+#include "Pixelate/Audio/Audio.h"
 
 
 namespace Pixelate {
 
-
+	static Ref<Texture> s_AudioIcon; // temp
 
 	Scene::Scene(const std::string& name /*= "Scene"*/) : m_Name(name)
 	{
@@ -32,6 +33,11 @@ namespace Pixelate {
 	void Scene::Init()
 	{
 		m_SceneEntity = m_Reg.create();
+
+
+		TextureProperties props;
+		props.TexFilter = TextureProperties::Filter::Linear;
+		s_AudioIcon = Texture::Create("Resources/icons/scene-viewport/audio-source.png", props);
 
 		m_Reg.emplace<PhysicsWorldComponent>(m_SceneEntity); // temp for now...
 
@@ -50,46 +56,59 @@ namespace Pixelate {
 		Renderer2D::BeginScene(camera.get());
 		Renderer2D::DrawSceneGrid(camera->GetOrthographicSize());
 
-		auto renderGroup = m_Reg.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+		auto renderGroup = m_Reg.view<TransformComponent>();
 
 		for (auto entity : renderGroup) {
 			Entity e{ entity, this };
-			auto[transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
+			auto& transformComp = e.GetComponent<TransformComponent>();
 
-			if (spriteComp.Texture) {
-				Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
-			} else {
-				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
-			}
+			if (e.HasComponent<SpriteRendererComponent>()) {
+				auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
 
-			if (hasEntityBeenSelected && selectedEntity == e) {
-				AABB boundingBox;
-				glm::vec4 color;
-
-				auto [Pos, Rot, Scale] = transformComp.DecomposeTransform();
-
-				if (e.HasComponent<BoxColliderComponent>()) {
-					auto& bcc = e.GetComponent<BoxColliderComponent>();
-					color = { 0.0f, 1.0f, 0.0f, 1.0f };
-
-					glm::vec2 transformPos = { Pos.x, Pos.y };
-					const auto Position = bcc.Center + transformPos;
-					const auto& Scale = bcc.Size;
-
-					boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
-					boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
-
+				if (spriteComp.Texture) {
+					Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
 				} else {
-
-					boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
-					boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
-
-					color = { 0.0f, 1.0f, 1.0f, 1.0f };
+					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
 				}
 
-				Renderer2D::DrawAABB(boundingBox, color);
+				if (hasEntityBeenSelected && selectedEntity == e) {
+					AABB boundingBox;
+					glm::vec4 color;
+
+					auto [Pos, Rot, Scale] = transformComp.DecomposeTransform();
+
+					if (e.HasComponent<BoxColliderComponent>()) {
+						auto& bcc = e.GetComponent<BoxColliderComponent>();
+						color = { 0.0f, 1.0f, 0.0f, 1.0f };
+
+						glm::vec2 transformPos = { Pos.x, Pos.y };
+						const auto Position = bcc.Center + transformPos;
+						const auto& Scale = bcc.Size;
+
+						boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
+						boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
+
+					}
+					else {
+
+						boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
+						boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
+
+						color = { 0.0f, 1.0f, 1.0f, 1.0f };
+					}
+
+					Renderer2D::DrawAABB(boundingBox, color);
+
+				}
+
+
 
 			}
+
+			if (e.HasComponent<AudioSourceComponent>())
+				Renderer2D::DrawSprite(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, (int)entity);
+
+
 
 		}
 
@@ -296,6 +315,8 @@ namespace Pixelate {
 
 
 
+
+
 		// calling on destroy in scripts
 		auto sbcView = m_Reg.view<ScriptingBehaviourComponent>();
 		for (auto entity : sbcView) {
@@ -305,6 +326,15 @@ namespace Pixelate {
 			ScriptingMaster::OnEntityDestroy(sbc.Behaviour);
 		}
 
+
+		auto audioView = m_Reg.view<AudioSourceComponent>();
+		for (auto entity : audioView) {
+			Entity e{ entity, this };
+			auto& asc = e.GetComponent<AudioSourceComponent>();
+
+
+			asc.Source->Stop();
+		}
 
 
 		auto scene = m_Reg.view<PhysicsWorldComponent>();

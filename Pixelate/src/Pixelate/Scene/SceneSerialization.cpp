@@ -524,11 +524,14 @@ namespace Pixelate {
 				if (auto ascYaml = entity["AudioSourceComponent"]) {
 					auto& comp = e.AddComponent<AudioSourceComponent>();
 					if (ascYaml["AssetHandle"]) {
-						comp.FilePath = AssetManager::GetFilePathString(AssetManager::GetMetadata(ascYaml["AssetHandle"].as<uint64_t>()));
+						AssetMetadata metadata = AssetManager::GetMetadata(ascYaml["AssetHandle"].as<uint64_t>());
+						comp.FilePath = AssetManager::GetFilePathString(metadata);
 						bool loop = ascYaml["ShouldLoop"].as<bool>();
 						float gain = ascYaml["Gain"].as<float>();
 
-						comp.Source = Audio::CreateAudioSource(comp.FilePath, loop, false);
+						comp.Source = AssetManager::GetAsset<AudioSource>(metadata.Handle);
+						comp.Source->SetLooping(loop);
+
 						if(comp.Source == nullptr)
 							comp.FilePath = "";
 						else
