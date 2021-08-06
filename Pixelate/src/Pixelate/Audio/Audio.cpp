@@ -7,6 +7,7 @@
 #include "Pixelate/Debug/Instrumentor.h"
 #include "Pixelate/Asset/AssetManager.h"
 
+
 namespace Pixelate {
 
 
@@ -24,9 +25,10 @@ namespace Pixelate {
 
 		s_Data = new AudioData;
 		s_Data->Context = CreateRef<AudioContext>();
+
 		s_Data->HasInitialized = s_Data->Context->Init();
 
-
+		AudioPlatformUtils::Init();
 
 	}
 	void Audio::Shutdown() {
@@ -34,6 +36,7 @@ namespace Pixelate {
 		s_Data->Context->Close();
 
 		delete s_Data;
+		AudioPlatformUtils::Shutdown();
 	}
 
 
@@ -50,6 +53,11 @@ namespace Pixelate {
 		s_Data->SourcesInScene[buffer].emplace_back(source);
 			
 		return source;
+	}
+
+	std::unordered_map<Ref<AudioBuffer>, std::vector<Ref<AudioSource>>>& const Audio::GetAllSourcesInScene()
+	{
+		return s_Data->SourcesInScene;
 	}
 
 	void Audio::StopAllSources() {

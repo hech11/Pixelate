@@ -384,106 +384,110 @@ namespace Pixelate {
 
 	void EditorContentBrowser::OnImguiRender()
 	{
+		if (m_IsPanelOpen) {
 
-		if (!ImGui::Begin("Content Browser")) {
-			ImGui::End();
-		}
-		else {
-			ImGui::Columns(2);
-			ImGui::SetColumnOffset(1, 300.0f);
-
-
-			ImGui::BeginChild("##folders");
-			{
-				if (ImGui::CollapsingHeader("Content", 0, ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen)) {
-
-
-					for (auto& entry : std::filesystem::directory_iterator(s_AssetDirectory)) {
-						RenderDirectory(entry.path());
-					}
-				}
-
-
-
-				ImGui::EndChild();
+			if (!ImGui::Begin("Content Browser")) {
+				ImGui::End();
 			}
-
-			ImGui::NextColumn();
-
-			ImGui::BeginChild("##dir", ImVec2(0, ImGui::GetWindowHeight() - 65));
-			{
-				RenderTopBar();
-				ImGui::Separator();
+			else {
+				ImGui::Columns(2);
+				ImGui::SetColumnOffset(1, 300.0f);
 
 
-				if (!m_IfHoveredOverItem) {
-					if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))
-						m_OpenWindowContextPopup = true;
-				}
-
-				float cellSize = m_ThumbnailSize + m_Padding;
-				int Columns = (int)(ImGui::GetContentRegionAvail().x / cellSize);
-				if (Columns < 1)
-					Columns = 1;
+				ImGui::BeginChild("##folders");
+				{
+					if (ImGui::CollapsingHeader("Content", 0, ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen)) {
 
 
-				ImGui::Columns(Columns, 0, false);
-
-
-				for (auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
-
-					if (!m_SearchForItemMode) {
-						RenderItem(entry.path());
-						ImGui::NextColumn();
-
-					}
-					else {
-						std::filesystem::path itemDir = m_CurrentDirectory / m_CurrentSearchItem;
-						if (strstr(entry.path().string().c_str(), itemDir.string().c_str())) {
-							RenderItem(entry.path());
-							ImGui::NextColumn();
+						for (auto& entry : std::filesystem::directory_iterator(s_AssetDirectory)) {
+							RenderDirectory(entry.path());
 						}
 					}
 
 
+
+					ImGui::EndChild();
 				}
 
-				if (m_OpenContextPopup) {
-					ImGui::OpenPopup("ContextPopup");
-					m_OpenContextPopup = false;
+				ImGui::NextColumn();
+
+				ImGui::BeginChild("##dir", ImVec2(0, ImGui::GetWindowHeight() - 65));
+				{
+					RenderTopBar();
+					ImGui::Separator();
+
+
+					if (!m_IfHoveredOverItem) {
+						if (Pixelate::Input::IsMouseButtonDown(MouseButton::Right) && ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup))
+							m_OpenWindowContextPopup = true;
+					}
+
+					float cellSize = m_ThumbnailSize + m_Padding;
+					int Columns = (int)(ImGui::GetContentRegionAvail().x / cellSize);
+					if (Columns < 1)
+						Columns = 1;
+
+
+					ImGui::Columns(Columns, 0, false);
+
+
+					for (auto& entry : std::filesystem::directory_iterator(m_CurrentDirectory)) {
+
+						if (!m_SearchForItemMode) {
+							RenderItem(entry.path());
+							ImGui::NextColumn();
+
+						}
+						else {
+							std::filesystem::path itemDir = m_CurrentDirectory / m_CurrentSearchItem;
+							if (strstr(entry.path().string().c_str(), itemDir.string().c_str())) {
+								RenderItem(entry.path());
+								ImGui::NextColumn();
+							}
+						}
+
+
+					}
+
+					if (m_OpenContextPopup) {
+						ImGui::OpenPopup("ContextPopup");
+						m_OpenContextPopup = false;
+					}
+					if (m_OpenWindowContextPopup) {
+						ImGui::OpenPopup("WindowContextPopup");
+						m_OpenWindowContextPopup = false;
+					}
+
+					DrawItemContext();
+					DrawWindowContext();
+
+
+					ImGui::Columns(1);
+					ImGui::EndChild();
+					ImGui::SliderFloat("Thumbnail Size", &m_ThumbnailSize, 64.0f, 512.0f, "%.2f");
+
+
+					if (m_DeleteItem) {
+						DeleteItem();
+						m_DeleteItem = false;
+					}
+
+					if (ImGui::IsAnyItemHovered()) {
+						m_IfHoveredOverItem = true;
+					}
+					else {
+						m_IfHoveredOverItem = false;
+					}
+
+					ImGui::End();
+
+
 				}
-				if (m_OpenWindowContextPopup) {
-					ImGui::OpenPopup("WindowContextPopup");
-					m_OpenWindowContextPopup = false;
-				}
-
-				DrawItemContext();
-				DrawWindowContext();
-
-
-				ImGui::Columns(1);
-				ImGui::EndChild();
-				ImGui::SliderFloat("Thumbnail Size", &m_ThumbnailSize, 64.0f, 512.0f, "%.2f");
-
-
-				if (m_DeleteItem) {
-					DeleteItem();
-					m_DeleteItem = false;
-				}
-
-				if (ImGui::IsAnyItemHovered()) {
-					m_IfHoveredOverItem = true;
-				}
-				else {
-					m_IfHoveredOverItem = false;
-				}
-
-				ImGui::End();
-
 
 			}
 
 		}
+
 		
 	}
 

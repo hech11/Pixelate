@@ -18,6 +18,9 @@
 #include <Pixelate/Editor/EditorAnimationPanel.h>
 #include <Pixelate/Editor/EditorConsoleLogger.h>
 #include <Pixelate/Editor/EditorTextureInspector.h>
+#include <Pixelate/Editor/EditorAudioPanel.h>
+#include <Pixelate/Editor/EditorAudioMixerPanel.h>
+#include <Pixelate/Editor/EditorContentBrowser.h>
 #include <Pixelate/Editor/EditorPanel.h>
 
 #include <Pixelate/Scene/Scene.h>
@@ -53,6 +56,8 @@ namespace Pixelate {
 			void SaveScene();
 
 		private : 
+
+			bool m_ShowStartupModal = true;
 
 			enum class SceneState {
 				None = -1,
@@ -102,6 +107,9 @@ namespace Pixelate {
 			Ref<EditorConsoleLogger> m_ConsoleLog;
 			Ref<EditorAnimationPanel> m_AnimatorPanel;
 			Ref<EditorTextureInspector> m_TextureInspector;
+			Ref<EditorAudioPanel> m_AudioPanel;
+			Ref<EditorAudioMixerPanel> m_AudioMixerPanel;
+			Ref<EditorContentBrowser> m_ContentBrowser;
 
 
 			ParticleSystem particleSystem;

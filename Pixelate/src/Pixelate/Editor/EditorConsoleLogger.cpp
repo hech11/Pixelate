@@ -17,7 +17,7 @@ namespace Pixelate {
 
 	};
 
-	static std::vector<ConsoleLogs> Logs;
+	static std::vector<ConsoleLogs> s_Logs;
 
 	 
 
@@ -29,7 +29,7 @@ namespace Pixelate {
 		temp.append(ss.str().c_str());
 		temp.appendfv(msg, args);
 
-		Logs.emplace_back(temp, 0);
+		s_Logs.emplace_back(temp, 0);
 	}
 
 	static void MessageCallback(const char* id, const std::string& time, const char* msg, const char* name, va_list args)IM_FMTARGS(2) {
@@ -40,7 +40,7 @@ namespace Pixelate {
 		temp.append(ss.str().c_str());
 		temp.appendfv(msg, args);
 
-		Logs.emplace_back( temp, 1);
+		s_Logs.emplace_back( temp, 1);
 	}
 
 	static void WarnCallback(const char* id, const std::string& time, const char* msg, const char* name, va_list args)IM_FMTARGS(2) {
@@ -50,7 +50,7 @@ namespace Pixelate {
 		temp.append(ss.str().c_str());
 		temp.appendfv(msg, args);
 
-		Logs.emplace_back(temp, 2);
+		s_Logs.emplace_back(temp, 2);
 
 
 	}
@@ -64,7 +64,7 @@ namespace Pixelate {
 		temp.append(ss.str().c_str());
 		temp.appendfv(msg, args);
 
-		Logs.emplace_back(temp, 3);
+		s_Logs.emplace_back(temp, 3);
 
 	}
 
@@ -75,13 +75,13 @@ namespace Pixelate {
 		temp.append(ss.str().c_str());
 		temp.appendfv(msg, args);
 
-		Logs.emplace_back(temp, 3);
+		s_Logs.emplace_back(temp, 3);
 
 	}
 
 	EditorConsoleLogger::EditorConsoleLogger(bool registerCallbacks)
 	{
-		Logs.reserve(256);
+		s_Logs.reserve(256);
 		m_Callbacks.Trace = TraceCallback;
 		m_Callbacks.Message = MessageCallback;
 		m_Callbacks.Warn = WarnCallback;
@@ -93,9 +93,12 @@ namespace Pixelate {
 
 	void EditorConsoleLogger::OnImguiRender() {
 
-		ImGui::Begin("Console");
+		if (!m_IsPanelOpen)
+			return;
+
+		ImGui::Begin("Console", &m_IsPanelOpen);
 		if (ImGui::Button("Clear")) {
-			Logs.clear();
+			s_Logs.clear();
 		};
 		ImGui::SameLine();
 
@@ -138,21 +141,21 @@ namespace Pixelate {
 		ImGui::Separator();
 		ImGui::BeginChild(1);
 		ImVec4 txtCol;
-		for (int i = 0; i < Logs.size(); i++) {
-			if (Logs[i].Color == 1) {
+		for (int i = 0; i < s_Logs.size(); i++) {
+			if (s_Logs[i].Color == 1) {
 				txtCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 			}
-			else if (Logs[i].Color == 0) {
+			else if (s_Logs[i].Color == 0) {
 				txtCol = ImVec4(0.2f, 0.8f, 0.2f, 1.0f);
-			} else if (Logs[i].Color == 2) {
+			} else if (s_Logs[i].Color == 2) {
 				txtCol = ImVec4(0.8f, 0.8f, 0.1f, 1.0f);
 			}
-			else if (Logs[i].Color == 3) {
+			else if (s_Logs[i].Color == 3) {
 				txtCol = ImVec4(0.8f, 0.4f, 0.2f, 1.0f);
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, txtCol);
-			ImGui::TextUnformatted(Logs[i].TextBuffer.begin());
+			ImGui::TextUnformatted(s_Logs[i].TextBuffer.begin());
 			ImGui::PopStyleColor();
 
 		}

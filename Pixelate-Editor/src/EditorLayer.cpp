@@ -26,7 +26,6 @@
 #include "glm/gtx/matrix_decompose.hpp"
 #include "../../NativeFileDialog/src/include/nfd.h"
 
-#include <Pixelate/Editor/EditorContentBrowser.h>
 #include <Pixelate/Asset/AssetManager.h>
 
 namespace Pixelate {
@@ -58,8 +57,11 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("SceneHierarcy", m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene));
 		PanelManager.RegisterPanel("TextureInspector" ,m_TextureInspector = CreateRef<EditorTextureInspector>(), false);
 		PanelManager.RegisterPanel("ConsoleLog", m_ConsoleLog = CreateRef<EditorConsoleLogger>(true));
-		PanelManager.RegisterPanel("ContentBrowser", CreateRef<EditorContentBrowser>());
+		PanelManager.RegisterPanel("ContentBrowser", m_ContentBrowser = CreateRef<EditorContentBrowser>());
+		PanelManager.RegisterPanel("AudioPanel", m_AudioPanel = CreateRef<EditorAudioPanel>());
+		PanelManager.RegisterPanel("AudioMixerPanel", m_AudioMixerPanel = CreateRef<EditorAudioMixerPanel>());
 
+		
 
 		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
 
@@ -172,6 +174,10 @@ namespace Pixelate {
 
 
 		FileSystem::StartWatching(); // Should move this when projects are introduced.
+		Ref<AudioMixer> testMixer = CreateRef<AudioMixer>();
+		m_AudioMixerPanel->SetMixerContext(testMixer);
+
+		PanelManager.SetSceneContext(m_EditorScene);
 
 	}
 
@@ -450,8 +456,12 @@ namespace Pixelate {
 		using namespace Pixelate;
 		auto& PanelManager = EditorPanelManager::Get();
 
+		if (m_ShowStartupModal) {
+			ImGui::OpenPopup("Welcome");
+			m_ShowStartupModal = false;
+		}
 
-
+		
 
 
 /////////////////////// The dockspace and menu bar //////////////////////////////////
@@ -502,10 +512,8 @@ namespace Pixelate {
 				if (ImGui::MenuItem("Open Scene...", "Ctr+O")) {
 					OpenScene();
 				}
-
 				if (ImGui::MenuItem("Save Scene...", "Ctr+Shift+S")) {
 					SaveScene();
-
 				}
 				ImGui::Separator();
 
@@ -515,7 +523,7 @@ namespace Pixelate {
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Edit")) {
-				if (ImGui::MenuItem("Reload CSharp Assembly", "")) {
+				if (ImGui::MenuItem("Reload CSharp Assembly", "Doesn't work yet")) {
 					//ScriptingMaster::ReloadAssembly();
 				}
 				ImGui::EndMenu();
@@ -530,19 +538,41 @@ namespace Pixelate {
 				}
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Window")) {
 
+				if (ImGui::MenuItem("Audio", "")) {
+					m_AudioPanel->SetOpenPanel(true);
+				}
+				if (ImGui::MenuItem("Audio Mixer", "")) {
+					m_AudioMixerPanel->SetOpenPanel(true);
+				}
+				if (ImGui::MenuItem("Console Logger", "")) {
+					m_ConsoleLog->SetOpenPanel(true);
+				}
+				if (ImGui::MenuItem("Content Browser", "")) {
+					m_ContentBrowser->SetOpenPanel(true);
+				}
+
+				ImGui::EndMenu();
+			}
 			ImGui::EndMenuBar();
 		}
+
+
+
+
 
 		ImGui::End();
 /////////////////////////////////////////////////////////////////////////////////////
 
 
 
-// 		static bool showDemoWindow = true;
-// 		ImGui::ShowDemoWindow(&showDemoWindow);
+ 		static bool showDemoWindow = true;
+ 		ImGui::ShowDemoWindow(&showDemoWindow);
 
 	
+
+
 
 		ImGui::Begin("Animation test");
 		if (ImGui::Button("Play2ndClip")) {
@@ -873,6 +903,19 @@ namespace Pixelate {
 			ImGui::PopItemWidth();
 			ImGui::End();
 		}
+
+
+
+		if (ImGui::BeginPopupModal("Welcome", NULL, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("Hello! Thank you for downloading Pixelate!");
+			ImGui::Text("Pixelate is currently a WIP so features here may unfinished or broken.");
+			ImGui::Text("With that in mind please be aware that this program may crash!");
+			ImGui::Separator();
+			if (ImGui::Button("Ok", { 500, 50 })) { ImGui::CloseCurrentPopup(); }
+			ImGui::SetItemDefaultFocus();
+			ImGui::EndPopup();
+		}
+
 
 
 // for creating and loading projects

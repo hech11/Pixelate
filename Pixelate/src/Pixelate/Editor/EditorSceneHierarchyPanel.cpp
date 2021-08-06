@@ -588,9 +588,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					if (result == NFD_OKAY) {
 						PX_CORE_TRACE("Success!");
 
-						auto path = std::filesystem::relative("assets/", outPath);
+						auto path = std::filesystem::relative(outPath, "assets/");
 
-						Ref<AudioBuffer> buffer = AssetManager::GetAsset<AudioBuffer>(AssetManager::GetFilePathString(AssetManager::GetMetadata(path)));
+						Ref<AudioBuffer> buffer = AssetManager::GetAsset<AudioBuffer>(AssetManager::GetMetadata(path).Handle);
 						asc.Source = Audio::CreateAudioSource(buffer);
 						asc.FilePath = outPath;
 
@@ -612,7 +612,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				BeginDragDrop([&](AssetMetadata& metadata) {
 					if (metadata.Type == AssetType::Audio) {
-						asc.Source = AssetManager::GetAsset<AudioSource>(metadata.Handle);
+						asc.Source = Audio::CreateAudioSource(AssetManager::GetAsset<AudioBuffer>(metadata.Handle));
 						asc.FilePath = AssetManager::GetFilePathString(metadata);
 					}
 					});
