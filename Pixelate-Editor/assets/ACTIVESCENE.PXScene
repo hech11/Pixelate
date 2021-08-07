@@ -1,12 +1,12 @@
 Scene: Scene
 Entities:
-  - Entity: 7803769482041168964
+  - Entity: 1376604376831120266
     NameComponent:
       Name: tone-ogg
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2.28600001, 0.108000003, 0, 1]
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2.4000001, 0.101999998, 0, 1]
     AudioSourceComponent:
       AssetHandle: 16072470196708842148
       Gain: 1
@@ -15,7 +15,7 @@ Entities:
       ClassName: PlayAudio
       Fields:
         []
-  - Entity: 734928659955555577
+  - Entity: 8398974963023737732
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
@@ -29,7 +29,7 @@ Entities:
         Position: [0, 0]
         Scale: [128, 128]
       TintColor: [1, 1, 1, 1]
-  - Entity: 14051248508056008312
+  - Entity: 6837674976685041896
     NameComponent:
       Name: Camera
     TagComponent:

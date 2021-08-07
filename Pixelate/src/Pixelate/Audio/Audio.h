@@ -5,6 +5,7 @@
 #include "Pixelate/Audio/AudioListener.h"
 #include "Pixelate/Audio/AudioSource.h"
 #include "Pixelate/Audio/AudioPlatformUtils.h"
+#include "Pixelate/Audio/AudioMixer.h"
 
 #include "GLM/glm/glm.hpp"
 
@@ -22,10 +23,10 @@ namespace Pixelate {
 
 			static bool HasInitializedProperly();
 
-
-
 			static Ref<AudioSource> CreateAudioSource(const Ref<AudioBuffer>& buffer);
 			static std::unordered_map< Ref<AudioBuffer>, std::vector<Ref<AudioSource>>>& const GetAllSourcesInScene();
+
+			static Ref<AudioMixer> GetDefaultMixer();
 
 			static void Reload(const AssetMetadata& metadata);
 

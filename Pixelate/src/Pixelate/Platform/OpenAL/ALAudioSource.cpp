@@ -2,6 +2,8 @@
 #include "Pixelate/Audio/AudioSource.h"
 
 #include "AL/al.h"
+#include "AL/efx.h"
+
 #include "Pixelate/Platform/OpenAL/ALCommon.h"
 
 
@@ -17,6 +19,14 @@ namespace Pixelate {
 
 		PX_PROFILE_FUNCTION();
 		ALCall(alGenSources(1, &m_AudioSourceID));
+
+		m_MixerGroup = Audio::GetDefaultMixer()->GetMasterGroup();
+
+		m_LowPassFilter = CreateRef<AudioFilter>(AudioFilterSpecs({ AudioFilterType::LowPass, 1.0f }));
+		m_HighPassFilter = CreateRef<AudioFilter>(AudioFilterSpecs({AudioFilterType::HighPass, 1.0f}));
+
+		ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_LowPassFilter->GetFilterID()));
+		ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_HighPassFilter->GetFilterID()));
 
 	}
 
@@ -53,18 +63,15 @@ namespace Pixelate {
 
 	void AudioSource::SetGain(float gain) {
 		PX_PROFILE_FUNCTION();
-
-		// 1.0f - 0.0f -> 0.1f - 0.0;
-		gain *= 0.1f;
-
-		if (gain > 0.1f)
-			gain = 0.1f;
-
-		if (gain < 0.0f)
-			gain = 0.0f;
 		m_Gain = gain;
 
-		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, gain));
+		if (m_Gain > m_MaxGain)
+			m_Gain = m_MaxGain;
+
+		if (m_Gain < m_MinGain)
+			m_Gain = m_MinGain;
+
+		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain));
 
 	}
 
@@ -84,6 +91,65 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		m_AudioBuffer = buffer;
 		ALCall(alSourcei(m_AudioSourceID, AL_BUFFER, buffer->GetHandleID()));
+	}
+
+
+
+	void AudioSource::SetPitch(float pitch)
+	{
+		m_Pitch = pitch;
+		ALCall(alSourcef(m_AudioSourceID, AL_PITCH, m_Pitch));
+	}
+
+
+	void AudioSource::SetMaxGain(float maxGain)
+	{
+		m_MaxGain = maxGain;
+		ALCall(alSourcef(m_AudioSourceID, AL_MAX_GAIN, m_MaxGain));
+
+	}
+
+	void AudioSource::SetMinGain(float minGain)
+	{
+		if (m_MinGain < 0.0f)
+			m_MinGain = 0.0f;
+
+		m_MinGain = minGain;
+		ALCall(alSourcef(m_AudioSourceID, AL_MIN_GAIN, m_MinGain));
+	}
+
+	void AudioSource::ShouldMute(bool mute)
+	{
+		if (mute) {
+			ALCall(alSourcef(m_AudioSourceID, AL_GAIN, 0.0f));
+			m_State = m_State | AudioMixerStates::Mute;
+		}
+		else {
+			ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain));
+			m_State = m_State & (~(AudioMixerStates::Mute));
+		}
+
+	}
+
+	void AudioSource::PlayOnAwake(bool awake) {
+		m_PlayOnAwake = awake;
+	}
+
+	void AudioSource::ShouldBypassEffects(bool bypass) {
+		if (bypass) {
+			m_State = m_State | AudioMixerStates::Bypass;
+		}
+		else {
+			m_State = m_State & (~(AudioMixerStates::Bypass));
+		}
+		
+	}
+
+	void AudioSource::SetLowPassGain(float value) {
+		m_LowPassFilter->SetGain(value);
+	}
+	void AudioSource::SetHighPassGain(float value) {
+		m_HighPassFilter->SetGain(value);
 	}
 
 

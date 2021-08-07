@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Pixelate/Core/Core.h"
+#include "Pixelate/Audio/AudioMixerStates.h"
 
 #include <vector>
 #include <string>
 
 namespace Pixelate {
 
-	enum class AudioMixerStates { Default, Solo, Mute, Bypass };
 
 	struct AudioMixerGroup {
 

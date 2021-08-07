@@ -4,6 +4,7 @@
 #include "Pixelate/Audio/Audio.h"
 
 #include <imgui.h>
+#include <type_traits>
 
 
 namespace Pixelate {
@@ -26,14 +27,34 @@ namespace Pixelate {
 	}
 
 
-	void EditorAudioMixerPanel::RenderGroup(const Ref<AudioMixerGroup>& group) {
-		std::stringstream imguiID;
-		imguiID << "##" << group->DebugName;
-		ImGui::BeginChild(imguiID.str().c_str(), {150.0f, 450.0f}, true);
+	void EditorAudioMixerPanel::RenderMixer(const Ref<AudioMixer>& mixer)
+	{
+		RenderGroup(mixer->GetMasterGroup(), true);
+		ImGui::SameLine();
+
+		for (auto& group : mixer->GetGroups()) {
+			RenderGroup(group);
+			ImGui::SameLine();
+		}
+
+	}
+
+	void EditorAudioMixerPanel::RenderGroup(const Ref<AudioMixerGroup>& group, bool isMaster) {
+
+		size_t hash = std::hash<std::string>{}(group->DebugName); // cache these?
+		ImGui::BeginChild(std::string(group->DebugName).c_str(), {150.0f, 450.0f}, true);
+
 		ImGui::Text(group->DebugName.c_str());
 
-		float peak = AudioPlatformUtils::GetPeakValue();
-		float pResult = group->Gain * peak; // TODO: not quite VU... 
+		float peak = 0.0f;
+		if (isMaster)
+			peak = AudioPlatformUtils::GetPeakValue();
+		else {
+
+		}
+
+
+		float pResult = group->Gain * peak;
 
 		const float speakerVUValues[] = { pResult, pResult };
 
@@ -74,13 +95,7 @@ namespace Pixelate {
 		}
 		ImGui::NextColumn();
 
-
-		RenderGroup(m_CurrentMixer->GetMasterGroup());
-		ImGui::SameLine();
-		for (auto& group : m_CurrentMixer->GetGroups()) {
-			RenderGroup(group);
-			ImGui::SameLine();
-		}
+		RenderMixer(m_CurrentMixer);
 
 
 		ImGui::Columns(1);

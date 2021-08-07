@@ -15,6 +15,8 @@ namespace Pixelate {
 		Ref<AudioContext> Context;
 		std::unordered_map<Ref<AudioBuffer>, std::vector<Ref<AudioSource>>> SourcesInScene;
 
+		Ref<AudioMixer> MainMixer;
+
 		bool HasInitialized = false;
 	};
 
@@ -27,6 +29,7 @@ namespace Pixelate {
 		s_Data->Context = CreateRef<AudioContext>();
 
 		s_Data->HasInitialized = s_Data->Context->Init();
+		s_Data->MainMixer = CreateRef<AudioMixer>();
 
 		AudioPlatformUtils::Init();
 
@@ -58,6 +61,10 @@ namespace Pixelate {
 	std::unordered_map<Ref<AudioBuffer>, std::vector<Ref<AudioSource>>>& const Audio::GetAllSourcesInScene()
 	{
 		return s_Data->SourcesInScene;
+	}
+
+	Ref<AudioMixer> Audio::GetDefaultMixer() {
+		return s_Data->MainMixer;
 	}
 
 	void Audio::StopAllSources() {

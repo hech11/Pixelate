@@ -11,8 +11,6 @@
 namespace Pixelate {
 
 
-	// For now the orientation is fixed. If I decide to implement a 3D renderer
-	// I might enable 3d audio.
 
 	AudioListener::AudioListener() {
 		PX_PROFILE_FUNCTION();
@@ -29,8 +27,19 @@ namespace Pixelate {
 	void AudioListener::SetGain(float gain)
 	{
 		PX_PROFILE_FUNCTION();
-		m_Gain = gain;
-		ALCall(alListenerfv(AL_GAIN, &m_Gain));
+		Audio::GetDefaultMixer()->GetMasterGroup()->Gain = gain;
+		ALCall(alListenerfv(AL_GAIN, &gain));
 	}
+
+	void AudioListener::SetSpatial(bool value) {
+		m_IsSpatial = value;
+		if (m_IsSpatial) {
+			ALCall(alDistanceModel(AL_LINEAR_DISTANCE));
+		}
+		else {
+			ALCall(alDistanceModel(AL_NONE));
+		}
+	}
+
 
 }

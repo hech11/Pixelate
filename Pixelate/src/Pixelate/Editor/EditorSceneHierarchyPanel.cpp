@@ -579,10 +579,10 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::Columns(2);
 				ImGui::SetColumnWidth(0, 150);
 
-				ImGui::Text("Source filepath");
+				ImGui::Text("Audio clip");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
-				if (ImGui::Button("open")) {
+				if (ImGui::Button("load")) {
 					nfdchar_t* outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("wav,ogg,mp3", NULL, &outPath);
 					if (result == NFD_OKAY) {
@@ -619,9 +619,41 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				ImGui::PopItemWidth();
 
+
 				if (asc.Source) {
+					ImGui::Separator();
+
 					ImGui::NextColumn();
-					ImGui::Text("Should Loop");
+					ImGui::Text("Mixer Group Output");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					ImGui::InputText("##mixerDisplay", (char*)asc.Source->GetMixerGroup()->DebugName.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+					ImGui::PopItemWidth();
+
+
+
+					ImGui::NextColumn();
+					ImGui::Text("Mute");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					bool mute = false;
+					if (ImGui::Checkbox("##Mute", &mute)) {
+					}
+					ImGui::PopItemWidth();
+
+
+					ImGui::NextColumn();
+					ImGui::Text("Bypass Effects");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					bool beffects = false;
+					if (ImGui::Checkbox("##BypassEffects", &beffects)) {
+					}
+					ImGui::PopItemWidth();
+
+
+					ImGui::NextColumn();
+					ImGui::Text("Loop");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
 					bool loop = asc.Source->IsLooping();
@@ -630,15 +662,89 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					}
 					ImGui::PopItemWidth();
 
+	
+
+					ImGui::NextColumn();
+					ImGui::Text("Play On Awake");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					bool playOnAwake = asc.Source->ShouldPlayOnAwake();
+					if (ImGui::Checkbox("##PlayOnAwake", &playOnAwake)) {
+						asc.Source->PlayOnAwake(playOnAwake);
+					}
+					ImGui::PopItemWidth();
+
+
+
 					ImGui::NextColumn();
 					ImGui::Text("Gain");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
 					float gain = asc.Source->GetGain();
-					if (ImGui::DragFloat("##SetGain", &gain)) {
+					if (ImGui::SliderFloat("##SetGain", &gain, 0.0f, 1.0f, "%.3f")) {
 						asc.Source->SetGain(gain);
 					}
 					ImGui::PopItemWidth();
+
+					ImGui::NextColumn();
+					ImGui::Text("Pitch");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					float pitch = asc.Source->GetPitch();
+					if (ImGui::SliderFloat("##SetPitch", &pitch, 0.0f, 1.0f, "%.3f")) {
+						asc.Source->SetPitch(pitch);
+					}
+					ImGui::PopItemWidth();
+
+ 					ImGui::Separator();
+ 
+//  					ImGui::NextColumn();
+//  					ImGui::Text("Max Gain");
+//  					ImGui::NextColumn();
+//  					ImGui::PushItemWidth(-1);
+//  					float maxGain = 1.0f;
+// 					if (ImGui::SliderFloat("##MaxGain", &maxGain, 0.0f, 1.0f, "%.3f")) {
+//  					}
+//  					ImGui::PopItemWidth();
+// 
+// 
+// 
+// 					ImGui::NextColumn();
+// 					ImGui::Text("Min Gain");
+// 					ImGui::NextColumn();
+// 					ImGui::PushItemWidth(-1);
+// 					float minGain = 0.0f;
+// 					if (ImGui::SliderFloat("##MinGain", &minGain, 0.0f, 1.0f, "%.3f")) {
+// 					}
+// 					ImGui::PopItemWidth();
+
+
+
+					ImGui::NextColumn();
+					ImGui::Text("Low-pass gain");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					float lowpassGain = asc.Source->GetLowPassFilter()->GetGain();
+					if (ImGui::SliderFloat("##lowpassgain", &lowpassGain, 0.0f, 1.0f, "%.3f")) {
+						asc.Source->SetLowPassGain(lowpassGain);
+					}
+					ImGui::PopItemWidth();
+
+
+
+					ImGui::NextColumn();
+					ImGui::Text("High-pass gain");
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(-1);
+					float highPassGain = asc.Source->GetHighPassFilter()->GetGain();
+					if (ImGui::SliderFloat("##highpassgain", &highPassGain, 0.0f, 1.0f, "%.3f")) {
+						asc.Source->SetHighPassGain(highPassGain);
+					}
+					ImGui::PopItemWidth();
+
+
+
+
 
 				}
 
