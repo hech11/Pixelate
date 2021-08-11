@@ -5,8 +5,7 @@
 namespace Pixelate {
 
 
-	// bandpass?
-	enum class AudioFilterType { None = -1, LowPass, HighPass };
+	enum class AudioFilterType { None = -1, BandPass, LowPass, HighPass };
 
 
 	struct AudioFilterSpecs {
@@ -14,27 +13,25 @@ namespace Pixelate {
 		float Gain = 1.0f;
 	};
 
-	// TODO: how about implementing wet and dry channels?
+
 	class AudioFilter
 	{
 
 		public :
 
-			AudioFilter();
-			AudioFilter(const AudioFilterSpecs& specs);
+			virtual ~AudioFilter(){}
 
-			~AudioFilter();
+			virtual void SetGain(float gain) = 0;
 
-			void SetGain(float gain);
 			const float GetGain() const { return m_Gain; }
 
-			void SetType(const AudioFilterType& type);
 			const AudioFilterType& GetType() const { return m_Type; }
 
-			std::string ToString();
+			virtual std::string ToString() = 0;
 
 			const uint32_t GetFilterID() const { return m_FilterID; }
-		private :
+
+		protected :
 			uint32_t m_FilterID;
 			AudioFilterType m_Type;
 

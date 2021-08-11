@@ -9,6 +9,10 @@ namespace Pixelate {
 
 
 		public:
+			EditorAudioMixerPanel() {
+				SetOpenPanel(false);
+			}
+
 			void OnImguiRender() override;
 			void SetMixerContext(const Ref<AudioMixer>& mixer) { m_CurrentMixer = mixer; }
 

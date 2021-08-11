@@ -61,7 +61,8 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("AudioPanel", m_AudioPanel = CreateRef<EditorAudioPanel>());
 		PanelManager.RegisterPanel("AudioMixerPanel", m_AudioMixerPanel = CreateRef<EditorAudioMixerPanel>());
 
-		
+		m_AudioMixerPanel->SetOpenPanel(false);
+
 
 		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
 
@@ -174,8 +175,9 @@ namespace Pixelate {
 
 
 		FileSystem::StartWatching(); // Should move this when projects are introduced.
-		Ref<AudioMixer> testMixer = CreateRef<AudioMixer>();
-		m_AudioMixerPanel->SetMixerContext(testMixer);
+
+		Ref<AudioMixer> GlobalMixer = CreateRef<AudioMixer>();
+		m_AudioMixerPanel->SetMixerContext(GlobalMixer);
 
 		PanelManager.SetSceneContext(m_EditorScene);
 

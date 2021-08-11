@@ -696,7 +696,6 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					}
 					ImGui::PopItemWidth();
 
- 					ImGui::Separator();
  
 //  					ImGui::NextColumn();
 //  					ImGui::Text("Max Gain");
@@ -719,29 +718,156 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 // 					ImGui::PopItemWidth();
 
 
+					if (asc.Source->GetLowPassFilter()) {
+						ImGui::Separator();
 
-					ImGui::NextColumn();
-					ImGui::Text("Low-pass gain");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					float lowpassGain = asc.Source->GetLowPassFilter()->GetGain();
-					if (ImGui::SliderFloat("##lowpassgain", &lowpassGain, 0.0f, 1.0f, "%.3f")) {
-						asc.Source->SetLowPassGain(lowpassGain);
+						ImGui::NextColumn();
+						ImGui::Text("Low-pass gain");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float lowpassGain = asc.Source->GetLowPassFilter()->GetGain();
+						if (ImGui::SliderFloat("##lowpassgain", &lowpassGain, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetLowPassFilter()->SetGain(lowpassGain);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
+
+
+						ImGui::NextColumn();
+						ImGui::Text("Low-pass gain HF");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float lowpassGainh = asc.Source->GetLowPassFilter()->GetHFGain();
+						if (ImGui::SliderFloat("##lowpassgainh", &lowpassGainh, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetLowPassFilter()->SetHFGain(lowpassGainh);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
+
 					}
-					ImGui::PopItemWidth();
 
 
+					if (asc.Source->GetHighPassFilter()) {
+						ImGui::Separator();
+						ImGui::NextColumn();
+						ImGui::Text("High-pass gain");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float highPassGain = asc.Source->GetHighPassFilter()->GetGain();
+						if (ImGui::SliderFloat("##highpassgain", &highPassGain, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetHighPassFilter()->SetGain(highPassGain);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
 
-					ImGui::NextColumn();
-					ImGui::Text("High-pass gain");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					float highPassGain = asc.Source->GetHighPassFilter()->GetGain();
-					if (ImGui::SliderFloat("##highpassgain", &highPassGain, 0.0f, 1.0f, "%.3f")) {
-						asc.Source->SetHighPassGain(highPassGain);
+
+						ImGui::NextColumn();
+						ImGui::Text("High-pass gain LF");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float highPassGainl = asc.Source->GetHighPassFilter()->GetLFGain();
+						if (ImGui::SliderFloat("##highpassgainl", &highPassGainl, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetHighPassFilter()->SetLFGain(highPassGainl);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
+
+
 					}
-					ImGui::PopItemWidth();
 
+					if (asc.Source->GetBandPassFilter()) {
+						ImGui::Separator();
+						ImGui::NextColumn();
+						ImGui::Text("Bandpass Gain");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float bandpassGain = asc.Source->GetBandPassFilter()->GetGain();
+						if (ImGui::SliderFloat("##bandpassgain", &bandpassGain, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetBandPassFilter()->SetGain(bandpassGain);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
+
+
+						ImGui::NextColumn();
+						ImGui::Text("Bandpass gain LF");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float bandpassgainl = asc.Source->GetBandPassFilter()->GetLFGain();
+						if (ImGui::SliderFloat("##bandpassgainl", &bandpassgainl, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetBandPassFilter()->SetLFGain(bandpassgainl);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
+
+						ImGui::NextColumn();
+						ImGui::Text("Bandpass gain HF");
+						ImGui::NextColumn();
+						ImGui::PushItemWidth(-1);
+						float bandpassgainh = asc.Source->GetBandPassFilter()->GetHFGain();
+						if (ImGui::SliderFloat("##bandpassgainh", &bandpassgainh, 0.0f, 1.0f, "%.3f")) {
+							asc.Source->GetBandPassFilter()->SetHFGain(bandpassgainh);
+							asc.Source->ApplyFilterChanges();
+						}
+						ImGui::PopItemWidth();
+					}
+
+
+					ImGui::Separator();
+					ImGui::Columns(1);
+
+				
+						if (!asc.Source->GetLowPassFilter()) {
+
+							if (ImGui::Button("Add Low-pass")) {
+								asc.Source->AddFilter(AudioFilterType::LowPass);
+								ImGui::CloseCurrentPopup();
+							}
+							ImGui::SameLine();
+
+						}
+						if (!asc.Source->GetHighPassFilter()) {
+
+							if (ImGui::Button("Add High-pass")) {
+								asc.Source->AddFilter(AudioFilterType::HighPass);
+								ImGui::CloseCurrentPopup();
+							}
+							ImGui::SameLine();
+						}
+
+						if (!asc.Source->GetBandPassFilter()) {
+
+							if (ImGui::Button("Add Band-pass")) {
+								asc.Source->AddFilter(AudioFilterType::BandPass);
+								ImGui::CloseCurrentPopup();
+							}
+
+						}
+
+
+
+// 					ImGui::Separator();
+// 
+// 					ImGui::NextColumn();
+// 					ImGui::Text("High-pass gain");
+// 					ImGui::NextColumn();
+// 					ImGui::PushItemWidth(-1);
+// 					float highPassGain = asc.Source->GetHighPassFilter()->GetGain();
+// 					if (ImGui::SliderFloat("##highpassgain", &highPassGain, 0.0f, 1.0f, "%.3f")) {
+// 						asc.Source->SetHighPassGain(highPassGain);
+// 					}
+// 					ImGui::PopItemWidth();
+// 
+// 
+// 					ImGui::NextColumn();
+// 					ImGui::Text("High-pass gain LF");
+// 					ImGui::NextColumn();
+// 					ImGui::PushItemWidth(-1);
+// 					float highPassGainl = asc.Source->GetHighPassFilter()->GetLPGain();
+// 					if (ImGui::SliderFloat("##highpassgainl", &highPassGainl, 0.0f, 1.0f, "%.3f")) {
+// 						asc.Source->GetHighPassFilter()->SetGainLP(highPassGainl);
+// 					}
+// 					ImGui::PopItemWidth();
 
 
 

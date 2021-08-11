@@ -82,7 +82,10 @@ namespace Pixelate {
 
 
 	void EditorAudioMixerPanel::OnImguiRender() {
-		ImGui::Begin("Audio Mixer", &m_IsPanelOpen);
+		if (!m_IsPanelOpen)
+			return;
+
+		ImGui::Begin("Audio Mixer WIP", &m_IsPanelOpen);
 
 		ImGui::Columns(2);
 		ImGui::SetColumnOffset(1, 200.0f);

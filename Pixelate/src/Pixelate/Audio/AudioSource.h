@@ -9,6 +9,9 @@
 #include "AudioBuffer.h"
 #include "AudioFilter.h"
 
+#include "Pixelate/Audio/DSP/Filters/BandPass.h"
+#include "Pixelate/Audio/DSP/Filters/HighPass.h"
+#include "Pixelate/Audio/DSP/Filters/LowPass.h"
 
 namespace Pixelate {
 	
@@ -39,16 +42,51 @@ namespace Pixelate {
 			void SetPosition(const glm::vec3& position);
 			void SetBufferData(const Ref<AudioBuffer>& buffer);
 
-			void SetLowPassGain(float value);
-			void SetHighPassGain(float value);
+			void AddFilter(const AudioFilterType& Filter) {
+				switch (Filter)
+				{
+					case AudioFilterType::LowPass:
+						if (!m_LowpassFilter) {
+							m_LowpassFilter = CreateRef<LowPass>();
+						}
+						else {
+							PX_CORE_WARN("There is already a low-pass filter added to this audio source!\n");
+						}
+						break;
+					case AudioFilterType::HighPass:
+						if (!m_HighpassFilter) {
+							m_HighpassFilter = CreateRef<HighPass>();
+						}
+						else {
+							PX_CORE_WARN("There is already a high-pass filter added to this audio source!\n");
+						}
+						break;
+					case AudioFilterType::BandPass:
+						if (!m_BandpassFilter) {
+							m_BandpassFilter = CreateRef<BandPass>();
+						}
+						else {
+							PX_CORE_WARN("There is already a bandpass filter added to this audio source!\n");
+						}
+						break;
+					default:
+						break;
+
+				}
+
+			}
+
+			const Ref<LowPass>& GetLowPassFilter() const { return m_LowpassFilter; }
+			const Ref<HighPass>& GetHighPassFilter() const { return m_HighpassFilter; }
+			const Ref<BandPass>& GetBandPassFilter() const { return m_BandpassFilter; }
+
+			void ApplyFilterChanges();
 
 			void SetMixerGroup(const Ref<AudioMixerGroup>& group) { m_MixerGroup = group; }
 			const Ref<AudioMixerGroup>& GetMixerGroup() const { return m_MixerGroup; }
 
 			const Ref<AudioBuffer>& GetBufferData() const;
 
-			Ref<AudioFilter> GetLowPassFilter() const { return m_LowPassFilter; }
-			Ref<AudioFilter> GetHighPassFilter() const { return m_HighPassFilter; }
 
 			unsigned int GetAudioSourceHandleID() { return m_AudioSourceID; }
 
@@ -70,9 +108,9 @@ namespace Pixelate {
 
 			AudioMixerStates m_State;
 
-			// TODO: Make them optional instead of forcing all sources to have filters?
-			Ref<AudioFilter> m_LowPassFilter;
-			Ref<AudioFilter> m_HighPassFilter;
+			Ref<BandPass> m_BandpassFilter;
+			Ref<HighPass> m_HighpassFilter;
+			Ref<LowPass> m_LowpassFilter;
 	
 			unsigned int m_AudioSourceID;
 			glm::vec3 m_Position;
@@ -81,6 +119,7 @@ namespace Pixelate {
 			Ref<AudioMixerGroup> m_MixerGroup;
 	
 	};
+
 
 	
 }

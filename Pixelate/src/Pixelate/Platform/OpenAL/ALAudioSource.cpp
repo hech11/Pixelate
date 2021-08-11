@@ -22,12 +22,6 @@ namespace Pixelate {
 
 		m_MixerGroup = Audio::GetDefaultMixer()->GetMasterGroup();
 
-		m_LowPassFilter = CreateRef<AudioFilter>(AudioFilterSpecs({ AudioFilterType::LowPass, 1.0f }));
-		m_HighPassFilter = CreateRef<AudioFilter>(AudioFilterSpecs({AudioFilterType::HighPass, 1.0f}));
-
-		ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_LowPassFilter->GetFilterID()));
-		ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_HighPassFilter->GetFilterID()));
-
 	}
 
 	AudioSource::~AudioSource() {
@@ -82,6 +76,17 @@ namespace Pixelate {
 		m_Position = position;
 		ALCall(alSource3f(m_AudioSourceID, AL_POSITION, position.x, position.y, position.z));
 	}
+
+
+	void AudioSource::ApplyFilterChanges() {
+		if(m_LowpassFilter)
+			ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_LowpassFilter->GetFilterID()));
+		if (m_BandpassFilter)
+			ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_BandpassFilter->GetFilterID()));
+		if (m_HighpassFilter)
+			ALCall(alSourcei(m_AudioSourceID, AL_DIRECT_FILTER, m_HighpassFilter->GetFilterID()));
+	}
+
 
 	const Ref<AudioBuffer>& AudioSource::GetBufferData() const
 	{
@@ -143,13 +148,6 @@ namespace Pixelate {
 			m_State = m_State & (~(AudioMixerStates::Bypass));
 		}
 		
-	}
-
-	void AudioSource::SetLowPassGain(float value) {
-		m_LowPassFilter->SetGain(value);
-	}
-	void AudioSource::SetHighPassGain(float value) {
-		m_HighPassFilter->SetGain(value);
 	}
 
 
