@@ -16,8 +16,21 @@ namespace Pixelate {
 
 
 		ImGui::Begin("Audio", &m_IsPanelOpen);
-		
+
+		ImGui::Text("Audio Mixer:");
+		ImGui::SameLine();
+		char temp[50];
+		memset(temp, 0, 50);
+		if (ImGui::Button("Import...")) {
+
+		}
+		ImGui::SameLine();
+		ImGui::InputText("##AudioMixerPath", temp, 50, ImGuiInputTextFlags_ReadOnly);
+
+		ImGui::Separator();
 		auto& sourcesInScene = Audio::GetAllSourcesInScene();
+
+
 		ImGui::Text("Audio details in scene");
 		ImGui::Separator();
 		ImGui::Columns(2);

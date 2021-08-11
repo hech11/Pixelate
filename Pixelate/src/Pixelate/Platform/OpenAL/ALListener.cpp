@@ -27,7 +27,7 @@ namespace Pixelate {
 	void AudioListener::SetGain(float gain)
 	{
 		PX_PROFILE_FUNCTION();
-		Audio::GetDefaultMixer()->GetMasterGroup()->Gain = gain;
+		Audio::GetGlobalMixer()->GetMasterGroup()->Gain = gain;
 		ALCall(alListenerfv(AL_GAIN, &gain));
 	}
 

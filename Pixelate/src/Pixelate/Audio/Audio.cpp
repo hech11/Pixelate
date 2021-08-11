@@ -13,9 +13,11 @@ namespace Pixelate {
 
 	struct AudioData {
 		Ref<AudioContext> Context;
+
 		std::unordered_map<Ref<AudioBuffer>, std::vector<Ref<AudioSource>>> SourcesInScene;
 
-		Ref<AudioMixer> MainMixer;
+		Ref<AudioMixer> OutputMixer;
+		std::unordered_map<Ref<AudioMixerGroup>, std::vector<Ref<AudioSource>>> SourcesAttachedToMixers;
 
 		bool HasInitialized = false;
 	};
@@ -29,7 +31,7 @@ namespace Pixelate {
 		s_Data->Context = CreateRef<AudioContext>();
 
 		s_Data->HasInitialized = s_Data->Context->Init();
-		s_Data->MainMixer = CreateRef<AudioMixer>();
+		s_Data->OutputMixer = CreateRef<AudioMixer>();
 
 		AudioPlatformUtils::Init();
 
@@ -54,6 +56,8 @@ namespace Pixelate {
 		source->SetBufferData(buffer);
 
 		s_Data->SourcesInScene[buffer].emplace_back(source);
+
+		AttachSourceToMixerGroup(source);
 			
 		return source;
 	}
@@ -63,8 +67,13 @@ namespace Pixelate {
 		return s_Data->SourcesInScene;
 	}
 
-	Ref<AudioMixer> Audio::GetDefaultMixer() {
-		return s_Data->MainMixer;
+	std::unordered_map<Ref<AudioMixerGroup>, std::vector<Ref<AudioSource>>>& const Audio::GetSourcesAttachedToMixer()
+	{
+		return s_Data->SourcesAttachedToMixers;
+	}
+
+	Ref<AudioMixer>& Audio::GetGlobalMixer() {
+		return s_Data->OutputMixer;
 	}
 
 	void Audio::StopAllSources() {
@@ -83,6 +92,32 @@ namespace Pixelate {
 	}
 
 	
+	void Audio::AttachSourceToMixerGroup(const Ref<AudioSource>& source)
+	{
+		auto& mixer = source->GetMixerGroup();
+		s_Data->SourcesAttachedToMixers[mixer].emplace_back(source);
+	}
+
+	void Audio::RemoveSourceFromMixerGroup(const Ref<AudioSource>& source) {
+		int index = FindMixerGroupIndex(source);
+
+		auto& mixer = source->GetMixerGroup();
+		s_Data->SourcesAttachedToMixers[mixer].erase(index + s_Data->SourcesAttachedToMixers[mixer].begin());
+
+	}
+
+	int Audio::FindMixerGroupIndex(const Ref<AudioSource>& source) {
+		auto& mixer = source->GetMixerGroup();
+		auto& s = s_Data->SourcesAttachedToMixers[mixer];
+		for (uint32_t i = 0; i < s_Data->SourcesAttachedToMixers[mixer].size(); i++) {
+			if (s[i] == source) {
+				return i;
+				break;
+			}
+		}
+		return -1;
+	}
+
 	void Audio::Update()
 	{
 

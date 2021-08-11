@@ -681,7 +681,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
 					float gain = asc.Source->GetGain();
-					if (ImGui::SliderFloat("##SetGain", &gain, 0.0f, 1.0f, "%.3f")) {
+					if (ImGui::SliderFloat("##SetGain", &gain, 0.0f, 0.5f, "%.3f")) {
 						asc.Source->SetGain(gain);
 					}
 					ImGui::PopItemWidth();

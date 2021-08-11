@@ -1,6 +1,8 @@
 #include "PXpch.h"
 #include "Pixelate/Audio/AudioSource.h"
 
+#include "Pixelate/Audio/AudioMixer.h"
+
 #include "AL/al.h"
 #include "AL/efx.h"
 
@@ -20,12 +22,13 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		ALCall(alGenSources(1, &m_AudioSourceID));
 
-		m_MixerGroup = Audio::GetDefaultMixer()->GetMasterGroup();
-
+		m_MixerGroup = Audio::GetGlobalMixer()->GetMasterGroup();
 	}
 
 	AudioSource::~AudioSource() {
 		PX_PROFILE_FUNCTION();
+
+	
 		ALCall(alDeleteSources(1, &m_AudioSourceID));
 	}
 
@@ -59,13 +62,13 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		m_Gain = gain;
 
-		if (m_Gain > m_MaxGain)
-			m_Gain = m_MaxGain;
+		if (m_Gain > 1.0f)
+			m_Gain = 1.0f;
 
-		if (m_Gain < m_MinGain)
-			m_Gain = m_MinGain;
+		if (m_Gain < 0.0f)
+			m_Gain = 0.0f;
 
-		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain));
+		ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain * m_MixerGroup->Gain));
 
 	}
 
@@ -107,22 +110,6 @@ namespace Pixelate {
 	}
 
 
-	void AudioSource::SetMaxGain(float maxGain)
-	{
-		m_MaxGain = maxGain;
-		ALCall(alSourcef(m_AudioSourceID, AL_MAX_GAIN, m_MaxGain));
-
-	}
-
-	void AudioSource::SetMinGain(float minGain)
-	{
-		if (m_MinGain < 0.0f)
-			m_MinGain = 0.0f;
-
-		m_MinGain = minGain;
-		ALCall(alSourcef(m_AudioSourceID, AL_MIN_GAIN, m_MinGain));
-	}
-
 	void AudioSource::ShouldMute(bool mute)
 	{
 		if (mute) {
@@ -130,7 +117,7 @@ namespace Pixelate {
 			m_State = m_State | AudioMixerStates::Mute;
 		}
 		else {
-			ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain));
+			ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain * m_MixerGroup->Gain));
 			m_State = m_State & (~(AudioMixerStates::Mute));
 		}
 

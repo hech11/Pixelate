@@ -176,8 +176,7 @@ namespace Pixelate {
 
 		FileSystem::StartWatching(); // Should move this when projects are introduced.
 
-		Ref<AudioMixer> GlobalMixer = CreateRef<AudioMixer>();
-		m_AudioMixerPanel->SetMixerContext(GlobalMixer);
+		m_AudioMixerPanel->SetMixerContext(Audio::GetGlobalMixer());
 
 		PanelManager.SetSceneContext(m_EditorScene);
 
@@ -735,6 +734,11 @@ namespace Pixelate {
 						comp.Source = Audio::CreateAudioSource(buffer);
 
 						comp.FilePath = metadata.Filepath.string();
+
+						//comp.Source->GetMixerGroup()->SourcesAttached[(UUID)entity.GetHandle()] = comp;
+						Audio::AttachSourceToMixerGroup(comp.Source);
+						//Audio::DetachSourceFromMixerGroup(comp.Source);
+
 						break;
 					}
 

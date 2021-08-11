@@ -3,9 +3,9 @@
 
 #include "Pixelate/Audio/AudioContext.h"
 #include "Pixelate/Audio/AudioListener.h"
-#include "Pixelate/Audio/AudioSource.h"
 #include "Pixelate/Audio/AudioPlatformUtils.h"
 #include "Pixelate/Audio/AudioMixer.h"
+#include "Pixelate/Audio/AudioSource.h"
 
 #include "GLM/glm/glm.hpp"
 
@@ -26,12 +26,23 @@ namespace Pixelate {
 			static Ref<AudioSource> CreateAudioSource(const Ref<AudioBuffer>& buffer);
 			static std::unordered_map< Ref<AudioBuffer>, std::vector<Ref<AudioSource>>>& const GetAllSourcesInScene();
 
-			static Ref<AudioMixer> GetDefaultMixer();
+			static std::unordered_map<Ref<AudioMixerGroup>, std::vector<Ref<AudioSource>>>& const GetSourcesAttachedToMixer();
+
+			static Ref<AudioMixer>& GetGlobalMixer();
 
 			static void Reload(const AssetMetadata& metadata);
 
 			static void StopAllSources();
 			static void DestroyAllActiveSources();
+
+			static void AttachSourceToMixerGroup(const Ref<AudioSource>& source);
+			static void RemoveSourceFromMixerGroup(const Ref<AudioSource>& source);
+
+
+			// Returns index of the sources attached to the mixer group. Returns -1 if we cannot find the source index.
+			static int FindMixerGroupIndex(const Ref<AudioSource>& source);
+
+
 
 
 			static void Update();

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Pixelate/Core/Core.h"
-#include "Pixelate/Audio/AudioMixerStates.h"
+#include "AudioMixerStates.h"
 
 #include <vector>
 #include <string>
+
 
 namespace Pixelate {
 
@@ -25,6 +26,7 @@ namespace Pixelate {
 			std::vector<Ref<AudioMixerGroup>>& const GetGroups() { return m_Groups; }
 
 		private :
+
 			Ref<AudioMixerGroup> m_MasterGroup;
 			std::vector<Ref<AudioMixerGroup>> m_Groups;
 	};

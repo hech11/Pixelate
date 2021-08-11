@@ -2,12 +2,13 @@
 
 #include <string>
 #include "Pixelate/Core/Core.h"
-#include "Pixelate/Audio/AudioMixer.h"
 #include "GLM/glm/glm.hpp"
 
 
 #include "AudioBuffer.h"
 #include "AudioFilter.h"
+
+#include "AudioMixer.h"
 
 #include "Pixelate/Audio/DSP/Filters/BandPass.h"
 #include "Pixelate/Audio/DSP/Filters/HighPass.h"
@@ -31,8 +32,6 @@ namespace Pixelate {
 			void SetGain(float gain);
 			void SetPitch(float pitch);
 
-			void SetMaxGain(float maxGain);
-			void SetMinGain(float minGain);
 
 			void ShouldMute(bool mute);
 			void PlayOnAwake(bool awake);
@@ -103,8 +102,7 @@ namespace Pixelate {
 
 		private:
 			bool m_IsPlaying = false, m_PlayOnAwake = false, m_IsLooping = false;
-			float m_Gain = 1.0f, m_Pitch = 1.0f;
-			float m_MaxGain = 1.0f, m_MinGain = 0.0f;
+			float m_Gain = 0.1f, m_Pitch = 1.0f;
 
 			AudioMixerStates m_State;
 

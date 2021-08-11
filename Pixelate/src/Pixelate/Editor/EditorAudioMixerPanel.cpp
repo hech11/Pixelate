@@ -60,7 +60,13 @@ namespace Pixelate {
 
 		ImGui::PlotHistogram("##volume", speakerVUValues, IM_ARRAYSIZE(speakerVUValues), 0, NULL, 0.0f, 0.5f, ImVec2(28, 256));
 		ImGui::SameLine();
-		ImGui::VSliderFloat("##gainController", ImVec2(28, 256), &group->Gain, 0.0f, 2.0f, "");
+		if (ImGui::VSliderFloat("##gainController", ImVec2(28, 256), &group->Gain, 0.0f, 2.0f, "")) {
+
+			auto& sources = Audio::GetSourcesAttachedToMixer()[group];
+			for (int i = 0; i < sources.size(); i++) {
+				sources[i]->SetGain(sources[i]->GetGain());
+			}
+		}
 		ImGui::Separator();
 
 
