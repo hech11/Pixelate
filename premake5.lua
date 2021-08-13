@@ -221,6 +221,7 @@ project "Pixelate-Editor"
 	postbuildcommands 
 	{
 		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"/assets',
+		'{COPY} "../Pixelate-Editor/imgui.ini" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 	}
 

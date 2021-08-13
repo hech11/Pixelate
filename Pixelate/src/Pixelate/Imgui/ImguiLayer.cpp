@@ -70,7 +70,7 @@ namespace Pixelate {
 		ImGui_ImplOpenGL3_Init("#version 410");
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 
-		auto* font = io.Fonts->AddFontFromFileTTF("../Pixelate/src/Pixelate/Editor/Misc/bahnschrift.ttf", 15.0f);
+		auto* font = io.Fonts->AddFontFromFileTTF("resources/fonts/bahnschrift.ttf", 15.0f);
 		io.FontDefault = io.Fonts->Fonts.back();
 
 		{
