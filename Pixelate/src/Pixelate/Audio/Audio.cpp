@@ -7,6 +7,8 @@
 #include "Pixelate/Debug/Instrumentor.h"
 #include "Pixelate/Asset/AssetManager.h"
 
+#include "AudioMixerImporter.h"
+
 
 namespace Pixelate {
 
@@ -20,6 +22,9 @@ namespace Pixelate {
 		std::unordered_map<Ref<AudioMixerGroup>, std::vector<Ref<AudioSource>>> SourcesAttachedToMixers;
 
 		bool HasInitialized = false;
+
+		std::filesystem::path DefaultMixerPath = "resources/audio/DefaultMixer.pxam";
+		std::filesystem::path CurrentMixerPath = DefaultMixerPath;
 	};
 
 	static AudioData* s_Data;
@@ -31,7 +36,11 @@ namespace Pixelate {
 		s_Data->Context = CreateRef<AudioContext>();
 
 		s_Data->HasInitialized = s_Data->Context->Init();
-		s_Data->OutputMixer = CreateRef<AudioMixer>();
+
+
+		// s_Data->CurrentMixerPath = Project::CurrentMixer();
+		// For now we use the default path
+		s_Data->OutputMixer = AudioMixerImporter::Import(s_Data->DefaultMixerPath);
 
 		AudioPlatformUtils::Init();
 
@@ -72,8 +81,13 @@ namespace Pixelate {
 		return s_Data->SourcesAttachedToMixers;
 	}
 
-	Ref<AudioMixer>& Audio::GetGlobalMixer() {
+	const Ref<AudioMixer>& const Audio::GetGlobalMixer() {
 		return s_Data->OutputMixer;
+	}
+
+	void Audio::SetGlobalMixer(const Ref<AudioMixer>& mixer)
+	{
+		s_Data->OutputMixer = mixer;
 	}
 
 	void Audio::StopAllSources() {

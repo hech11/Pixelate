@@ -26,6 +26,7 @@ namespace Pixelate {
 			void CopyItem();
 
 			void CreateFolder();
+			void CreateItem(AssetType type);
 
 			void RenderDirectory(const std::filesystem::path& dir);
 			void RenderTopBar();

@@ -65,3 +65,6 @@ Assets:
   - Handle: 15401950371930225587
     Filepath: audio\noise.wav
     Type: Audio
+  - Handle: 14813573490053508137
+    Filepath: audio\Default Mixer.pxam
+    Type: Audio Mixer

@@ -627,7 +627,39 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::Text("Mixer Group Output");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
-					ImGui::InputText("##mixerDisplay", (char*)asc.Source->GetMixerGroup()->DebugName.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+
+					std::vector<const char*> Previews;
+					const char* currentPreview = asc.Source->GetMixerGroup()->DebugName.c_str();
+
+					Previews.push_back(Audio::GetGlobalMixer()->GetMasterGroup()->DebugName.c_str());
+					for (int i = 0; i < Audio::GetGlobalMixer()->GetGroups().size(); i++) {
+						Previews.push_back(Audio::GetGlobalMixer()->GetGroups()[i]->DebugName.c_str());
+					}
+
+					if (ImGui::BeginCombo("##mixergroupoutput", currentPreview, ImGuiComboFlags_::ImGuiComboFlags_HeightSmall)) {
+
+						for (int i = 0; i < Previews.size(); i++) {
+
+							bool selected = (currentPreview == Previews[i]);
+							if (ImGui::Selectable(Previews[i], selected)) {
+								if (i == 0)
+									asc.Source->SetMixerGroup(Audio::GetGlobalMixer()->GetMasterGroup());
+								else
+									asc.Source->SetMixerGroup(Audio::GetGlobalMixer()->GetGroups()[i - 1]);
+
+
+								break;
+							}
+
+							if(selected)
+								ImGui::SetItemDefaultFocus();
+
+						}
+
+						ImGui::EndCombo();
+
+					}
+					
 					ImGui::PopItemWidth();
 
 

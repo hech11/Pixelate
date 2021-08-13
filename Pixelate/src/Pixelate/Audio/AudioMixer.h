@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 
+#include "Pixelate/Asset/Asset.h"
+
 
 namespace Pixelate {
 
@@ -18,13 +20,14 @@ namespace Pixelate {
 
 	};
 
-	class AudioMixer {
+	class AudioMixer : public Asset {
 		public :
 			AudioMixer();
 
 			const Ref<AudioMixerGroup>& const GetMasterGroup() { return m_MasterGroup; }
 			std::vector<Ref<AudioMixerGroup>>& const GetGroups() { return m_Groups; }
 
+			SETUP_ASSET_PROPERTIES(AssetType::AudioMixer);
 		private :
 
 			Ref<AudioMixerGroup> m_MasterGroup;

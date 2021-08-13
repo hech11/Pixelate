@@ -4,7 +4,13 @@
 
 #include <imgui.h>
 #include "Pixelate/Audio/Audio.h"
-#include "../Asset/AssetManager.h"
+#include "Pixelate/Asset/AssetManager.h"
+#include "Pixelate/Audio/AudioMixerImporter.h"
+
+#include "../../Pixelate-Editor/vendor/NativeFileDialog/src/include/nfd.h"
+#include "EditorAudioMixerPanel.h"
+#include "EditorPanel.h"
+
 
 namespace Pixelate {
 
@@ -21,8 +27,32 @@ namespace Pixelate {
 		ImGui::SameLine();
 		char temp[50];
 		memset(temp, 0, 50);
+
+		// TODO: Asset importer
 		if (ImGui::Button("Import...")) {
 
+			nfdchar_t* outPath = NULL;
+			nfdresult_t result = NFD_OpenDialog("ampx", NULL, &outPath);
+
+			if (result == NFD_OKAY) {
+				const auto& mixer = AudioMixerImporter::Import(outPath);
+				Audio::SetGlobalMixer(mixer);
+
+				const auto& panel = std::dynamic_pointer_cast<EditorAudioMixerPanel>(EditorPanelManager::Get().GetPanel("AudioMixerPanel"));
+				panel->SetMixerContext(mixer);
+			}
+			free(outPath);
+
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Export...")) {
+// 			nfdchar_t* outPath = NULL;
+// 			nfdresult_t result = NFD_SaveDialog("ampx", NULL, &outPath);
+// 
+// 			if (result == NFD_OKAY) {
+// 				AudioMixerImporter::Export(outPath, Audio::GetGlobalMixer());
+// 			}
+// 			free(outPath);
 		}
 		ImGui::SameLine();
 		ImGui::InputText("##AudioMixerPath", temp, 50, ImGuiInputTextFlags_ReadOnly);

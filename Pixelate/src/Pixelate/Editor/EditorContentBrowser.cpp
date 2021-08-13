@@ -5,6 +5,7 @@
 #include <imgui_internal.h>
 #include "Pixelate/Utility/FileSystem.h"
 #include "Pixelate/Asset/AssetManager.h"
+#include "Pixelate/Asset/Embedded/Embedded.h"
 #include <mutex>
 
 namespace Pixelate {
@@ -326,6 +327,18 @@ namespace Pixelate {
 	void EditorContentBrowser::DrawWindowContext()
 	{
 		if (ImGui::BeginPopupContextItem("WindowContextPopup")) {
+
+			if (ImGui::BeginMenu("Create")) {
+
+				if (ImGui::MenuItem("Audio Mixer")) {
+					CreateItem(AssetType::AudioMixer);
+				}
+
+				ImGui::EndMenu();
+			}
+
+
+
 			if (ImGui::Button("Paste")) {
 				if (m_CurrentCopiedItem != "") {
 					CopyItem();
@@ -341,9 +354,11 @@ namespace Pixelate {
 				ShowCurrentFileLocation();
 				ImGui::CloseCurrentPopup();
 			}
-			ImGui::EndPopup();
 
+
+			ImGui::EndPopup();
 		}
+
 	}
 
 	void EditorContentBrowser::BackButton()
@@ -548,6 +563,29 @@ namespace Pixelate {
 
 
 		FileSystem::CreateDirectory(newFile);
+	}
+
+	void EditorContentBrowser::CreateItem(AssetType type) {
+		switch (type)
+		{
+			case Pixelate::AssetType::None:
+				break;
+			case Pixelate::AssetType::Texture:
+				break;
+			case Pixelate::AssetType::Audio:
+				break;
+			case Pixelate::AssetType::Scene:
+				break;
+			case Pixelate::AssetType::Shader:
+				break;
+			case Pixelate::AssetType::AssetRegistry:
+				break;
+			case Pixelate::AssetType::AudioMixer:
+				Embedded::GenerateToDisk(AssetType::AudioMixer, m_CurrentDirectory);
+				break;
+			default:
+				break;
+		}
 	}
 
 }

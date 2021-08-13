@@ -28,7 +28,8 @@ namespace Pixelate {
 
 			static std::unordered_map<Ref<AudioMixerGroup>, std::vector<Ref<AudioSource>>>& const GetSourcesAttachedToMixer();
 
-			static Ref<AudioMixer>& GetGlobalMixer();
+			static const Ref<AudioMixer>& const GetGlobalMixer();
+			static void SetGlobalMixer(const Ref<AudioMixer>& mixer);
 
 			static void Reload(const AssetMetadata& metadata);
 

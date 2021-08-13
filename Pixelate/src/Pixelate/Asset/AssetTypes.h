@@ -18,7 +18,8 @@ namespace Pixelate { namespace Utils {
 		{".wav",		AssetType::Audio },
 		{".png",		AssetType::Texture },
 		{".jpg",		AssetType::Texture },
-		{".pxar",		AssetType::AssetRegistry }
+		{".pxar",		AssetType::AssetRegistry },
+		{".pxam",		AssetType::AudioMixer }
 	};
 
 	inline static std::unordered_map<AssetType, std::string> s_AssetTypeStringTable = {
@@ -26,7 +27,9 @@ namespace Pixelate { namespace Utils {
 		{AssetType::Shader,			"Shader"},
 		{AssetType::Audio,			"Audio"},
 		{AssetType::Texture,		"Texture"},
-		{AssetType::AssetRegistry,	"Asset Registry"}
+		{AssetType::AssetRegistry,	"Asset Registry"},
+		{AssetType::AudioMixer,	"Audio Mixer"},
+
 	};
 
 	inline static std::unordered_map< std::string, AssetType> s_AssetStringTypeTable = {
@@ -34,7 +37,8 @@ namespace Pixelate { namespace Utils {
 		{"Shader",			AssetType::Shader},
 		{"Audio",			AssetType::Audio},
 		{"Texture",			AssetType::Texture},
-		{"Asset Registry",	AssetType::AssetRegistry}
+		{"Asset Registry",	AssetType::AssetRegistry},
+		{"Audio Mixer",		AssetType::AudioMixer}
 	};
 
 
