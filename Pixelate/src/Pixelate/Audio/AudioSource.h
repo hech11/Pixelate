@@ -32,6 +32,7 @@ namespace Pixelate {
 			void SetGain(float gain);
 			void SetPitch(float pitch);
 
+			void ShouldSolo(bool solo);
 
 			void ShouldMute(bool mute);
 			void PlayOnAwake(bool awake);

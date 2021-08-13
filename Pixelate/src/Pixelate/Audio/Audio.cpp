@@ -88,6 +88,7 @@ namespace Pixelate {
 	void Audio::SetGlobalMixer(const Ref<AudioMixer>& mixer)
 	{
 		s_Data->OutputMixer = mixer;
+		s_Data->SourcesAttachedToMixers.clear();
 	}
 
 	void Audio::StopAllSources() {
@@ -114,10 +115,54 @@ namespace Pixelate {
 
 	void Audio::RemoveSourceFromMixerGroup(const Ref<AudioSource>& source) {
 		int index = FindMixerGroupIndex(source);
+		if (index == -1)
+			return;
 
 		auto& mixer = source->GetMixerGroup();
 		s_Data->SourcesAttachedToMixers[mixer].erase(index + s_Data->SourcesAttachedToMixers[mixer].begin());
 
+	}
+
+	void Audio::UpdateMixerSourceGain(const Ref<AudioMixerGroup>& group)
+	{
+		auto& sources = s_Data->SourcesAttachedToMixers[group];
+		for (int i = 0; i < sources.size(); i++) {
+			sources[i]->SetGain(sources[i]->GetGain());
+		}
+	}
+
+	void Audio::SoloAudioGroup(const Ref<AudioMixerGroup>& group) {
+
+		for (auto&& [mixergroup, sources] : s_Data->SourcesAttachedToMixers) {
+			
+			bool solo = true;
+			if (group == mixergroup) {
+				solo = false;
+			}
+
+			for (auto& source : sources) {
+				source->ShouldMute(solo);
+			}
+
+		}
+
+	}
+
+	void Audio::UnsoloAudioGroup(const Ref<AudioMixerGroup>& group)
+	{
+		for (auto&& [mixergroup, sources] : s_Data->SourcesAttachedToMixers) {
+			for (auto& source : sources) {
+				source->ShouldMute(false);
+			}
+		}
+	}
+
+	void Audio::MuteAudioGroup(const Ref<AudioMixerGroup>& group, bool mute) {
+		auto& sources = s_Data->SourcesAttachedToMixers[group];
+
+		for (auto& source : sources) {
+			source->ShouldMute(mute);
+		}
 	}
 
 	int Audio::FindMixerGroupIndex(const Ref<AudioSource>& source) {

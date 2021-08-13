@@ -17,7 +17,7 @@ namespace Pixelate {
 			void SetMixerContext(const Ref<AudioMixer>& mixer) { m_CurrentMixer = mixer; }
 
 		private :
-			void RenderGroupState(const std::string& id, AudioMixerStates stateId, AudioMixerStates& currentMixerState);
+			void RenderGroupState(const std::string& id, AudioMixerStates stateId, AudioMixerStates& currentMixerState, const std::function<void(bool changedState)>& onButtonPress);
 			void RenderMixer(const Ref<AudioMixer>& mixer);
 			void RenderGroup(const Ref<AudioMixerGroup>& group, bool isMaster = false);
 		private :

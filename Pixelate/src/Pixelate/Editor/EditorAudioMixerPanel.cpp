@@ -9,17 +9,21 @@
 
 namespace Pixelate {
 
-	void EditorAudioMixerPanel::RenderGroupState(const std::string& id, AudioMixerStates stateId, AudioMixerStates& currentMixerState) {
+	void EditorAudioMixerPanel::RenderGroupState(const std::string& id, AudioMixerStates stateId, AudioMixerStates& currentMixerState, const std::function<void(bool changedState)>& onButtonPress) {
 		bool pushCol = false;
 		if (currentMixerState == stateId) {
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0.11f, 0.11f, 0.11f, 1.0f });
 			pushCol = true;
 		}
 		if (ImGui::Button(id.c_str())) {
+			bool changed = false;
 			if (currentMixerState == stateId)
 				currentMixerState = AudioMixerStates::Default;
-			else
+			else {
 				currentMixerState = stateId;
+				changed = true;
+			}
+			onButtonPress(changed);
 		}
 		if (pushCol)
 			ImGui::PopStyleColor();
@@ -62,10 +66,7 @@ namespace Pixelate {
 		ImGui::SameLine();
 		if (ImGui::VSliderFloat("##gainController", ImVec2(28, 256), &group->Gain, 0.0f, 2.0f, "")) {
 
-			auto& sources = Audio::GetSourcesAttachedToMixer()[group];
-			for (int i = 0; i < sources.size(); i++) {
-				sources[i]->SetGain(sources[i]->GetGain());
-			}
+			Audio::UpdateMixerSourceGain(group);
 		}
 		ImGui::Separator();
 
@@ -75,11 +76,21 @@ namespace Pixelate {
 
 		AudioMixerStates& state = group->State;
 
-		RenderGroupState("Solo", AudioMixerStates::Solo, state);
+		RenderGroupState("Solo", AudioMixerStates::Solo, state, [&](bool changed) {
+			if (changed) {
+				Audio::SoloAudioGroup(group);
+			} else {
+				Audio::UnsoloAudioGroup(group);
+			}
+		});
 		ImGui::SameLine();
-		RenderGroupState("Mute", AudioMixerStates::Mute, state);
+		RenderGroupState("Mute", AudioMixerStates::Mute, state, [&](bool changed) {
+			Audio::MuteAudioGroup(group, changed);
+		});
 		ImGui::SameLine();
-		RenderGroupState("Bypass", AudioMixerStates::Bypass, state);
+		RenderGroupState("Bypass", AudioMixerStates::Bypass, state, [&](bool changed) {
+			PX_CORE_WARN("Bypass not implemented!\n");
+		});
 
 
 		ImGui::EndChild();

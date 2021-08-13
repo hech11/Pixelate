@@ -642,11 +642,17 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 							bool selected = (currentPreview == Previews[i]);
 							if (ImGui::Selectable(Previews[i], selected)) {
-								if (i == 0)
-									asc.Source->SetMixerGroup(Audio::GetGlobalMixer()->GetMasterGroup());
-								else
-									asc.Source->SetMixerGroup(Audio::GetGlobalMixer()->GetGroups()[i - 1]);
+								Audio::RemoveSourceFromMixerGroup(asc.Source);
 
+								if (i == 0) {
+									asc.Source->SetMixerGroup(Audio::GetGlobalMixer()->GetMasterGroup());
+								}
+								else {
+									asc.Source->SetMixerGroup(Audio::GetGlobalMixer()->GetGroups()[i - 1]);
+								}
+
+								Audio::AttachSourceToMixerGroup(asc.Source);
+								Audio::UpdateMixerSourceGain(asc.Source->GetMixerGroup());
 
 								break;
 							}
@@ -668,8 +674,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::Text("Mute");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
-					bool mute = false;
+					bool mute = ((asc.Source->GetCurrentState() & AudioMixerStates::Mute) == AudioMixerStates::Mute);
 					if (ImGui::Checkbox("##Mute", &mute)) {
+						asc.Source->ShouldMute(mute);
 					}
 					ImGui::PopItemWidth();
 
@@ -678,8 +685,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::Text("Bypass Effects");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
-					bool beffects = false;
+					bool beffects = ((asc.Source->GetCurrentState() & AudioMixerStates::Bypass) == AudioMixerStates::Bypass);
 					if (ImGui::Checkbox("##BypassEffects", &beffects)) {
+						asc.Source->ShouldBypassEffects(beffects);
 					}
 					ImGui::PopItemWidth();
 

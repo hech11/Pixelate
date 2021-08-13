@@ -23,6 +23,7 @@ namespace Pixelate {
 		ALCall(alGenSources(1, &m_AudioSourceID));
 
 		m_MixerGroup = Audio::GetGlobalMixer()->GetMasterGroup();
+		m_State = AudioMixerStates::Default;
 	}
 
 	AudioSource::~AudioSource() {
@@ -118,7 +119,8 @@ namespace Pixelate {
 		}
 		else {
 			ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain * m_MixerGroup->Gain));
-			m_State = m_State & (~(AudioMixerStates::Mute));
+
+			m_State = (AudioMixerStates)(m_State & ~(AudioMixerStates::Mute));
 		}
 
 	}
@@ -132,9 +134,23 @@ namespace Pixelate {
 			m_State = m_State | AudioMixerStates::Bypass;
 		}
 		else {
-			m_State = m_State & (~(AudioMixerStates::Bypass));
+			m_State = (AudioMixerStates)(m_State & ~(AudioMixerStates::Bypass));
 		}
 		
+	}
+
+	void AudioSource::ShouldSolo(bool solo) {
+		if (solo) {
+			ALCall(alSourcef(m_AudioSourceID, AL_GAIN, 0.0f));
+			m_State = m_State | AudioMixerStates::Solo;
+		}
+		else {
+			m_State = (AudioMixerStates)(m_State & ~(AudioMixerStates::Solo));
+
+			if ((m_State & AudioMixerStates::Mute) != AudioMixerStates::Mute) {
+				ALCall(alSourcef(m_AudioSourceID, AL_GAIN, m_Gain * m_MixerGroup->Gain));
+			}
+		}
 	}
 
 

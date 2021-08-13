@@ -39,6 +39,12 @@ namespace Pixelate {
 			static void AttachSourceToMixerGroup(const Ref<AudioSource>& source);
 			static void RemoveSourceFromMixerGroup(const Ref<AudioSource>& source);
 
+			static void UpdateMixerSourceGain(const Ref<AudioMixerGroup>& group);
+			static void SoloAudioGroup(const Ref<AudioMixerGroup>& group);
+			static void UnsoloAudioGroup(const Ref<AudioMixerGroup>& group);
+
+			static void MuteAudioGroup(const Ref<AudioMixerGroup>& group, bool mute = true);
+
 
 			// Returns index of the sources attached to the mixer group. Returns -1 if we cannot find the source index.
 			static int FindMixerGroupIndex(const Ref<AudioSource>& source);

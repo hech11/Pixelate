@@ -5,7 +5,7 @@
 
 namespace Pixelate {
 
-	enum class AudioMixerStates {
+	enum AudioMixerStates {
 		Default = 0, Solo = BIT(1), Mute = BIT(2), Bypass = BIT(3)
 	};
 
@@ -17,8 +17,5 @@ namespace Pixelate {
 		return static_cast<AudioMixerStates>((int)l & (int)r);
 	}
 
-	inline AudioMixerStates operator~(AudioMixerStates value) {
-		return static_cast<AudioMixerStates>((int)~value);
-	}
 
 }
