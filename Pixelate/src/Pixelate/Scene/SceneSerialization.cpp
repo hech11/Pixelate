@@ -327,8 +327,39 @@ namespace Pixelate {
 				if (asc.Source) {
 					data << YAML::BeginMap;
 					data << YAML::Key << "AssetHandle" << YAML::Value << (UUID)AssetManager::GetMetadata(asc.Source->GetBufferData()->Handle).Handle;
+					data << YAML::Key << "Mute" << YAML::Value << ((asc.Source->GetCurrentState() & AudioMixerStates::Mute) == asc.Source->GetCurrentState());
+					data << YAML::Key << "BypassEffects" << YAML::Value << ((asc.Source->GetCurrentState() & AudioMixerStates::Bypass) == asc.Source->GetCurrentState());
+					data << YAML::Key << "Loop" << YAML::Value << asc.Source->IsLooping();
+					data << YAML::Key << "PlayOnAwake" << YAML::Value << asc.Source->ShouldPlayOnAwake();
 					data << YAML::Key << "Gain" << YAML::Value << asc.Source->GetGain();
-					data << YAML::Key << "ShouldLoop" << YAML::Value << asc.Source->IsLooping();
+					data << YAML::Key << "Pitch" << YAML::Value << asc.Source->GetPitch();
+
+
+					if (asc.Source->GetLowPassFilter()) {
+						const auto& lpf = asc.Source->GetLowPassFilter();
+						data << YAML::Key << "LowPassGain" << YAML::Value << lpf->GetGain();
+						data << YAML::Key << "LowPassGainHF" << YAML::Value << lpf->GetHFGain();
+					}
+
+					if (asc.Source->GetHighPassFilter()) {
+						const auto& hpf = asc.Source->GetHighPassFilter();
+						data << YAML::Key << "HighPassGain" << YAML::Value << hpf->GetGain();
+						data << YAML::Key << "HighPassGainHF" << YAML::Value << hpf->GetLFGain();
+					}
+
+					if (asc.Source->GetBandPassFilter()) {
+						const auto& bpf = asc.Source->GetBandPassFilter();
+						data << YAML::Key << "BandPassGain" << YAML::Value << bpf->GetGain();
+						data << YAML::Key << "BandPassGainLF" << YAML::Value << bpf->GetLFGain();
+						data << YAML::Key << "BandPassGainHF" << YAML::Value << bpf->GetHFGain();
+					}
+
+
+
+
+
+
+
 					data << YAML::EndMap;
 				}
 

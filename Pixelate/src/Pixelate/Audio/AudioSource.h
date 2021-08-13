@@ -76,6 +76,42 @@ namespace Pixelate {
 
 			}
 
+			void RemoveFilter(const AudioFilterType& Filter) {
+				switch (Filter)
+				{
+					case AudioFilterType::LowPass:
+						if (!m_LowpassFilter) {
+							PX_CORE_WARN("There isn't a low-pass filter applied to this source!\n");
+						}
+						else {
+							m_LowpassFilter.reset();
+						}
+						break;
+					case AudioFilterType::HighPass:
+						if (!m_HighpassFilter) {
+							PX_CORE_WARN("There isn't a high-pass filter applied to this source!\n");
+						}
+						else {
+							m_HighpassFilter.reset();
+						}
+						break;
+					case AudioFilterType::BandPass:
+						if (!m_BandpassFilter) {
+							m_BandpassFilter = CreateRef<BandPass>();
+							PX_CORE_WARN("There isn't a bandpass filter applied to this source!\n");
+
+						}
+						else {
+							m_BandpassFilter.reset();
+						}
+						break;
+					default:
+						break;
+
+				}
+
+			}
+
 			const Ref<LowPass>& GetLowPassFilter() const { return m_LowpassFilter; }
 			const Ref<HighPass>& GetHighPassFilter() const { return m_HighpassFilter; }
 			const Ref<BandPass>& GetBandPassFilter() const { return m_BandpassFilter; }

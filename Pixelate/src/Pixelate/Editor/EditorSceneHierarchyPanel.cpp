@@ -759,9 +759,14 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 
 					if (asc.Source->GetLowPassFilter()) {
+						bool remove = false;
 						ImGui::Separator();
 
 						ImGui::NextColumn();
+						if (ImGui::SmallButton("x")) {
+							remove = true;
+						}
+						ImGui::SameLine();
 						ImGui::Text("Low-pass gain");
 						ImGui::NextColumn();
 						ImGui::PushItemWidth(-1);
@@ -784,12 +789,20 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						}
 						ImGui::PopItemWidth();
 
+						if(remove)
+							asc.Source->RemoveFilter(AudioFilterType::LowPass);
+
 					}
 
 
 					if (asc.Source->GetHighPassFilter()) {
+						bool remove = false;
 						ImGui::Separator();
 						ImGui::NextColumn();
+						if (ImGui::SmallButton("x")) {
+							remove = true;
+						}
+						ImGui::SameLine();
 						ImGui::Text("High-pass gain");
 						ImGui::NextColumn();
 						ImGui::PushItemWidth(-1);
@@ -812,12 +825,19 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						}
 						ImGui::PopItemWidth();
 
-
+						if(remove)
+							asc.Source->RemoveFilter(AudioFilterType::HighPass);
 					}
 
 					if (asc.Source->GetBandPassFilter()) {
+						bool remove = false;
+
 						ImGui::Separator();
 						ImGui::NextColumn();
+						if (ImGui::SmallButton("x")) {
+							remove = true;
+						}
+						ImGui::SameLine();
 						ImGui::Text("Bandpass Gain");
 						ImGui::NextColumn();
 						ImGui::PushItemWidth(-1);
@@ -850,6 +870,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 							asc.Source->ApplyFilterChanges();
 						}
 						ImGui::PopItemWidth();
+
+						if(remove)
+							asc.Source->RemoveFilter(AudioFilterType::BandPass);
 					}
 
 
