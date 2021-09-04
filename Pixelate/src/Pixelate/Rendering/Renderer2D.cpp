@@ -67,7 +67,8 @@ namespace Pixelate {
 		// For rendering line strips
 		Ref<VertexArray> LineStripVertexArray;
 		Ref<VertexBuffer> LineStripVertexBuffer;
-		unsigned int LineStripIndexCount = 0;
+		uint32_t LineStripIndexCount = 0;
+		uint32_t LineStripDrawCalls = 0;
 
 		LineVertexData* LineStripVertexDataBase = nullptr;
 		LineVertexData* LineStripQuadVertexData = nullptr;
@@ -269,6 +270,7 @@ namespace Pixelate {
 		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
 
 		SceneData->LineStripIndexCount = 0;
+		SceneData->LineStripDrawCalls = 0;
 		SceneData->LineStripQuadVertexData = SceneData->LineStripVertexDataBase;
 
 
@@ -310,24 +312,38 @@ namespace Pixelate {
 		}
 
 
-		uint32_t lineStripSize = (uint8_t*)SceneData->LineStripQuadVertexData - (uint8_t*)SceneData->LineStripVertexDataBase;
-		if (lineStripSize) {
-			SceneData->LineStripVertexArray->Bind();
-			SceneData->LineStripVertexArray->GetIbos().Bind();
-			SceneData->LineStripVertexBuffer->SetData(SceneData->LineStripVertexDataBase, lineStripSize);
-			TextureManager::GetDefaultTexture()->Bind();
-			RenderCommand::SetLineThickness(1.0f);
+		TextureManager::GetDefaultTexture()->Bind();
+		RenderCommand::SetLineThickness(1.0f);
 
-			RenderCommand::DrawElements(SceneData->LineStripVertexArray, PimitiveRenderType::LineStrip, SceneData->LineStripIndexCount);
-			SceneData->m_Statistics.DrawCalls += 1;
+		for (int i = 0; i < SceneData->LineStripDrawCalls; i++) {
+
+			uint32_t lineStripSize = (uint8_t*)SceneData->LineStripQuadVertexData - (uint8_t*)SceneData->LineStripVertexDataBase;
+			uint32_t size = lineStripSize / SceneData->LineStripDrawCalls;
+
+			LineVertexData* ptrBase = SceneData->LineStripVertexDataBase;
+			uint32_t indexCount = SceneData->LineStripIndexCount / SceneData->LineStripDrawCalls;
+
+			ptrBase += i*indexCount;
+
+			
+			if (lineStripSize) {
+				SceneData->LineStripVertexArray->Bind();
+				SceneData->LineStripVertexArray->GetIbos().Bind();
+				SceneData->LineStripVertexBuffer->SetData(ptrBase, size);
+
+				RenderCommand::DrawElements(SceneData->LineStripVertexArray, PimitiveRenderType::LineStrip, indexCount);
+
+			}
+
 		}
 
-		SceneData->m_Statistics.VertexSize = quadSize + lineSize + lineStripSize;
+
+		SceneData->m_Statistics.VertexSize = quadSize + lineSize;
 
 	}
 
 
-	void Renderer2D::DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color) {
+	void Renderer2D::DrawVerticies(glm::vec4* vertices, int vertexCount, const glm::vec4& color) {
 
 		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
 			BeginNewQuadBatch();
@@ -348,6 +364,17 @@ namespace Pixelate {
 			SceneData->SpriteVertexDataPtr->Color = col;
 			SceneData->SpriteVertexDataPtr->TextureCoords = {0.0f, 0.0f};
 			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData->SpriteVertexDataPtr->EntityID = -1;
+			SceneData->SpriteVertexDataPtr++;
+		}
+
+		if (vertexCount < 4) {
+			glm::vec4 v = vertices[2];
+			SceneData->SpriteVertexDataPtr->Verticies = v;
+			SceneData->SpriteVertexDataPtr->Color = col;
+			SceneData->SpriteVertexDataPtr->TextureCoords = { 0.0f, 0.0f };
+			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+			SceneData->SpriteVertexDataPtr->EntityID = -1;
 			SceneData->SpriteVertexDataPtr++;
 		}
 
@@ -608,6 +635,8 @@ namespace Pixelate {
 
 
 		}
+
+		SceneData->LineStripDrawCalls++;
 
 
 	}

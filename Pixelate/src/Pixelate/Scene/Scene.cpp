@@ -77,6 +77,12 @@ namespace Pixelate {
 
 					auto [Pos, Rot, Scale] = transformComp.DecomposeTransform();
 
+					boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
+					boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
+
+					color = { 0.0f, 1.0f, 1.0f, 1.0f };
+					Renderer2D::DrawAABB(boundingBox, color);
+
 					if (e.HasComponent<BoxColliderComponent>()) {
 						auto& bcc = e.GetComponent<BoxColliderComponent>();
 						color = { 0.0f, 1.0f, 0.0f, 1.0f };
@@ -87,17 +93,51 @@ namespace Pixelate {
 
 						boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
 						boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
+						Renderer2D::DrawAABB(boundingBox, color);
 
 					}
-					else {
 
-						boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
-						boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
+					if (e.HasComponent<CircleColliderComponent>()) {
+						auto& cc = e.GetComponent<CircleColliderComponent>();
+						color = { 0.0f, 1.0f, 0.0f, 1.0f };
 
-						color = { 0.0f, 1.0f, 1.0f, 1.0f };
+						glm::vec2 transformPos = { Pos.x, Pos.y };
+						const auto Position = cc.Center + transformPos;
+
+						Renderer2D::DrawCircle(Position, cc.Radius, color);
 					}
 
-					Renderer2D::DrawAABB(boundingBox, color);
+					if (e.HasComponent<EdgeColliderComponent>()) {
+						auto& ecc = e.GetComponent<EdgeColliderComponent>();
+						color = { 0.0f, 1.0f, 0.0f, 1.0f };
+
+						glm::vec2 transformPos = { Pos.x, Pos.y };
+						const auto PositionA = ecc.Point1 + transformPos;
+						const auto PositionB = ecc.Point2 + transformPos;
+
+						Renderer2D::DrawLine({ PositionA.x, PositionA.y, 0.0f}, { PositionB.x, PositionB.y, 0.0f }, color);
+
+					}
+
+					if (e.HasComponent<PolygonColliderComponent>()) {
+						auto& ecc = e.GetComponent<PolygonColliderComponent>();
+						color = { 0.0f, 1.0f, 0.0f, 1.0f };
+
+						glm::vec2 transformPos = { Pos.x, Pos.y };
+
+						std::vector<glm::vec4> verts;
+						for (int i = 0; i < ecc.Vertices.size(); i++) {
+							verts.push_back({ ecc.Vertices[i].x + transformPos.x, ecc.Vertices[i].y + transformPos.y, 0.0f, 1.0f });
+						}
+
+						Renderer2D::DrawVerticies(verts.data(), ecc.Vertices.size(), color);
+
+					}
+
+
+
+
+
 
 				}
 
@@ -111,8 +151,6 @@ namespace Pixelate {
 
 
 		}
-
-		Renderer2D::DrawCircle({ 1.0f, 0.0f }, 1.0f, { 0, 1, 0, 1 });
 
 		Renderer2D::EndScene();
 
@@ -204,8 +242,51 @@ namespace Pixelate {
 				cc.ColliderData = new b2PolygonShape;
 				cc.ColliderData->SetAsBox(cc.Size.x, cc.Size.y, {cc.Center.x, cc.Center.y}, rotation);
 
+
 				ridBodComp.RigidBody.AddCollider(cc.ColliderData, 1.0f, 1.0f, cc.IsTrigger);
 				
+			}
+
+			if (e.HasComponent<CircleColliderComponent>()) {
+				auto& cc = e.GetComponent<CircleColliderComponent>();
+
+				cc.ColliderData = new b2CircleShape;
+				cc.ColliderData->m_radius = cc.Radius;
+				cc.ColliderData->m_p = { cc.Center.x, cc.Center.y };
+
+				ridBodComp.RigidBody.AddCollider(cc.ColliderData, 1.0f, 1.0f, cc.IsTrigger);
+			}
+
+			if (e.HasComponent<EdgeColliderComponent>()) {
+				auto& ecc = e.GetComponent<EdgeColliderComponent>();
+
+				ecc.ColliderData = new b2EdgeShape;
+				ecc.ColliderData->Set({ ecc.Point1.x, ecc.Point1.y }, { ecc.Point2.x, ecc.Point2.y });
+
+				ridBodComp.RigidBody.AddCollider(ecc.ColliderData, 1.0f, 1.0f, ecc.IsTrigger);
+
+			}
+
+			if (e.HasComponent<PolygonColliderComponent>()) {
+				auto& pcc = e.GetComponent<PolygonColliderComponent>();
+
+				if (ridBodComp.Definition.Type != BodyType::Static) {
+					pcc.ColliderData = new b2PolygonShape;
+					b2PolygonShape* shape = (b2PolygonShape*)pcc.ColliderData;
+
+					shape->Set(pcc.Vertices.data(), pcc.Vertices.size());
+
+				} else {
+					pcc.ColliderData = new b2ChainShape;
+					b2ChainShape* shape = (b2ChainShape*)pcc.ColliderData;
+					
+					shape->CreateChain(pcc.Vertices.data(), pcc.Vertices.size());
+
+
+				}
+
+				ridBodComp.RigidBody.AddCollider(pcc.ColliderData, 1.0f, 1.0f, pcc.IsTrigger);
+
 			}
 
 		}

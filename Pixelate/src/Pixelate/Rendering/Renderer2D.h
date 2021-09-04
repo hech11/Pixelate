@@ -33,7 +33,7 @@ namespace Pixelate {
 			static void EndScene();
 
 
-			static void DrawVerticies(const std::array<glm::vec4, 4>& vertices, int vertexCount, const glm::vec4& color);
+			static void DrawVerticies(glm::vec4* vertices, int vertexCount, const glm::vec4& color);
 
 			static void DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color, int entityID);
 			static void DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color, int entityID);

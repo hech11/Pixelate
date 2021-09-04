@@ -1,36 +1,6 @@
 Scene: Scene
 Entities:
-  - Entity: 11174059842695126791
-    NameComponent:
-      Name: tone-ogg
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3.22500014, -0.344999999, 0, 1]
-    AudioSourceComponent:
-      AssetHandle: 16072470196708842148
-      Gain: 0.5
-      ShouldLoop: true
-    ScriptingBehaviourComponent:
-      ClassName: PlayAudio
-      Fields:
-        []
-  - Entity: 4842457283241966475
-    NameComponent:
-      Name: tone-mp3
-    TagComponent:
-      Tag: No tag
-    TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3.22500014, -0.344999999, 0, 1]
-    AudioSourceComponent:
-      AssetHandle: 5767884922789449816
-      Gain: 0.5
-      ShouldLoop: true
-    ScriptingBehaviourComponent:
-      ClassName: PlayAudio
-      Fields:
-        []
-  - Entity: 16377972483271767423
+  - Entity: 9094046987478096468
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
@@ -44,7 +14,14 @@ Entities:
         Position: [0, 0]
         Scale: [128, 128]
       TintColor: [1, 1, 1, 1]
-  - Entity: 10340747722560677175
+    PolygonColliderComponent:
+      Points:
+        - Point: [-1, -1]
+        - Point: [1, -1]
+        - Point: [-8.39999962, 6.80000019]
+        - Point: [-10.6000004, -10.8000002]
+      IsTrigger: false
+  - Entity: 4229026664058287599
     NameComponent:
       Name: Camera
     TagComponent:

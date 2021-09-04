@@ -22,7 +22,7 @@ namespace Pixelate {
 		};
 		glm::vec4 col = { color.r, color.g, color.b, color.a };
 
-		Renderer2D::DrawVerticies(vertex, vertexCount, col);
+//		Renderer2D::DrawVerticies(vertex, vertexCount, col);
 
 	}
 
@@ -38,7 +38,7 @@ namespace Pixelate {
 		};
 		glm::vec4 col = { color.r, color.g, color.b, color.a };
 
-		Renderer2D::DrawVerticies(vertex, vertexCount, col);
+		//Renderer2D::DrawVerticies(vertex, vertexCount, col);
 
 
 	}

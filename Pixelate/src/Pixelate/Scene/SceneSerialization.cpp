@@ -403,6 +403,53 @@ namespace Pixelate {
 			}
 
 
+			if (e.HasComponent<CircleColliderComponent>()) {
+				data << YAML::Key << "CircleColliderComponent";
+				auto& cc = e.GetComponent<CircleColliderComponent>();
+
+				data << YAML::BeginMap;
+				data << YAML::Key << "Center" << YAML::Value << cc.Center;
+				data << YAML::Key << "Radius" << YAML::Value << cc.Radius;
+				data << YAML::Key << "IsTrigger" << YAML::Value << cc.IsTrigger;
+				data << YAML::EndMap;
+
+			}
+
+
+			if (e.HasComponent<EdgeColliderComponent>()) {
+				data << YAML::Key << "EdgeColliderComponent";
+				auto& cc = e.GetComponent<EdgeColliderComponent>();
+
+				data << YAML::BeginMap;
+				data << YAML::Key << "PointA" << YAML::Value << cc.Point1;
+				data << YAML::Key << "PointB" << YAML::Value << cc.Point2;
+				data << YAML::Key << "IsTrigger" << YAML::Value << cc.IsTrigger;
+				data << YAML::EndMap;
+
+			}
+
+
+			if (e.HasComponent<PolygonColliderComponent>()) {
+				data << YAML::Key << "PolygonColliderComponent";
+				auto& cc = e.GetComponent<PolygonColliderComponent>();
+
+				data << YAML::BeginMap;
+				data << YAML::Key << "Points";
+				data << YAML::Value << YAML::BeginSeq;
+				for (int i = 0; i < cc.Vertices.size(); i++) {
+					data << YAML::BeginMap;
+					glm::vec2 point = { cc.Vertices[i].x, cc.Vertices[i].y };
+					data << YAML::Key << "Point" << YAML::Value << point;
+
+					data << YAML::EndMap;
+
+				}
+				data << YAML::EndSeq;
+
+				data << YAML::Key << "IsTrigger" << YAML::Value << cc.IsTrigger;
+				data << YAML::EndMap;
+
+			}
 
 
 ///////////////////////////////////////////////////// Scripting Components /////////////////////////////////////////////////////
@@ -604,6 +651,42 @@ namespace Pixelate {
 					comp.Size = bccYaml["Size"].as<glm::vec2>();
 					comp.IsTrigger = bccYaml["IsTrigger"].as<bool>();
 				}
+
+				if (auto ccYaml = entity["CircleColliderComponent"]) {
+					auto& comp = e.AddComponent<CircleColliderComponent>();
+
+					comp.Center = ccYaml["Center"].as<glm::vec2>();
+					comp.Radius = ccYaml["Radius"].as<float>();
+					comp.IsTrigger = ccYaml["IsTrigger"].as<bool>();
+				}
+
+
+				if (auto ccYaml = entity["EdgeColliderComponent"]) {
+					auto& comp = e.AddComponent<EdgeColliderComponent>();
+
+					comp.Point1 = ccYaml["PointA"].as<glm::vec2>();
+					comp.Point2 = ccYaml["PointB"].as<glm::vec2>();
+					comp.IsTrigger = ccYaml["IsTrigger"].as<bool>();
+				}
+
+
+				if (auto ccYaml = entity["PolygonColliderComponent"]) {
+					auto& comp = e.AddComponent<PolygonColliderComponent>();
+
+					const auto points = ccYaml["Points"];
+					int iterator = 0;
+					for (auto& point : points) {
+
+						const auto& value = point["Point"].as<glm::vec2>();
+						b2Vec2 p = { value.x, value.y };
+
+						comp.Vertices.push_back(p);
+
+					}
+					comp.IsTrigger = ccYaml["IsTrigger"].as<bool>();
+				}
+
+
 
 
 ///////////////////////////////////////////////////// Scripting Components /////////////////////////////////////////////////////

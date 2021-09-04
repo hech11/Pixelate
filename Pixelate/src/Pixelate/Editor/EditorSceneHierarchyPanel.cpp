@@ -574,6 +574,90 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::PopItemWidth();
 
 			});
+			DrawEntityComponents<CircleColliderComponent>("Circle Collider", m_CurrentlySelectedEntity, [](CircleColliderComponent& cc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Center");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat2("##center", glm::value_ptr(cc.Center), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Radius");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat("##rad", &cc.Radius, 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Is trigger");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::Checkbox("##istrigger", &cc.IsTrigger);
+				ImGui::PopItemWidth();
+
+			});
+			DrawEntityComponents<EdgeColliderComponent>("Edge Collider", m_CurrentlySelectedEntity, [](EdgeColliderComponent& cc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Point A");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat2("##Point A", glm::value_ptr(cc.Point1), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Point B");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::DragFloat2("##Point B", glm::value_ptr(cc.Point2), 0.1f);
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Is trigger");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::Checkbox("##istrigger", &cc.IsTrigger);
+				ImGui::PopItemWidth();
+
+			});
+
+
+			DrawEntityComponents<PolygonColliderComponent>("Polygon Collider", m_CurrentlySelectedEntity, [](PolygonColliderComponent& pcc) {
+				ImGui::Columns(2);
+				ImGui::SetColumnWidth(0, 150);
+
+				ImGui::Text("Points");
+				ImGui::NextColumn();
+				for (int i = 0; i < pcc.Vertices.size(); i++) {
+					ImGui::PushItemWidth(-1);
+					std::string id = "##PointP" + std::to_string(i);
+					if (i > 2) {
+						if (ImGui::SmallButton("x")) {
+							pcc.Vertices.erase(pcc.Vertices.begin() + i);
+						}
+						ImGui::SameLine();
+					}
+					ImGui::DragFloat2(id.c_str(), &pcc.Vertices[i].x, 0.1f);
+					ImGui::PopItemWidth();
+				}
+				ImGui::NextColumn();
+				ImGui::Text("Add Point");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				if (ImGui::Button("##addpoint")) {
+					pcc.Vertices.push_back({ 0.0f, 0.0f });
+				}
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+				ImGui::Text("Is trigger");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::Checkbox("##istrigger", &pcc.IsTrigger);
+				ImGui::PopItemWidth();
+
+			});
+
+
 
 			DrawEntityComponents<AudioSourceComponent>("Audio Source", m_CurrentlySelectedEntity, [](AudioSourceComponent& asc) {
 				ImGui::Columns(2);
@@ -1087,6 +1171,42 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						ImGui::CloseCurrentPopup();
 					}
 				}
+				if (!m_CurrentlySelectedEntity.HasComponent<CircleColliderComponent>()) {
+
+					if (ImGui::Button("Circle Collider")) {
+
+						// figure out what axis is bigger and assign its value to this variable
+						float bigger = (transformScale.x > transformScale.y ? transformScale.x : transformScale.y);
+						float radius = bigger / 2.0f;
+
+						m_CurrentlySelectedEntity.AddComponent<CircleColliderComponent>(glm::vec2(0.0f, 0.0f)
+							, radius, false);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+				if (!m_CurrentlySelectedEntity.HasComponent<EdgeColliderComponent>()) {
+
+					if (ImGui::Button("Edge Collider")) {
+						m_CurrentlySelectedEntity.AddComponent<EdgeColliderComponent>(glm::vec2(transformPosition.x-1, transformPosition.y),
+							glm::vec2(transformPosition.x+1, transformPosition.y), false);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+
+				if (!m_CurrentlySelectedEntity.HasComponent<PolygonColliderComponent>()) {
+
+					if (ImGui::Button("Polygon Collider")) {
+
+						m_CurrentlySelectedEntity.AddComponent<PolygonColliderComponent>(b2Vec2{ -1, -1},
+							b2Vec2{ 1, -1 },
+							b2Vec2{ 0.0f, 1 }, false);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+
 
 				if (!m_CurrentlySelectedEntity.HasComponent<AudioSourceComponent>()) {
 

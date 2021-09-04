@@ -185,20 +185,70 @@ namespace Pixelate {
 
 	struct BoxColliderComponent {
 
-
 		b2PolygonShape* ColliderData = nullptr;
 		glm::vec2 Center, Size;
 		bool IsTrigger = false;
 
 		
 		BoxColliderComponent() = default;
-		BoxColliderComponent(glm::vec2 center, glm::vec2 size, bool isTrigger) :
+		BoxColliderComponent(const glm::vec2& center, const glm::vec2& size, bool isTrigger) :
 			Center(center), Size(size), IsTrigger(isTrigger)
 		{}
 
 	};
 
-	//TODO: Need to support the other colliders such as polygon, edge and circle
+
+	struct CircleColliderComponent {
+
+		b2CircleShape* ColliderData = nullptr;
+		glm::vec2 Center;
+		float Radius;
+		bool IsTrigger = false;
+
+
+		CircleColliderComponent() = default;
+		CircleColliderComponent(const glm::vec2& center, float radius, bool isTrigger) :
+			Center(center), Radius(radius), IsTrigger(isTrigger)
+		{}
+
+	};
+
+	struct EdgeColliderComponent {
+
+		b2EdgeShape* ColliderData = nullptr;
+		glm::vec2 Point1, Point2;
+		bool IsTrigger = false;
+
+
+		EdgeColliderComponent() = default;
+		EdgeColliderComponent(const glm::vec2& p1, const glm::vec2& p2, bool isTrigger) :
+			Point1(p1), Point2(p2), IsTrigger(isTrigger)
+		{}
+
+	};
+
+	struct PolygonColliderComponent {
+
+		b2Shape* ColliderData = nullptr;
+		std::vector<b2Vec2> Vertices;
+		bool IsTrigger = false;
+
+
+		PolygonColliderComponent() = default;
+		PolygonColliderComponent(const std::vector<b2Vec2>& verts, bool isTrigger) :
+			Vertices(verts), IsTrigger(isTrigger)
+		{}
+
+		PolygonColliderComponent(const b2Vec2& vert1, const b2Vec2& vert2, const b2Vec2& vert3, bool isTrigger) :
+			IsTrigger(isTrigger)
+		{
+			Vertices.push_back(vert1);
+			Vertices.push_back(vert2);
+			Vertices.push_back(vert3);
+		}
+
+	};
+
 
 ///////////////////////////////////////////////////// Scripting components /////////////////////////////////////////////////////
 

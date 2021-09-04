@@ -70,7 +70,7 @@ namespace Pixelate {
 		Destroy();
 	}
 
-	void RigidBody::AddCollider(b2Shape* collider, float density, float friction, bool isTrigger) {
+	void RigidBody::AddCollider(b2Shape* collider, int16_t catergoryFilter, int16_t maskFilter, float density, float friction, bool isTrigger) {
 		PX_PROFILE_FUNCTION();
 		b2FixtureDef fDef;
 
@@ -78,6 +78,9 @@ namespace Pixelate {
 		fDef.density = density;
 		fDef.friction = friction;
 		fDef.isSensor = isTrigger;
+
+		fDef.filter.categoryBits = catergoryFilter;
+		fDef.filter.maskBits = maskFilter;
 
 		m_Fixtures.push_back(m_BodyData->CreateFixture(&fDef));
 	}

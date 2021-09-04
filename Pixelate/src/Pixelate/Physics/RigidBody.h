@@ -33,6 +33,9 @@ namespace Pixelate {
 
 		bool FixedRotation = false;
 
+		int16_t CategoryFilter;
+		int16_t CategoryMask;
+
 	};
 
 	struct PhysicsWorldComponent;
@@ -57,7 +60,7 @@ namespace Pixelate {
 			void SetUserData(void* data);
 			void* GetUserData();
 
-			void AddCollider(b2Shape* collider, float density, float friction, bool isTrigger);
+			void AddCollider(b2Shape* collider, int16_t catergoryFilter, int16_t maskFilter, float density, float friction, bool isTrigger);
 			void RemoveCollider(b2Shape* collider);
 
 			void SetCollisionDetectionMode(CollisionDetectionMode mode);
