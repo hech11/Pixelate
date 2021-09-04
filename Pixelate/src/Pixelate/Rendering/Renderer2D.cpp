@@ -11,6 +11,7 @@
 #include "Pixelate/Rendering/RendererCapabilities.h"
 #include "API/FrameBuffer.h"
 
+#include <math.h>
 
 
 
@@ -25,7 +26,7 @@ namespace Pixelate {
 		int EntityID;
 	};
 
-
+	// redundant 
 	struct PX_API LineVertexData {
 		glm::vec3 Verticies;
 		unsigned int Color;
@@ -61,6 +62,15 @@ namespace Pixelate {
 
 		LineVertexData* LineVertexDataBase = nullptr;
 		LineVertexData* LineQuadVertexData = nullptr;
+
+
+		// For rendering line strips
+		Ref<VertexArray> LineStripVertexArray;
+		Ref<VertexBuffer> LineStripVertexBuffer;
+		unsigned int LineStripIndexCount = 0;
+
+		LineVertexData* LineStripVertexDataBase = nullptr;
+		LineVertexData* LineStripQuadVertexData = nullptr;
 
 
 		// For drawing the scene grid.
@@ -113,15 +123,26 @@ namespace Pixelate {
 			SceneData->SpriteVertexDataBase = new SpriteVertexData[SceneData->MaxVerticiesSize];
 
 			// For lines
+
 			SceneData->LineVertexArray = VertexArray::Create();
 			SceneData->LineVertexBuffer = VertexBuffer::Create(SceneData->MaxLineVerticesSize * sizeof(LineVertexData));
 
 
 			SceneData->LineVertexBuffer->SetLayout(layout);
 			SceneData->LineVertexArray->PushVertexBuffer(SceneData->LineVertexBuffer);
-
-
 			SceneData->LineVertexDataBase = new LineVertexData[SceneData->MaxLineVerticesSize];
+
+			// For line strips
+
+			SceneData->LineStripVertexArray = VertexArray::Create();
+			SceneData->LineStripVertexBuffer = VertexBuffer::Create(SceneData->MaxLineVerticesSize * sizeof(LineVertexData));
+
+
+			SceneData->LineStripVertexBuffer->SetLayout(layout);
+			SceneData->LineStripVertexArray->PushVertexBuffer(SceneData->LineStripVertexBuffer);
+
+
+			SceneData->LineStripVertexDataBase = new LineVertexData[SceneData->MaxLineVerticesSize];
 
 		}
 
@@ -156,8 +177,11 @@ namespace Pixelate {
 
 			Ref<IndexBuffer> lineIbo = IndexBuffer::Create(lineIndices, SceneData->MaxLineIndicesSize);
 			SceneData->LineVertexArray->PushIndexBuffer(lineIbo);
-
 			SceneData->LineVertexArray->Unbind();
+
+
+			SceneData->LineStripVertexArray->PushIndexBuffer(lineIbo);
+			SceneData->LineStripVertexArray->Unbind();
 			delete[] lineIndices;
 		}
 		{
@@ -244,6 +268,9 @@ namespace Pixelate {
 		SceneData->LineIndexCount = 0;
 		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
 
+		SceneData->LineStripIndexCount = 0;
+		SceneData->LineStripQuadVertexData = SceneData->LineStripVertexDataBase;
+
 
 		
 
@@ -258,8 +285,6 @@ namespace Pixelate {
 
 		unsigned int quadSize = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
 		if (quadSize) {
-
-
 			SceneData->SpriteVertexArray->Bind();
 			SceneData->SpriteVertexArray->GetIbos().Bind();
 			SceneData->SpriteVertexBuffer->SetData(SceneData->SpriteVertexDataBase, quadSize);
@@ -283,7 +308,21 @@ namespace Pixelate {
 			SceneData->m_Statistics.DrawCalls += 1;
 
 		}
-		SceneData->m_Statistics.VertexSize = quadSize + lineSize;
+
+
+		uint32_t lineStripSize = (uint8_t*)SceneData->LineStripQuadVertexData - (uint8_t*)SceneData->LineStripVertexDataBase;
+		if (lineStripSize) {
+			SceneData->LineStripVertexArray->Bind();
+			SceneData->LineStripVertexArray->GetIbos().Bind();
+			SceneData->LineStripVertexBuffer->SetData(SceneData->LineStripVertexDataBase, lineStripSize);
+			TextureManager::GetDefaultTexture()->Bind();
+			RenderCommand::SetLineThickness(1.0f);
+
+			RenderCommand::DrawElements(SceneData->LineStripVertexArray, PimitiveRenderType::LineStrip, SceneData->LineStripIndexCount);
+			SceneData->m_Statistics.DrawCalls += 1;
+		}
+
+		SceneData->m_Statistics.VertexSize = quadSize + lineSize + lineStripSize;
 
 	}
 
@@ -532,6 +571,44 @@ namespace Pixelate {
 
 		for (uint32_t i = 0; i < 4; i++)
 			Renderer2D::DrawLine(corners[i], corners[(i + 1) % 4], color);
+
+	}
+
+	void Renderer2D::DrawCircle(const glm::vec2& center, float radius, const glm::vec4& color) {
+
+		float pi2 = 2.0f * 3.14f;
+		constexpr int sides = 64;
+		constexpr int verts = sides + 1;
+		
+		uint8_t r = color.r * 255.0f;
+		uint8_t g = color.g * 255.0f;
+		uint8_t b = color.b * 255.0f;
+		uint8_t a = color.a * 255.0f;
+
+		uint32_t c = a << 24 | b << 16 | g << 8 | r;
+
+
+		for (uint32_t angle = 0; angle < verts; angle++) {
+			glm::vec3 result;
+			result.x = center.x + (radius * cos(angle * pi2 / sides));
+			result.y = center.y + (radius * sin(angle * pi2 / sides));
+			result.z = 0.0f;
+
+
+			SceneData->LineStripQuadVertexData->Verticies = result;
+			SceneData->LineStripQuadVertexData->Color = c;
+			SceneData->LineStripQuadVertexData->TextureCoords = { 0.0f, 0.0f };
+			SceneData->LineStripQuadVertexData->TextureIndex = 0.0f;
+			SceneData->LineStripQuadVertexData->EntityID = -1;
+			SceneData->LineStripQuadVertexData++;
+
+
+			SceneData->LineStripIndexCount++;
+			SceneData->m_Statistics.IndexCount++;
+
+
+		}
+
 
 	}
 

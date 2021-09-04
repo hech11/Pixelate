@@ -112,6 +112,7 @@ namespace Pixelate {
 
 		}
 
+		Renderer2D::DrawCircle({ 1.0f, 0.0f }, 1.0f, { 0, 1, 0, 1 });
 
 		Renderer2D::EndScene();
 

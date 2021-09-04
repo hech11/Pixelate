@@ -47,6 +47,8 @@ namespace Pixelate {
 			static void DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
 			static void DrawAABB(const AABB& aabb, const glm::vec4& color);
 
+			static void DrawCircle(const glm::vec2& center, float radius, const glm::vec4& color);
+
 			static void DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor, int entityID);
 			static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID);
 

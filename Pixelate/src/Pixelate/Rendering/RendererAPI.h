@@ -14,7 +14,8 @@ namespace Pixelate {
 	enum class PimitiveRenderType {
 		None = 0,
 		Triangles,
-		Lines
+		Lines,
+		LineStrip
 	};
 
 	class RendererAPI {

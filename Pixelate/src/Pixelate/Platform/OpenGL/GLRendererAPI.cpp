@@ -147,6 +147,9 @@ namespace Pixelate {
 		case Pixelate::PimitiveRenderType::Lines:
 			glDrawElements(GL_LINES, indexCount, vao->GetIbos().GetType(), nullptr);
 			break;
+		case Pixelate::PimitiveRenderType::LineStrip:
+			glDrawElements(GL_LINE_STRIP, indexCount, vao->GetIbos().GetType(), nullptr);
+			break;
 		default:
 			break;
 		}
