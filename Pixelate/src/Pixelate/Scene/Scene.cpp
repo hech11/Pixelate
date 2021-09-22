@@ -243,7 +243,7 @@ namespace Pixelate {
 				cc.ColliderData->SetAsBox(cc.Size.x, cc.Size.y, {cc.Center.x, cc.Center.y}, rotation);
 
 
-				ridBodComp.RigidBody.AddCollider(cc.ColliderData, 1.0f, 1.0f, cc.IsTrigger);
+				ridBodComp.RigidBody.AddCollider(cc.ColliderData, def.CategoryFilter, 1, 1.0f, 1.0f, cc.IsTrigger);
 				
 			}
 
@@ -254,7 +254,7 @@ namespace Pixelate {
 				cc.ColliderData->m_radius = cc.Radius;
 				cc.ColliderData->m_p = { cc.Center.x, cc.Center.y };
 
-				ridBodComp.RigidBody.AddCollider(cc.ColliderData, 1.0f, 1.0f, cc.IsTrigger);
+				ridBodComp.RigidBody.AddCollider(cc.ColliderData, def.CategoryFilter, 1, 1.0f, 1.0f, cc.IsTrigger);
 			}
 
 			if (e.HasComponent<EdgeColliderComponent>()) {
@@ -263,7 +263,7 @@ namespace Pixelate {
 				ecc.ColliderData = new b2EdgeShape;
 				ecc.ColliderData->Set({ ecc.Point1.x, ecc.Point1.y }, { ecc.Point2.x, ecc.Point2.y });
 
-				ridBodComp.RigidBody.AddCollider(ecc.ColliderData, 1.0f, 1.0f, ecc.IsTrigger);
+				ridBodComp.RigidBody.AddCollider(ecc.ColliderData, def.CategoryFilter, 1, 1.0f, 1.0f, ecc.IsTrigger);
 
 			}
 
@@ -285,7 +285,7 @@ namespace Pixelate {
 
 				}
 
-				ridBodComp.RigidBody.AddCollider(pcc.ColliderData, 1.0f, 1.0f, pcc.IsTrigger);
+				ridBodComp.RigidBody.AddCollider(pcc.ColliderData, def.CategoryFilter, 0, 1.0f, 1.0f, pcc.IsTrigger);
 
 			}
 

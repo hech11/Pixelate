@@ -20,8 +20,9 @@
 #include "Pixelate/Audio/Audio.h"
 #include "EditorTextureInspector.h"
 #include <Imgui\imgui_internal.h>
-#include "../Asset/AssetManager.h"
-#include "../Asset/Asset.h"
+#include "Pixelate/Asset/AssetManager.h"
+#include "Pixelate/Asset/Asset.h"
+#include "Pixelate/Physics/Physics.h"
 
 namespace Pixelate {
 
@@ -460,6 +461,35 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 
 
+				ImGui::Text("Layer");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+
+				int layer = rbc.Definition.CategoryFilter;
+
+				if (ImGui::BeginCombo("##PhysicsLayer", Physics::ConvertFilterIDToString(layer).c_str())) {
+
+					for (auto& [id, name] : Physics::GetFilters()) {
+						if (ImGui::Selectable(name.c_str(), id == layer))
+							layer = id;
+					}
+
+					ImGui::EndCombo();
+				}
+
+
+
+
+				rbc.Definition.CategoryFilter = layer;
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
+
+
+
 				ImGui::Text("Type");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
@@ -483,7 +513,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 					ImGui::EndCombo();
 				}
-				
+
 				rbc.Definition.Type = currentType;
 
 				ImGui::PopItemWidth();

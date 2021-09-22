@@ -60,6 +60,7 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("ContentBrowser", m_ContentBrowser = CreateRef<EditorContentBrowser>());
 		PanelManager.RegisterPanel("AudioPanel", m_AudioPanel = CreateRef<EditorAudioPanel>());
 		PanelManager.RegisterPanel("AudioMixerPanel", m_AudioMixerPanel = CreateRef<EditorAudioMixerPanel>());
+		PanelManager.RegisterPanel("PhysicsPropertiesPanel", m_PhysicsPanel = CreateRef<EditorPhysicsPropertiesPanel>());
 
 		m_AudioMixerPanel->SetOpenPanel(false);
 
@@ -850,36 +851,6 @@ namespace Pixelate {
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-
-		// TODO: This should be moved into it's own class.
-		// This is referring to the settings of the physics, such as gravity for all objects. 
-		if (m_OpenPhysicsPanel) {
-
-			ImGui::Begin("Physics Properties", &m_OpenPhysicsPanel);
-
-			auto PhysicsWorldComp = m_EditorScene->GetAllEntitiesWith<PhysicsWorldComponent>();
-			for (auto s : PhysicsWorldComp) {
-				Entity e = { s, m_EditorScene.get() };
-				
-				auto& physicsComp = e.GetComponent<PhysicsWorldComponent>();
-				if(ImGui::InputFloat2("Gravity", glm::value_ptr(physicsComp.Gravity), "%.2f")) {
-					physicsComp.World->SetGravity({ physicsComp.Gravity.x, physicsComp.Gravity.y});
-				}
-				ImGui::InputFloat("Fixed Timestep", &physicsComp.FixedTimeStep, 0.0f, 0.0f, "%.2f");
-				ImGui::InputInt("Velocity Iterations", &physicsComp.VelocityIterations);
-				ImGui::InputInt("Position Iterations", &physicsComp.PositionIterations);
-
-
-				// TODO: physics collision layer matrix
-
-				
-
-			}
-
-
-			ImGui::End();
-
-		}
 
 
 		if (m_OpenSceneManagerPanel) {

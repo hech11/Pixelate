@@ -33,8 +33,7 @@ namespace Pixelate {
 
 		bool FixedRotation = false;
 
-		int16_t CategoryFilter;
-		int16_t CategoryMask;
+		int16_t CategoryFilter = 0x0001;
 
 	};
 

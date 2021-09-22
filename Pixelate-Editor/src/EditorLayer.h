@@ -21,6 +21,7 @@
 #include <Pixelate/Editor/EditorAudioPanel.h>
 #include <Pixelate/Editor/EditorAudioMixerPanel.h>
 #include <Pixelate/Editor/EditorContentBrowser.h>
+#include <Pixelate/Editor/EditorPhysicsPropertiesPanel.h>
 #include <Pixelate/Editor/EditorPanel.h>
 
 #include <Pixelate/Scene/Scene.h>
@@ -110,6 +111,7 @@ namespace Pixelate {
 			Ref<EditorAudioPanel> m_AudioPanel;
 			Ref<EditorAudioMixerPanel> m_AudioMixerPanel;
 			Ref<EditorContentBrowser> m_ContentBrowser;
+			Ref<EditorPhysicsPropertiesPanel> m_PhysicsPanel;
 
 
 			ParticleSystem particleSystem;

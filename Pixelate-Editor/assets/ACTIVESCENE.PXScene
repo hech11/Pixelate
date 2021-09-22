@@ -1,6 +1,6 @@
 Scene: Scene
 Entities:
-  - Entity: 9094046987478096468
+  - Entity: 10533669892346925725
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
@@ -14,14 +14,17 @@ Entities:
         Position: [0, 0]
         Scale: [128, 128]
       TintColor: [1, 1, 1, 1]
-    PolygonColliderComponent:
-      Points:
-        - Point: [-1, -1]
-        - Point: [1, -1]
-        - Point: [-8.39999962, 6.80000019]
-        - Point: [-10.6000004, -10.8000002]
+    RigidBodyComponent:
+      GravityScale: 1
+      SleepingState: 1
+      CollisionDetectionMode: 1
+      BodyType: 2
+      FixedRotation: false
+    BoxColliderComponent:
+      Center: [0, 0]
+      Size: [0.5, 0.5]
       IsTrigger: false
-  - Entity: 4229026664058287599
+  - Entity: 17317723031986864800
     NameComponent:
       Name: Camera
     TagComponent:
