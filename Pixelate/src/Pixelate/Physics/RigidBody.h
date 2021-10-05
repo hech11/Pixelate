@@ -33,7 +33,7 @@ namespace Pixelate {
 
 		bool FixedRotation = false;
 
-		int16_t CategoryFilter = 0x0001;
+		int16_t CategoryLayer = 0x0001;
 
 	};
 
@@ -59,7 +59,7 @@ namespace Pixelate {
 			void SetUserData(void* data);
 			void* GetUserData();
 
-			void AddCollider(b2Shape* collider, int16_t catergoryFilter, int16_t maskFilter, float density, float friction, bool isTrigger);
+			void AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, float density, float friction, bool isTrigger);
 			void RemoveCollider(b2Shape* collider);
 
 			void SetCollisionDetectionMode(CollisionDetectionMode mode);

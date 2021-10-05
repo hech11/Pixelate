@@ -63,7 +63,7 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("PhysicsPropertiesPanel", m_PhysicsPanel = CreateRef<EditorPhysicsPropertiesPanel>());
 
 		m_AudioMixerPanel->SetOpenPanel(false);
-
+		m_PhysicsPanel->SetOpenPanel(false);
 
 		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
 
@@ -536,7 +536,7 @@ namespace Pixelate {
 					m_OpenSceneManagerPanel = true;
 				}
 				if (ImGui::MenuItem("Physics", "")) {
-					m_OpenPhysicsPanel = true;
+					m_PhysicsPanel->SetOpenPanel(true);
 				}
 				ImGui::EndMenu();
 			}
@@ -569,8 +569,8 @@ namespace Pixelate {
 
 
 
- 		static bool showDemoWindow = true;
- 		ImGui::ShowDemoWindow(&showDemoWindow);
+//  		static bool showDemoWindow = false;
+//  		ImGui::ShowDemoWindow(&showDemoWindow);
 
 	
 
@@ -765,9 +765,18 @@ namespace Pixelate {
 
 		Application::GetApp().GetImguiLayer().ShouldBlockEvents(false);
 
-		m_SceneViewportPanelPosition = *((glm::vec2*) & ImGui::GetWindowPos());
-		m_SceneViewportPanelPosition += *((glm::vec2*) & ImGui::GetCursorPos());
-		m_SceneViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+
+		{
+			glm::vec2 WindowPos = { ImGui::GetWindowPos().x,  ImGui::GetWindowPos().y };
+			glm::vec2 CursorPos = { ImGui::GetCursorPos().x, ImGui::GetCursorPos().y };
+			glm::vec2 ContentRegionAvail = { ImGui::GetContentRegionAvail().x,  ImGui::GetContentRegionAvail().y };
+
+
+			m_SceneViewportPanelPosition = WindowPos;
+			m_SceneViewportPanelPosition += CursorPos;
+			m_SceneViewportPanelSize = ContentRegionAvail;
+
+		}
 
 		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachmentRenderID(0);
 		ImGui::Image((void*)sceneViewportColorAttachment, { m_SceneViewportSize.x, m_SceneViewportSize.y }, { 0, 1 }, { 1, 0 });
@@ -824,20 +833,22 @@ namespace Pixelate {
 			ImGui::SetWindowFocus();
 		}
 
+		glm::vec2 WindowPos = { ImGui::GetWindowPos().x,  ImGui::GetWindowPos().y };
+		glm::vec2 CursorPos = { ImGui::GetCursorPos().x, ImGui::GetCursorPos().y };
+		glm::vec2 ContentRegionAvail = { ImGui::GetContentRegionAvail().x,  ImGui::GetContentRegionAvail().y };
 
-
-		m_GameViewportPanelPosition = *((glm::vec2*) & ImGui::GetWindowPos());
-		m_GameViewportPanelPosition += *((glm::vec2*) & ImGui::GetCursorPos());
+		m_GameViewportPanelPosition = WindowPos;
+		m_GameViewportPanelPosition += CursorPos;
 		if (current_item == items[1]) {
-			m_GameViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+			m_GameViewportPanelSize = ContentRegionAvail;
 			m_GameViewportPanelSize.y = m_GameViewportPanelSize.x / 16.0f * 9.0f;
 		}
 		else if (current_item == items[2]) {
-			m_GameViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+			m_GameViewportPanelSize = ContentRegionAvail;
 			m_GameViewportPanelSize.y = m_GameViewportPanelSize.x / 4.0f * 3.0f;
 		}
 		else {
-			m_GameViewportPanelSize = *((glm::vec2*) & ImGui::GetContentRegionAvail());
+			m_GameViewportPanelSize = ContentRegionAvail;
 		}
 
 		glm::vec2 cursorPos = { ImGui::GetWindowSize().x - m_GameViewportSize.x, ImGui::GetWindowSize().y - m_GameViewportSize.y + padding };

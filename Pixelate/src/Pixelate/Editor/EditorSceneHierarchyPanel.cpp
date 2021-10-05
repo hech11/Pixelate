@@ -466,22 +466,22 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::PushItemWidth(-1);
 
 
-				int layer = rbc.Definition.CategoryFilter;
+				int categoryLayer = rbc.Definition.CategoryLayer;
 
-				if (ImGui::BeginCombo("##PhysicsLayer", Physics::ConvertFilterIDToString(layer).c_str())) {
+				if (ImGui::BeginCombo("##PhysicsLayer", Physics::LayerIDToString(categoryLayer).c_str())) {
 
-					for (auto& [id, name] : Physics::GetFilters()) {
-						if (ImGui::Selectable(name.c_str(), id == layer))
-							layer = id;
+					for (auto& layer : Physics::GetLayers()) {
+						if (ImGui::Selectable(layer.DebugName.c_str(), layer.ID == categoryLayer)) {
+							categoryLayer = layer.ID;
+						}
 					}
+
+					rbc.Definition.CategoryLayer = categoryLayer;
 
 					ImGui::EndCombo();
 				}
 
 
-
-
-				rbc.Definition.CategoryFilter = layer;
 
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();

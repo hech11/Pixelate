@@ -125,7 +125,7 @@ namespace Pixelate { namespace Script {
 		auto& entityMap = scene->GetEntityMap();
 
 		auto& r = entityMap[entity].GetComponent<RigidBodyComponent>();
-		velocity = &r.RigidBody.GetLinearVelocity();
+		*velocity = r.RigidBody.GetLinearVelocity();
 	}
 	void Pixelate_RigidbodyComponent_SetCollisionDetection(unsigned long long entity, CollisionDetectionMode* mode) {
 		Ref<Scene>& scene = SceneManager::GetActiveScene();

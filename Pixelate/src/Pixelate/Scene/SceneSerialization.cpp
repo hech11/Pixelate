@@ -382,6 +382,7 @@ namespace Pixelate {
 
 				data << YAML::BeginMap;
 				data << YAML::Key << "GravityScale" << YAML::Value << rbc.Definition.GravityScale;
+				data << YAML::Key << "CategoryLayer" << YAML::Value << rbc.Definition.CategoryLayer;
 				data << YAML::Key << "SleepingState" << YAML::Value << (int)rbc.Definition.State;
 				data << YAML::Key << "CollisionDetectionMode" << YAML::Value << (int)rbc.Definition.DetectionMode;
 				data << YAML::Key << "BodyType" << YAML::Value << (int)rbc.Definition.Type;
@@ -631,11 +632,15 @@ namespace Pixelate {
 
 					bool rotate = rbYaml["FixedRotation"].as<bool>();
 					float gravScale = rbYaml["GravityScale"].as<float>();
+
+					uint16_t layer = rbYaml["CategoryLayer"].as<uint16_t>();
+
 					SleepingState state = (SleepingState) rbYaml["SleepingState"].as<int>();
 					CollisionDetectionMode mode = (CollisionDetectionMode) rbYaml["CollisionDetectionMode"].as<int>();
 					BodyType type = (BodyType) rbYaml["BodyType"].as<int>();
 
 					comp.Definition.GravityScale = gravScale;
+					comp.Definition.CategoryLayer = layer;
 					comp.Definition.State = state;
 					comp.Definition.DetectionMode = mode;
 					comp.Definition.Type = type;

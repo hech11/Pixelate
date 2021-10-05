@@ -7,6 +7,7 @@
 #include "PhysicsDebugDraw.h"
 #include "PhysicsCollisionCallback.h"
 
+#include <bitset>
 
 namespace Pixelate {
 
@@ -30,15 +31,10 @@ namespace Pixelate {
 		PhysicsDebugDraw DebugDraw;
 		PhysicsCollisionCallback CollisionCallback;
 
-		std::vector<int16_t> Filters;
-
-
-
-
 	};
 
 
-	enum PhysicsLayers : int16_t {
+	enum PhysicsLayersIndex : int16_t {
 		Layer1  = BIT(0),
 		Layer2  = BIT(1),
 		Layer3  = BIT(2),
@@ -54,34 +50,61 @@ namespace Pixelate {
 		Layer13 = BIT(12),
 		Layer14 = BIT(13),
 		Layer15 = BIT(14),
+		FinalLayer = Layer15,
+	};
+
+	struct PhysicsLayer {
+
+		int16_t ID = 0;
+		std::bitset<16> Rule;
+
+		std::string DebugName;
+
+		bool operator==(const PhysicsLayer& other) const {
+			return (ID == other.ID && DebugName == other.DebugName && Rule == other.Rule);
+		}
 	};
 
 	class Physics {
 
 		public :
 
-			static std::unordered_map<int16_t, std::string>& GetFilters() { return s_Filters; }
-			static std::unordered_map<int16_t, int16_t>& GetFilterRules() { return s_FilterRules; }
+			static std::vector<PhysicsLayer>& GetLayers() { return s_Layers; }
 
-			static void AddCollisionFilter(const std::string& name);
-			static void RemoveCollisionFilter(const std::string& name);
+			static void AddCollisionLayer(const std::string& name);
+			static void RemoveCollisionLayer(int16_t layerId);
 
-			static void AddFilterRule(const std::string& filterName, int16_t rule);
+			static void RenameCollisionLayer(int16_t layerID, const std::string& name);
 
-			static int16_t UnflipFilter(int16_t mask, int16_t nibbleToSubtract);
-			static int16_t FlipFilter(int16_t mask, int16_t nibbleToAdd);
+			static int16_t GetLayerRuleMask(int16_t layerCategory);
+
+			static int GetMaxFilters() { return 15; }
+			static std::bitset<16> GenerateDefaultLayerMask() { return 0x7FFF; }
 
 
-			static int16_t ConvertFilterStringToID(const std::string& name);
-			static std::string ConvertFilterIDToString(int16_t id);
+			static std::string& LayerIDToString(int16_t layerID);
+
 
 		private :
-			static std::unordered_map<int16_t, std::string> s_Filters;
-			static std::unordered_map<int16_t, int16_t> s_FilterRules;
-
-			static int16_t s_FilterCounter;
+			static std::vector<PhysicsLayer> s_Layers;
 
 	};
 
 	
 }
+// 
+// namespace std {
+// 
+// 	template <>
+// 	struct hash<Pixelate::PhysicsLayer> {
+// 
+// 		std::size_t operator()(const Pixelate::PhysicsLayer& id) const {
+// 
+// 			std::string hashData = id.DebugName + std::to_string(id.ID);
+// 			size_t hashResult = hash<std::string>()(hashData);
+// 
+// 			return hashResult;
+// 		}
+// 	};
+// 
+// }

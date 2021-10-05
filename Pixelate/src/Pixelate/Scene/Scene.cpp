@@ -227,48 +227,64 @@ namespace Pixelate {
 			auto [pos, rotationQ, scale] = transformComp.DecomposeTransform();
 			float rotation = glm::degrees(glm::eulerAngles(rotationQ)).z;
 			
-			RigidBodyDef def;
+			const RigidBodyDef& def = ridBodComp.Definition;
 
 			ridBodComp.Definition.Position = pos;
 			ridBodComp.Definition.Angle = rotation;
 
 			ridBodComp.RigidBody.Init(physicsWorld, {(unsigned int)entity, this}, ridBodComp.Definition);
 
-
+			b2Shape* shape = nullptr;
 			if (e.HasComponent<BoxColliderComponent>()) {
 
 				auto& cc = e.GetComponent<BoxColliderComponent>();
 
-				cc.ColliderData = new b2PolygonShape;
+				const auto& colliderDat = cc.ColliderData;
+				const auto& isTrigger = cc.IsTrigger;
+
+				shape = cc.ColliderData = new b2PolygonShape;
 				cc.ColliderData->SetAsBox(cc.Size.x, cc.Size.y, {cc.Center.x, cc.Center.y}, rotation);
 
 
-				ridBodComp.RigidBody.AddCollider(cc.ColliderData, def.CategoryFilter, 1, 1.0f, 1.0f, cc.IsTrigger);
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
 				
 			}
 
 			if (e.HasComponent<CircleColliderComponent>()) {
 				auto& cc = e.GetComponent<CircleColliderComponent>();
 
-				cc.ColliderData = new b2CircleShape;
+				const auto& colliderDat = cc.ColliderData;
+				const auto& isTrigger = cc.IsTrigger;
+
+
+				shape = cc.ColliderData = new b2CircleShape;
 				cc.ColliderData->m_radius = cc.Radius;
 				cc.ColliderData->m_p = { cc.Center.x, cc.Center.y };
 
-				ridBodComp.RigidBody.AddCollider(cc.ColliderData, def.CategoryFilter, 1, 1.0f, 1.0f, cc.IsTrigger);
+				
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
 			}
 
 			if (e.HasComponent<EdgeColliderComponent>()) {
 				auto& ecc = e.GetComponent<EdgeColliderComponent>();
 
+
+				const auto& colliderDat = ecc.ColliderData;
+				const auto& isTrigger = ecc.IsTrigger;
+
 				ecc.ColliderData = new b2EdgeShape;
 				ecc.ColliderData->Set({ ecc.Point1.x, ecc.Point1.y }, { ecc.Point2.x, ecc.Point2.y });
 
-				ridBodComp.RigidBody.AddCollider(ecc.ColliderData, def.CategoryFilter, 1, 1.0f, 1.0f, ecc.IsTrigger);
+		
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
 
 			}
 
 			if (e.HasComponent<PolygonColliderComponent>()) {
 				auto& pcc = e.GetComponent<PolygonColliderComponent>();
+
+				const auto& colliderDat = pcc.ColliderData;
+				const auto& isTrigger = pcc.IsTrigger;
 
 				if (ridBodComp.Definition.Type != BodyType::Static) {
 					pcc.ColliderData = new b2PolygonShape;
@@ -285,7 +301,8 @@ namespace Pixelate {
 
 				}
 
-				ridBodComp.RigidBody.AddCollider(pcc.ColliderData, def.CategoryFilter, 0, 1.0f, 1.0f, pcc.IsTrigger);
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
+
 
 			}
 
