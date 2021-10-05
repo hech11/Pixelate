@@ -577,7 +577,77 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
-			
+
+
+
+				ImGui::Text("Physics Material2D");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+				Ref<PhysicsMaterial2D>& material = rbc.Definition.Material;
+				const AssetHandle& handle = rbc.Definition.Material->Handle;
+				if (handle == 0) {
+					ImGui::InputText("##PhysicsMaterial2DPath", (char*)"No Path...", ImGuiInputTextFlags_ReadOnly);
+				}
+				else {
+					ImGui::InputText("##PhysicsMaterial2DPath", (char*)AssetManager::GetFilePathString(AssetManager::GetMetadata(handle)).c_str(), ImGuiInputTextFlags_ReadOnly);
+				}
+
+
+				BeginDragDrop([&](AssetMetadata& metadata) {
+					if (metadata.Type == AssetType::PhysicsMaterial2D) {
+						material = AssetManager::GetAsset<PhysicsMaterial2D>(metadata.Handle);
+					}
+				});
+
+
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				ImGui::Text("Mass");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+
+				if (ImGui::SliderFloat("##PhysicsMaterial2DMass", &material->Mass, 0.0f, 1.0f)) {
+					if (handle != 0) {
+						PhysicsMaterial2DSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(handle)).c_str(), material);
+					}
+				}
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				ImGui::Text("Friction");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+
+				if (ImGui::SliderFloat("##PhysicsMaterial2DFriction", &material->Friction, 0.0f, 1.0f)) {
+					if (handle != 0) {
+						PhysicsMaterial2DSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(handle)).c_str(), material);
+					}
+				}
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				ImGui::Text("Bounciness");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+
+				if (ImGui::SliderFloat("##PhysicsMaterial2DBounciness", &material->Bounciness, 0.0f, 1.0f)) {
+					if (handle != 0) {
+						PhysicsMaterial2DSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(handle)).c_str(), material);
+					}
+				}
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
 
 			});
 

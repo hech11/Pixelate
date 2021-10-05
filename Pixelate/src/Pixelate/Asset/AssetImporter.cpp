@@ -6,6 +6,7 @@
 #include "Pixelate/Rendering/API/Texture.h"
 #include "Pixelate/Audio/Audio.h"
 #include "Pixelate/Audio/AudioLoader.h"
+#include "Pixelate/Physics/Physics.h"
 
 
 
@@ -20,7 +21,9 @@ namespace Pixelate {
 	{
 		m_Importers = 
 		{	{AssetType::Texture, CreateRef<TextureImporter>() },
-			{AssetType::Audio, CreateRef<AudioImporter>() }
+			{AssetType::Audio, CreateRef<AudioImporter>() },
+			{AssetType::PhysicsMaterial2D, CreateRef<PhysicsMaterial2DImporter>() },
+
 		};
 	}
 
@@ -89,6 +92,25 @@ namespace Pixelate {
 	void AudioImporter::Reload(Ref<Asset>& asset)
 	{
 		//Audio::Reload(AssetManager::GetMetadata(asset->Handle));
+	}
+
+
+
+
+	////////////// --------- PhysicsMaterial2DImporter --------- ////////////// 
+
+	bool PhysicsMaterial2DImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)
+	{
+		asset = PhysicsMaterial2DSerialization::Deserialize(AssetManager::GetFilePathString(metadata));
+		asset->Handle = metadata.Handle;
+
+		return true;
+
+	}
+
+	void PhysicsMaterial2DImporter::Reload(Ref<Asset>& asset)
+	{
+
 	}
 
 }

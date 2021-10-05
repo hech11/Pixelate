@@ -31,7 +31,8 @@ namespace Pixelate {
 		Scene,
 		Shader,
 		AssetRegistry,
-		AudioMixer
+		AudioMixer,
+		PhysicsMaterial2D
 	};
 
 

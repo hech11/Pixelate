@@ -52,4 +52,15 @@ namespace Pixelate {
 
 	};
 
+
+	
+	class PhysicsMaterial2DImporter : public AssetTypeImporter {
+
+		public:
+			PhysicsMaterial2DImporter() = default;
+			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+			void Reload(Ref<Asset>& asset) override;
+
+	};
+
 }

@@ -3,6 +3,8 @@
 #include "GLM/glm/glm.hpp"
 #include "box2d/box2d.h"
 
+#include "PhysicsMaterial2D.h"
+
 
 namespace Pixelate {
 
@@ -35,6 +37,9 @@ namespace Pixelate {
 
 		int16_t CategoryLayer = 0x0001;
 
+		Ref<PhysicsMaterial2D> Material = CreateRef<PhysicsMaterial2D>();
+
+
 	};
 
 	struct PhysicsWorldComponent;
@@ -59,7 +64,10 @@ namespace Pixelate {
 			void SetUserData(void* data);
 			void* GetUserData();
 
-			void AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, float density, float friction, bool isTrigger);
+			void AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, float density, float friction, float bounciness, bool isTrigger);
+
+			void AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, const Ref<PhysicsMaterial2D>& material, bool isTrigger);
+
 			void RemoveCollider(b2Shape* collider);
 
 			void SetCollisionDetectionMode(CollisionDetectionMode mode);

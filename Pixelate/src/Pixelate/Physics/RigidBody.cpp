@@ -70,13 +70,30 @@ namespace Pixelate {
 		Destroy();
 	}
 
-	void RigidBody::AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, float density, float friction, bool isTrigger) {
+	void RigidBody::AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, float density, float friction, float bounciness, bool isTrigger) {
 		PX_PROFILE_FUNCTION();
 		b2FixtureDef fDef;
 
 		fDef.shape = collider;
 		fDef.density = density;
 		fDef.friction = friction;
+		fDef.restitution = bounciness;
+		fDef.isSensor = isTrigger;
+
+		fDef.filter.categoryBits = catergoryLayer;
+		fDef.filter.maskBits = layerMaskRule;
+
+		m_Fixtures.push_back(m_BodyData->CreateFixture(&fDef));
+	}
+
+	void RigidBody::AddCollider(b2Shape* collider, int16_t catergoryLayer, int16_t layerMaskRule, const Ref<PhysicsMaterial2D>& material, bool isTrigger) {
+		PX_PROFILE_FUNCTION();
+		b2FixtureDef fDef;
+
+		fDef.shape = collider;
+		fDef.density = material->Mass;
+		fDef.friction = material->Friction;
+		fDef.restitution = material->Bounciness;
 		fDef.isSensor = isTrigger;
 
 		fDef.filter.categoryBits = catergoryLayer;

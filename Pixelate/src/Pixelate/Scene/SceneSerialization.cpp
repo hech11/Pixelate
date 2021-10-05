@@ -387,6 +387,20 @@ namespace Pixelate {
 				data << YAML::Key << "CollisionDetectionMode" << YAML::Value << (int)rbc.Definition.DetectionMode;
 				data << YAML::Key << "BodyType" << YAML::Value << (int)rbc.Definition.Type;
 				data << YAML::Key << "FixedRotation" << YAML::Value << rbc.Definition.FixedRotation;
+
+				data << YAML::Key << "PhysicsMaterial2D";
+
+				data << YAML::BeginMap;
+				if (rbc.Definition.Material->Handle != 0) {
+					data << YAML::Key << "AssetHandle" << YAML::Value << (UUID)rbc.Definition.Material->Handle;
+				} else {
+					data << YAML::Key << "Mass" << rbc.Definition.Material->Mass;
+					data << YAML::Key << "Friction" << rbc.Definition.Material->Friction;
+					data << YAML::Key << "Bounciness" << rbc.Definition.Material->Bounciness;
+				}
+				data << YAML::EndMap;
+
+
 				data << YAML::EndMap;
 
 			}
@@ -638,6 +652,25 @@ namespace Pixelate {
 					SleepingState state = (SleepingState) rbYaml["SleepingState"].as<int>();
 					CollisionDetectionMode mode = (CollisionDetectionMode) rbYaml["CollisionDetectionMode"].as<int>();
 					BodyType type = (BodyType) rbYaml["BodyType"].as<int>();
+
+					auto material = rbYaml["PhysicsMaterial2D"];
+					if (material["AssetHandle"]) {
+						comp.Definition.Material = AssetManager::GetAsset<PhysicsMaterial2D>(material["AssetHandle"].as<uint64_t>());
+					} else {
+						float mass = material["Mass"].as<float>();
+						float friction = material["Friction"].as<float>();
+						float bounicess = material["Bounciness"].as<float>();
+
+						comp.Definition.Material = CreateRef<PhysicsMaterial2D>();
+
+						comp.Definition.Material->Mass = mass;
+						comp.Definition.Material->Friction = friction;
+						comp.Definition.Material->Bounciness = bounicess;
+
+
+
+					}
+
 
 					comp.Definition.GravityScale = gravScale;
 					comp.Definition.CategoryLayer = layer;

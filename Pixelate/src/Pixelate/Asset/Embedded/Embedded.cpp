@@ -1,6 +1,7 @@
 #include "PXpch.h"
 
 #include "Audio/AudioMixerGenerator.h"
+#include "Physics/PhysicsMaterial2DGenerator.h"
 
 
 namespace Pixelate {
@@ -8,6 +9,7 @@ namespace Pixelate {
 	inline static std::unordered_map<AssetType, Ref<EmbeddedGenerator>> s_Generators = 
 	{
 		{AssetType::AudioMixer, CreateRef<AudioMixerGenerator>()},
+		{AssetType::PhysicsMaterial2D, CreateRef<PhysicsMaterial2DGenerator>()},
 	};
 
 

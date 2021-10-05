@@ -245,8 +245,8 @@ namespace Pixelate {
 				shape = cc.ColliderData = new b2PolygonShape;
 				cc.ColliderData->SetAsBox(cc.Size.x, cc.Size.y, {cc.Center.x, cc.Center.y}, rotation);
 
-
-				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
+				
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), def.Material->Mass, def.Material->Friction, def.Material->Bounciness, isTrigger);
 				
 			}
 
@@ -262,7 +262,7 @@ namespace Pixelate {
 				cc.ColliderData->m_p = { cc.Center.x, cc.Center.y };
 
 				
-				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), def.Material->Mass, def.Material->Friction, def.Material->Bounciness, isTrigger);
 			}
 
 			if (e.HasComponent<EdgeColliderComponent>()) {
@@ -276,7 +276,7 @@ namespace Pixelate {
 				ecc.ColliderData->Set({ ecc.Point1.x, ecc.Point1.y }, { ecc.Point2.x, ecc.Point2.y });
 
 		
-				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), def.Material->Mass, def.Material->Friction, def.Material->Bounciness, isTrigger);
 
 			}
 
@@ -301,7 +301,7 @@ namespace Pixelate {
 
 				}
 
-				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), 1.0f, 1.0f, isTrigger);
+				ridBodComp.RigidBody.AddCollider(colliderDat, def.CategoryLayer, Physics::GetLayerRuleMask(def.CategoryLayer), def.Material->Mass, def.Material->Friction, def.Material->Bounciness, isTrigger);
 
 
 			}

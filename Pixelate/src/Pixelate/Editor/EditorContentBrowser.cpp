@@ -334,6 +334,10 @@ namespace Pixelate {
 					CreateItem(AssetType::AudioMixer);
 				}
 
+				if (ImGui::MenuItem("Physics Material2D")) {
+					CreateItem(AssetType::PhysicsMaterial2D);
+				}
+
 				ImGui::EndMenu();
 			}
 
@@ -582,6 +586,9 @@ namespace Pixelate {
 				break;
 			case Pixelate::AssetType::AudioMixer:
 				Embedded::GenerateToDisk(AssetType::AudioMixer, m_CurrentDirectory);
+				break;
+			case Pixelate::AssetType::PhysicsMaterial2D:
+				Embedded::GenerateToDisk(AssetType::PhysicsMaterial2D, m_CurrentDirectory);
 				break;
 			default:
 				break;
