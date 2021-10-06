@@ -3,6 +3,8 @@ bin/
 bin-int/
 **/logs/
 
+enc_temp_folder/
+
 *.vcxproj
 *.vcxproj.filters
 *.user

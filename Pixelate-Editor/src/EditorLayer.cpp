@@ -180,6 +180,7 @@ namespace Pixelate {
 		m_AudioMixerPanel->SetMixerContext(Audio::GetGlobalMixer());
 
 		PanelManager.SetSceneContext(m_EditorScene);
+		Application::GetApp().GetWindow().SetVsync(true);
 
 	}
 

@@ -6,7 +6,7 @@ Entities:
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.802470863, -0.345387936, -1, 1]
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.983999372, 0.124357536, -1, 1]
     SpriteRendererComponent:
       Texture:
         AssetHandle: 0
@@ -67,7 +67,7 @@ Entities:
       PhysicsMaterial2D:
         Mass: 0.0289999992
         Friction: 0.0850000009
-        Bounciness: 0.765999973
+        Bounciness: 0.330000013
     BoxColliderComponent:
       Center: [0, 0]
       Size: [0.5, 0.5]
@@ -91,7 +91,7 @@ Entities:
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.209394038, 0.506369412, -1, 1]
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0.531846583, 0.506369412, -1, 1]
     SpriteRendererComponent:
       Texture:
         AssetHandle: 0
