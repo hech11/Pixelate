@@ -17,6 +17,8 @@
 
 #include "Pixelate/Animation/Animation.h"
 
+#include "Pixelate/Rendering/SortingLayers.h"
+
 namespace Pixelate {
 	
 	
@@ -91,19 +93,23 @@ namespace Pixelate {
 	struct SpriteRendererComponent {
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		Pixelate::Rect Rect;
+		RenderLayer SortingLayer;
+		int RenderOrder;
 		Ref<Pixelate::Texture> Texture;
-
 
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent& other) 
-			: TintColor(other.TintColor), Rect(other.Rect), Texture(other.Texture) {}
+			: TintColor(other.TintColor), Rect(other.Rect), SortingLayer(other.SortingLayer), RenderOrder(other.RenderOrder), Texture(other.Texture) {}
 
-		SpriteRendererComponent(const glm::vec4& tintColor, const Pixelate::Rect& rect, const Ref<Pixelate::Texture>& texture)
-			: TintColor(tintColor), Rect(rect), Texture(texture) {}
+		SpriteRendererComponent(const glm::vec4& tintColor, const Pixelate::Rect& rect, RenderLayer sortingLayer, int renderOrder, const Ref<Pixelate::Texture>& texture)
+			: TintColor(tintColor), Rect(rect), SortingLayer(sortingLayer), RenderOrder(renderOrder), Texture(texture) {}
 
 
 	};
+
+
+
 
 
 	//TODO: i don't know if i agree with this design. Might refactor soon.

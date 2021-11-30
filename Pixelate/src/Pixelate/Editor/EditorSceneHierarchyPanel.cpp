@@ -49,11 +49,13 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 
 			auto& comp = entity.GetComponent<T>();
+			ImGui::PushID(compName.c_str());
 			if (ImGui::Button("X", { 20, 20 })) {
 				entity.RemoveComponent<T>();
+				ImGui::PopID();
 				return;
-			
 			}
+			ImGui::PopID();
 
 			ImGui::SameLine();
 			bool isOpen = ImGui::TreeNodeEx((void*)((unsigned int)entity | typeid(T).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, compName.c_str());
@@ -288,7 +290,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				}
 			}
 
-			DrawEntityComponents<SpriteRendererComponent>("Sprite Renderer", m_CurrentlySelectedEntity, [](SpriteRendererComponent& spriteComp) {
+			DrawEntityComponents<SpriteRendererComponent>("Sprite Renderer", m_CurrentlySelectedEntity, [&](SpriteRendererComponent& spriteComp) {
 				const auto& spriteRect = spriteComp.Texture;
 				ImGui::Columns(2);
 				ImGui::SetColumnWidth(0, 150);
@@ -373,6 +375,49 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				}
 
 
+				ImGui::Text("Sorting Layer");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+				RenderLayer sortingLayer = spriteComp.SortingLayer;
+				if (ImGui::BeginCombo("##SortingLayer", SortingLayerManager::GetLayerName(sortingLayer).c_str())) {
+
+					for (auto& layer : SortingLayerManager::GetLayers()) {
+						if (ImGui::Selectable(layer.second.c_str(), layer.first == sortingLayer)) {
+							sortingLayer = layer.first;
+						}
+					}
+
+					spriteComp.SortingLayer = sortingLayer;
+
+					m_SceneContext->GetReg().sort<SpriteRendererComponent>([](const SpriteRendererComponent& lhs, const SpriteRendererComponent& rhs)
+						{
+							return lhs.RenderOrder + (1 + lhs.SortingLayer * 100) < rhs.RenderOrder + (1 + rhs.SortingLayer * 100);
+						});
+
+					ImGui::EndCombo();
+				}
+
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				ImGui::Text("Order in Layer");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+
+				if (ImGui::InputInt("##orderinlayer", &spriteComp.RenderOrder))
+				{
+					m_SceneContext->GetReg().sort<SpriteRendererComponent>([](const SpriteRendererComponent& lhs, const SpriteRendererComponent& rhs)
+						{
+							return lhs.RenderOrder + (1 + lhs.SortingLayer * 100) < rhs.RenderOrder + (1 + rhs.SortingLayer * 100);
+						});
+				}
+
+				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+
 				if (spriteRect) {
 					ImGui::Text("Texture");
 					ImGui::NextColumn();
@@ -399,16 +444,6 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				}
 
 
-				if (spriteRect) {
-					ImGui::Text("Sprite rect");
-					ImGui::NextColumn();
-					ImGui::PushItemWidth(-1);
-					//ImGui::Image((void*)spriteComp.SpriteRect->GetTexture()->GetHandleID(), { 128, 128 },
-						//{ spriteRect->GetBoundsNormilized()[0].x, spriteRect->GetBoundsNormilized()[2].y },
-						//{ spriteRect->GetBoundsNormilized()[2].x, spriteRect->GetBoundsNormilized()[0].y });
-
-					ImGui::PopItemWidth();
-				}
 			});
 		
 			DrawEntityComponents<CameraComponent>("Orthographic Camera", m_CurrentlySelectedEntity, [](CameraComponent& cc) {

@@ -61,6 +61,8 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("AudioPanel", m_AudioPanel = CreateRef<EditorAudioPanel>());
 		PanelManager.RegisterPanel("AudioMixerPanel", m_AudioMixerPanel = CreateRef<EditorAudioMixerPanel>());
 		PanelManager.RegisterPanel("PhysicsPropertiesPanel", m_PhysicsPanel = CreateRef<EditorPhysicsPropertiesPanel>());
+		PanelManager.RegisterPanel("RendererPanel", m_RendererPanel = CreateRef<EditorRendererPanel>());
+
 
 		m_AudioMixerPanel->SetOpenPanel(false);
 		m_PhysicsPanel->SetOpenPanel(false);
@@ -536,6 +538,9 @@ namespace Pixelate {
 				if (ImGui::MenuItem("Scenes", "")) {
 					m_OpenSceneManagerPanel = true;
 				}
+				if (ImGui::MenuItem("Rendering", "")) {
+					m_RendererPanel->SetOpenPanel(true);
+				}
 				if (ImGui::MenuItem("Physics", "")) {
 					m_PhysicsPanel->SetOpenPanel(true);
 				}
@@ -590,29 +595,7 @@ namespace Pixelate {
 
 
 		ImGui::Begin("Renderer stats");
-		ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);
-		ImGui::Text("Max Sprites: %d", Renderer2D::GetStats().MaxSprites);
-		ImGui::Text("Max VBO size: %d", Renderer2D::GetStats().MaxVertexBufferSize);
-		ImGui::Text("Max IBO size: %d", Renderer2D::GetStats().MaxIndexBuferSize);
-		ImGui::Text("Vertex ptr size: %d", Renderer2D::GetStats().VertexSize);
-		ImGui::Text("IndexCount: %d", Renderer2D::GetStats().IndexCount);
-		if(ImGui::Button("Draw bounding boxes")) {
-			Renderer2D::SetBoundingBox(!Renderer2D::ShouldDrawBoundingBox());
-		}
-		std::string pos = std::to_string(m_EditorCamera->GetPos().x ) + ", " + std::to_string(m_EditorCamera->GetPos().y);
-		std::string rot = std::to_string(m_EditorCamera->GetAngle());
-		std::string orthoSize = std::to_string(m_EditorCamera->GetOrthographicSize());
 
-		ImGui::Text("Camera Editor transform");
-		ImGui::Text("Position: ");
-		ImGui::SameLine();
-		ImGui::Text(pos.c_str());
-		ImGui::Text("Rotation (Z): ");
-		ImGui::SameLine();
-		ImGui::Text(rot.c_str());
-		ImGui::Text("OrthoSize: ");
-		ImGui::SameLine();
-		ImGui::Text(orthoSize.c_str());
 		ImGui::End();
 
 		ImGui::Begin("Application");

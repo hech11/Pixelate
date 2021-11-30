@@ -1,0 +1,5 @@
+Layers:
+  - ID: 0
+    Name: Default
+  - ID: 1
+    Name: Player

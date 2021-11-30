@@ -388,11 +388,6 @@ namespace Pixelate {
 	}
 
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color, int entityID) {
-		PX_PROFILE_FUNCTION();
-		DrawSprite(position, 0.0f, size, color, entityID);
-	}
-
 
 	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color, int entityID) {
 		PX_PROFILE_FUNCTION();
@@ -405,10 +400,6 @@ namespace Pixelate {
 	}
 
 
-	void Renderer2D::DrawSprite(const glm::vec3& position, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID) {
-		PX_PROFILE_FUNCTION();
-		DrawSprite(position, 0.0f, size, texture, tintColor, entityID);
-	}
 
 
 
@@ -503,7 +494,7 @@ namespace Pixelate {
 		SceneData->m_Statistics.IndexCount += 6;
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& rect, const glm::vec4& tintColor, int entityID) {
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, int entityID) {
 		constexpr unsigned int VertexCount = 4;
 
 
@@ -528,7 +519,7 @@ namespace Pixelate {
 			TextureManager::DirectAdd(texture);
 		}
 
-		const auto& texCoords = NormalizedCoordinates(rect, texture);
+		const auto& texCoords = NormalizedCoordinates(textureDestRect, texture);
 		// Vertex order = bottom left -> bottom right -> top right -> top left
 		for (unsigned int i = 0; i < VertexCount; i++) {
 

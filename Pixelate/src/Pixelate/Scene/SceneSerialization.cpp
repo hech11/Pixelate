@@ -297,6 +297,8 @@ namespace Pixelate {
 				
 
 				data << YAML::EndMap;
+				data << YAML::Key << "SortingLayer" << YAML::Value << src.SortingLayer;
+				data << YAML::Key << "RenderOrder" << YAML::Value << src.RenderOrder;
 				data << YAML::Key << "TintColor" << YAML::Value << src.TintColor;
 				data << YAML::EndMap;
 
@@ -577,25 +579,23 @@ namespace Pixelate {
 
 						AssetHandle handle = texture["AssetHandle"].as<uint64_t>();
 
+						//TODO: Texture manager needs a redo
 						if (AssetManager::IsAssetHandleValid(handle)) {
 							tex = AssetManager::GetAsset<Texture>(handle);
 						}
 
-						//TODO: Texture manager needs a redo
-// 						if (auto id = TextureManager::IsTextureValid(filepath)) {
-// 							tex = TextureManager::GetTexture(id);
-// 
-// 						}
-// 						else {
-// 							tex = Texture::Create(filepath);
-// 							TextureManager::DirectAdd(tex);
-// 						}
-// 						
 
 
 						comp.Texture = tex;
 						auto r = spriteRendererComp["Rect"];
 						comp.Rect = Rect(r["Position"].as<glm::uvec2>(), r["Scale"].as<glm::uvec2>());
+
+						auto sortingLayer = spriteRendererComp["SortingLayer"].as<int>();
+						comp.SortingLayer = sortingLayer;
+
+						auto renderOrder = spriteRendererComp["RenderOrder"].as<int>();
+						comp.RenderOrder = renderOrder;
+
 					}
 					comp.TintColor = spriteRendererComp["TintColor"].as<glm::vec4>();
 

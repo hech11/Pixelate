@@ -62,6 +62,7 @@ namespace Pixelate {
 
 
 		Renderer2D::Init();
+		SortingLayerManager::Deserialize("resources/RenderingSettings.pxsettings");
 		Audio::Init();
 
 		ScriptingMaster::Init("assets/scripts/Sandbox-CSharpApp/Sandbox-CSharpApp.dll");
