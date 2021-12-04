@@ -103,28 +103,33 @@ namespace Pixelate {
 		std::filesystem::remove(filepath);
 	}
 
-	void FileSystem::ReadText(const std::string& filepath, std::string& outBuffer)
+	std::string FileSystem::ReadText(const std::string& filepath)
 	{
 		std::ifstream file(filepath);
-		outBuffer.clear();
+		std::string result;
 
 		file.seekg(0, std::ios::end);
-		outBuffer.reserve(file.tellg());
+		result.reserve(file.tellg());
 		file.seekg(0, std::ios::beg);
 
-		outBuffer.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+		result.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+
+		return result;
 	}
 
-	void FileSystem::ReadText(const std::filesystem::path& filepath, std::string& outBuffer)
+	std::string FileSystem::ReadText(const std::filesystem::path& filepath)
 	{
+
 		std::ifstream file(filepath);
-		outBuffer.clear();
+		std::string result;
 
 		file.seekg(0, std::ios::end);
-		outBuffer.reserve(file.tellg());
+		result.reserve(file.tellg());
 		file.seekg(0, std::ios::beg);
 
-		outBuffer.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+		result.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+
+		return result;
 	}
 
 	bool FileSystem::Exists(const std::string& filepath)

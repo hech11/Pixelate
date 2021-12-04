@@ -13,20 +13,40 @@
 namespace Pixelate {
 
 
-
-	GLShader::GLShader() {
-		Init();
+	static std::string FromShaderTypeToString(uint32_t type)
+	{
+		switch (type)
+		{
+			case GL_VERTEX_SHADER: return "vertex";
+			case GL_FRAGMENT_SHADER: return "fragment";
+		}
 	}
+
+
+	GLShader::GLShader(const std::string& filepath)
+	{
+		std::string source = FileSystem::ReadText(filepath);
+
+		ParseSources(source);
+		CreateProgram();
+
+		m_Name = std::filesystem::path(filepath).filename().string();
+
+	}
+
+	GLShader::GLShader(const std::string& name, const char* source) 
+	{
+
+		ParseSources(source);
+		CreateProgram();
+
+		m_Name = name;
+	}
+
 
 	GLShader::~GLShader() {
-		ShutDown();
+		glDeleteProgram(m_RendererID);
 	}
-
-
-	void GLShader::Init() {
-		GLCall(m_RendererID = glCreateProgram());
-	}
-
 
 	void GLShader::Bind() const {
 		GLCall(glUseProgram(m_RendererID));
@@ -36,23 +56,17 @@ namespace Pixelate {
 	}
 
 
-	void GLShader::ShutDown() {
-		GLCall(glDeleteProgram(m_RendererID));
-	}
 
-	GLShader::ShaderSource GLShader::PraseShader(const std::string& shaderFile) {
-		std::string data; FileSystem::ReadText(shaderFile, data);
-		return PraseShader(data.c_str());
-	}
-
-	GLShader::ShaderSource GLShader::PraseShader(const char* data) {
+	void GLShader::ParseSources(const std::string& source)
+	{
 		enum class ShaderType {
 			None = -1,
 			Vertex, Fragment
 		};
+
 		ShaderType type = ShaderType::None;
 		std::string line;
-		std::istringstream file(data);
+		std::istringstream file(source);
 		std::stringstream ss[2];
 
 		while (getline(file, line)) {
@@ -69,55 +83,59 @@ namespace Pixelate {
 			}
 		}
 
-		return { ss[0].str(), ss[1].str() };
-	}
-
-	// TODO: This code is duplication! need to refactor and redesign at some point.
-
-	void GLShader::LoadFromSrc(const char* data) {
-
-		const auto& program = m_RendererID;
-		ShaderSource source = PraseShader(data);
-
-
-
-		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
-		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
-
-
-		GLCall(glAttachShader(program, vs));
-		GLCall(glAttachShader(program, fs));
-
-		GLCall(glLinkProgram(program));
-		GLCall(glValidateProgram(program));
-
-		GLCall(glDeleteShader(vs));
-		GLCall(glDeleteShader(fs));
+		
+		m_OpenGLSources[GL_VERTEX_SHADER] = ss[0].str();
+		m_OpenGLSources[GL_FRAGMENT_SHADER] = ss[1].str();
 
 	}
 
-	void GLShader::LoadFromFile(const std::string& filepath) {
-		m_Filepath = filepath;
+	void GLShader::CreateProgram()
+	{
+		uint32_t program = glCreateProgram();
+		std::vector<uint32> shaders;
 
-		const auto& program = m_RendererID;
-		ShaderSource source = PraseShader(m_Filepath);
+		for (auto& [type, source] : m_OpenGLSources)
+		{
+			shaders.push_back(CreateShader(type, source));
+		}
 
-		unsigned int vs = CreateShader(GL_VERTEX_SHADER, source.VertexShaderStr);
-		unsigned int fs = CreateShader(GL_FRAGMENT_SHADER, source.FragmentShaderStr);
+		for (int shader : shaders)
+		{
+			glAttachShader(program, shader);
+		}
 
+		int linked;
+		glLinkProgram(program);
+		glGetProgramiv(program, GL_LINK_STATUS, &linked);
+		if (!linked)
+		{
+			int logLength;
+			glGetShaderiv(program, GL_INFO_LOG_LENGTH, &logLength);
+			std::vector<char> message(logLength);
+			
+			glGetProgramInfoLog(program, logLength, &logLength, message.data());
 
-		GLCall(glAttachShader(program, vs));
-		GLCall(glAttachShader(program, fs));
+			PX_ERROR("[OpenGL] Shader linking failed (%s):\n(%s)", m_Name.c_str(), message.data());
+			glDeleteProgram(program);
 
-		GLCall(glLinkProgram(program));
-		GLCall(glValidateProgram(program));
+			for (auto shader : shaders)
+			{
+				glDeleteShader(shader);
+			}
 
-		GLCall(glDeleteShader(vs));
-		GLCall(glDeleteShader(fs));
+		}
 
+		for (auto shader : shaders)
+		{
+			glDetachShader(program, shader);
+			glDeleteShader(shader);
+		}
+
+		m_RendererID = program;
 	}
 
-	unsigned int GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
+
+	uint32_t GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
 
 
 		unsigned int shader = glCreateShader(type);
@@ -133,11 +151,12 @@ namespace Pixelate {
 
 			int logLength;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-			char* message = (char*)alloca(logLength);
-			GLCall(glGetShaderInfoLog(shader, logLength, &logLength, message));
 
-			std::string shaderType = (type == GL_VERTEX_SHADER ? "vertex" : "fragment");
-			PX_ERROR("OpenGL (%s) Error! MESSAGE :\n %s\n\n", shaderType.c_str(), message);
+			std::vector<char> message(logLength);
+			glGetShaderInfoLog(shader, logLength, &logLength, message.data());
+
+			std::string shaderType = FromShaderTypeToString(type);
+			PX_ERROR("OpenGL (%s) Error! MESSAGE :\n %s\n\n", shaderType.c_str(), message.data());
 
 			GLCall(glDeleteShader(shader));
 			return 0;
@@ -147,8 +166,6 @@ namespace Pixelate {
 	}
 
 
-
-	
 
 
 	int GLShader::GetUniformLocation(const std::string& name) {

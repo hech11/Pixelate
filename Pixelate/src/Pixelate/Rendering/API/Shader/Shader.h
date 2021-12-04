@@ -22,14 +22,9 @@ namespace Pixelate {
 			virtual ~Shader(){}
 
 
-			virtual void Init() = 0;
-			virtual void ShutDown() = 0;
-
 			virtual void Bind() const = 0;
 			virtual void Unbind() const = 0;
 
-			virtual void LoadFromFile(const std::string& filepath) = 0;
-			virtual void LoadFromSrc(const char* data) = 0;
 
 			virtual void SetUniform1f(const std::string& uniformName, const float values) = 0;
 			virtual void SetUniform2f(const std::string& uniformName, const glm::vec2& values) = 0;
@@ -58,7 +53,8 @@ namespace Pixelate {
 
 
 		public :
-			static Ref<Shader> Create();
+			static Ref<Shader> Create(const std::string& filepath);
+			static Ref<Shader> Create(const std::string& name, const char* source);
 
 
 	};

@@ -206,8 +206,7 @@ namespace Pixelate {
 			{
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
 
-				SceneData->BatchRendererShader = Shader::Create();
-				SceneData->BatchRendererShader->LoadFromFile("assets/Shaders/BatchRenderingShader.shader");
+				SceneData->BatchRendererShader = Shader::Create("assets/Shaders/BatchRenderingShader.shader");
 				SceneData->BatchRendererShader->Bind();
 				SceneData->BatchRendererShader->SetUniform1iArray("u_Textures", RendererCapabilities::MaxTextureSlots, samplers);
 				SceneData->BatchRendererShader->Unbind();
@@ -243,8 +242,7 @@ namespace Pixelate {
 		Ref<IndexBuffer> aaa = IndexBuffer::Create(gridIndicies, 6);
 		SceneData->SceneGridVertexArray->PushIndexBuffer(aaa);
 
-		SceneData->SceneGridShader = Shader::Create();
-		SceneData->SceneGridShader->LoadFromFile("assets/Shaders/SceneGrid.shader");
+		SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.shader");
 		
 	}
 

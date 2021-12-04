@@ -46,8 +46,8 @@ namespace Pixelate {
 			static void DeleteFile(const std::string& filepath);
 			static void DeleteFile(const std::filesystem::path& filepath);
 
-			static void ReadText(const std::string& filepath, std::string& outBuffer);
-			static void ReadText(const std::filesystem::path& filepath, std::string& outBuffer);
+			static std::string ReadText(const std::string& filepath);
+			static std::string ReadText(const std::filesystem::path& filepath);
 
 
 			static bool Exists(const std::string& filepath);

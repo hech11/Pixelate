@@ -9,24 +9,19 @@ namespace Pixelate {
 	class PX_API GLShader : public Shader {
 
 		public:
-			struct ShaderSource {
+			struct ShaderSources {
 				std::string VertexShaderStr;
 				std::string FragmentShaderStr;
 			};
 
-			GLShader();
-			~GLShader();
+			GLShader(const std::string& filepath);
+			GLShader(const std::string& name, const char* source);
 
-			void Init() override;
-			void ShutDown() override;
+			~GLShader();
 
 
 			void Bind() const override;
 			void Unbind() const override;
-
-			void LoadFromFile(const std::string& filepath) override;
-			void LoadFromSrc(const char* data) override;
-
 
 			
 			void SetUniform1f(const std::string& uniformName, const float value) override;
@@ -53,14 +48,17 @@ namespace Pixelate {
 			int GetUniformLocation(const std::string& name) override;
 
 		private :
-			ShaderSource PraseShader(const std::string& shaderFile);
-			ShaderSource PraseShader(const char* data);
-			unsigned int CreateShader(unsigned int type, const std::string& shaderSource);
+
+			void ParseSources(const std::string& source);
+			void CreateProgram();
+
+			uint32_t CreateShader(unsigned int type, const std::string& shaderSource);
 
 		private :
-			unsigned int m_RendererID;
+			uint32_t m_RendererID;
 
-			std::string m_Filepath;
+			std::string m_Name;
+			std::unordered_map<uint32_t, std::string> m_OpenGLSources;
 			std::unordered_map<std::string, int> m_CachedUniformLocations;
 
 
