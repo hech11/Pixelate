@@ -1,0 +1,31 @@
+Scene: Scene
+Entities:
+  - Entity: 7553434053943613822
+    NameComponent:
+      Name: Texture loaded via asset handle
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        AssetHandle: 18069192197029962527
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      SortingLayer: 1
+      RenderOrder: 2
+      TintColor: [1, 1, 1, 1]
+  - Entity: 10662957818749550363
+    NameComponent:
+      Name: Camera
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    CameraComponent:
+      ClearColor: [0.25, 0.5, 0.699999988, 1]
+      OrthoSize: 1
+      Primary: true
+    AudioListenerComponent:
+      Spatial: false

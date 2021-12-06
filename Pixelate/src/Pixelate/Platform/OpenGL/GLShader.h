@@ -51,6 +51,8 @@ namespace Pixelate {
 			int GetUniformLocation(const std::string& name) override;
 
 		private :
+			void CompileVulkanIntoSpirV();
+			void CompileSpirvIntoGLSL();
 
 			void ParseSources(const std::string& source);
 			void CreateProgram();
@@ -61,7 +63,9 @@ namespace Pixelate {
 			uint32_t m_RendererID;
 
 			std::string m_Name;
+
 			std::unordered_map<uint32_t, std::string> m_OpenGLSources;
+			std::unordered_map<uint32_t, std::vector<uint32_t>> m_SpirvShaderData;
 			std::unordered_map<std::string, int> m_CachedUniformLocations;
 
 

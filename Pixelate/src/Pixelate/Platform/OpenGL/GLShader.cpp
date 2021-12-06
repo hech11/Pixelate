@@ -32,14 +32,13 @@ namespace Pixelate {
 	{
 		std::string source = FileSystem::ReadText(filepath);
 
+
 		ParseSources(source);
+		CompileVulkanIntoSpirV();
+		CompileSpirvIntoGLSL();
 		CreateProgram();
 
 		m_Name = std::filesystem::path(filepath).filename().string();
-
-		shaderc::Compiler compilerTest;
-		if (compilerTest.IsValid())
-			PX_CORE_MSG("ShaderC linked!\n");
 
 	}
 
@@ -65,6 +64,59 @@ namespace Pixelate {
 	}
 
 
+
+	void GLShader::CompileVulkanIntoSpirV()
+	{
+		shaderc::Compiler compiler;
+		shaderc::CompileOptions options;
+		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+
+		//options.SetOptimizationLevel(shaderc_optimization_level_performance);
+
+		{
+			shaderc::SpvCompilationResult results = compiler.CompileGlslToSpv(m_OpenGLSources[GL_VERTEX_SHADER], shaderc_glsl_vertex_shader, m_Name.c_str(), options);
+
+			if (results.GetCompilationStatus() == shaderc_compilation_status_compilation_error)
+			{
+				PX_CORE_ERROR("%s\n", results.GetErrorMessage().c_str());
+			}
+
+			m_SpirvShaderData[GL_VERTEX_SHADER] = std::vector<uint32_t>(results.cbegin(), results.cend());
+		}
+
+
+		{
+			shaderc::SpvCompilationResult results = compiler.CompileGlslToSpv(m_OpenGLSources[GL_FRAGMENT_SHADER], shaderc_glsl_fragment_shader, m_Name.c_str(), options);
+
+			if (results.GetCompilationStatus() == shaderc_compilation_status_compilation_error)
+			{
+				PX_CORE_ERROR("%s\n", results.GetErrorMessage().c_str());
+			}
+
+			m_SpirvShaderData[GL_FRAGMENT_SHADER] = std::vector<uint32_t>(results.cbegin(), results.cend());
+
+		}
+	}
+
+	void GLShader::CompileSpirvIntoGLSL()
+	{
+		shaderc::Compiler compiler;
+		shaderc::CompileOptions options;
+		options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
+
+		//options.SetOptimizationLevel(shaderc_optimization_level_performance);
+		m_OpenGLSources.clear();
+
+		{
+			spirv_cross::CompilerGLSL glslCompiler(m_SpirvShaderData[GL_VERTEX_SHADER]);
+			m_OpenGLSources[GL_VERTEX_SHADER] = glslCompiler.compile();
+		}
+
+		{
+			spirv_cross::CompilerGLSL glslCompiler(m_SpirvShaderData[GL_FRAGMENT_SHADER]);
+			m_OpenGLSources[GL_FRAGMENT_SHADER] = glslCompiler.compile();
+		}
+	}
 
 	void GLShader::ParseSources(const std::string& source)
 	{

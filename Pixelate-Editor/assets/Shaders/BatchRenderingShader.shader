@@ -1,3 +1,5 @@
+// A Vulkan shader. We convert a vulkan shader into spir-v code then that into a opengl source.
+
 #shader vertex
 
 #version 450 core
@@ -9,18 +11,27 @@ layout(location = 3) in float aTexIndex;
 layout(location = 4) in int aEntityID;
 
 
-uniform mat4 u_ViewProj = mat4(1.0f);
+layout(binding = 0) uniform Camera
+{
+	mat4 u_ViewProjection = mat4(1.0f);
+};
 
-out vec4 v_Color;
-out vec2 v_UV;
-out float v_TexIndex;
-out flat int v_EntityID;
+struct VertexOutput
+{
+	vec4 Color;
+	vec2 UV;
+	float TexIndex;
+};
+
+
+layout (location = 0) out VertexOutput Output;
+layout(location = 3) out flat int v_EntityID;
 
 
 void main() {
-	v_Color = aColor;
-	v_UV = aUV;
-	v_TexIndex = aTexIndex;
+	Output.Color = aColor;
+	Output.UV = aUV;
+	Output.TexIndex = aTexIndex;
 	v_EntityID = aEntityID;
 	gl_Position = u_ViewProj * aPos;
 }
@@ -35,14 +46,17 @@ layout (location = 0) out vec4 FragColor;
 layout (location = 1) out int EntityColor;
 
 
-in vec4 v_Color;
-in vec2 v_UV;
-in float v_TexIndex;
-in flat int v_EntityID;
+struct VertexOutput
+{
+	vec4 Color;
+	vec2 UV;
+	float TexIndex;
+};
 
+layout(location = 0) in VertexOutput Output;
+layout(location = 3) in flat int v_EntityID;
 
-
-uniform sampler2D u_Textures[32];
+layout (binding = 0) uniform sampler2D u_Textures[32];
 
 
 // This only supports up to 32 texture slots. Most GPU's can support more than this.
@@ -86,7 +100,6 @@ void main() {
 		case 29: FragColor = texture(u_Textures[29], v_UV) * v_Color; break;
 		case 30: FragColor = texture(u_Textures[30], v_UV) * v_Color; break;
 		case 31: FragColor = texture(u_Textures[31], v_UV) * v_Color; break;
-
 	}
 
 	

@@ -1,0 +1,53 @@
+Scene: PhysicsTests
+Entities:
+  - Entity: 6878974417716146763
+    NameComponent:
+      Name: Physics entity
+    TransformComponent:
+      Transform: [0.999987185, 0, 0, 0, 0, 0.999987185, 0, 0, 0, 0, 1, 0, -0.0243340302, 7.07369375, -1, 1]
+    SpriteRendererComponent:
+      Texture:
+        AssetHandle: 0
+      TextureBounds:
+        Bounds: 0
+      TintColor: [1, 1, 1, 1]
+    RigidBodyComponent:
+      GravityScale: 5
+      SleepingState: 1
+      CollisionDetectionMode: 0
+      BodyType: 2
+      FixedRotation: true
+    BoxColliderComponent:
+      Center: [0, 0]
+      Size: [0.5, 0.5]
+      IsTrigger: false
+  - Entity: 14875228411483528701
+    NameComponent:
+      Name: Floor
+    TransformComponent:
+      Transform: [7.83333063, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1.37873769, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        AssetHandle: 0
+      TextureBounds:
+        Bounds: 0
+      TintColor: [1, 1, 1, 1]
+    RigidBodyComponent:
+      GravityScale: 0
+      SleepingState: 2
+      CollisionDetectionMode: 1
+      BodyType: 0
+      FixedRotation: true
+    BoxColliderComponent:
+      Center: [0, 0]
+      Size: [3.91666532, 0.5]
+      IsTrigger: false
+  - Entity: 14043715796453303733
+    NameComponent:
+      Name: Camera
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    CameraComponent:
+      ClearColor: [0.25, 0.5, 0.699999988, 1]
+      OrthoSize: 1
+      Primary: true

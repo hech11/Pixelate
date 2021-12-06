@@ -2,7 +2,8 @@ project "OpenAl_Soft"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++14"
-	staticruntime "on"
+	staticruntime "off"
+
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
