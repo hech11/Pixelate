@@ -6,14 +6,17 @@
 
 namespace Pixelate {
 
+
+	struct ShaderSources {
+		std::string VertexShaderStr;
+		std::string FragmentShaderStr;
+	};
+
+
 	class PX_API GLShader : public Shader {
 
 		public:
-			struct ShaderSources {
-				std::string VertexShaderStr;
-				std::string FragmentShaderStr;
-			};
-
+		
 			GLShader(const std::string& filepath);
 			GLShader(const std::string& name, const char* source);
 

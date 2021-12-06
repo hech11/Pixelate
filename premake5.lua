@@ -27,12 +27,14 @@ IncludeDir["MiniMp3"] = "Pixelate/vendor/MiniMp3"
 IncludeDir["Box2D"] = "Pixelate/vendor/Box2D"
 IncludeDir["entt"] = "Pixelate/vendor/entt"
 IncludeDir["yamlcpp"] = "Pixelate/vendor/yaml-cpp"
+IncludeDir["VulkanSDK"] = "Pixelate/vendor/VulkanSDK"
 
 IncludeDir["mono"] = "Pixelate-Scripting/Pixelate-Scripting/include/mono-2.0/"
-
-
-
 IncludeDir["NativeFileDialog"] = "Pixelate-Editor/vendor/NativeFileDialog"
+
+
+LibraryDir = {}
+LibraryDir["VulkanSDK"] = "Pixelate/vendor/VulkanSDK/lib"
 
 
 
@@ -83,7 +85,9 @@ project "Pixelate"
 		"%{prj.name}/vendor/LIBOGG/include/**.h",
 		"%{prj.name}/vendor/VORBIS/include/**.h",
 		"%{prj.name}/vendor/VORBIS/lib/**.h",
-		"%{prj.name}/vendor/entt/**.hpp"
+		"%{prj.name}/vendor/entt/**.hpp",
+		"%{prj.name}/vendor/VulkanSDK/**.hpp",
+		"%{prj.name}/vendor/VulkanSDK/**.h"
 		
 	}
 
@@ -111,21 +115,28 @@ project "Pixelate"
 		"%{IncludeDir.Box2D}/include",
 		"%{IncludeDir.entt}/vendor/entt/",
 		"%{IncludeDir.mono}",
-		"%{IncludeDir.yamlcpp}/include/"
-
-
-
+		"%{IncludeDir.yamlcpp}/include/",
+		"%{IncludeDir.VulkanSDK}/include/"
 
 	}
 
+
+-- TODO: Do I use debug versions of spirv instead of just using release for all configs?
 	links 
 	{ 
 		"Glad",
 		"Glfw",
+
 		"opengl32.lib",
+		
 		"OpenAL_Soft",
 		"yaml-cpp",
 		"Box2D",
+
+		"Pixelate/vendor/VulkanSDK/lib/shaderc_shared.lib",
+		"Pixelate/vendor/VulkanSDK/lib/spirv-cross-core.lib",
+		"Pixelate/vendor/VulkanSDK/lib/spirv-cross-glsl.lib"
+		
 	}
 
 	filter "system:windows"

@@ -10,6 +10,11 @@
 
 #include "Pixelate/Rendering/Renderer2D.h"
 
+#include <VulkanSDK/include/Vulkan/spirv_cross/spirv_glsl.hpp>
+#include <VulkanSDK/include/Vulkan/spirv_cross/spirv_cross.hpp>
+#include <VulkanSDK/include/Vulkan/shaderc/shaderc.hpp>
+
+
 namespace Pixelate {
 
 
@@ -31,6 +36,10 @@ namespace Pixelate {
 		CreateProgram();
 
 		m_Name = std::filesystem::path(filepath).filename().string();
+
+		shaderc::Compiler compilerTest;
+		if (compilerTest.IsValid())
+			PX_CORE_MSG("ShaderC linked!\n");
 
 	}
 
