@@ -132,4 +132,28 @@ namespace Pixelate {
 	}
 
 
+
+
+
+	// ------- Uniform buffer -------\\
+
+
+	GLUniformBuffer::GLUniformBuffer(uint32_t size, uint32_t binding)
+	{
+		glGenBuffers(1, &m_RendererID);
+		glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_RendererID);
+		glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_STATIC_DRAW);
+	}
+
+	GLUniformBuffer::~GLUniformBuffer()
+	{
+		glDeleteBuffers(1, &m_RendererID);
+	}
+
+	void GLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
+	{
+
+		glNamedBufferSubData(m_RendererID, offset, size, data);
+	}
+
 }

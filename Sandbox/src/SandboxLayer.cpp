@@ -16,11 +16,20 @@ namespace Pixelate
 	static Ref<IndexBuffer> ibo;
 	static Ref<Shader> shader;
 
+	static Ref<UniformBuffer> cameraBuffer;
+
 	static Ref<EditorCamera> camera;
 	static ViewportPanelProps props;
 
 	static glm::vec2 winPos = glm::vec2(0.0f, 0.0f);
 	static glm::vec2 winSize = glm::vec2(1280, 720);
+
+	struct CameraData
+	{
+		glm::mat4 ViewProj;
+	};
+
+	static CameraData camData;
 
 	void SandboxLayer::Init()
 	{
@@ -59,6 +68,7 @@ namespace Pixelate
 
 
 		camera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
+		cameraBuffer = UniformBuffer::Create(sizeof(CameraData), 0);
 
 	}
 
@@ -77,7 +87,8 @@ namespace Pixelate
 		vao->Bind();
 		ibo->Bind();
 		shader->Bind();
-		shader->SetUniformMatrix("u_ViewProj", camera->GetViewProjectionMatrix());
+		camData.ViewProj = camera->GetViewProjectionMatrix();
+		cameraBuffer->SetData(&camData, sizeof(CameraData), 0);
 
 		RenderCommand::DrawElements(vao, PimitiveRenderType::Triangles, ibo->GetCount());
 

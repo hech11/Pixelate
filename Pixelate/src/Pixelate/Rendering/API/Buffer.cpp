@@ -50,6 +50,16 @@ namespace Pixelate {
 	}
 
 
+	// ------- Uniform buffer -------\\
+
+	Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
+	{
+		switch (RendererAPI::GetAPI()) {
+			case RendererAPI::API::OpenGL:
+				return CreateRef<GLUniformBuffer>(size, binding);
+		}
+	}
+
 	
 
 }
