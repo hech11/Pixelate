@@ -12,6 +12,7 @@
 #include "API/FrameBuffer.h"
 
 #include <math.h>
+#include <Pixelate\Core\Timer.h>
 
 
 
@@ -221,8 +222,10 @@ namespace Pixelate {
 			{
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
 
+				Timer timer;
 
 				SceneData->BatchRendererShader = Shader::Create("assets/Shaders/BatchRenderingShader.shader");
+				PX_CORE_MSG("It took %f(ms) to load BatchRenderingShader.Shader!\n", timer.GetElapsedMillis());
 				SceneData->CameraUniformBufferData = UniformBuffer::Create(sizeof(CameraData), 0);
 
 				
@@ -256,8 +259,12 @@ namespace Pixelate {
 		Ref<IndexBuffer> aaa = IndexBuffer::Create(gridIndicies, 6);
 		SceneData->SceneGridVertexArray->PushIndexBuffer(aaa);
 
-		SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.shader");
-		SceneData->GridUniformBufferData = UniformBuffer::Create(sizeof(GridData), 0);
+		{
+			Timer timer;
+			SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.shader");
+			PX_CORE_MSG("It took %f(ms) to load SceneGrid.Shader!\n", timer.GetElapsedMillis());
+			SceneData->GridUniformBufferData = UniformBuffer::Create(sizeof(GridData), 0);
+		}
 		
 	}
 

@@ -22,8 +22,7 @@ namespace Pixelate {
 	class FileSystem {
 
 		public :
-			static void CreateDirectory(const std::string& directory);
-			static void CreateDirectory(const std::filesystem::path& directory);
+			static void CreateDir(const std::filesystem::path& directory);
 
 			static void DeleteDirectory(const std::string& directory);
 			static void DeleteDirectory(const std::filesystem::path& directory);

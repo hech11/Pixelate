@@ -9,12 +9,7 @@ namespace Pixelate {
 
 
 
-	void FileSystem::CreateDirectory(const std::string& directory)
-	{
-		std::filesystem::create_directories(directory);
-	}
-
-	void FileSystem::CreateDirectory(const std::filesystem::path& directory)
+	void FileSystem::CreateDir(const std::filesystem::path& directory)
 	{
 		std::filesystem::create_directories(directory);
 	}
@@ -45,7 +40,7 @@ namespace Pixelate {
 		auto copyOptions = std::filesystem::copy_options::update_existing | std::filesystem::copy_options::recursive;
 		std::filesystem::path path = newDirectory / oldDirectory.filename();
 
-		CreateDirectory(path);
+		CreateDir(path);
 
 		std::filesystem::copy(oldDirectory, path, copyOptions);
 		DeleteDirectory(oldDirectory);

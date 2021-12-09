@@ -566,7 +566,7 @@ namespace Pixelate {
 		}
 
 
-		FileSystem::CreateDirectory(newFile);
+		FileSystem::CreateDir(newFile);
 	}
 
 	void EditorContentBrowser::CreateItem(AssetType type) {

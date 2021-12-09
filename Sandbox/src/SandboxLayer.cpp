@@ -39,15 +39,45 @@ namespace Pixelate
 
 	void SandboxLayer::Init()
 	{
-		texture = Texture::Create("assets/graphics/sprite.png");
 
+		float verts[] =
+		{
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+		};
+		vao = VertexArray::Create();
+		vbo = VertexBuffer::Create(verts, sizeof(verts));
+		BufferLayout layout =
+		{
+			{ BufferLayoutTypes::Float3, "aPos"},
+			{ BufferLayoutTypes::Float2, "aTexCoord"}
+		};
+
+		vbo->SetLayout(layout);
+		vao->PushVertexBuffer(vbo);
+
+
+
+		uint32_t indicies[] =
+		{
+			0, 1, 2, 2, 3, 0
+		};
+		ibo = IndexBuffer::Create(indicies, 6);
+
+		vao->PushIndexBuffer(ibo);
+
+		shader = Shader::Create("assets/Shaders/SimpleVulkan.shader");
+		texture = Texture::Create("assets/graphics/sprite.png");
+		texture->Bind();
 
 		props.Size = &winSize;
 		props.Position = &winPos;
 
 
 		camera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
-
+		cameraBuffer = UniformBuffer::Create(sizeof(CameraData), 0);
 	}
 
 	void SandboxLayer::ShutDown()
@@ -60,7 +90,7 @@ namespace Pixelate
 		camera->OnUpdate(dt);
 		RenderCommand::Clear();
 	
-#if 0
+#if 1
 		vao->Bind();
 		ibo->Bind();
 		shader->Bind();

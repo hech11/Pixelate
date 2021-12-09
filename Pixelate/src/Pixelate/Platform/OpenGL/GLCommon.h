@@ -6,7 +6,7 @@
 
 // This is used to debug OpenGL code.
 
-#define USE_OLD_DEBUGGING_OUTPUT 0
+#define USE_OLD_DEBUGGING_OUTPUT 1
 
 
 #if USE_OLD_DEBUGGING_OUTPUT

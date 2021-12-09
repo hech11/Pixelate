@@ -14,6 +14,8 @@
 #include <VulkanSDK/include/Vulkan/spirv_cross/spirv_cross.hpp>
 #include <VulkanSDK/include/Vulkan/shaderc/shaderc.hpp>
 
+#include <filesystem>
+#include "Pixelate/Utility/FileSystem.h"
 
 namespace Pixelate {
 
@@ -27,12 +29,45 @@ namespace Pixelate {
 		}
 	}
 
+	static shaderc_shader_kind FromOpenGLShaderTypeToSPIRV(uint32_t type)
+	{
+		switch (type)
+		{
+			case GL_VERTEX_SHADER:	return shaderc_glsl_vertex_shader;
+			case GL_FRAGMENT_SHADER:	return shaderc_glsl_fragment_shader;
+		}
+	}
+
+	std::string GLShader::DeduceSPIRVCachedFileExtention(uint32_t type)
+	{
+		switch (type)
+		{
+			case GL_VERTEX_SHADER: return ".cached_spirv.pxvert";
+			case GL_FRAGMENT_SHADER: return ".cached_spirv.pxfrag";
+		}
+	}
+
+	std::string GLShader::DeduceOpenGLCachedFileExtention(uint32_t type)
+	{
+		switch (type)
+		{
+			case GL_VERTEX_SHADER: return ".cached_opengl.pxvert";
+			case GL_FRAGMENT_SHADER: return ".cached_opengl.pxfrag";
+		}
+	}
+
+
+
+
 
 	GLShader::GLShader(const std::string& filepath)
 	{
 		std::string source = FileSystem::ReadText(filepath);
 
-		m_Name = std::filesystem::path(filepath).filename().string();
+		m_Name = std::filesystem::path(filepath).stem().string();
+		FileSystem::CreateDir("cache");
+
+
 
 		ParseSources(source);
 		CompileVulkanIntoSpirV();
@@ -46,7 +81,11 @@ namespace Pixelate {
 	{
 		m_Name = name;
 
+		FileSystem::CreateDir("cache");
+
 		ParseSources(source);
+		CompileVulkanIntoSpirV();
+		CompileSpirvIntoGLSL();
 		CreateProgram();
 
 	}
@@ -67,35 +106,56 @@ namespace Pixelate {
 
 	void GLShader::CompileVulkanIntoSpirV()
 	{
+
+
 		shaderc::Compiler compiler;
 		shaderc::CompileOptions options;
 		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
 
-		//options.SetOptimizationLevel(shaderc_optimization_level_performance);
+		options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
+		m_VulkanSpirVData.clear();
+		for (auto&& [type, source] : m_OpenGLSources)
 		{
-			shaderc::SpvCompilationResult results = compiler.CompileGlslToSpv(m_OpenGLSources[GL_VERTEX_SHADER], shaderc_glsl_vertex_shader, m_Name.c_str(), options);
+			std::filesystem::path cacheDir = "cache";
+			std::filesystem::path cachedPath = cacheDir / std::string(m_Name + DeduceSPIRVCachedFileExtention(type));
 
-			if (results.GetCompilationStatus() == shaderc_compilation_status_compilation_error)
+			std::ifstream ifs(cachedPath, std::ios::in | std::ios::binary);
+			if (ifs.is_open())
 			{
-				PX_CORE_ERROR("%s\n", results.GetErrorMessage().c_str());
+				ifs.seekg(0, std::ios::end);
+				auto size = ifs.tellg();
+				ifs.seekg(0, std::ios::beg);
+
+				auto& src = m_VulkanSpirVData[type];
+
+				src.resize(size/sizeof(uint32_t));
+				ifs.read((char*)src.data(), size);
+				ifs.close();
+
 			}
-
-			m_SpirvShaderData[GL_VERTEX_SHADER] = std::vector<uint32_t>(results.cbegin(), results.cend());
-		}
-
-
-		{
-			shaderc::SpvCompilationResult results = compiler.CompileGlslToSpv(m_OpenGLSources[GL_FRAGMENT_SHADER], shaderc_glsl_fragment_shader, m_Name.c_str(), options);
-
-			if (results.GetCompilationStatus() == shaderc_compilation_status_compilation_error)
+			else
 			{
-				PX_CORE_ERROR("%s\n", results.GetErrorMessage().c_str());
+				shaderc::SpvCompilationResult results = compiler.CompileGlslToSpv(m_OpenGLSources[type], FromOpenGLShaderTypeToSPIRV(type), m_Name.c_str());
+
+				if (results.GetCompilationStatus() != shaderc_compilation_status_success)
+				{
+					PX_CORE_ERROR("%s\n", results.GetErrorMessage().c_str());
+				}
+
+				m_VulkanSpirVData[type] = std::vector<uint32_t>(results.cbegin(), results.cend());
+
+				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
+				if (out.is_open())
+				{
+					auto& src = m_VulkanSpirVData[type];
+					out.write((char*)src.data(), src.size()*sizeof(uint32_t));
+					out.flush();
+					out.close();
+				}
 			}
-
-			m_SpirvShaderData[GL_FRAGMENT_SHADER] = std::vector<uint32_t>(results.cbegin(), results.cend());
-
 		}
+	
 	}
 
 	void GLShader::CompileSpirvIntoGLSL()
@@ -103,20 +163,67 @@ namespace Pixelate {
 		shaderc::Compiler compiler;
 		shaderc::CompileOptions options;
 		options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
+		options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
-		//options.SetOptimizationLevel(shaderc_optimization_level_performance);
+
+
 		m_OpenGLSources.clear();
-
+		m_OpenGLSpirVData.clear();
+		for (auto&& [type, source] : m_VulkanSpirVData)
 		{
-			spirv_cross::CompilerGLSL glslCompiler(m_SpirvShaderData[GL_VERTEX_SHADER]);
-			m_OpenGLSources[GL_VERTEX_SHADER] = glslCompiler.compile();
+			std::filesystem::path cacheDir = "cache";
+			std::filesystem::path cachedPath = cacheDir / std::string(m_Name + DeduceOpenGLCachedFileExtention(type));
+
+			std::ifstream ifs(cachedPath, std::ios::in | std::ios::binary);
+			if (ifs.is_open())
+			{
+				ifs.seekg(0, std::ios::end);
+				auto size = ifs.tellg();
+				ifs.seekg(0, std::ios::beg);
+
+				auto& src = m_OpenGLSpirVData[type];
+
+				spirv_cross::CompilerGLSL glslCompiler(source);
+				m_OpenGLSources[type] = glslCompiler.compile();
+
+				src.clear();
+
+				src.resize(size / sizeof(uint32_t));
+				ifs.read((char*)src.data(), size);
+				ifs.close();
+			}
+			else
+			{
+				spirv_cross::CompilerGLSL glslCompiler(source);
+				m_OpenGLSources[type] = glslCompiler.compile();
+
+				shaderc::SpvCompilationResult results = compiler.CompileGlslToSpv(m_OpenGLSources[type], FromOpenGLShaderTypeToSPIRV(type), m_Name.c_str());
+
+				if (results.GetCompilationStatus() != shaderc_compilation_status_success)
+				{
+					PX_CORE_ERROR("%s\n", results.GetErrorMessage().c_str());
+				}
+
+				m_OpenGLSpirVData[type] = std::vector<uint32_t>(results.cbegin(), results.cend());
+
+				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
+				if (out.is_open())
+				{
+					auto& src = m_OpenGLSpirVData[type];
+					out.write((char*)src.data(), src.size()*sizeof(uint32_t));
+					out.flush();
+					out.close();
+				}
+			}
 		}
 
-		{
-			spirv_cross::CompilerGLSL glslCompiler(m_SpirvShaderData[GL_FRAGMENT_SHADER]);
-			m_OpenGLSources[GL_FRAGMENT_SHADER] = glslCompiler.compile();
-		}
+		
+		
 	}
+
+
+
+
 
 	void GLShader::ParseSources(const std::string& source)
 	{
@@ -155,20 +262,37 @@ namespace Pixelate {
 		uint32_t program = glCreateProgram();
 		std::vector<uint32> shaders;
 
-		for (auto& [type, source] : m_OpenGLSources)
-		{
-			shaders.push_back(CreateShader(type, source));
-		}
 
-		for (int shader : shaders)
+#if 1
+		for (auto&& [type, source] : m_OpenGLSources)
 		{
+			unsigned int shader = shaders.emplace_back(glCreateShader(type));
+			const char* shdSrc = source.c_str();
+
+			GLCall(glShaderSource(shader, 1, &shdSrc, nullptr));
+			GLCall(glCompileShader(shader));
+
 			glAttachShader(program, shader);
+
 		}
+#else
+		for (auto&& [type, source] : m_OpenGLSpirVData)
+		{
+			uint32_t id = shaders.emplace_back(glCreateShader(type));
+
+ 			glShaderBinary(1, &id, GL_SHADER_BINARY_FORMAT_SPIR_V, source.data(), source.size()*sizeof(uint32_t));
+ 
+ 			glSpecializeShader(id, "main", 0, nullptr, nullptr);
+			glAttachShader(program, id);
+
+		}
+#endif
+
 
 		int linked;
 		glLinkProgram(program);
 		glGetProgramiv(program, GL_LINK_STATUS, &linked);
-		if (!linked)
+		/*if (!linked)
 		{
 			int logLength;
 			glGetShaderiv(program, GL_INFO_LOG_LENGTH, &logLength);
@@ -190,42 +314,10 @@ namespace Pixelate {
 		{
 			glDetachShader(program, shader);
 			glDeleteShader(shader);
-		}
+		}*/
 
 		m_RendererID = program;
 	}
-
-
-	uint32_t GLShader::CreateShader(unsigned int type, const std::string& shaderSource) {
-
-
-		unsigned int shader = glCreateShader(type);
-		const char* shdSrc = shaderSource.c_str();
-		
-		GLCall(glShaderSource(shader, 1, &shdSrc, nullptr));
-		GLCall(glCompileShader(shader));
-
-		int validation;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &validation);
-
-		if (!validation) {
-
-			int logLength;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-
-			std::vector<char> message(logLength);
-			glGetShaderInfoLog(shader, logLength, &logLength, message.data());
-
-			std::string shaderType = FromShaderTypeToString(type);
-			PX_ERROR("OpenGL (%s) Error! MESSAGE :\n %s\n\n", shaderType.c_str(), message.data());
-
-			GLCall(glDeleteShader(shader));
-			return 0;
-		}
-
-		return shader;
-	}
-
 
 
 
