@@ -1,6 +1,6 @@
 workspace "Pixelate"
 	architecture "x86_64"
-	startproject "Pixelate-Editor"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -265,7 +265,7 @@ project "Pixelate-Editor"
 	
 	postbuildcommands 
 	{
-		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"/assets',
+		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Editor/imgui.ini" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 	}
@@ -295,6 +295,13 @@ project "Pixelate-Editor"
 		symbols "on"
 		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/shaderc_sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/spirv-cross-c-sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/SPIRV-Tools-sharedd.dll" "%{cfg.targetdir}"'
+		}
+
 
 	filter "configurations:Release"
 		defines 
@@ -307,6 +314,12 @@ project "Pixelate-Editor"
 		optimize "on"
 		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 		
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/shaderc_shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/spirv-cross-c-shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/SPIRV-Tools-shared.dll" "%{cfg.targetdir}"'
+		}
 
 
 	filter "configurations:Distribute"
@@ -413,9 +426,10 @@ project "Sandbox"
 	
 	postbuildcommands 
 	{
-		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"/assets',
+		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Editor/imgui.ini" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+
 	}
 
 filter "system:windows"
@@ -439,6 +453,14 @@ filter "system:windows"
 			"PX_USE_INSTRUMENTOR",
 
 		}
+
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/shaderc_sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/spirv-cross-c-sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/SPIRV-Tools-sharedd.dll" "%{cfg.targetdir}"'
+		}
+
 		runtime "Debug"
 		symbols "on"
 
@@ -449,6 +471,12 @@ filter "system:windows"
 			"PX_RELEASE",
 			"PX_USE_IMGUI",
 
+		}
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/shaderc_shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/spirv-cross-c-shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/SPIRV-Tools-shared.dll" "%{cfg.targetdir}"'
 		}
 		runtime "Release"
 		optimize "on"

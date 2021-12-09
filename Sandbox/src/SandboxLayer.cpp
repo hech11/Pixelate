@@ -7,6 +7,10 @@
 #include <Pixelate/Rendering/RendererAPI.h>
 #include <Pixelate/Rendering/RenderCommand.h>
 #include <Pixelate/Editor/EditorCamera.h>
+#include <Pixelate/Rendering/API/Texture.h>
+
+
+// cross compiling shaders with SPIR-V + shaderc
 
 namespace Pixelate
 {
@@ -15,6 +19,7 @@ namespace Pixelate
 	static Ref<VertexBuffer> vbo;
 	static Ref<IndexBuffer> ibo;
 	static Ref<Shader> shader;
+	static Ref<Texture> texture;
 
 	static Ref<UniformBuffer> cameraBuffer;
 
@@ -36,16 +41,17 @@ namespace Pixelate
 
 		float verts[] =
 		{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 		vao = VertexArray::Create();
 		vbo = VertexBuffer::Create(verts, sizeof(verts));
 		BufferLayout layout =
 		{
-			{ BufferLayoutTypes::Float3, "aPos"}
+			{ BufferLayoutTypes::Float3, "aPos"},
+			{ BufferLayoutTypes::Float2, "aTexCoord"}
 		};
 
 		vbo->SetLayout(layout);
@@ -66,6 +72,8 @@ namespace Pixelate
 		props.Size = &winSize;
 		props.Position = &winPos;
 
+		texture = Texture::Create("assets/graphics/sprite.png");
+		texture->Bind();
 
 		camera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
 		cameraBuffer = UniformBuffer::Create(sizeof(CameraData), 0);
