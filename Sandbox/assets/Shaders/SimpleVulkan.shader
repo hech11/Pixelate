@@ -30,5 +30,5 @@ layout(location = 0) in vec2 v_TexCoord;
 layout(binding = 0) uniform sampler2D u_Textures[32];
 
 void main() {
-	FragColor = texture(u_Textures[0], v_TexCoord);
+	FragColor = texture(u_Textures[5], v_TexCoord);
 }

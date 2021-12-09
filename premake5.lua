@@ -1,6 +1,6 @@
 workspace "Pixelate"
 	architecture "x86_64"
-	startproject "Sandbox"
+	startproject "Pixelate-Editor"
 
 	configurations
 	{

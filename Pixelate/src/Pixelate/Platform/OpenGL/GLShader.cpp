@@ -32,23 +32,23 @@ namespace Pixelate {
 	{
 		std::string source = FileSystem::ReadText(filepath);
 
+		m_Name = std::filesystem::path(filepath).filename().string();
 
 		ParseSources(source);
 		CompileVulkanIntoSpirV();
 		CompileSpirvIntoGLSL();
 		CreateProgram();
 
-		m_Name = std::filesystem::path(filepath).filename().string();
 
 	}
 
 	GLShader::GLShader(const std::string& name, const char* source) 
 	{
+		m_Name = name;
 
 		ParseSources(source);
 		CreateProgram();
 
-		m_Name = name;
 	}
 
 

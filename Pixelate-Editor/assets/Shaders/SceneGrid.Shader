@@ -1,17 +1,21 @@
 #shader vertex
 
-#version 330 core
+#version 450 core
 
-layout(location = 0) in vec4 aPos;
+layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec2 aUV;
 
 
-uniform mat4 u_ViewProj = mat4(1.0f);
+layout(binding = 0) uniform Camera
+{
+	mat4 u_ViewProj;
+	float u_SceneCameraZoom;
+};
 
-out vec2 v_uv;
+layout(location = 0) out vec2 v_uv;
 
 void main() {
-	gl_Position = u_ViewProj * aPos;
+	gl_Position = u_ViewProj * vec4(aPos, 1.0f);
 	v_uv = aUV;
 }
 
@@ -19,14 +23,20 @@ void main() {
 
 #shader fragment
 
-#version 330 core
+#version 450 core
 
 
-out vec4 Color;
-uniform float u_SceneCameraZoom = 1.0f;
+layout(location = 0) out vec4 Color;
+
+layout(binding = 0) uniform Camera
+{
+	mat4 u_ViewProj;
+	float u_SceneCameraZoom;
+};
 
 
-in vec2 v_uv;
+layout(location = 0) in vec2 v_uv;
+
 
 float grid(vec2 st, float res)
 {

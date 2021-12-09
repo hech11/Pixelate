@@ -35,6 +35,17 @@ namespace Pixelate {
 		int EntityID;
 	};
 
+	struct CameraData
+	{
+		glm::mat4 ViewProj;
+	};
+
+	struct GridData
+	{
+		glm::mat4 ViewProj;
+		float Zoom;
+	};
+
 	struct Renderer2DData {
 
 		static const unsigned int MaxSprites = 20000;
@@ -50,6 +61,8 @@ namespace Pixelate {
 		Ref<VertexArray> SpriteVertexArray;
 		Ref<VertexBuffer> SpriteVertexBuffer;
 		Ref<Shader> BatchRendererShader;
+		Ref<UniformBuffer> CameraUniformBufferData;
+		CameraData CameraBuffer;
 
 		unsigned int SpriteIndexCount = 0;
 		SpriteVertexData* SpriteVertexDataBase = nullptr;
@@ -78,6 +91,10 @@ namespace Pixelate {
 		Ref<VertexArray> SceneGridVertexArray;
 		Ref<VertexBuffer> SceneGridVertexBuffer;
 		Ref<Shader> SceneGridShader;
+		Ref<UniformBuffer> GridUniformBufferData;
+		GridData GridBufferData;
+
+
 
 		std::array<glm::vec4, 4> QuadPivotPointPositions;
 		Renderer2D::RenderingStatistics m_Statistics;
@@ -199,20 +216,17 @@ namespace Pixelate {
 
 
 			
-			int* samplers = new int[RendererCapabilities::MaxTextureSlots];
-			for (unsigned int i = 0; i < RendererCapabilities::MaxTextureSlots; i++)
-				samplers[i] = i;
+
 
 			{
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
 
-				//SceneData->BatchRendererShader = Shader::Create("assets/Shaders/BatchRenderingShader.shader");
-				//SceneData->BatchRendererShader->Bind();
-				//SceneData->BatchRendererShader->SetUniform1iArray("u_Textures", RendererCapabilities::MaxTextureSlots, samplers);
-				//SceneData->BatchRendererShader->Unbind();
 
+				SceneData->BatchRendererShader = Shader::Create("assets/Shaders/BatchRenderingShader.shader");
+				SceneData->CameraUniformBufferData = UniformBuffer::Create(sizeof(CameraData), 0);
+
+				
 			}
-			delete[] samplers;
 
 		}
 
@@ -242,7 +256,8 @@ namespace Pixelate {
 		Ref<IndexBuffer> aaa = IndexBuffer::Create(gridIndicies, 6);
 		SceneData->SceneGridVertexArray->PushIndexBuffer(aaa);
 
-		//SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.shader");
+		SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.shader");
+		SceneData->GridUniformBufferData = UniformBuffer::Create(sizeof(GridData), 0);
 		
 	}
 
@@ -257,7 +272,8 @@ namespace Pixelate {
 	void Renderer2D::BeginScene(Pixelate::OrthographicCamera* camera) {
 		PX_PROFILE_FUNCTION();
 
-		SceneData->m_ViewMatrix = camera->GetViewProjectionMatrix();
+		SceneData->CameraBuffer.ViewProj = camera->GetViewProjectionMatrix();
+
 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 
@@ -277,11 +293,10 @@ namespace Pixelate {
 	}
 	void Renderer2D::EndScene() {
 		PX_PROFILE_FUNCTION();
-
-
+		
 		SceneData->BatchRendererShader->Bind();
-		SceneData->BatchRendererShader->SetUniformMatrix("u_ViewProj", SceneData->m_ViewMatrix);
 
+		SceneData->CameraUniformBufferData->SetData(&SceneData->CameraBuffer, sizeof(CameraData), 0);
 
 		unsigned int quadSize = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
 		if (quadSize) {
@@ -640,8 +655,11 @@ namespace Pixelate {
 	void Renderer2D::DrawSceneGrid(float gridAlpha) {
 
 		SceneData->SceneGridShader->Bind();
-		SceneData->SceneGridShader->SetUniformMatrix("u_ViewProj", SceneData->m_ViewMatrix);
-		SceneData->SceneGridShader->SetUniform1f("u_SceneCameraZoom", gridAlpha);
+
+		SceneData->GridBufferData.ViewProj = SceneData->CameraBuffer.ViewProj;
+		SceneData->GridBufferData.Zoom = gridAlpha;
+		SceneData->GridUniformBufferData->SetData(&SceneData->GridBufferData, sizeof(GridData), 0);
+
 
 		SceneData->SceneGridVertexArray->Bind();
 		SceneData->SceneGridVertexArray->GetIbos().Bind();
