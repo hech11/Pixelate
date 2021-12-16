@@ -11,6 +11,7 @@
 #include "Pixelate/Rendering/Renderer2D.h"
 
 #include <VulkanSDK/include/Vulkan/spirv_cross/spirv_glsl.hpp>
+#include <VulkanSDK/include/Vulkan/spirv_cross/spirv_reflect.hpp>
 #include <VulkanSDK/include/Vulkan/spirv_cross/spirv_cross.hpp>
 #include <VulkanSDK/include/Vulkan/shaderc/shaderc.hpp>
 
@@ -74,7 +75,6 @@ namespace Pixelate {
 		CompileSpirvIntoGLSL();
 		CreateProgram();
 
-
 	}
 
 	GLShader::GLShader(const std::string& name, const char* source) 
@@ -87,7 +87,6 @@ namespace Pixelate {
 		CompileVulkanIntoSpirV();
 		CompileSpirvIntoGLSL();
 		CreateProgram();
-
 	}
 
 
@@ -217,12 +216,37 @@ namespace Pixelate {
 			}
 		}
 
-		
+		for (auto& data : m_OpenGLSpirVData)
+		{
+			Reflect(data.first, data.second);
+		}
 		
 	}
 
 
 
+	void GLShader::Reflect(uint32_t type, const std::vector<uint32_t>& shaderData)
+	{
+		spirv_cross::Compiler compiler(shaderData);
+		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+		std::cout << "\n\n";
+		PX_CORE_MSG("Shader reflection: %s [%s]\n", m_Name.c_str(), FromShaderTypeToString(type).c_str());
+		PX_CORE_MSG("Uniform buffers: %d\n", resources.uniform_buffers.size());
+		PX_CORE_MSG("Sampler size: %d\n", resources.separate_images.size());
+
+		for (auto& resource : resources.uniform_buffers)
+		{
+			auto& id = compiler.get_type(resource.type_id);
+			uint32_t structSize = compiler.get_declared_struct_size(id);
+			uint32_t memberSize = id.member_types.size();
+			std::cout << "\n";
+			PX_CORE_MSG("Resource %s\n", resource.name.c_str());
+			PX_CORE_MSG("Struct size %d\n", structSize);
+			PX_CORE_MSG("Member size %d\n", memberSize);
+
+		}
+
+	}
 
 
 	void GLShader::ParseSources(const std::string& source)

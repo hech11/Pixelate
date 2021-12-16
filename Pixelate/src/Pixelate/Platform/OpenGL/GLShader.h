@@ -54,6 +54,9 @@ namespace Pixelate {
 			void CompileVulkanIntoSpirV();
 			void CompileSpirvIntoGLSL();
 
+
+			void Reflect(uint32_t type, const std::vector<uint32_t>& shaderData);
+
 			std::string DeduceSPIRVCachedFileExtention(uint32_t type);
 			std::string DeduceOpenGLCachedFileExtention(uint32_t type);
 
