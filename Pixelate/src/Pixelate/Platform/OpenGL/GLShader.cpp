@@ -27,6 +27,7 @@ namespace Pixelate {
 		{
 			case GL_VERTEX_SHADER: return "vertex";
 			case GL_FRAGMENT_SHADER: return "fragment";
+			case GL_GEOMETRY_SHADER: return "geometry";
 		}
 	}
 
@@ -36,6 +37,7 @@ namespace Pixelate {
 		{
 			case GL_VERTEX_SHADER:	return shaderc_glsl_vertex_shader;
 			case GL_FRAGMENT_SHADER:	return shaderc_glsl_fragment_shader;
+			case GL_GEOMETRY_SHADER:	return shaderc_glsl_geometry_shader;
 		}
 	}
 
@@ -45,6 +47,7 @@ namespace Pixelate {
 		{
 			case GL_VERTEX_SHADER: return ".cached_spirv.pxvert";
 			case GL_FRAGMENT_SHADER: return ".cached_spirv.pxfrag";
+			case GL_GEOMETRY_SHADER: return ".cached_spirv.pxgeo";
 		}
 	}
 
@@ -54,6 +57,7 @@ namespace Pixelate {
 		{
 			case GL_VERTEX_SHADER: return ".cached_opengl.pxvert";
 			case GL_FRAGMENT_SHADER: return ".cached_opengl.pxfrag";
+			case GL_GEOMETRY_SHADER: return ".cached_opengl.pxgeo";
 		}
 	}
 
@@ -253,13 +257,13 @@ namespace Pixelate {
 	{
 		enum class ShaderType {
 			None = -1,
-			Vertex, Fragment
+			Vertex, Fragment, Geometry
 		};
 
 		ShaderType type = ShaderType::None;
 		std::string line;
 		std::istringstream file(source);
-		std::stringstream ss[2];
+		std::stringstream ss[3];
 
 		while (getline(file, line)) {
 			if (line.find("#shader") != std::string::npos) {
@@ -268,6 +272,9 @@ namespace Pixelate {
 				}
 				else if (line.find("fragment") != std::string::npos) {
 					type = ShaderType::Fragment;
+				}
+				else if (line.find("geometry") != std::string::npos) {
+					type = ShaderType::Geometry;
 				}
 			}
 			else {
@@ -278,7 +285,10 @@ namespace Pixelate {
 		
 		m_OpenGLSources[GL_VERTEX_SHADER] = ss[0].str();
 		m_OpenGLSources[GL_FRAGMENT_SHADER] = ss[1].str();
-
+		if (ss[2].str().size())
+		{
+			m_OpenGLSources[GL_GEOMETRY_SHADER] = ss[2].str();
+		}
 	}
 
 	void GLShader::CreateProgram()
@@ -316,7 +326,7 @@ namespace Pixelate {
 		int linked;
 		glLinkProgram(program);
 		glGetProgramiv(program, GL_LINK_STATUS, &linked);
-		/*if (!linked)
+		if (!linked)
 		{
 			int logLength;
 			glGetShaderiv(program, GL_INFO_LOG_LENGTH, &logLength);
@@ -338,7 +348,7 @@ namespace Pixelate {
 		{
 			glDetachShader(program, shader);
 			glDeleteShader(shader);
-		}*/
+		}
 
 		m_RendererID = program;
 	}
