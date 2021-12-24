@@ -44,7 +44,7 @@ In order to build a visual studio 2017 solution you will need to edit the .bat f
 ```
 @echo off
 pushd %~dp0\..\
-call vendor\binary\premake5.exe vs2019
+call vendor\bin\premake5.exe vs2019
 popd
 PAUSE
 ```
@@ -53,7 +53,7 @@ to:
 ```
 @echo off
 pushd %~dp0\..\
-call vendor\binary\premake5.exe vs2017
+call vendor\bin\premake5.exe vs2017
 popd
 PAUSE
 ```

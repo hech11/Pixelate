@@ -1,22 +1,19 @@
+
+# Dirs to be ignored
 .vs/
 bin/
 bin-int/
 **/logs/
-
 enc_temp_folder/
 
+# Do not ignore these specific dirs.
+!vendor/bin/
+!Pixelate/vendor/VulkanSDK/bin/
+
+
+# Files
 *.vcxproj
 *.vcxproj.filters
 *.user
 *.sln
 *csproj
-
-PXProfile-Shutdown-Debug.json
-PXProfile-Runtime-Debug.json
-PXProfile-StartUp-Debug.json
-PXProfile-Shutdown-Release.json
-PXProfile-Runtime-Release.json
-PXProfile-StartUp-Release.json
-PXProfile-StartUp-Distribute.json
-PXProfile-Runtime-Distribute.json
-PXProfile-Shutdown-Distribute.json

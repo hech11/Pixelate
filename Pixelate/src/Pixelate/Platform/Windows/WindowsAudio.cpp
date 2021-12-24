@@ -29,16 +29,21 @@ namespace Pixelate {
 		s_DeviceEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, &s_Device);
 
 		//s_Device->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, NULL, (void**)&s_EndpointVolume);
-		s_Device->Activate(__uuidof(IAudioMeterInformation), CLSCTX_ALL, NULL, (void**)&s_MeterInfo);
+		if(s_Device)
+			s_Device->Activate(__uuidof(IAudioMeterInformation), CLSCTX_ALL, NULL, (void**)&s_MeterInfo);
 	}
 
 
 
 	void AudioPlatformUtils::Shutdown() {
-		s_MeterInfo->Release();
-		//s_EndpointVolume->Release();
-		s_Device->Release();
-		s_DeviceEnumerator->Release();
+		if (s_Device)
+		{
+			s_MeterInfo->Release();
+			//s_EndpointVolume->Release();
+			s_Device->Release();
+			s_DeviceEnumerator->Release();
+		}
+
 	}
 
 
@@ -46,7 +51,11 @@ namespace Pixelate {
 	float AudioPlatformUtils::GetPeakValue() {
 		
 		float result = 0.0f;
-		s_MeterInfo->GetPeakValue(&result);
+		if (s_Device)
+		{
+			s_MeterInfo->GetPeakValue(&result);
+		}
+
 		return result;
 	}
 }
