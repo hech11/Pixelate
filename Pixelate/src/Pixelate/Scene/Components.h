@@ -2,6 +2,8 @@
 
 #include "Pixelate/Rendering/OrthographicCamera.h"
 #include "Pixelate/Rendering/API/Texture.h"
+#include "Pixelate/Rendering/API/Shader/Shader.h"
+#include "Pixelate/Rendering/Renderer2D.h"
 #include "glm/glm.hpp"
 #include "Pixelate/Core/AABB.h"
 #include "glm/ext/matrix_transform.hpp"
@@ -96,14 +98,15 @@ namespace Pixelate {
 		RenderLayer SortingLayer;
 		int RenderOrder;
 		Ref<Pixelate::Texture> Texture;
+		Ref<Pixelate::Shader> Shader = Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"];
 
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent& other) 
-			: TintColor(other.TintColor), Rect(other.Rect), SortingLayer(other.SortingLayer), RenderOrder(other.RenderOrder), Texture(other.Texture) {}
+			: TintColor(other.TintColor), Rect(other.Rect), SortingLayer(other.SortingLayer), RenderOrder(other.RenderOrder), Texture(other.Texture), Shader(other.Shader) {}
 
-		SpriteRendererComponent(const glm::vec4& tintColor, const Pixelate::Rect& rect, RenderLayer sortingLayer, int renderOrder, const Ref<Pixelate::Texture>& texture)
-			: TintColor(tintColor), Rect(rect), SortingLayer(sortingLayer), RenderOrder(renderOrder), Texture(texture) {}
+		SpriteRendererComponent(const glm::vec4& tintColor, const Pixelate::Rect& rect, RenderLayer sortingLayer, int renderOrder, const Ref<Pixelate::Texture>& texture, const Ref<Pixelate::Shader>& shader)
+			: TintColor(tintColor), Rect(rect), SortingLayer(sortingLayer), RenderOrder(renderOrder), Texture(texture), Shader(shader) {}
 
 
 	};

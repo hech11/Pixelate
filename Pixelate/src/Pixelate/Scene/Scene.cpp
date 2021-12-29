@@ -72,11 +72,7 @@ namespace Pixelate {
 			auto& transformComp = e.GetComponent<TransformComponent>();
 			auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
 
-			if (spriteComp.Texture) {
-				Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
-			} else {
-				Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
-			}
+			Renderer2D::DrawSpriteWithShader(transformComp, spriteComp, (int)entity);
 
 			if (hasEntityBeenSelected && selectedEntity == e) {
 				AABB boundingBox;
@@ -180,8 +176,8 @@ namespace Pixelate {
 			glm::vec2 transformPos = { Pos.x, Pos.y };
 
 			std::vector<glm::vec4> verts;
-			for (int i = 0; i < ecc.Vertices.size(); i++) {
-				verts.push_back({ ecc.Vertices[i].x + transformPos.x, ecc.Vertices[i].y + transformPos.y, 0.0f, 1.0f });
+			for (auto & Vertice : ecc.Vertices) {
+				verts.emplace_back(Vertice.x + transformPos.x, Vertice.y + transformPos.y, 0.0f, 1.0f);
 			}
 
 			Renderer2D::DrawVerticies(verts.data(), ecc.Vertices.size(), color);
@@ -192,7 +188,7 @@ namespace Pixelate {
 		{
 			Entity e{ entity, this };
 			auto& transformComp = e.GetComponent<TransformComponent>();
-			Renderer2D::DrawSprite(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, (int)entity);
+			Renderer2D::DrawSpriteWithShader(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"] , (int)entity);
 
 		}
 
@@ -247,14 +243,8 @@ namespace Pixelate {
 				{
 
 					auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
-
+					Renderer2D::DrawSpriteWithShader(transformComp, spriteComp, (int)entity);
 				
-					if (spriteComp.Texture) {
-						Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
-					}
-					else {
-						Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
-					}
 				}
 
 

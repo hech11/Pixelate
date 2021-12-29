@@ -4,6 +4,7 @@
 #include "Pixelate/Rendering/Renderer2D.h"
 
 #include <imgui.h>
+#include "Pixelate/Asset/AssetManager.h"
 
 
 namespace Pixelate
@@ -35,12 +36,22 @@ namespace Pixelate
 
 		if (isStatsOpen)
 		{
-			ImGui::Text("DrawCalls: %d", Renderer2D::GetStats().DrawCalls);
-			ImGui::Text("Max Sprites: %d", Renderer2D::GetStats().MaxSprites);
-			ImGui::Text("Max VBO size: %d", Renderer2D::GetStats().MaxVertexBufferSize);
-			ImGui::Text("Max IBO size: %d", Renderer2D::GetStats().MaxIndexBuferSize);
-			ImGui::Text("Vertex ptr size: %d", Renderer2D::GetStats().VertexSize);
-			ImGui::Text("IndexCount: %d", Renderer2D::GetStats().IndexCount);
+			for (auto& commands : Renderer2D::GetDrawList())
+			{
+				std::string shaderPath = AssetManager::GetFilePathString(AssetManager::GetMetadata(commands.first->Handle));
+				bool isShaderNodeOpen = ImGui::TreeNode(shaderPath.c_str());
+
+				if (isShaderNodeOpen)
+				{
+					ImGui::Text("Max drawn objects: %d/%d", commands.second->MaxDrawObjectSize, commands.second->MaxDrawObjectSize);
+					ImGui::Text("vbo size: %d/%d", commands.second->MaxVertexSize, commands.second->MaxVertexSize);
+					ImGui::Text("ibo size: %d/%d", commands.second->IndexCount, commands.second->MaxIndexSize);
+
+					ImGui::TreePop();
+				}
+
+				
+			}
 
 			ImGui::TreePop();
 		}
@@ -71,7 +82,8 @@ namespace Pixelate
 			ImGui::PushID(0);
 			if (ImGui::SmallButton("Reload"))
 			{
-				Renderer2D::GetDefaultShader()->Reload();
+				Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"]->Reload();
+
 			}
 			ImGui::PopID();
 
@@ -81,9 +93,24 @@ namespace Pixelate
 			ImGui::PushID(1);
 			if (ImGui::SmallButton("Reload"))
 			{
-				Renderer2D::GetGridShader()->Reload();
+				Renderer2D::GetShaderLibrary().Get()["GridShader"]->Reload();
 			}
 			ImGui::PopID();
+
+			int i = 2;
+			for (auto& library : Renderer2D::GetShaderLibrary().Get())
+			{
+				ImGui::PushID(i);
+				ImGui::Text(library.first.c_str());
+				ImGui::SameLine();
+				if (ImGui::SmallButton("Reload"))
+				{
+					library.second->Reload();
+				}
+				ImGui::PopID();
+				i++;
+
+			}
 
 			ImGui::TreePop();
 

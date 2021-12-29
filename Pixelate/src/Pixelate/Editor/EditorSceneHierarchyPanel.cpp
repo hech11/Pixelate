@@ -23,6 +23,7 @@
 #include "Pixelate/Asset/AssetManager.h"
 #include "Pixelate/Asset/Asset.h"
 #include "Pixelate/Physics/Physics.h"
+#include "../Rendering/API/Shader/ShaderLibrary.h"
 
 namespace Pixelate {
 
@@ -302,12 +303,13 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
+				ImGui::PushID(1);
 				if (ImGui::Button("open")) {
 					nfdchar_t* outPath = NULL;
 					nfdresult_t result = NFD_OpenDialog("png,jpeg,jpg", NULL, &outPath);
 
 					if (result == NFD_OKAY) {
-						PX_CORE_TRACE("Success!");
+						PX_CORE_TRACE("Success!\n");
 
 						Ref<Texture> tex;
 						if (auto id = TextureManager::IsTextureValid(outPath)) {
@@ -347,9 +349,62 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					}
 				});
 
+				ImGui::PopID();
 
 
 				ImGui::PopItemWidth();
+				ImGui::NextColumn();
+
+				
+				ImGui::Text("Shader path");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::PushID(2);
+				if (ImGui::Button("open")) {
+					nfdchar_t* outPath = NULL;
+					nfdresult_t result = NFD_OpenDialog("pxShader", NULL, &outPath);
+
+					if (result == NFD_OKAY) {
+						PX_CORE_TRACE("Success!\n");
+
+						auto path = std::filesystem::relative(outPath, "assets/");
+						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(),  path.string());
+						spriteComp.Shader = shader;
+
+						free(outPath);
+					}
+					else if (result == NFD_CANCEL) {
+						PX_CORE_MSG("User pressed cancel.\n");
+					}
+					else {
+						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+					}
+
+				}
+				ImGui::SameLine();
+
+				if (spriteComp.Shader)
+					ImGui::InputText("##shaderFilepath", (char*)AssetManager::GetFilePathString(AssetManager::GetMetadata(spriteComp.Shader->Handle)).c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+				else
+					ImGui::InputText("##shaderFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
+
+
+				BeginDragDrop([&](AssetMetadata& metadata) {
+					if (metadata.Type == AssetType::Shader) {
+						std::filesystem::path path = metadata.Filepath;
+
+						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(), path.string());
+						spriteComp.Shader = shader;
+					}
+				});
+				ImGui::PopID();
+
+
+
+				ImGui::PopItemWidth();
+
+
+
 
 
 				ImGui::NextColumn();

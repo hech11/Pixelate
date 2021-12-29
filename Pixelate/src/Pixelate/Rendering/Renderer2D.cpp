@@ -2,8 +2,10 @@
 #include "Renderer2D.h"
 
 
+#ifdef _DEBUG
 #include "Pixelate/Rendering/RendererAPI.h"
 #include "Pixelate/Rendering/RenderCommand.h"
+#endif // _DEBUG
 
 #include "Pixelate/Debug/Instrumentor.h"
 #include "Pixelate/Rendering/TextureManager.h"
@@ -14,19 +16,14 @@
 #include <math.h>
 #include <Pixelate\Core\Timer.h>
 
+#include "Pixelate/Scene/Components.h"
 
 
 namespace Pixelate {
 
-	// Data that will be sent to the GPU.
-	struct PX_API SpriteVertexData {
-		glm::vec3 Verticies;
-		unsigned int Color;
-		glm::vec2 TextureCoords;
-		float TextureIndex;
-		int EntityID;
-	};
+	
 
+	
 	// redundant 
 	struct PX_API LineVertexData {
 		glm::vec3 Verticies;
@@ -49,25 +46,16 @@ namespace Pixelate {
 
 	struct Renderer2DData {
 
-		static const unsigned int MaxSprites = 20000;
-		static const unsigned int MaxVerticiesSize = MaxSprites * 4;
-		static const unsigned int MaxIndiciesSize = MaxSprites * 6;
-
 		static const unsigned int MaxLines = 10000;
 		static const unsigned int MaxLineVerticesSize = MaxLines * 2;
 		static const unsigned int MaxLineIndicesSize = MaxLines * 6;
 
 
-
-		Ref<VertexArray> SpriteVertexArray;
-		Ref<VertexBuffer> SpriteVertexBuffer;
-		Ref<Shader> BatchRendererShader;
+		std::unordered_map<Ref<Shader>, Ref<DrawData>> DrawList;
 		Ref<UniformBuffer> CameraUniformBufferData;
 		CameraData CameraBuffer;
 
-		unsigned int SpriteIndexCount = 0;
-		SpriteVertexData* SpriteVertexDataBase = nullptr;
-		SpriteVertexData* SpriteVertexDataPtr = nullptr;
+
 
 		// For rendering lines
 		Ref<VertexArray> LineVertexArray;
@@ -91,14 +79,12 @@ namespace Pixelate {
 		// For drawing the scene grid.
 		Ref<VertexArray> SceneGridVertexArray;
 		Ref<VertexBuffer> SceneGridVertexBuffer;
-		Ref<Shader> SceneGridShader;
 		Ref<UniformBuffer> GridUniformBufferData;
 		GridData GridBufferData;
 
 
 
 		std::array<glm::vec4, 4> QuadPivotPointPositions;
-		Renderer2D::RenderingStatistics m_Statistics;
 
 
 		glm::mat4 m_ViewMatrix;
@@ -107,6 +93,7 @@ namespace Pixelate {
 	};
 
 	static Renderer2DData* SceneData = nullptr;
+	ShaderLibrary Renderer2D::s_ShaderLibrary;
 
 	int RendererCapabilities::MaxTextureSlots = 0; // This may need to be moved into its own translation unit potentially in the future
 
@@ -118,15 +105,10 @@ namespace Pixelate {
 		{
 			PX_PROFILE_SCOPE("Renderer2D::Init::Setting-VertexBuffer");
 
-			SceneData->m_Statistics.MaxIndexBuferSize = SceneData->MaxIndiciesSize;
-			SceneData->m_Statistics.MaxVertexBufferSize = SceneData->MaxVerticiesSize;
-			SceneData->m_Statistics.MaxSprites = SceneData->MaxSprites;
+			
+			// For lines
 
-			SceneData->SpriteVertexArray = VertexArray::Create();
-			SceneData->SpriteVertexBuffer = VertexBuffer::Create(SceneData->MaxVerticiesSize * sizeof(SpriteVertexData));
-		
-
-			BufferLayout layout = 
+			BufferLayout layout =
 			{
 				{ BufferLayoutTypes::Float3, "aPos"},
 				{ BufferLayoutTypes::UChar4, "aColor", true},
@@ -135,13 +117,6 @@ namespace Pixelate {
 				{ BufferLayoutTypes::Int, "aEntityID" }
 
 			};
-
-			SceneData->SpriteVertexBuffer->SetLayout(layout);
-			SceneData->SpriteVertexArray->PushVertexBuffer(SceneData->SpriteVertexBuffer);
-
-			SceneData->SpriteVertexDataBase = new SpriteVertexData[SceneData->MaxVerticiesSize];
-
-			// For lines
 
 			SceneData->LineVertexArray = VertexArray::Create();
 			SceneData->LineVertexBuffer = VertexBuffer::Create(SceneData->MaxLineVerticesSize * sizeof(LineVertexData));
@@ -166,27 +141,6 @@ namespace Pixelate {
 		}
 
 		{
-
-			PX_PROFILE_SCOPE("Renderer2D::Init::Setting-IndexBuffer");
-			unsigned int* indices = new unsigned int[SceneData->MaxIndiciesSize];
-
-			int offset = 0;
-			for (unsigned int i = 0; i < SceneData->MaxIndiciesSize; i += 6) {
-				indices[i] = offset + 0;
-				indices[i + 1] = offset + 1;
-				indices[i + 2] = offset + 2;
-				indices[i + 3] = offset + 2;
-
-				indices[i + 4] = offset + 3;
-				indices[i + 5] = offset + 0;
-
-				offset += 4;
-			}
-
-			Ref<IndexBuffer> ibo = IndexBuffer::Create(indices, SceneData->MaxIndiciesSize);
-			SceneData->SpriteVertexArray->PushIndexBuffer(ibo);
-			SceneData->SpriteVertexArray->Unbind();
-			delete[] indices;
 
 			// for rendering lines
 			unsigned int* lineIndices = new unsigned int[SceneData->MaxLineIndicesSize];
@@ -216,15 +170,14 @@ namespace Pixelate {
 			SceneData->QuadPivotPointPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f}; // -- top left
 
 
-			
-
 
 			{
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
 
 				Timer timer;
-				SceneData->BatchRendererShader = Shader::Create("assets/Shaders/DefaultTexturedShader.pxShader");
-				PX_CORE_MSG("It took %f(ms) to load BatchRenderingShader.Shader!\n", timer.GetElapsedMillis());
+
+				s_ShaderLibrary.Load("DefaultTexturedShader", "Shaders/DefaultTexturedShader.pxShader");
+				PX_CORE_MSG("It took %f(ms) to load DefaultTexturedShader.Shader!\n", timer.GetElapsedMillis());
 				SceneData->CameraUniformBufferData = UniformBuffer::Create(sizeof(CameraData), 0);
 
 				
@@ -260,7 +213,7 @@ namespace Pixelate {
 
 		{
 			Timer timer;
-			SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.pxShader");
+			s_ShaderLibrary.Load("GridShader", "Shaders/SceneGrid.pxShader");
 			PX_CORE_MSG("It took %f(ms) to load SceneGrid.Shader!\n", timer.GetElapsedMillis());
 			SceneData->GridUniformBufferData = UniformBuffer::Create(sizeof(GridData), 0);
 		}
@@ -283,9 +236,12 @@ namespace Pixelate {
 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 
-		SceneData->SpriteIndexCount = 0;
-		SceneData->SpriteVertexDataPtr = SceneData->SpriteVertexDataBase;
+		for (auto& commands : SceneData->DrawList)
+		{
+			commands.second->IndexCount = 0;
+			commands.second->PtrData = commands.second->PtrBase;
 
+		}
 		SceneData->LineIndexCount = 0;
 		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
 
@@ -300,22 +256,30 @@ namespace Pixelate {
 	void Renderer2D::EndScene() {
 		PX_PROFILE_FUNCTION();
 		
-		SceneData->BatchRendererShader->Bind();
+		
+
 
 		SceneData->CameraUniformBufferData->SetData(&SceneData->CameraBuffer, sizeof(CameraData), 0);
+		for (auto& commands : SceneData->DrawList)
+		{
+			commands.first->Bind();
+			auto& data = commands.second;
 
-		unsigned int quadSize = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
-		if (quadSize) {
-			SceneData->SpriteVertexArray->Bind();
-			SceneData->SpriteVertexArray->GetIbos().Bind();
-			SceneData->SpriteVertexBuffer->SetData(SceneData->SpriteVertexDataBase, quadSize);
+			uint32_t size = (uint8_t*)data->PtrData - (uint8_t*)data->PtrBase;
 
+			if (size)
+			{
+				data->Vao->Bind();
+				data->Vao->GetIbos().Bind();
+				data->Vbo->SetData(data->PtrBase, size);
 
-			TextureManager::BindAllTextures();
+				TextureManager::BindAllTextures();
 
-			RenderCommand::DrawElements(SceneData->SpriteVertexArray, PimitiveRenderType::Triangles, SceneData->SpriteIndexCount);
-			SceneData->m_Statistics.DrawCalls += 1;
+				RenderCommand::DrawElements(data->Vao, PimitiveRenderType::Triangles, data->IndexCount);
+
+			}
 		}
+
 
 		unsigned int lineSize = (unsigned char*)SceneData->LineQuadVertexData - (unsigned char*)SceneData->LineVertexDataBase;
 		if (lineSize) {
@@ -326,7 +290,6 @@ namespace Pixelate {
 			RenderCommand::SetLineThickness(1.0f);
 
 			RenderCommand::DrawElements(SceneData->LineVertexArray, PimitiveRenderType::Lines, SceneData->LineIndexCount);
-			SceneData->m_Statistics.DrawCalls += 1;
 
 		}
 
@@ -357,208 +320,116 @@ namespace Pixelate {
 		}
 
 
-		SceneData->m_Statistics.VertexSize = quadSize + lineSize;
-
 	}
 
 
 	void Renderer2D::DrawVerticies(glm::vec4* vertices, int vertexCount, const glm::vec4& color) {
 
-		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
-			BeginNewQuadBatch();
-		}
-
-		unsigned char r = color.x * 255.0f;
-		unsigned char g = color.y * 255.0f;
-		unsigned char b = color.z * 255.0f;
-		unsigned char a = color.w * 255.0f;
-
-
-		unsigned int col = a << 24 | b << 16 | g << 8 | r;
-
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < vertexCount; i++) {
-
-			SceneData->SpriteVertexDataPtr->Verticies = vertices[i];
-			SceneData->SpriteVertexDataPtr->Color = col;
-			SceneData->SpriteVertexDataPtr->TextureCoords = {0.0f, 0.0f};
-			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
-			SceneData->SpriteVertexDataPtr->EntityID = -1;
-			SceneData->SpriteVertexDataPtr++;
-		}
-
-		if (vertexCount < 4) {
-			glm::vec4 v = vertices[2];
-			SceneData->SpriteVertexDataPtr->Verticies = v;
-			SceneData->SpriteVertexDataPtr->Color = col;
-			SceneData->SpriteVertexDataPtr->TextureCoords = { 0.0f, 0.0f };
-			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
-			SceneData->SpriteVertexDataPtr->EntityID = -1;
-			SceneData->SpriteVertexDataPtr++;
-		}
-
-
-		SceneData->SpriteIndexCount += 6;
-		SceneData->m_Statistics.IndexCount += 6;
-
+// 		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
+// 			BeginNewQuadBatch();
+// 		}
+// 
+// 		unsigned char r = color.x * 255.0f;
+// 		unsigned char g = color.y * 255.0f;
+// 		unsigned char b = color.z * 255.0f;
+// 		unsigned char a = color.w * 255.0f;
+// 
+// 
+// 		unsigned int col = a << 24 | b << 16 | g << 8 | r;
+// 
+// 		// Vertex order = bottom left -> bottom right -> top right -> top left
+// 		for (unsigned int i = 0; i < vertexCount; i++) {
+// 
+// 			SceneData->SpriteVertexDataPtr->Verticies = vertices[i];
+// 			SceneData->SpriteVertexDataPtr->Color = col;
+// 			SceneData->SpriteVertexDataPtr->TextureCoords = {0.0f, 0.0f};
+// 			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+// 			SceneData->SpriteVertexDataPtr->EntityID = -1;
+// 			SceneData->SpriteVertexDataPtr++;
+// 		}
+// 
+// 		if (vertexCount < 4) {
+// 			glm::vec4 v = vertices[2];
+// 			SceneData->SpriteVertexDataPtr->Verticies = v;
+// 			SceneData->SpriteVertexDataPtr->Color = col;
+// 			SceneData->SpriteVertexDataPtr->TextureCoords = { 0.0f, 0.0f };
+// 			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
+// 			SceneData->SpriteVertexDataPtr->EntityID = -1;
+// 			SceneData->SpriteVertexDataPtr++;
+// 		}
+// 
+// 
+// 		SceneData->SpriteIndexCount += 6;
+// 		SceneData->m_Statistics.IndexCount += 6;
+// 
 
 		
 
 	}
 
 
-
-	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const glm::vec4& color, int entityID) {
-		PX_PROFILE_FUNCTION();
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(glm::mat4(1.0f), size);
-
-		DrawSprite(transform, color, entityID);
-
-	}
-
-
-
-
-
-	void Renderer2D::DrawSprite(const glm::vec3& position, float rotation, const glm::vec3& size, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID) {
-		PX_PROFILE_FUNCTION();
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
-			glm::scale(glm::mat4(1.0f), size);
-
-		DrawSprite(transform, texture, tintColor, entityID);
-	}
-
-	
-
-
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const glm::vec4& tintColor, int entityID) {
-		PX_PROFILE_FUNCTION();
-
-		constexpr unsigned int VertexCount = 4;
-
-
-		unsigned char r = tintColor.r * 255.0f;
-		unsigned char g = tintColor.g * 255.0f;
-		unsigned char b = tintColor.b * 255.0f;
-		unsigned char a = tintColor.a * 255.0f;
-
-		unsigned int color = a << 24 | b << 16 | g << 8 | r;
-
-		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
-			BeginNewQuadBatch();
-		}
-
-
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < VertexCount; i++) {
-
-			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
-			SceneData->SpriteVertexDataPtr->Color = color;
-			SceneData->SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
-			SceneData->SpriteVertexDataPtr->TextureIndex = 0.0f;
-			SceneData->SpriteVertexDataPtr->EntityID = entityID;
-			SceneData->SpriteVertexDataPtr++;
-		}
-
-
-		SceneData->SpriteIndexCount += 6;
-		SceneData->m_Statistics.IndexCount += 6;
-	}
-
-
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const glm::vec4& tintColor, int entityID) {
-
-		constexpr unsigned int VertexCount = 4;
-
-
-		unsigned char r = tintColor.r * 255.0f;
-		unsigned char g = tintColor.g * 255.0f;
-		unsigned char b = tintColor.b * 255.0f;
-		unsigned char a = tintColor.a * 255.0f;
-
-		unsigned int color = a << 24 | b << 16 | g << 8 | r;
-
-		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
-			BeginNewQuadBatch();
-		}
-
-		float textureIndex = TextureManager::IsTextureValid(texture);
-
-		if (textureIndex == 0.0f) {
-			auto& manager = TextureManager::GetManagerData();
-			if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
-				BeginNewQuadBatch();
-			textureIndex = manager.TextureSlotIndex;
-			TextureManager::DirectAdd(texture);
-		}
-
-
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < VertexCount; i++) {
-
-			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
-			SceneData->SpriteVertexDataPtr->Color = color;
-			SceneData->SpriteVertexDataPtr->TextureCoords = TextureManager::GetManagerData().TextureCoords[i];
-			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
-			SceneData->SpriteVertexDataPtr->EntityID = entityID;
-			SceneData->SpriteVertexDataPtr++;
-		}
-
-
-		SceneData->SpriteIndexCount += 6;
-		SceneData->m_Statistics.IndexCount += 6;
-	}
-
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, int entityID) {
-		constexpr unsigned int VertexCount = 4;
-
-
-		unsigned char r = tintColor.r * 255.0f;
-		unsigned char g = tintColor.g * 255.0f;
-		unsigned char b = tintColor.b * 255.0f;
-		unsigned char a = tintColor.a * 255.0f;
-
-		unsigned int color = a << 24 | b << 16 | g << 8 | r;
-
-		if (SceneData->SpriteIndexCount >= SceneData->MaxIndiciesSize) {
-			BeginNewQuadBatch();
-		}
-
-		float textureIndex = TextureManager::IsTextureValid(texture);
-
-		if (textureIndex == 0.0f) {
-			auto& manager = TextureManager::GetManagerData();
-			if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
-				BeginNewQuadBatch();
-			textureIndex = manager.TextureSlotIndex;
-			TextureManager::DirectAdd(texture);
-		}
-
-		const auto& texCoords = NormalizedCoordinates(textureDestRect, texture);
-		// Vertex order = bottom left -> bottom right -> top right -> top left
-		for (unsigned int i = 0; i < VertexCount; i++) {
-
-			SceneData->SpriteVertexDataPtr->Verticies = transform * SceneData->QuadPivotPointPositions[i];
-			SceneData->SpriteVertexDataPtr->Color = color;
-			SceneData->SpriteVertexDataPtr->TextureCoords = texCoords[i];
-			SceneData->SpriteVertexDataPtr->TextureIndex = textureIndex;
-			SceneData->SpriteVertexDataPtr->EntityID = entityID;
-			SceneData->SpriteVertexDataPtr++;
-		}
-
-
-		SceneData->SpriteIndexCount += 6;
-		SceneData->m_Statistics.IndexCount += 6;
-	}
-
-	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID)
+	void Renderer2D::DrawSpriteWithShader(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, const Ref<Shader>& shader, int entityID)
 	{
-		PX_PROFILE_FUNCTION();
-		DrawSprite(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor, entityID);
+
+		if (SceneData->DrawList.find(shader) == SceneData->DrawList.end())
+		{
+			SceneData->DrawList[shader] = CreateRef<DrawData>();
+			SceneData->DrawList[shader]->Invalidate();
+		}
+		auto& command = SceneData->DrawList[shader];
+
+
+		constexpr unsigned int VertexCount = 4;
+
+
+		unsigned char r = tintColor.r * 255.0f;
+		unsigned char g = tintColor.g * 255.0f;
+		unsigned char b = tintColor.b * 255.0f;
+		unsigned char a = tintColor.a * 255.0f;
+
+		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+// 		if (command->IndexCount >= command->MaxIndexSize)
+// 		{
+// 			BeginNewQuadBatch();
+// 		}
+
+		float textureIndex = 0.0f;
+		std::array<glm::vec2, 4> texCoords = { {{0.0f, 0.0f}, {0.0f, 0.0f},{0.0f, 0.0f},{0.0f, 0.0f}}};
+		if (texture)
+		{
+			textureIndex = TextureManager::IsTextureValid(texture);
+
+			if (textureIndex == 0.0f) {
+				auto& manager = TextureManager::GetManagerData();
+				if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
+					BeginNewQuadBatch();
+				textureIndex = manager.TextureSlotIndex;
+				TextureManager::DirectAdd(texture);
+			}
+
+			texCoords = NormalizedCoordinates(textureDestRect, texture);
+		}
+		// Vertex order = bottom left -> bottom right -> top right -> top left
+		for (unsigned int i = 0; i < VertexCount; i++) {
+
+			command->PtrData->Verticies = transform * SceneData->QuadPivotPointPositions[i];
+			command->PtrData->Color = color;
+			command->PtrData->TextureCoords = texCoords[i];
+			command->PtrData->TextureIndex = textureIndex;
+			command->PtrData->EntityID = entityID;
+			command->PtrData++;
+		}
+
+
+		command->IndexCount += 6;
+		//SceneData->m_Statistics.IndexCount += 6;
+	}
+
+	void Renderer2D::DrawSpriteWithShader(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID)
+	{
+		DrawSpriteWithShader(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor, sprite.Shader, entityID);
+
 	}
 
 	void Renderer2D::DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color)
@@ -591,7 +462,6 @@ namespace Pixelate {
 
 
 		SceneData->LineIndexCount += 2;
-		SceneData->m_Statistics.IndexCount += 2;
 
 	}
 
@@ -641,7 +511,6 @@ namespace Pixelate {
 
 
 			SceneData->LineStripIndexCount++;
-			SceneData->m_Statistics.IndexCount++;
 
 
 		}
@@ -658,18 +527,16 @@ namespace Pixelate {
 		return SceneData->DrawBoundingBoxes;
 	}
 
-	Pixelate::Ref<Pixelate::Shader>& Renderer2D::GetDefaultShader()
+	
+
+	std::unordered_map<Pixelate::Ref<Pixelate::Shader>, Pixelate::Ref<Pixelate::DrawData>>& Renderer2D::GetDrawList()
 	{
-		return SceneData->BatchRendererShader;
-	}
-	Pixelate::Ref<Pixelate::Shader>& Renderer2D::GetGridShader()
-	{
-		return SceneData->SceneGridShader;
+		return SceneData->DrawList;
 	}
 
 	void Renderer2D::DrawSceneGrid(float gridAlpha) {
 
-		SceneData->SceneGridShader->Bind();
+		s_ShaderLibrary.Get()["GridShader"]->Bind();
 
 		SceneData->GridBufferData.ViewProj = SceneData->CameraBuffer.ViewProj;
 		SceneData->GridBufferData.Zoom = gridAlpha;
@@ -681,7 +548,7 @@ namespace Pixelate {
 
 		RenderCommand::DrawElements(SceneData->SceneGridVertexArray, PimitiveRenderType::Triangles, SceneData->SceneGridVertexArray->GetIbos().GetCount());
 
-		SceneData->SceneGridShader->Unbind();
+		s_ShaderLibrary.Get()["GridShader"]->Unbind();
 		SceneData->SceneGridVertexArray->Unbind();
 		SceneData->SceneGridVertexArray->GetIbos().Unbind();
 
@@ -694,37 +561,37 @@ namespace Pixelate {
 	void Renderer2D::BeginNewQuadBatch() {
 		PX_PROFILE_FUNCTION();
 
-		unsigned int size = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
-		SceneData->SpriteVertexBuffer->SetData(SceneData->SpriteVertexDataBase, size);
-
-		TextureManager::BindAllTextures();
-
-		SceneData->SpriteVertexArray->Bind();
-		RenderCommand::DrawElements(SceneData->SpriteVertexArray, PimitiveRenderType::Triangles, SceneData->SpriteIndexCount);
-
-
-		SceneData->SpriteIndexCount = 0;
-		SceneData->SpriteVertexDataPtr = SceneData->SpriteVertexDataBase;
-		TextureManager::GetManagerData().TextureSlotIndex = 1;
+// 		unsigned int size = (unsigned char*)SceneData->SpriteVertexDataPtr - (unsigned char*)SceneData->SpriteVertexDataBase;
+// 		SceneData->SpriteVertexBuffer->SetData(SceneData->SpriteVertexDataBase, size);
+// 
+// 		TextureManager::BindAllTextures();
+// 
+// 		SceneData->SpriteVertexArray->Bind();
+// 		RenderCommand::DrawElements(SceneData->SpriteVertexArray, PimitiveRenderType::Triangles, SceneData->SpriteIndexCount);
+// 
+// 
+// 		SceneData->SpriteIndexCount = 0;
+// 		SceneData->SpriteVertexDataPtr = SceneData->SpriteVertexDataBase;
+// 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 	}
 
 	void Renderer2D::BeginNewLineBatch() {
 		PX_PROFILE_FUNCTION();
 
-		unsigned int size = (unsigned char*)SceneData->LineQuadVertexData - (unsigned char*)SceneData->LineVertexDataBase;
-		SceneData->SpriteVertexBuffer->SetData(SceneData->LineVertexDataBase, size);
-
-		TextureManager::GetDefaultTexture()->Bind();
-
-		SceneData->LineVertexArray->Bind();
-		RenderCommand::DrawElements(SceneData->LineVertexArray, PimitiveRenderType::Lines, SceneData->LineIndexCount);
-
-
-		SceneData->LineIndexCount = 0;
-		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
-
-		TextureManager::GetManagerData().TextureSlotIndex = 1;
+// 		unsigned int size = (unsigned char*)SceneData->LineQuadVertexData - (unsigned char*)SceneData->LineVertexDataBase;
+// 		SceneData->SpriteVertexBuffer->SetData(SceneData->LineVertexDataBase, size);
+// 
+// 		TextureManager::GetDefaultTexture()->Bind();
+// 
+// 		SceneData->LineVertexArray->Bind();
+// 		RenderCommand::DrawElements(SceneData->LineVertexArray, PimitiveRenderType::Lines, SceneData->LineIndexCount);
+// 
+// 
+// 		SceneData->LineIndexCount = 0;
+// 		SceneData->LineQuadVertexData = SceneData->LineVertexDataBase;
+// 
+// 		TextureManager::GetManagerData().TextureSlotIndex = 1;
 
 	}
 
@@ -750,13 +617,6 @@ namespace Pixelate {
 
 	void Renderer2D::ResetStatistics() {
 		PX_PROFILE_FUNCTION();
-		SceneData->m_Statistics.DrawCalls = 0;
-		SceneData->m_Statistics.IndexCount = 0;
-		SceneData->m_Statistics.VertexSize = 0;
-	}
-
-	Pixelate::Renderer2D::RenderingStatistics& Renderer2D::GetStats() {
-		return SceneData->m_Statistics;
 	}
 
 	
