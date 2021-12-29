@@ -3,7 +3,7 @@
 
 #include "Pixelate/Core/Core.h"
 #include "Pixelate/Asset/Embedded/Embedded.h"
-#include "Shader.h"
+#include "Pixelate/Rendering/API/Shader/Shader.h"
 
 
 namespace Pixelate {
@@ -11,7 +11,7 @@ namespace Pixelate {
 
 	class ShaderGenerator : public EmbeddedGenerator {
 		public:
-			virtual void GenerateToDisk(std::filesystem::path path) = 0;
+			void GenerateToDisk(std::filesystem::path path) override;
 
 	};
 

@@ -41,21 +41,12 @@ Assets:
   - Handle: 3437332282220260737
     Filepath: scenes\test123.PXScene
     Type: Scene
-  - Handle: 5242380248460763380
-    Filepath: Shaders\SceneGrid.Shader
-    Type: Shader
   - Handle: 12510560170843226036
     Filepath: scenes\test123_LoadingOtherScenes.PXScene
     Type: Scene
   - Handle: 3092266599181260790
     Filepath: scenes\test123_Scripts_2.PXScene.PXScene
     Type: Scene
-  - Handle: 2297414185538709264
-    Filepath: Shaders\BatchRenderingShader.shader
-    Type: Shader
-  - Handle: 10473922027072994114
-    Filepath: Shaders\DefaultShaderFile.shader
-    Type: Shader
   - Handle: 13053056233834121195
     Filepath: graphics\cross.png
     Type: Texture
@@ -65,6 +56,9 @@ Assets:
   - Handle: 15401950371930225587
     Filepath: audio\noise.wav
     Type: Audio
+  - Handle: 9493763084305907703
+    Filepath: Shaders\DefaultTexturedShader.pxShader
+    Type: Shader
   - Handle: 14813573490053508137
     Filepath: audio\Default Mixer.pxam
     Type: Audio Mixer
@@ -74,3 +68,6 @@ Assets:
   - Handle: 5303152987274124230
     Filepath: scenes\PhysicsBouncinessTest.PXScene
     Type: Scene
+  - Handle: 4759195160222876570
+    Filepath: Shaders\SceneGrid.pxShader
+    Type: Shader

@@ -14,6 +14,8 @@ namespace Pixelate {
 
 			void RenderStats();
 			void RenderSettings();
+			void RenderShaderProperties();
+
 			void RenderLayers();
 
 		private :

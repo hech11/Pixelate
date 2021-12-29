@@ -5,7 +5,7 @@
 namespace Pixelate {
 
 
-	static const char* s_DefaultShader = R"(#shader vertex
+	static const char* buffer = R"(#shader vertex
 #version 330 core
 
 layout(location = 0) in vec4 aPos;
@@ -56,26 +56,18 @@ void main() {
 }
 	)";
 
+	static const char* DefaultFilename = "DefaultShader.shader";
+
+	
 
 
-
-
-
-	ShaderGenerator* ShaderGenerator::s_Instance = nullptr;
-	ShaderGenerator::ShaderGenerator() {
-		s_Instance = this;
+	void ShaderGenerator::GenerateToDisk(std::filesystem::path path)
+	{
+		path /= DefaultFilename;
+		std::ofstream file(path);
+		file << buffer;
+		file.close();
 	}
-
-	ShaderGenerator::~ShaderGenerator() {
-
-	}
-
-
-	Ref<Shader> ShaderGenerator::DefaultShader() {
-		Ref<Shader> shader = Shader::Create("Default Shader", s_DefaultShader);
-		return shader;
-	}
-
 
 }
 

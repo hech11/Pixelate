@@ -1,5 +1,4 @@
 #shader vertex
-
 #version 330 core
 
 layout(location = 0) in vec4 aPos;
@@ -10,7 +9,7 @@ layout(location = 2) in vec2 aUV;
 uniform mat4 u_Model = mat4(1.0f);
 uniform mat4 u_ViewProj = mat4(1.0f);
 
-out DATA{
+out DATA {
 	vec4 position;
 	vec4 color;
 	vec2 uv;
@@ -23,10 +22,7 @@ void main() {
 	vs_out.uv = aUV;
 }
 
-
-
 #shader fragment
-
 #version 330 core
 
 
@@ -35,7 +31,7 @@ uniform vec4 u_Color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 uniform sampler2D u_TextureSampler;
 uniform bool u_IsTexture = true;
 
-in DATA{
+in DATA {
 
 	vec4 position;
 	vec4 color;
@@ -44,10 +40,11 @@ in DATA{
 } fs_in;
 
 void main() {
-	if (u_IsTexture) {
+	if(u_IsTexture) {
 		Color = texture2D(u_TextureSampler, fs_in.uv);
 	}
 	else {
 		Color = u_Color;
 	}
 }
+	

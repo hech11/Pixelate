@@ -58,6 +58,10 @@ namespace Pixelate {
 			static void SetBoundingBox(bool draw);
 			static const bool& ShouldDrawBoundingBox();
 
+			static Ref<Shader>& GetDefaultShader();
+			static Ref<Shader>& GetGridShader();
+
+
 			// temp -- should be in a scene renderer
 			static void DrawSceneGrid(float gridAlpha);
 

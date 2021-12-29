@@ -65,11 +65,51 @@ namespace Pixelate {
 
 
 
+	void GLShader::ClearCachedFiles()
+	{
+
+		std::vector<std::string> paths;
+		for (auto& data : m_OpenGLSpirVData)
+		{
+			std::filesystem::path cacheDir = "cache";
+			std::filesystem::path cachedPath = cacheDir / std::string(m_Name + DeduceOpenGLCachedFileExtention(data.first));
+
+			std::ifstream ifs(cachedPath, std::ios::in | std::ios::binary);
+			if (ifs.is_open())
+			{
+				paths.push_back(cachedPath.string());
+			}
+			ifs.close();
+		}
+
+
+		for (auto& data : m_VulkanSpirVData)
+		{
+			std::filesystem::path cacheDir = "cache";
+			std::filesystem::path cachedPath = cacheDir / std::string(m_Name + DeduceSPIRVCachedFileExtention(data.first));
+
+			std::ifstream ifs(cachedPath, std::ios::in | std::ios::binary);
+			if (ifs.is_open())
+			{
+				paths.push_back(cachedPath.string());
+			}
+			ifs.close();
+
+		}
+
+
+		for (auto& path : paths)
+		{
+			FileSystem::DeleteFile(path);
+		}
+	}
+
 	GLShader::GLShader(const std::string& filepath)
 	{
-		std::string source = FileSystem::ReadText(filepath);
+		m_Filepath = filepath;
+		std::string source = FileSystem::ReadText(m_Filepath);
 
-		m_Name = std::filesystem::path(filepath).stem().string();
+		m_Name = std::filesystem::path(m_Filepath).stem().string();
 		FileSystem::CreateDir("cache");
 
 
@@ -81,18 +121,7 @@ namespace Pixelate {
 
 	}
 
-	GLShader::GLShader(const std::string& name, const char* source) 
-	{
-		m_Name = name;
-
-		FileSystem::CreateDir("cache");
-
-		ParseSources(source);
-		CompileVulkanIntoSpirV();
-		CompileSpirvIntoGLSL();
-		CreateProgram();
-	}
-
+	
 
 	GLShader::~GLShader() {
 		glDeleteProgram(m_RendererID);
@@ -370,6 +399,22 @@ namespace Pixelate {
 	}
 
 
+
+	void GLShader::Reload()
+	{
+		glDeleteProgram(m_RendererID);
+		std::string source = FileSystem::ReadText(m_Filepath);
+
+		FileSystem::CreateDir("cache");
+
+		ClearCachedFiles();
+
+		ParseSources(source);
+		CompileVulkanIntoSpirV();
+		CompileSpirvIntoGLSL();
+		CreateProgram();
+
+	}
 
 	void GLShader::SetUniform1f(const std::string& uniformName, const float value) {
 		glUniform1f(GetUniformLocation(uniformName), value);

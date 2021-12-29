@@ -18,8 +18,6 @@ namespace Pixelate {
 		public:
 		
 			GLShader(const std::string& filepath);
-			GLShader(const std::string& name, const char* source);
-
 			~GLShader();
 
 
@@ -50,6 +48,9 @@ namespace Pixelate {
 
 			int GetUniformLocation(const std::string& name) override;
 
+			void Reload() override;
+
+
 		private :
 			void CompileVulkanIntoSpirV();
 			void CompileSpirvIntoGLSL();
@@ -60,6 +61,7 @@ namespace Pixelate {
 			std::string DeduceSPIRVCachedFileExtention(uint32_t type);
 			std::string DeduceOpenGLCachedFileExtention(uint32_t type);
 
+			void ClearCachedFiles();
 
 			void ParseSources(const std::string& source);
 			void CreateProgram();
@@ -69,6 +71,7 @@ namespace Pixelate {
 			uint32_t m_RendererID;
 
 			std::string m_Name;
+			std::string m_Filepath;
 
 			std::unordered_map<uint32_t, std::string> m_OpenGLSources;
 

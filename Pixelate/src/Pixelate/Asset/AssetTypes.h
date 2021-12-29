@@ -11,8 +11,7 @@ namespace Pixelate { namespace Utils {
 
 	inline static std::unordered_map<std::string, AssetType> s_AssetExtensionTypesTable = {
 		{".PXScene",	AssetType::Scene },
-		{".shader",		AssetType::Shader },
-		{".Shader",		AssetType::Shader },
+		{".pxShader",	AssetType::Shader },
 		{".ogg",		AssetType::Audio },
 		{".mp3",		AssetType::Audio },
 		{".wav",		AssetType::Audio },

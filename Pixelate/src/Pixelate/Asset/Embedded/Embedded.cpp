@@ -2,6 +2,7 @@
 
 #include "Audio/AudioMixerGenerator.h"
 #include "Physics/PhysicsMaterial2DGenerator.h"
+#include "Rendering/ShaderGenerator.h"
 
 
 namespace Pixelate {
@@ -10,6 +11,7 @@ namespace Pixelate {
 	{
 		{AssetType::AudioMixer, CreateRef<AudioMixerGenerator>()},
 		{AssetType::PhysicsMaterial2D, CreateRef<PhysicsMaterial2DGenerator>()},
+		{AssetType::Shader, CreateRef<ShaderGenerator>()},
 	};
 
 

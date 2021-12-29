@@ -179,8 +179,14 @@ namespace Pixelate {
 
 		AssetMetadata metadata = s_AssetRegistry.GetRegistry()[oPath];
 		metadata.Filepath = nPath;
+
+		
 		s_AssetRegistry.GetRegistry().erase(oPath);
 		s_AssetRegistry.GetRegistry().insert({ nPath, metadata });
+
+		if (nPath.extension() == ".pxShader")
+			ReloadAsset(nPath);
+
 
 	}
 

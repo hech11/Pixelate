@@ -74,12 +74,12 @@ namespace Pixelate {
 				&overlapped,
 				NULL);
 
-			DWORD waiting = WaitForSingleObject(overlapped.hEvent, 5000);
+			DWORD waiting = WaitForSingleObject(overlapped.hEvent, 10000);
 			if (waiting != WAIT_OBJECT_0)
 				continue;
 
 			std::filesystem::path oldPath;
-			char filename[1024 * 10] = "";
+			char filename[1024 * 10];
 			char* data = buffer.data();
 
 			while (true) {
@@ -89,7 +89,17 @@ namespace Pixelate {
 				WideCharToMultiByte(0, 0, fInfo.FileName, fInfo.FileNameLength / sizeof(WCHAR), filename, sizeof(filename), 0, 0);
 				std::filesystem::path f = std::string(filename);
 				std::filesystem::path filepath = s_AssetDirectory / f;
+				std::filesystem::path ext = filepath.extension();
 				
+				std::size_t isTemp = ext.string().rfind(".TMP");
+				if (isTemp != std::string::npos)
+				{
+					if (!fInfo.NextEntryOffset)
+						break;
+					data += fInfo.NextEntryOffset;
+					continue;
+				}
+
 				FileWatcherCallbackData callbackData;
 				callbackData.Filepath = filepath;
 				callbackData.OldFilepath = filepath;

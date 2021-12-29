@@ -63,4 +63,12 @@ namespace Pixelate {
 
 	};
 
+	class ShaderImporter : public AssetTypeImporter
+	{
+		public :
+			ShaderImporter() = default;
+			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+			void Reload(Ref<Asset>& asset) override;
+	};
+
 }

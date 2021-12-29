@@ -4,6 +4,8 @@
 #include "PXpch.h"
 #include "GLM/glm/glm.hpp"
 
+#include "Pixelate/Asset/Asset.h"
+
 
 // Shader interface.
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
@@ -15,7 +17,7 @@ namespace Pixelate {
 
 
 
-	class PX_API Shader {
+	class PX_API Shader : public Asset {
 
 		public :
 			Shader();
@@ -52,9 +54,13 @@ namespace Pixelate {
 			virtual int GetUniformLocation(const std::string& name) = 0;
 
 
+
+			virtual void Reload() = 0;
+			SETUP_ASSET_PROPERTIES(AssetType::Shader);
+
+
 		public :
 			static Ref<Shader> Create(const std::string& filepath);
-			static Ref<Shader> Create(const std::string& name, const char* source);
 
 
 	};

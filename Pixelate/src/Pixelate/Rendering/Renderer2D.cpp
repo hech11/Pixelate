@@ -223,8 +223,7 @@ namespace Pixelate {
 				PX_PROFILE_SCOPE("Renderer2D::Init::Setting-Shader");
 
 				Timer timer;
-
-				SceneData->BatchRendererShader = Shader::Create("assets/Shaders/BatchRenderingShader.shader");
+				SceneData->BatchRendererShader = Shader::Create("assets/Shaders/DefaultTexturedShader.pxShader");
 				PX_CORE_MSG("It took %f(ms) to load BatchRenderingShader.Shader!\n", timer.GetElapsedMillis());
 				SceneData->CameraUniformBufferData = UniformBuffer::Create(sizeof(CameraData), 0);
 
@@ -261,7 +260,7 @@ namespace Pixelate {
 
 		{
 			Timer timer;
-			SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.shader");
+			SceneData->SceneGridShader = Shader::Create("assets/Shaders/SceneGrid.pxShader");
 			PX_CORE_MSG("It took %f(ms) to load SceneGrid.Shader!\n", timer.GetElapsedMillis());
 			SceneData->GridUniformBufferData = UniformBuffer::Create(sizeof(GridData), 0);
 		}
@@ -657,6 +656,15 @@ namespace Pixelate {
 	}
 	const bool& Renderer2D::ShouldDrawBoundingBox() {
 		return SceneData->DrawBoundingBoxes;
+	}
+
+	Pixelate::Ref<Pixelate::Shader>& Renderer2D::GetDefaultShader()
+	{
+		return SceneData->BatchRendererShader;
+	}
+	Pixelate::Ref<Pixelate::Shader>& Renderer2D::GetGridShader()
+	{
+		return SceneData->SceneGridShader;
 	}
 
 	void Renderer2D::DrawSceneGrid(float gridAlpha) {

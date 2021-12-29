@@ -1,6 +1,6 @@
 Scene: Scene
 Entities:
-  - Entity: 7553434053943613822
+  - Entity: 5293333092286990498
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
@@ -13,10 +13,10 @@ Entities:
       Rect:
         Position: [0, 0]
         Scale: [128, 128]
-      SortingLayer: 1
-      RenderOrder: 2
+      SortingLayer: 0
+      RenderOrder: 0
       TintColor: [1, 1, 1, 1]
-  - Entity: 10662957818749550363
+  - Entity: 2318486774058789065
     NameComponent:
       Name: Camera
     TagComponent:

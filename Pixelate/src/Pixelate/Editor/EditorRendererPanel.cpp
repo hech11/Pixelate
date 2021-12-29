@@ -20,8 +20,8 @@ namespace Pixelate
 
 		RenderStats();
 		RenderSettings();
+		RenderShaderProperties();
 		RenderLayers();
-
 		ImGui::End();
 
 	}
@@ -58,6 +58,38 @@ namespace Pixelate
 		}
 
 	}
+
+	void EditorRendererPanel::RenderShaderProperties()
+	{
+		bool isPropsOpen = ImGui::TreeNode("Shader Properties");
+		if (isPropsOpen)
+		{
+
+
+			ImGui::Text("DefaultTexturedShader");
+			ImGui::SameLine();
+			ImGui::PushID(0);
+			if (ImGui::SmallButton("Reload"))
+			{
+				Renderer2D::GetDefaultShader()->Reload();
+			}
+			ImGui::PopID();
+
+			ImGui::Text("GridShader");
+			ImGui::SameLine();
+
+			ImGui::PushID(1);
+			if (ImGui::SmallButton("Reload"))
+			{
+				Renderer2D::GetGridShader()->Reload();
+			}
+			ImGui::PopID();
+
+			ImGui::TreePop();
+
+		}
+	}
+
 
 	void EditorRendererPanel::RenderLayers()
 	{

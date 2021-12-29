@@ -20,15 +20,6 @@ namespace Pixelate {
 
 	}
 
-	Ref<Shader> Shader::Create(const std::string& name, const char* source)
-	{
-		switch (RendererAPI::GetAPI()) {
-			case RendererAPI::API::OpenGL:
-				return CreateRef<GLShader>(name, source);
-		}
-
-	}
-
 
 
 }
