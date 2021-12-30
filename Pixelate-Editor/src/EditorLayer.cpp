@@ -27,6 +27,7 @@
 #include "../../NativeFileDialog/src/include/nfd.h"
 
 #include <Pixelate/Asset/AssetManager.h>
+#include "Pixelate/Rendering/SceneRenderer.h"
 
 namespace Pixelate {
 
@@ -144,10 +145,6 @@ namespace Pixelate {
 
 
 		//Setting up both scene and game viewport panels
-		FramebufferSpecs ViewportSpecs;
-		ViewportSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
-		ViewportSpecs.Width = 960;
-		ViewportSpecs.Height = 540;
 
 		FramebufferSpecs sceneSpecs;
 		sceneSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INT, FramebufferTextureFormat::Depth };
@@ -159,10 +156,8 @@ namespace Pixelate {
 
 
 		m_SceneViewportFramebuffer = Framebuffer::Create(sceneSpecs);
-		m_GameViewportFramebuffer = Framebuffer::Create(ViewportSpecs);
 
 		FramebufferPool::Add(m_SceneViewportFramebuffer);
-		FramebufferPool::Add(m_GameViewportFramebuffer);
 
 		ViewportPanelProps props;
 		props.Position = &m_SceneViewportPanelPosition;
@@ -171,8 +166,6 @@ namespace Pixelate {
 		m_EditorCamera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
 		m_EditorCamera->SetOrthographicSize(5.0f);
 
-
-		Renderer2D::SetBoundingBox(true);
 
 		m_Gizmo = ImGuizmo::TRANSLATE;
 
@@ -205,7 +198,7 @@ namespace Pixelate {
 		}
 
 		if (m_GameViewportSize != m_GameViewportPanelSize) {
-			m_GameViewportFramebuffer->Resize(m_GameViewportPanelSize.x, m_GameViewportPanelSize.y);
+			//m_GameViewportFramebuffer->Resize(m_GameViewportPanelSize.x, m_GameViewportPanelSize.y);
 			m_GameViewportSize = m_GameViewportPanelSize;
 		}
 
@@ -238,11 +231,12 @@ namespace Pixelate {
 		m_SceneViewportFramebuffer->Unbind();
 
 		// Render game viewport to the its fbo
-		m_GameViewportFramebuffer->Bind();
+		//m_GameViewportFramebuffer->Bind();
 
-
+		
 		m_EditorScene->OnGameViewportRender();
-		m_GameViewportFramebuffer->Unbind();
+
+		//m_GameViewportFramebuffer->Unbind();
 
 		if (m_SceneState == SceneState::Play) {
 			m_EditorScene->OnRuntimeUpdate(dt);
@@ -318,28 +312,6 @@ namespace Pixelate {
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
 		auto& PanelManager = EditorPanelManager::Get();
-
-// 		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
-// 
-// 			auto allSpriteEntities = m_EditorScene->GetAllEntitiesWith<SpriteRendererComponent>();
-// 			bool intersects = false;
-// 			for (auto s : allSpriteEntities) {
-// 				Entity e = { s, m_EditorScene.get() };
-// 				auto& transform = e.GetComponent<TransformComponent>();
-// 				auto [position, rot, scale] = transform.DecomposeTransform();
-// 
-// 				intersects = m_EditorCamera->IsIntersecting(position, scale);
-// 				if (intersects && (!ImGuizmo::IsOver() || !ImGuizmo::IsUsing())) {
-// 					PanelManager.SetSelectedEntity({s, m_EditorScene.get()});
-// 					break;
-// 				} 
-// 			}
-// 			if (!intersects && !ImGuizmo::IsOver()) {
-// 				PanelManager.SetSelectedEntity({});
-// 				//m_AnimatorPanel->SetEntityContext();
-// 			}
-// 
-// 		}
 
 		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
 
@@ -594,9 +566,6 @@ namespace Pixelate {
 		ImGui::End();
 
 
-		ImGui::Begin("Renderer stats");
-
-		ImGui::End();
 
 		ImGui::Begin("Application");
 		static float time = 0.0f;
@@ -840,7 +809,7 @@ namespace Pixelate {
 		cursorPos.y *= 0.5f;
 		ImGui::SetCursorPos({ cursorPos.x, cursorPos.y });
 
-		uint64_t gameViewportColorAttachment = m_GameViewportFramebuffer->GetColorAttachmentRenderID(0);
+		uint64_t gameViewportColorAttachment = SceneRenderer::GetGeometryPass()->FrameBufferTarget->GetColorAttachmentRenderID(0);
 		ImGui::Image((void*)gameViewportColorAttachment, { m_GameViewportSize.x, m_GameViewportSize.y }, { 0, 1 }, { 1, 0 });
 
 		ImGui::End();

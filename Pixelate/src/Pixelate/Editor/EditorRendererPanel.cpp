@@ -36,22 +36,7 @@ namespace Pixelate
 
 		if (isStatsOpen)
 		{
-			for (auto& commands : Renderer2D::GetDrawList())
-			{
-				std::string shaderPath = AssetManager::GetFilePathString(AssetManager::GetMetadata(commands.first->Handle));
-				bool isShaderNodeOpen = ImGui::TreeNode(shaderPath.c_str());
-
-				if (isShaderNodeOpen)
-				{
-					ImGui::Text("Max drawn objects: %d/%d", commands.second->MaxDrawObjectSize, commands.second->MaxDrawObjectSize);
-					ImGui::Text("vbo size: %d/%d", commands.second->MaxVertexSize, commands.second->MaxVertexSize);
-					ImGui::Text("ibo size: %d/%d", commands.second->IndexCount, commands.second->MaxIndexSize);
-
-					ImGui::TreePop();
-				}
-
-				
-			}
+			
 
 			ImGui::TreePop();
 		}
@@ -62,9 +47,6 @@ namespace Pixelate
 		bool isSettingsOpen = ImGui::TreeNodeEx("Settings");
 		if (isSettingsOpen)
 		{
-			if (ImGui::Button("Draw bounding boxes -- does not work")) {
-				Renderer2D::SetBoundingBox(!Renderer2D::ShouldDrawBoundingBox());
-			}
 			ImGui::TreePop();
 		}
 

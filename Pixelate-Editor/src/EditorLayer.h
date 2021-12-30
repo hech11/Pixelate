@@ -91,7 +91,6 @@ namespace Pixelate {
 
 			// Game Viewport panel 
 
-			Ref<Framebuffer> m_GameViewportFramebuffer;
 
 			glm::vec2 m_GameViewportSize = { 0.0f, 0.0f };
 			glm::vec2 m_GameViewportPanelSize = { 0.0f, 0.0f };

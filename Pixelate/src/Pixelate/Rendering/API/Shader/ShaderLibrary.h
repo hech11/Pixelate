@@ -8,6 +8,7 @@ namespace Pixelate
 	{
 		public :
 			Ref<Shader> Load(const std::string& name, const std::string& filepath);
+			Ref<Shader> LoadExternalResource(const std::string& name, const std::string& filepath);
 
 			std::unordered_map<std::string, Ref<Shader>>& Get() { return m_Shaders; }
 

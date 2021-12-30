@@ -15,6 +15,8 @@
 #include "Pixelate/Scene/SceneManager.h"
 #include "Pixelate/Audio/Audio.h"
 
+#include "Pixelate/Rendering/SceneRenderer.h"
+
 
 namespace Pixelate {
 
@@ -41,6 +43,8 @@ namespace Pixelate {
 
 		m_Reg.emplace<PhysicsWorldComponent>(m_SceneEntity); // temp for now...
 
+
+
 	}
 
 
@@ -51,11 +55,6 @@ namespace Pixelate {
 
 
 		// Rendering the scene editor viewport
-		Renderer2D::ResetStatistics();
-
-		Renderer2D::BeginScene(camera.get());
-		Renderer2D::DrawSceneGrid(camera->GetOrthographicSize());
-
 
 
 
@@ -72,7 +71,7 @@ namespace Pixelate {
 			auto& transformComp = e.GetComponent<TransformComponent>();
 			auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
 
-			Renderer2D::DrawSpriteWithShader(transformComp, spriteComp, (int)entity);
+
 
 			if (hasEntityBeenSelected && selectedEntity == e) {
 				AABB boundingBox;
@@ -188,12 +187,10 @@ namespace Pixelate {
 		{
 			Entity e{ entity, this };
 			auto& transformComp = e.GetComponent<TransformComponent>();
-			Renderer2D::DrawSpriteWithShader(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"] , (int)entity);
+			//Renderer2D::DrawSpriteWithShader(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"] , (int)entity);
 
 		}
 
-
-		Renderer2D::EndScene();
 
 	}
 
@@ -228,9 +225,8 @@ namespace Pixelate {
 			RenderCommand::SetClearColor(renderCam->ClearColor.r, renderCam->ClearColor.g, renderCam->ClearColor.b, renderCam->ClearColor.a);
 
 			RenderCommand::Clear();
-			Renderer2D::ResetStatistics();
 
-			Renderer2D::BeginScene(&renderCam->Camera);
+			SceneRenderer::BeginScene(renderCam->Camera.GetViewProjectionMatrix());
 
 			auto renderGroup = m_Reg.view<SpriteRendererComponent>();
 			
@@ -243,16 +239,19 @@ namespace Pixelate {
 				{
 
 					auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
-					Renderer2D::DrawSpriteWithShader(transformComp, spriteComp, (int)entity);
+					SceneRenderer::SubmitSprite(transformComp, spriteComp, (uint32_t)entity);
 				
 				}
 
 
 			}
-			Renderer2D::EndScene();
+
+			SceneRenderer::EndScene();
 		} else {
 			PX_CORE_WARN("Currently no primary camera in the scene!\n");
 		}
+
+
 	}
 
 	void Scene::OnRuntimeStart() {

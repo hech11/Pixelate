@@ -37,8 +37,6 @@ namespace Pixelate {
 
 			static unsigned int IsTextureValid(const Ref<Texture>& texture);
 			static unsigned int IsTextureValid(const std::string& filepath);
-		private :
-			friend class Renderer2D;
 
 			static void BindAllTextures();
 

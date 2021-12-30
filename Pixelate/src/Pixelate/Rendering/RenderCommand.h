@@ -8,6 +8,27 @@
 
 namespace Pixelate {
 
+	struct RenderCommandBuffer
+	{
+		void* buffer;
+		void Execeute()
+		{
+
+		}
+	};
+
+	struct RenderCommandBufferQueue
+	{
+		std::vector<Ref<RenderCommandBuffer>> Commands;
+		void ExeceuteAndWait() // temp
+		{
+
+			for (auto& command : Commands)
+			{
+				command->Execeute();
+			}
+		}
+	};
 	class PX_API RenderCommand {
 
 		public :
