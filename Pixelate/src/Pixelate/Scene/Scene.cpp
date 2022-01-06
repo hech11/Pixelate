@@ -50,12 +50,11 @@ namespace Pixelate {
 
 	
 
-	void Scene::OnUpdate(float ts, const Ref<EditorCamera>& camera, Entity selectedEntity,bool hasEntityBeenSelected)
+	void Scene::OnUpdate(float ts, const glm::mat4& cameraViewProj, const Ref<SceneRenderer>& renderer, Entity selectedEntity,bool hasEntityBeenSelected)
 	{
 
 
 		// Rendering the scene editor viewport
-
 
 
 		auto renderGroup = m_Reg.view<SpriteRendererComponent>();
@@ -65,13 +64,14 @@ namespace Pixelate {
 		auto edgeColliderGroup = m_Reg.view<EdgeColliderComponent>();
 		auto audioSrcGroup = m_Reg.view<AudioSourceComponent>();
 
+		renderer->BeginScene(cameraViewProj);
 
 		for (auto entity : renderGroup) {
 			Entity e{ entity, this };
 			auto& transformComp = e.GetComponent<TransformComponent>();
 			auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
 
-
+			renderer->SubmitSprite(transformComp, spriteComp, (int)entity);
 
 			if (hasEntityBeenSelected && selectedEntity == e) {
 				AABB boundingBox;
@@ -83,7 +83,7 @@ namespace Pixelate {
 				boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
 
 				color = { 0.0f, 1.0f, 1.0f, 1.0f };
-				Renderer2D::DrawAABB(boundingBox, color);
+				//Renderer2D::DrawAABB(boundingBox, color);
 
 			}
 
@@ -112,7 +112,7 @@ namespace Pixelate {
 
 			boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
 			boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
-			Renderer2D::DrawAABB(boundingBox, color);
+			//Renderer2D::DrawAABB(boundingBox, color);
 		}
 
 		for(auto entity : circleColliderGroup) {
@@ -132,7 +132,7 @@ namespace Pixelate {
 			glm::vec2 transformPos = { Pos.x, Pos.y };
 			const auto Position = cc.Center + transformPos;
 
-			Renderer2D::DrawCircle(Position, cc.Radius, color);
+			//Renderer2D::DrawCircle(Position, cc.Radius, color);
 		}
 
 		for (auto entity : edgeColliderGroup) {
@@ -153,7 +153,7 @@ namespace Pixelate {
 			const auto PositionA = ecc.Point1 + transformPos;
 			const auto PositionB = ecc.Point2 + transformPos;
 
-			Renderer2D::DrawLine({ PositionA.x, PositionA.y, 0.0f }, { PositionB.x, PositionB.y, 0.0f }, color);
+			//Renderer2D::DrawLine({ PositionA.x, PositionA.y, 0.0f }, { PositionB.x, PositionB.y, 0.0f }, color);
 
 		}
 
@@ -179,7 +179,7 @@ namespace Pixelate {
 				verts.emplace_back(Vertice.x + transformPos.x, Vertice.y + transformPos.y, 0.0f, 1.0f);
 			}
 
-			Renderer2D::DrawVerticies(verts.data(), ecc.Vertices.size(), color);
+			//Renderer2D::DrawVerticies(verts.data(), ecc.Vertices.size(), color);
 
 		}
 
@@ -190,12 +190,12 @@ namespace Pixelate {
 			//Renderer2D::DrawSpriteWithShader(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"] , (int)entity);
 
 		}
-
+		renderer->EndScene();
 
 	}
 
 
-	void Scene::OnGameViewportRender()
+	void Scene::OnGameViewportRender(const Ref<SceneRenderer>& renderer)
 	{
 		// find the primary camera to use for rendering.
 		CameraComponent* renderCam = nullptr;
@@ -224,9 +224,7 @@ namespace Pixelate {
 
 			RenderCommand::SetClearColor(renderCam->ClearColor.r, renderCam->ClearColor.g, renderCam->ClearColor.b, renderCam->ClearColor.a);
 
-			RenderCommand::Clear();
-
-			SceneRenderer::BeginScene(renderCam->Camera.GetViewProjectionMatrix());
+			renderer->BeginScene(renderCam->Camera.GetViewProjectionMatrix());
 
 			auto renderGroup = m_Reg.view<SpriteRendererComponent>();
 			
@@ -239,14 +237,14 @@ namespace Pixelate {
 				{
 
 					auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
-					SceneRenderer::SubmitSprite(transformComp, spriteComp, (uint32_t)entity);
+					renderer->SubmitSprite(transformComp, spriteComp, (uint32_t)entity);
 				
 				}
 
 
 			}
 
-			SceneRenderer::EndScene();
+			renderer->EndScene();
 		} else {
 			PX_CORE_WARN("Currently no primary camera in the scene!\n");
 		}

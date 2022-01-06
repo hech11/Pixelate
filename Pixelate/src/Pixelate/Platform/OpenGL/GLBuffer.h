@@ -86,8 +86,13 @@ namespace Pixelate {
 			void SetData(const void* data, uint32_t size, uint32_t offset) override;
 
 			uint32_t GetRendererID() const override { return m_RendererID; }
-		private :
+
+			void Bind() const override;
+			void UnBind() const override;
+
+		private:
 			uint32_t m_RendererID;
+			uint32_t m_Binding;
 	};
 
 }

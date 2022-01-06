@@ -217,6 +217,9 @@ namespace Pixelate {
 			virtual ~UniformBuffer() = default;
 			virtual unsigned int GetRendererID() const = 0;
 
+			virtual void Bind() const = 0;
+			virtual void UnBind() const = 0;
+
 			virtual void SetData(const void* data, uint32_t size, uint32_t offset) = 0;
 
 		public :

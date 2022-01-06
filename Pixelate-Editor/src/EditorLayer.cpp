@@ -36,7 +36,8 @@ namespace Pixelate {
 	static bool GoTo1stClip = false;
 	void EditorLayer::Init() {
 
-
+		m_GameSceneRenderer = CreateRef<SceneRenderer>();
+		m_EditorSceneRenderer = CreateRef<SceneRenderer>();
 
 		particleProps.VelocityVariation1 = { -2.0f, -2.0f };
 		particleProps.VelocityVariation2 = { 2.0f, 2.0f };
@@ -63,7 +64,11 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("AudioMixerPanel", m_AudioMixerPanel = CreateRef<EditorAudioMixerPanel>());
 		PanelManager.RegisterPanel("PhysicsPropertiesPanel", m_PhysicsPanel = CreateRef<EditorPhysicsPropertiesPanel>());
 		PanelManager.RegisterPanel("RendererPanel", m_RendererPanel = CreateRef<EditorRendererPanel>());
+		PanelManager.RegisterPanel("GameView", m_GameViewPanel = CreateRef<EditorGameViewPanel>());
+		PanelManager.RegisterPanel("GameDebugView", m_GameDebugViewPanel = CreateRef<EditorGameDebugView>());
 
+		m_GameViewPanel->SetSceneRenderer(m_GameSceneRenderer);
+		m_GameDebugViewPanel->SetSceneRenderer(m_EditorSceneRenderer);
 
 		m_AudioMixerPanel->SetOpenPanel(false);
 		m_PhysicsPanel->SetOpenPanel(false);
@@ -144,30 +149,18 @@ namespace Pixelate {
 // 		anim.AddTransition({ clip2, clip, []() {return GoTo1stClip; } });
 
 
-		//Setting up both scene and game viewport panels
-
-		FramebufferSpecs sceneSpecs;
-		sceneSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INT, FramebufferTextureFormat::Depth };
-		sceneSpecs.Width = 960;
-		sceneSpecs.Height = 540;
 
 
 
+// 		FramebufferSpecs sceneSpecs;
+// 		sceneSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INT, FramebufferTextureFormat::Depth };
+// 		sceneSpecs.Width = 960;
+// 		sceneSpecs.Height = 540;
+// 
+// 
+// 
+// 		m_SceneViewportFramebuffer = Framebuffer::Create(sceneSpecs);
 
-
-		m_SceneViewportFramebuffer = Framebuffer::Create(sceneSpecs);
-
-		FramebufferPool::Add(m_SceneViewportFramebuffer);
-
-		ViewportPanelProps props;
-		props.Position = &m_SceneViewportPanelPosition;
-		props.Size = &m_SceneViewportPanelSize;
-
-		m_EditorCamera = CreateRef<EditorCamera>(16.0f / 9.0f, props);
-		m_EditorCamera->SetOrthographicSize(5.0f);
-
-
-		m_Gizmo = ImGuizmo::TRANSLATE;
 
 
 		FileSystem::StartWatching(); // Should move this when projects are introduced.
@@ -188,34 +181,12 @@ namespace Pixelate {
 		auto& PanelManager = EditorPanelManager::Get();
 
 
-		if (m_IsSceneViewportFocused) {
-			m_EditorCamera->OnUpdate(dt);
-		}
-		if (m_SceneViewportSize != m_SceneViewportPanelSize) {
-			m_SceneViewportFramebuffer->Resize(m_SceneViewportPanelSize.x, m_SceneViewportPanelSize.y);
-			m_SceneViewportSize = m_SceneViewportPanelSize;
-			m_EditorCamera->Resize(m_SceneViewportPanelSize.x / m_SceneViewportPanelSize.y);
-		}
 
-		if (m_GameViewportSize != m_GameViewportPanelSize) {
-			//m_GameViewportFramebuffer->Resize(m_GameViewportPanelSize.x, m_GameViewportPanelSize.y);
-			m_GameViewportSize = m_GameViewportPanelSize;
-		}
+// 
+// 		//anim.Update(dt);
+ 		PanelManager.OnUpdate(dt);
 
-		m_EditorScene->SetGameViewport(m_GameViewportPanelSize.x, m_GameViewportPanelSize.y);
-
-		// Render scene viewport to the its fbo
-
-		m_SceneViewportFramebuffer->Bind();
-
-		RenderCommand::Clear();
-		m_SceneViewportFramebuffer->ClearColorAttachment(1, -1);
-
-		m_EditorScene->OnUpdate(dt, m_EditorCamera, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
-
-		//anim.Update(dt);
-		PanelManager.OnUpdate(dt);
-
+ 		m_EditorScene->OnUpdate(dt, m_GameDebugViewPanel->GetEditorCamera()->GetViewProjectionMatrix(), m_EditorSceneRenderer, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
 
 		//Renderer2D::BeginScene(m_EditorCamera.get());
 		
@@ -225,18 +196,8 @@ namespace Pixelate {
 
 		//Renderer2D::EndScene();
 
+		m_EditorScene->OnGameViewportRender(m_GameSceneRenderer);
 
-	
-
-		m_SceneViewportFramebuffer->Unbind();
-
-		// Render game viewport to the its fbo
-		//m_GameViewportFramebuffer->Bind();
-
-		
-		m_EditorScene->OnGameViewportRender();
-
-		//m_GameViewportFramebuffer->Unbind();
 
 		if (m_SceneState == SceneState::Play) {
 			m_EditorScene->OnRuntimeUpdate(dt);
@@ -281,27 +242,7 @@ namespace Pixelate {
 				}
 			}
 
-			case KeyCode::Q: {
-				if (!ImGuizmo::IsUsing()) {
-					m_Gizmo = ImGuizmo::TRANSLATE;
-					break;
-				}
-			}
-
-			case KeyCode::W: {
-				if (!ImGuizmo::IsUsing()) {
-					m_Gizmo = ImGuizmo::ROTATE;
-					break;
-				}
-			}
-
-			case KeyCode::E: {
-				if (!ImGuizmo::IsUsing()) {
-					m_Gizmo = ImGuizmo::SCALE;
-					break;
-				}
-			}
-
+		
 
 		}
 
@@ -311,27 +252,6 @@ namespace Pixelate {
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		auto& PanelManager = EditorPanelManager::Get();
-
-		if (e.GetButton() == (int)MouseButton::Left && e.GetRepeatCount() == 0 && m_IsSceneViewportHovered) {
-
-			auto [mx, my] = ImGui::GetMousePos();
-			mx -= m_SceneViewportPanelPosition.x;
-			my -= m_SceneViewportPanelPosition.y;
-			my = m_SceneViewportPanelSize.y - my;
-			m_SceneViewportFramebuffer->Bind();
-			int px = m_SceneViewportFramebuffer->ReadPixel(1, (int)mx, (int)my);
-			PX_CORE_MSG("Entity handle: %d\n", px);
-			if (px != -1 && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {
-				Entity e = { (entt::entity)px, m_EditorScene.get() };
-				EditorPanelManager::Get().SetSelectedEntity(e);
-			}
-			else if(!ImGuizmo::IsUsing() && !ImGuizmo::IsOver()){
-				EditorPanelManager::Get().SetSelectedEntity({});
-			}
-			m_SceneViewportFramebuffer->Unbind();
-
-		}
 
 		return false;
 	}
@@ -343,7 +263,6 @@ namespace Pixelate {
 		SceneManager::SetPlayMode(true);
 
 		m_EditorScene->OnRuntimeStart();
-
 
 	}
 
@@ -413,9 +332,7 @@ namespace Pixelate {
 	}
 
 	void EditorLayer::OnEvent(Event& e) {
-		if(m_IsSceneViewportFocused)
-			m_EditorCamera->OnEvent(e);
-
+		
 		auto& PanelManager = EditorPanelManager::Get();
 		PanelManager.OnEvent(e);
 
@@ -532,6 +449,12 @@ namespace Pixelate {
 				if (ImGui::MenuItem("Content Browser", "")) {
 					m_ContentBrowser->SetOpenPanel(true);
 				}
+				if (ImGui::MenuItem("Game View", "")) {
+					m_GameViewPanel->SetOpenPanel(true);
+				}
+				if (ImGui::MenuItem("Scene View", "")) {
+					m_GameViewPanel->SetOpenPanel(true);
+				}
 
 				ImGui::EndMenu();
 			}
@@ -622,199 +545,6 @@ namespace Pixelate {
 
 		PanelManager.OnImguiRender();
 		AssetManager::OnImguiRender(true);
-
-
-
-		// scene viewport panel
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
-		ImGui::Begin("Scene Viewport", 0, ImGuiWindowFlags_NoCollapse);
-
-
-		static glm::vec4 sceneColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-		ImGui::PushItemWidth(250);
-		ImGui::ColorEdit4("Scene color", glm::value_ptr(sceneColor));
-		float ColorRectYSize = ImGui::GetItemRectSize().y;
-		ImGui::PopItemWidth();
-
-
-		ImVec2 vMin = ImGui::GetWindowContentRegionMin();
-		ImVec2 vMax = ImGui::GetWindowContentRegionMax();
-
-		vMin.x += ImGui::GetWindowPos().x;
-		vMin.y += ImGui::GetWindowPos().y + ColorRectYSize;
-		vMax.x += ImGui::GetWindowPos().x;
-		vMax.y += ImGui::GetWindowPos().y;
-
-		ImRect dragAreaRect = { vMin , vMax };
-		auto sceneViewportID = ImGui::GetID("Scene Viewport");
-
-		
-		if (ImGui::BeginDragDropTargetCustom(dragAreaRect, sceneViewportID)) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetPayload"))
-			{
-
-				
-				AssetMetadata& metadata = *(AssetMetadata*)payload->Data;
-				std::filesystem::path filepath = AssetManager::GetFilePath(metadata);
-				
-
-
-				PX_CORE_MSG("Scene viewport recieved '%s'!\n", filepath.string().c_str());
-
-				switch (metadata.Type)
-				{
-					case AssetType::Scene: 
-					{
-						m_EditorScene = SceneManager::LoadScene(filepath.string());
-						PanelManager.SetSceneContext(m_EditorScene);
-						break;
-					}
-					case AssetType::Texture:
-					{
-						Entity entity = m_EditorScene->CreateEntity(filepath.stem().string());
-						entity.GetComponent<TransformComponent>().SetPosition(m_EditorCamera->GetPos());
-						SpriteRendererComponent& comp = entity.AddComponent<SpriteRendererComponent>();
-						comp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
-						comp.Rect = { {0, 0}, {comp.Texture->GetWidth(), comp.Texture->GetHeight()} };
-						break;
-					}
-					case AssetType::Audio:
-					{
-						Entity entity = m_EditorScene->CreateEntity(filepath.stem().string());
-						entity.GetComponent<TransformComponent>().SetPosition(m_EditorCamera->GetPos());
-						AudioSourceComponent& comp = entity.AddComponent<AudioSourceComponent>();
-
-						Ref<AudioBuffer> buffer = AssetManager::GetAsset<AudioBuffer>(metadata.Handle);
-						comp.Source = Audio::CreateAudioSource(buffer);
-
-						comp.FilePath = metadata.Filepath.string();
-
-						//comp.Source->GetMixerGroup()->SourcesAttached[(UUID)entity.GetHandle()] = comp;
-						Audio::AttachSourceToMixerGroup(comp.Source);
-						//Audio::DetachSourceFromMixerGroup(comp.Source);
-
-						break;
-					}
-
-				}
-
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-
-
-		RenderCommand::SetClearColor(sceneColor.r, sceneColor.g, sceneColor.b, sceneColor.a);
-		ImGui::Separator();
-
-		m_IsSceneViewportHovered = ImGui::IsWindowHovered();
-		m_IsSceneViewportFocused = ImGui::IsWindowFocused();
-
-		if (m_IsSceneViewportHovered && (Input::IsMouseButtonDown(MouseButton::Right) || Input::IsMouseButtonDown(MouseButton::Middle))) {
-			m_IsSceneViewportFocused = true;
-			ImGui::SetWindowFocus();
-		}
-
-
-		Application::GetApp().GetImguiLayer().ShouldBlockEvents(false);
-
-
-		{
-			glm::vec2 WindowPos = { ImGui::GetWindowPos().x,  ImGui::GetWindowPos().y };
-			glm::vec2 CursorPos = { ImGui::GetCursorPos().x, ImGui::GetCursorPos().y };
-			glm::vec2 ContentRegionAvail = { ImGui::GetContentRegionAvail().x,  ImGui::GetContentRegionAvail().y };
-
-
-			m_SceneViewportPanelPosition = WindowPos;
-			m_SceneViewportPanelPosition += CursorPos;
-			m_SceneViewportPanelSize = ContentRegionAvail;
-
-		}
-
-		auto sceneViewportColorAttachment = m_SceneViewportFramebuffer->GetColorAttachmentRenderID(0);
-		ImGui::Image((void*)sceneViewportColorAttachment, { m_SceneViewportSize.x, m_SceneViewportSize.y }, { 0, 1 }, { 1, 0 });
-
-		auto& hierarcy = PanelManager.GetPanel("SceneHierarcy");
-
-		if (hierarcy->HasAnEntitySelected()) {
-			ImGuizmo::SetDrawlist();
-
-			ImGuizmo::SetRect(m_SceneViewportPanelPosition.x, m_SceneViewportPanelPosition.y, m_SceneViewportPanelSize.x, m_SceneViewportPanelSize.y);
-			auto& transformComp = hierarcy->CurrentlySelectedEntity().GetComponent<TransformComponent>();
-
-			ImGuizmo::Manipulate(glm::value_ptr(m_EditorCamera->GetViewMatrix()), glm::value_ptr(m_EditorCamera->GetProjectionMatrix()), (ImGuizmo::OPERATION) m_Gizmo, ImGuizmo::LOCAL, glm::value_ptr(transformComp.Transform));
-
-		}
-
-
-		ImGui::End();
-		ImGui::PopStyleVar();
-
-
-
-
-
-		// game viewport panel
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
-		ImGui::Begin("Game Viewport", 0, ImGuiWindowFlags_NoCollapse);
-
-		const char* items[] = { "Any Aspect", "16x9", "4x3" };
-		static const char* current_item = items[0];
-
-		if (ImGui::BeginCombo("Aspect Ratio", current_item)) // The second parameter is the label previewed before opening the combo.
-		{
-			for (auto & item : items) {
-				bool is_selected = (current_item == item); // You can store your selection however you want, outside or inside your objects
-				if (ImGui::Selectable(item, is_selected))
-					current_item = item;
-
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
-			}
-			ImGui::EndCombo();
-		}
-		ImGui::Separator();
-
-
-		int padding = ImGui::GetCursorPosY();
-
-		m_IsGameViewportHovered = ImGui::IsWindowHovered();
-		m_IsGameViewportFocused = ImGui::IsWindowFocused();
-
-		if (m_IsGameViewportHovered && (Input::IsMouseButtonDown(MouseButton::Right) || Input::IsMouseButtonDown(MouseButton::Middle))) {
-			m_IsGameViewportHovered = true;
-			ImGui::SetWindowFocus();
-		}
-
-		glm::vec2 WindowPos = { ImGui::GetWindowPos().x,  ImGui::GetWindowPos().y };
-		glm::vec2 CursorPos = { ImGui::GetCursorPos().x, ImGui::GetCursorPos().y };
-		glm::vec2 ContentRegionAvail = { ImGui::GetContentRegionAvail().x,  ImGui::GetContentRegionAvail().y };
-
-		m_GameViewportPanelPosition = WindowPos;
-		m_GameViewportPanelPosition += CursorPos;
-		if (current_item == items[1]) {
-			m_GameViewportPanelSize = ContentRegionAvail;
-			m_GameViewportPanelSize.y = m_GameViewportPanelSize.x / 16.0f * 9.0f;
-		}
-		else if (current_item == items[2]) {
-			m_GameViewportPanelSize = ContentRegionAvail;
-			m_GameViewportPanelSize.y = m_GameViewportPanelSize.x / 4.0f * 3.0f;
-		}
-		else {
-			m_GameViewportPanelSize = ContentRegionAvail;
-		}
-
-		glm::vec2 cursorPos = { ImGui::GetWindowSize().x - m_GameViewportSize.x, ImGui::GetWindowSize().y - m_GameViewportSize.y + padding };
-		cursorPos.x *= 0.5f;
-		cursorPos.y *= 0.5f;
-		ImGui::SetCursorPos({ cursorPos.x, cursorPos.y });
-
-		uint64_t gameViewportColorAttachment = SceneRenderer::GetGeometryPass()->FrameBufferTarget->GetColorAttachmentRenderID(0);
-		ImGui::Image((void*)gameViewportColorAttachment, { m_GameViewportSize.x, m_GameViewportSize.y }, { 0, 1 }, { 1, 0 });
-
-		ImGui::End();
-		ImGui::PopStyleVar();
-
 
 
 		if (m_OpenSceneManagerPanel) {

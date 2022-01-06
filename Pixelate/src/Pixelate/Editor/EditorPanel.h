@@ -22,6 +22,7 @@ namespace Pixelate {
 			virtual void OnImguiRender() {}
 
 			virtual void SetOpenPanel(bool open) { m_IsPanelOpen = open; }
+			const bool& IsPanelOpen() const { return m_IsPanelOpen; }
 
 			virtual void SetSceneContext(const Ref<Scene>& scene) {
 				m_SceneContext = scene;

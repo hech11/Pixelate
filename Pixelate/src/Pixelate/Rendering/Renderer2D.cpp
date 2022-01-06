@@ -55,7 +55,6 @@ namespace Pixelate {
 		PX_PROFILE_FUNCTION();
 		SceneData = new Renderer2DData;
 		FramebufferPool::Init();
-		SceneRenderer::Init();
 
 		SceneData->LineDrawData = CreateRef<DrawData>();
 		SceneData->LineStripDrawData =  CreateRef<DrawData>();

@@ -1,21 +1,21 @@
 Assets:
-  - Handle: 14753504238286453007
-    Filepath: graphics\test.png
+  - Handle: 11872943128402416174
+    Filepath: ""
     Type: Texture
   - Handle: 16875867529767079503
     Filepath: AssetRegistry.pxar
     Type: Asset Registry
-  - Handle: 11872943128402416174
-    Filepath: ""
+  - Handle: 14753504238286453007
+    Filepath: graphics\test.png
     Type: Texture
   - Handle: 16809476356410631126
     Filepath: ACTIVESCENE.PXScene
     Type: Scene
-  - Handle: 16072470196708842148
-    Filepath: audio\tone-ogg.ogg
-    Type: Audio
   - Handle: 5767884922789449816
     Filepath: audio\tone-mp3.mp3
+    Type: Audio
+  - Handle: 16072470196708842148
+    Filepath: audio\tone-ogg.ogg
     Type: Audio
   - Handle: 18069192197029962527
     Filepath: graphics\TestSpritesheet.png
@@ -23,12 +23,12 @@ Assets:
   - Handle: 4993231541211841246
     Filepath: scenes\newAssetManager.PXScene
     Type: Scene
-  - Handle: 1564386651501461505
-    Filepath: audio\tone.wav
-    Type: Audio
   - Handle: 4020195025803029489
     Filepath: scenes\test123_Scripts.PXScene
     Type: Scene
+  - Handle: 1564386651501461505
+    Filepath: audio\tone.wav
+    Type: Audio
   - Handle: 16257840863795969837
     Filepath: graphics\sprite.png
     Type: Texture
@@ -56,12 +56,12 @@ Assets:
   - Handle: 15401950371930225587
     Filepath: audio\noise.wav
     Type: Audio
-  - Handle: 14813573490053508137
-    Filepath: audio\Default Mixer.pxam
-    Type: Audio Mixer
   - Handle: 9493763084305907703
     Filepath: Shaders\DefaultTexturedShader.pxShader
     Type: Shader
+  - Handle: 14813573490053508137
+    Filepath: audio\Default Mixer.pxam
+    Type: Audio Mixer
   - Handle: 14995343214189438174
     Filepath: Physics Material2D.pxPhysicsMaterial2D
     Type: Physics Material2D
