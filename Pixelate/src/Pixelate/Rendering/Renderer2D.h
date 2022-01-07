@@ -172,7 +172,7 @@ namespace Pixelate {
 			static void Init();
 			static void ShutDown();
 			
-			static void BeginScene();
+			static void BeginPrimitives();
 			static void FlushPrimitives();
 
 			static void SetCurrentRenderPassTarget(const Ref<RenderPass>& renderPass);
@@ -186,7 +186,6 @@ namespace Pixelate {
 
 			static void DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
 			static void DrawAABB(const AABB& aabb, const glm::vec4& color);
-
 			static void DrawCircle(const glm::vec2& center, float radius, const glm::vec4& color);
 
 

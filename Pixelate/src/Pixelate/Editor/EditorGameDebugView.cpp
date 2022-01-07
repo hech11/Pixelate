@@ -151,7 +151,6 @@ namespace Pixelate
 		{
 			glm::vec2 WindowPos = { ImGui::GetWindowPos().x,  ImGui::GetWindowPos().y };
 			glm::vec2 CursorPos = { ImGui::GetCursorPos().x, ImGui::GetCursorPos().y };
-			m_ViewportPropSize = CursorPos;
 			glm::vec2 ContentRegionAvail = { ImGui::GetContentRegionAvail().x,  ImGui::GetContentRegionAvail().y };
 
 
@@ -234,13 +233,16 @@ namespace Pixelate
 			my = m_ViewportPanelSize.y - my;
 			m_Renderer->GetGeometryPass()->FrameBufferTarget->Bind();
 			int px = m_Renderer->GetGeometryPass()->FrameBufferTarget->ReadPixel(1, (int)mx, (int)my);
-			PX_CORE_MSG("Entity handle: %d\n", px);
-			if (px != -1 && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {
-				Entity e = { (entt::entity)px, m_SceneContext.get() };
-				EditorPanelManager::Get().SetSelectedEntity(e);
-			}
-			else if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {
-				EditorPanelManager::Get().SetSelectedEntity({});
+			PX_CORE_MSG("Entity handle: %d, (%f, %f, (w) %f (h)%f)\n", px, mx, my, m_ViewportPanelSize.x, m_ViewportPanelSize.y);
+			if((mx >= 0 && mx < m_ViewportPanelSize.x)&&(my >= 0 && my< m_ViewportPanelSize.y))
+			{
+				if (px != -1 && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {
+					Entity e = { (entt::entity)px, m_SceneContext.get() };
+					EditorPanelManager::Get().SetSelectedEntity(e);
+				}
+				else if (!ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {
+					EditorPanelManager::Get().SetSelectedEntity({});
+				}
 			}
 			m_Renderer->GetGeometryPass()->FrameBufferTarget->Unbind();
 

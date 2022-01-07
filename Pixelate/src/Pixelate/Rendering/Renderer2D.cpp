@@ -80,32 +80,7 @@ namespace Pixelate {
 
 
 
-// 
-// 		float gridVerticies[] = {
-// 			 -10000.0f, -10000.0f, 0.0f, 0.0f, 0.0f,
-// 			  10000.0f, -10000.0f, 0.0f, 1.0f, 0.0f,
-// 			  10000.0f,  10000.0f, 0.0f, 1.0f, 1.0f,
-// 			 -10000.0f,  10000.0f, 0.0f, 0.0f, 1.0f
-// 
-// 		};
-// 		SceneData->SceneGridVertexArray = VertexArray::Create();
-// 		SceneData->SceneGridVertexBuffer = VertexBuffer::Create(gridVerticies,  sizeof(gridVerticies));
-// 		BufferLayout layout = {
-// 			{BufferLayoutTypes::Float3, "aPos"},
-// 			{BufferLayoutTypes::Float2, "aUV" }
-// 		};
-// 
-// 
-// 		SceneData->SceneGridVertexBuffer->SetLayout(layout);
-// 		SceneData->SceneGridVertexArray->PushVertexBuffer(SceneData->SceneGridVertexBuffer);
-// 
-// 
-// 		unsigned int gridIndicies[] = {
-// 			0, 1, 2,
-// 			2, 3, 0
-// 		};
-// 		Ref<IndexBuffer> aaa = IndexBuffer::Create(gridIndicies, 6);
-// 		SceneData->SceneGridVertexArray->PushIndexBuffer(aaa);
+
 // 
 // 		SceneData->GridUniformBufferData = UniformBuffer::Create(sizeof(GridData), 0);
 		
@@ -119,7 +94,8 @@ namespace Pixelate {
 		delete SceneData;
 	}
 
-	void Renderer2D::BeginScene() {
+	void Renderer2D::BeginPrimitives()
+	{
 		PX_PROFILE_FUNCTION();
 
 		SceneData->LineDrawData->IndexCount = 0;
@@ -127,11 +103,11 @@ namespace Pixelate {
 
 
 		SceneData->LineStripDrawData->IndexCount = 0;
+		SceneData->LineStripDrawData->Iterations = 0;
 		SceneData->LineStripDrawData->PtrData = SceneData->LineDrawData->PtrBase;
 
 		SceneData->VertexDrawData->IndexCount = 0;
 		SceneData->VertexDrawData->PtrData = SceneData->VertexDrawData->PtrBase;
-
 	}
 
 	void Renderer2D::FlushPrimitives() {
@@ -139,6 +115,7 @@ namespace Pixelate {
 		
 
 		uint32_t lineSize = (uint8_t*)SceneData->LineDrawData->PtrData - (uint8_t*)SceneData->LineDrawData->PtrBase;
+		s_ShaderLibrary.Get()["DefaultTexturedShader"]->Bind();
 		if (lineSize) {
 			SceneData->LineDrawData->Vao->Bind();
 			SceneData->LineDrawData->Vao->GetIbos().Bind();
@@ -150,7 +127,6 @@ namespace Pixelate {
 			RenderCommand::DrawElements(SceneData->LineDrawData->Vao, PimitiveRenderType::Lines, SceneData->LineDrawData->IndexCount);
 
 		}
-
 
 		TextureManager::GetDefaultTexture()->Bind();
 		RenderCommand::SetLineThickness(1.0f);
@@ -176,6 +152,22 @@ namespace Pixelate {
 			}
 
 		}
+
+
+
+		uint32_t vertexSize = (uint8_t*)SceneData->VertexDrawData->PtrData - (uint8_t*)SceneData->VertexDrawData->PtrBase;
+		if (vertexSize) {
+			SceneData->VertexDrawData->Vao->Bind();
+			SceneData->VertexDrawData->Vao->GetIbos().Bind();
+			SceneData->VertexDrawData->Vbo->SetData(SceneData->VertexDrawData->PtrBase, lineSize);
+
+
+			RenderCommand::DrawElements(SceneData->VertexDrawData->Vao, PimitiveRenderType::Triangles, SceneData->VertexDrawData->IndexCount);
+
+		}
+
+
+		s_ShaderLibrary.Get()["DefaultTexturedShader"]->Unbind();
 
 
 	}

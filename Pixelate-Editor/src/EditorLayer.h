@@ -93,8 +93,6 @@ namespace Pixelate {
 			Ref<EditorGameDebugView> m_GameDebugViewPanel;
 
 
-			ParticleSystem particleSystem;
-			ParticleProperties particleProps;
 			Ref<Scene> m_EditorScene;
 		
 			Animator anim;

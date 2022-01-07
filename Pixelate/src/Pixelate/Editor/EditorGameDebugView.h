@@ -46,7 +46,6 @@ namespace Pixelate
 			glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 			glm::vec2 m_ViewportPanelSize = { 0.0f, 0.0f };
 			glm::vec2 m_ViewportPanelPosition = { 0.0f, 0.0f };
-			glm::vec2 m_ViewportPropSize = { 0.0f, 0.0f };
 
 			int m_Gizmo = -1;
 

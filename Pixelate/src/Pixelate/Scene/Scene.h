@@ -22,8 +22,7 @@ namespace Pixelate {
 			void Init(); // Does nothing at the moment. This would init a scene from a file saved externally.
 
 			// always update regardless of editor state
-			void OnUpdate(float ts, const glm::mat4& cameraViewProj, const Ref<SceneRenderer>& renderer, Entity selectedEntity, bool hasEntityBeenSelected);
-			void OnGameViewportRender(const Ref<SceneRenderer>& renderer);
+			void OnUpdate(const Ref<SceneRenderer>& renderer, const Ref<EditorCamera>& camera = nullptr);
 
 			// Runtime functions
 			void OnRuntimeStart();

@@ -39,21 +39,10 @@ namespace Pixelate {
 		m_GameSceneRenderer = CreateRef<SceneRenderer>();
 		m_EditorSceneRenderer = CreateRef<SceneRenderer>();
 
-		particleProps.VelocityVariation1 = { -2.0f, -2.0f };
-		particleProps.VelocityVariation2 = { 2.0f, 2.0f };
-		particleProps.LifeTime = 1.0f;
-		particleProps.SizeBegin = 1.5f;
-		particleProps.SizeVariation = 0.0f;
-		particleProps.SizeEnd = 0.0f;
-		particleProps.ColorBegin = { 1.0f, 1.0f, 1.0f, 1.0f };
-		particleProps.ColorEnd = { 0.0f, 0.0f, 1.0f , 0.0f };
+		m_EditorSceneRenderer->SetOptions(SceneRendererOptions::RenderAll);
 
 
-		//m_EditorScene = SceneManager::LoadScene("assets/scenes/PhysicsTests.PXScene");
-		//m_EditorScene = SceneManager::LoadScene("assets/scenes/test123.PXScene");
-		//m_EditorScene = SceneManager::LoadScene("assets/scenes/DefaultScene.PXScene");
 		m_EditorScene = SceneManager::GenerateDefaultScene();
-
 
 		auto& PanelManager = EditorPanelManager::Get();
 		PanelManager.RegisterPanel("SceneHierarcy", m_SceneHierarcyPanel = CreateRef<EditorSceneHierarchyPanel>(m_EditorScene));
@@ -73,94 +62,12 @@ namespace Pixelate {
 		m_AudioMixerPanel->SetOpenPanel(false);
 		m_PhysicsPanel->SetOpenPanel(false);
 
-		//m_EditorPanelManager->RegisterPanel(m_AnimatorPanel = CreateRef<EditorAnimationPanel>());
 
-		// testing asset handles direcly
-
+		// testing asset handles directly
 		assetHandleTestEntity = m_EditorScene->CreateEntity("Texture loaded via asset handle");
 		assetHandleTestEntity.AddComponent<SpriteRendererComponent>();
 		assetHandleTestEntity.GetComponent<SpriteRendererComponent>().Texture = AssetManager::GetAsset<Texture>((AssetHandle)18069192197029962527);
 		assetHandleTestEntity.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, {128, 128});
-
-
-
-		// testing animation //
-// 		animationTest = m_EditorScene->CreateEntity("Animation test entity");
-// 		animationComponentTest = m_EditorScene->CreateEntity("Animator component test entity");
-// 
-// 		animationTest.AddComponent<SpriteRendererComponent>();
-// 		animationTest.GetComponent<SpriteRendererComponent>().Texture = Texture::Create("assets/graphics/TestSpritesheet.png");
-// 		animationTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
-// 
-// 		animationComponentTest.AddComponent<AnimatorComponent>();
-// 
-// 		animationComponentTest.AddComponent<SpriteRendererComponent>();
-// 		animationComponentTest.GetComponent<SpriteRendererComponent>().Texture = animationTest.GetComponent<SpriteRendererComponent>().Texture;
-// 		animationComponentTest.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, { 128, 128 });
-// 		animationComponentTest.GetComponent<TransformComponent>().SetPosition({ 1, 0, 0 });
-// 
-// 
-// 		AnimationClip clip, clip2;
-// 		AnimationFrame frame, frame2, frame3;
-// 		AnimationFrame frame1, frame12, frame13;
-// 
-// 		frame.FrameRect = { {0, 0}, {16, 16} };
-// 		frame.FrameTiming = 0.0f;
-// 
-// 		clip.AddFrame(frame);
-// 
-// 		frame2.FrameRect = { {0, 0}, {16, 16} };
-// 		frame2.FrameTiming = 1.0f;
-// 
-// 		clip.AddFrame(frame2);
-// 
-// 		frame3.FrameRect = { {16, 0}, {16, 16} };
-// 		frame3.FrameTiming = 2.0f;
-// 
-// 
-// 		clip.AddFrame(frame3);
-// 
-// 
-// 		anim.AddClip(clip);
-// 
-// 
-// 
-// 		frame1.FrameRect = { {0, 0}, {16, 16} };
-// 		frame1.FrameTiming = 0.0f;
-// 
-// 		clip2.AddFrame(frame1);
-// 
-// 		frame12.FrameRect = { {0, 0}, {16, 16} };
-// 		frame12.FrameTiming = 1.0f;
-// 
-// 		clip2.AddFrame(frame12);
-// 
-// 		frame13.FrameRect = { {0, 16}, {16, 16} };
-// 		frame13.FrameTiming = 2.0f;
-// 
-// 
-// 		clip2.AddFrame(frame13);
-// 
-// 
-// 		anim.AddClip(clip2);
-// 
-// 
-// 		anim.AddTransition({ clip, clip2, []() {return GoTo2ndClip; } });
-// 		anim.AddTransition({ clip2, clip, []() {return GoTo1stClip; } });
-
-
-
-
-
-// 		FramebufferSpecs sceneSpecs;
-// 		sceneSpecs.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INT, FramebufferTextureFormat::Depth };
-// 		sceneSpecs.Width = 960;
-// 		sceneSpecs.Height = 540;
-// 
-// 
-// 
-// 		m_SceneViewportFramebuffer = Framebuffer::Create(sceneSpecs);
-
 
 
 		FileSystem::StartWatching(); // Should move this when projects are introduced.
@@ -181,22 +88,10 @@ namespace Pixelate {
 		auto& PanelManager = EditorPanelManager::Get();
 
 
-
-// 
-// 		//anim.Update(dt);
  		PanelManager.OnUpdate(dt);
 
- 		m_EditorScene->OnUpdate(dt, m_GameDebugViewPanel->GetEditorCamera()->GetViewProjectionMatrix(), m_EditorSceneRenderer, m_SceneHierarcyPanel->CurrentlySelectedEntity(),m_SceneHierarcyPanel->HasAnEntitySelected());
-
-		//Renderer2D::BeginScene(m_EditorCamera.get());
-		
-		//animationTest.GetComponent<SpriteRendererComponent>().Rect = anim.GetCurrentClip().GetCurrentFrameRect();
-		//Renderer2D::DrawSprite(animationTest.GetComponent<TransformComponent>(), animationTest.GetComponent<SpriteRendererComponent>());
-
-
-		//Renderer2D::EndScene();
-
-		m_EditorScene->OnGameViewportRender(m_GameSceneRenderer);
+ 		m_EditorScene->OnUpdate(m_EditorSceneRenderer, m_GameDebugViewPanel->GetEditorCamera());
+		m_EditorScene->OnUpdate(m_GameSceneRenderer);
 
 
 		if (m_SceneState == SceneState::Play) {
@@ -476,20 +371,6 @@ namespace Pixelate {
 	
 
 
-
-		ImGui::Begin("Animation test");
-		if (ImGui::Button("Play2ndClip")) {
-			GoTo2ndClip = true;
-			GoTo1stClip = false;
-		}
-		if (ImGui::Button("Play1stClip")) {
-			GoTo2ndClip = false;
-			GoTo1stClip = true;
-		}
-		ImGui::End();
-
-
-
 		ImGui::Begin("Application");
 		static float time = 0.0f;
 		static std::string ts = "Timestep: " + std::to_string(Application::GetApp().GetTimestep() * 1000.0f) + "(ms)";
@@ -576,44 +457,22 @@ namespace Pixelate {
 		}
 
 
-
 		if (ImGui::BeginPopupModal("Welcome", NULL, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize)) {
+			auto& appWindow = Application::GetApp().GetWindow();
+
+			ImVec2 windowSize = ImGui::GetWindowSize();
+			float x = appWindow.GetXPos() + (appWindow.GetWidth() / 2.0f) + windowSize.x / 2.0f;
+			float y = appWindow.GetYPos() + (appWindow.GetHeight() / 2.0f) + windowSize.y / 2.0f;
+			ImGui::SetWindowPos({x, y});
+
 			ImGui::Text("Hello! Thank you for downloading Pixelate!");
 			ImGui::Text("Pixelate is currently a WIP so features here may unfinished or broken.");
 			ImGui::Text("With that in mind please be aware that this program may crash!");
 			ImGui::Separator();
-			if (ImGui::Button("Ok", { 500, 50 })) { ImGui::CloseCurrentPopup(); }
+			if (ImGui::Button("Close", { 500, 50 })) { ImGui::CloseCurrentPopup(); }
 			ImGui::SetItemDefaultFocus();
 			ImGui::EndPopup();
 		}
-
-
-
-// for creating and loading projects
-
-// 		if (m_OpeningModal) {
-// 			ImGui::OpenPopup("Load Project");
-// 			m_OpeningModal = false;
-// 		}
-// 
-// 		ImGui::PushStyleVar(ImGuiStyleVar_WindowTitleAlign, {0.5f, 0.5f});
-// 		if (ImGui::BeginPopupModal("Load Project", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize)) {
-// 			auto& app = Application::GetApp();
-// 			
-// 			ImGui::SetWindowSize({ 300 * 16.0f / 9.0f, 300 });
-// 			ImVec2 windowSize = ImGui::GetWindowSize();
-// 
-// 			ImGui::SetWindowPos({ app.GetWindow().GetXPos() + Application::GetApp().GetWindow().GetWidth() / 2.0f - windowSize.x / 2.0f,
-// 				app.GetWindow().GetYPos() + Application::GetApp().GetWindow().GetHeight() / 2.0f  - windowSize.y / 2.0f });
-// 			
-// 
-// 			if (ImGui::Button("Close"))
-// 				ImGui::CloseCurrentPopup();
-// 
-// 			ImGui::EndPopup();
-// 		}
-// 		ImGui::PopStyleVar();
-
 
 
 #endif
