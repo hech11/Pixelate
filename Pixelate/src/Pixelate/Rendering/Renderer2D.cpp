@@ -104,7 +104,7 @@ namespace Pixelate {
 
 		SceneData->LineStripDrawData->IndexCount = 0;
 		SceneData->LineStripDrawData->Iterations = 0;
-		SceneData->LineStripDrawData->PtrData = SceneData->LineDrawData->PtrBase;
+		SceneData->LineStripDrawData->PtrData = SceneData->LineStripDrawData->PtrBase;
 
 		SceneData->VertexDrawData->IndexCount = 0;
 		SceneData->VertexDrawData->PtrData = SceneData->VertexDrawData->PtrBase;

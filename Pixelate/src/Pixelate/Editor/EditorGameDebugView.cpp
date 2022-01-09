@@ -118,9 +118,7 @@ namespace Pixelate
 
 					comp.FilePath = metadata.Filepath.string();
 
-					//comp.Source->GetMixerGroup()->SourcesAttached[(UUID)entity.GetHandle()] = comp;
 					Audio::AttachSourceToMixerGroup(comp.Source);
-					//Audio::DetachSourceFromMixerGroup(comp.Source);
 
 					break;
 				}
@@ -233,7 +231,7 @@ namespace Pixelate
 			my = m_ViewportPanelSize.y - my;
 			m_Renderer->GetGeometryPass()->FrameBufferTarget->Bind();
 			int px = m_Renderer->GetGeometryPass()->FrameBufferTarget->ReadPixel(1, (int)mx, (int)my);
-			PX_CORE_MSG("Entity handle: %d, (%f, %f, (w) %f (h)%f)\n", px, mx, my, m_ViewportPanelSize.x, m_ViewportPanelSize.y);
+			//PX_CORE_MSG("Entity handle: %d, (%f, %f, (w) %f (h)%f)\n", px, mx, my, m_ViewportPanelSize.x, m_ViewportPanelSize.y);
 			if((mx >= 0 && mx < m_ViewportPanelSize.x)&&(my >= 0 && my< m_ViewportPanelSize.y))
 			{
 				if (px != -1 && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver()) {

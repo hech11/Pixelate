@@ -119,6 +119,8 @@ namespace Pixelate {
 		CompileSpirvIntoGLSL();
 		CreateProgram();
 
+	
+
 	}
 
 	
@@ -128,6 +130,7 @@ namespace Pixelate {
 	}
 
 	void GLShader::Bind() const {
+
 		GLCall(glUseProgram(m_RendererID));
 	}
 	void GLShader::Unbind() const {
@@ -261,21 +264,33 @@ namespace Pixelate {
 	void GLShader::Reflect(uint32_t type, const std::vector<uint32_t>& shaderData)
 	{
 		spirv_cross::Compiler compiler(shaderData);
+
 		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
 		std::cout << "\n\n";
 		PX_CORE_MSG("Shader reflection: %s [%s]\n", m_Name.c_str(), FromShaderTypeToString(type).c_str());
 		PX_CORE_MSG("Uniform buffers: %d\n", resources.uniform_buffers.size());
-		PX_CORE_MSG("Sampler size: %d\n", resources.separate_images.size());
+		PX_CORE_MSG("Sampler size: %d\n", resources.sampled_images.size());
 
 		for (auto& resource : resources.uniform_buffers)
 		{
 			auto& id = compiler.get_type(resource.type_id);
 			uint32_t structSize = compiler.get_declared_struct_size(id);
+			uint32_t binding = compiler.get_decoration(resource.id, spv::Decoration::DecorationBinding);
 			uint32_t memberSize = id.member_types.size();
 			std::cout << "\n";
 			PX_CORE_MSG("Resource %s\n", resource.name.c_str());
-			PX_CORE_MSG("Struct size %d\n", structSize);
-			PX_CORE_MSG("Member size %d\n", memberSize);
+			PX_CORE_MSG("Struct size: %d\n", structSize);
+			PX_CORE_MSG("binding: %d\n", binding);
+			PX_CORE_MSG("Member size: %d\n", memberSize);
+
+			for (int i = 0; i < memberSize; i++)
+			{
+				std::string name = compiler.get_member_name(resource.base_type_id, i).c_str();
+
+				PX_CORE_MSG("Member name: %s\n", name.c_str());
+
+
+			}
 
 		}
 
