@@ -40,7 +40,6 @@
 
 #include "Pixelate/Rendering/API/Shader/ShaderGenerator.h"
 #include "Pixelate/Rendering/API/Shader/ShaderManager.h"
-#include "Pixelate/Rendering/API/Shader/ShaderUniforms.h"
 #include "Pixelate/Rendering/API/Texture.h"
 #include "Pixelate/Rendering/API/Framebuffer.h"
 

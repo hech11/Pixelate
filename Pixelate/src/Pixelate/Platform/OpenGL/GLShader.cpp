@@ -62,6 +62,38 @@ namespace Pixelate {
 	}
 
 
+	static ShaderBaseType SpirVShaderTypeToPXShaderType(const spirv_cross::SPIRType& type)
+	{
+		switch (type.basetype)
+		{
+			case spirv_cross::SPIRType::BaseType::Char: return ShaderBaseType::Int8;
+			case spirv_cross::SPIRType::BaseType::Short: return ShaderBaseType::Int16;
+			case spirv_cross::SPIRType::BaseType::Int: return ShaderBaseType::Int32;
+			case spirv_cross::SPIRType::BaseType::Float:
+			{
+				if(type.columns == 4)
+					return ShaderBaseType::Mat4;
+
+				return ShaderBaseType::Float;
+			}
+			case spirv_cross::SPIRType::BaseType::SampledImage: return ShaderBaseType::SampledImage;
+
+			default:
+				break;
+		}
+	}
+
+	static uint32_t PXShaderTypeToBytes(const ShaderBaseType& type)
+	{
+		switch (type)
+		{
+			case ShaderBaseType::Bool: return 1;
+			case ShaderBaseType::Float: return 4;
+			case ShaderBaseType::Int16: return 2;
+			case ShaderBaseType::Int32: return 4;
+			case ShaderBaseType::Mat4: return 4*4*4;
+		}
+	}
 
 
 
@@ -264,35 +296,48 @@ namespace Pixelate {
 	void GLShader::Reflect(uint32_t type, const std::vector<uint32_t>& shaderData)
 	{
 		spirv_cross::Compiler compiler(shaderData);
-
 		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
-		std::cout << "\n\n";
-		PX_CORE_MSG("Shader reflection: %s [%s]\n", m_Name.c_str(), FromShaderTypeToString(type).c_str());
-		PX_CORE_MSG("Uniform buffers: %d\n", resources.uniform_buffers.size());
-		PX_CORE_MSG("Sampler size: %d\n", resources.sampled_images.size());
+
+		ShaderResource shaderResource;
+		shaderResource.Name = std::string(m_Name) + FromShaderTypeToString(type).c_str();
+		shaderResource.UniformBufferSize = resources.uniform_buffers.size();
+		shaderResource.SampledBufferSize = resources.sampled_images.size();
+
+
 
 		for (auto& resource : resources.uniform_buffers)
 		{
+
+			ShaderUniform uniform;
 			auto& id = compiler.get_type(resource.type_id);
-			uint32_t structSize = compiler.get_declared_struct_size(id);
-			uint32_t binding = compiler.get_decoration(resource.id, spv::Decoration::DecorationBinding);
-			uint32_t memberSize = id.member_types.size();
-			std::cout << "\n";
-			PX_CORE_MSG("Resource %s\n", resource.name.c_str());
-			PX_CORE_MSG("Struct size: %d\n", structSize);
-			PX_CORE_MSG("binding: %d\n", binding);
-			PX_CORE_MSG("Member size: %d\n", memberSize);
+			uniform.StructSize = compiler.get_declared_struct_size(id);
+			uniform.Binding = compiler.get_decoration(resource.id, spv::Decoration::DecorationBinding);
+			uniform.MemberSize = id.member_types.size();
 
-			for (int i = 0; i < memberSize; i++)
+
+			uint32_t offset = 0;
+			for (int i = 0; i < uniform.MemberSize; i++)
 			{
-				std::string name = compiler.get_member_name(resource.base_type_id, i).c_str();
+				
+				ShaderMember member;
+				member.Name = compiler.get_member_name(resource.base_type_id, i).c_str();
+				member.Type = SpirVShaderTypeToPXShaderType(compiler.get_type(id.member_types[i]));
 
-				PX_CORE_MSG("Member name: %s\n", name.c_str());
 
+				member.Offset = offset;
+
+				member.Size = PXShaderTypeToBytes(member.Type);
+				offset += member.Size;
+
+				uniform.Members.push_back(member);
 
 			}
 
+			shaderResource.Uniforms.push_back(uniform);
+
 		}
+
+		m_Resources.push_back(shaderResource);
 
 	}
 

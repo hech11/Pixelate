@@ -81,6 +81,7 @@ namespace Pixelate {
 			std::unordered_map<std::string, int> m_CachedUniformLocations;
 
 
+
 	};
 
 }

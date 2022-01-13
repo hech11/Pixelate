@@ -10,7 +10,19 @@
 namespace Pixelate
 {
 
-
+	static std::string ShaderBaseTypeToStr(ShaderBaseType& type)
+	{
+		switch (type)
+		{
+			case ShaderBaseType::Bool:			return "bool";
+			case ShaderBaseType::Float:			return "float";
+			case ShaderBaseType::Int8:			return "int8";
+			case ShaderBaseType::Int16:			return "int16";
+			case ShaderBaseType::Int32:			return "int32";
+			case ShaderBaseType::Mat4:			return "mat4";
+			case ShaderBaseType::SampledImage:	return "sampled image";
+		}
+	}
 	void EditorRendererPanel::OnImguiRender()
 	{
 
@@ -58,37 +70,49 @@ namespace Pixelate
 		if (isPropsOpen)
 		{
 
-
-			ImGui::Text("DefaultTexturedShader");
-			ImGui::SameLine();
-			ImGui::PushID(0);
-			if (ImGui::SmallButton("Reload"))
-			{
-				Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"]->Reload();
-
-			}
-			ImGui::PopID();
-
-			ImGui::Text("GridShader");
-			ImGui::SameLine();
-
-			ImGui::PushID(1);
-			if (ImGui::SmallButton("Reload"))
-			{
-				Renderer2D::GetShaderLibrary().Get()["GridShader"]->Reload();
-			}
-			ImGui::PopID();
-
-			int i = 2;
-			for (auto& library : Renderer2D::GetShaderLibrary().Get())
+			int i = 0;
+			for (auto&& [name, shader] : Renderer2D::GetShaderLibrary().Get())
 			{
 				ImGui::PushID(i);
-				ImGui::Text(library.first.c_str());
+				bool openShaderNode = ImGui::TreeNode(name.c_str());
+				
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Reload"))
 				{
-					library.second->Reload();
+					shader->Reload();
 				}
+
+				if (openShaderNode)
+				{
+					for (auto& resource : shader->GetResources())
+					{
+
+						ImGui::Text("%s", resource.Name.c_str());
+						ImGui::Text("Sampled buffer size: %d", resource.UniformBufferSize);
+						ImGui::Text("Sampled image size: %d", resource.SampledBufferSize);
+						ImGui::NewLine();
+						for (auto& ubo : resource.Uniforms)
+						{
+							ImGui::Text("Binding: %d", ubo.Binding);
+							ImGui::Text("Struct size: %d", ubo.StructSize);
+							ImGui::Text("Member size: %d", ubo.MemberSize);
+							ImGui::NewLine();
+
+							for (auto& member : ubo.Members)
+							{
+								ImGui::Text("%s", member.Name.c_str());
+								ImGui::Text("Type %s", ShaderBaseTypeToStr(member.Type).c_str());
+								ImGui::Text("Offset %d", member.Offset);
+							}
+							ImGui::NewLine();
+
+						}
+						ImGui::NewLine();
+
+					}
+					ImGui::TreePop();
+				}
+
 				ImGui::PopID();
 				i++;
 

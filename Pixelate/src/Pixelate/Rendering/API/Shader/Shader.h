@@ -16,6 +16,45 @@
 namespace Pixelate {
 
 
+	enum class ShaderBaseType
+	{
+		None = -1,
+		Int8,
+		Int16,
+		Int32,
+		UInt32,
+		Float,
+		Bool,
+		Mat4,
+		SampledImage
+
+	};
+	struct ShaderMember
+	{
+		std::string Name;
+		uint32_t Size;
+		uint32_t Offset;
+		ShaderBaseType Type;
+	};
+
+	struct ShaderUniform
+	{
+		uint32_t StructSize;
+		uint32_t Binding;
+		uint32_t MemberSize;
+
+		std::vector<ShaderMember> Members;
+	};
+	struct ShaderResource
+	{
+		std::string Name;
+
+		uint32_t UniformBufferSize;
+		uint32_t SampledBufferSize;
+
+		std::vector<ShaderUniform> Uniforms;
+	};
+
 
 	class PX_API Shader : public Asset {
 
@@ -54,6 +93,8 @@ namespace Pixelate {
 			virtual int GetUniformLocation(const std::string& name) = 0;
 
 
+			virtual std::vector<ShaderResource>& GetResources() { return m_Resources; }
+
 
 			virtual void Reload() = 0;
 			SETUP_ASSET_PROPERTIES(AssetType::Shader);
@@ -62,6 +103,8 @@ namespace Pixelate {
 		public :
 			static Ref<Shader> Create(const std::string& filepath);
 
+		protected :
+			std::vector<ShaderResource> m_Resources;
 
 	};
 	

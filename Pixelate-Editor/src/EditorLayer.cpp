@@ -28,6 +28,7 @@
 
 #include <Pixelate/Asset/AssetManager.h>
 #include "Pixelate/Rendering/SceneRenderer.h"
+#include "Pixelate/Rendering/Material.h"
 
 namespace Pixelate {
 
@@ -76,6 +77,7 @@ namespace Pixelate {
 
 		PanelManager.SetSceneContext(m_EditorScene);
 		Application::GetApp().GetWindow().SetVsync(true);
+
 
 	}
 
