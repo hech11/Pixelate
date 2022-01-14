@@ -29,6 +29,7 @@
 #include <Pixelate/Asset/AssetManager.h>
 #include "Pixelate/Rendering/SceneRenderer.h"
 #include "Pixelate/Rendering/Material.h"
+#include "Pixelate/Rendering/MaterialManager.h"
 
 namespace Pixelate {
 
@@ -79,7 +80,7 @@ namespace Pixelate {
 		Application::GetApp().GetWindow().SetVsync(true);
 
 
-		Ref<Shader> TestShader = Shader::Create("assets/Shaders/Color.pxShader");
+		Ref<Shader> TestShader = AssetManager::GetAsset<Shader>("Shaders/Color.pxShader");
 		TestShader->Bind();
 
 		Ref<Material> TestMaterial = CreateRef<Material>(TestShader, "TestMaterial");
@@ -88,6 +89,8 @@ namespace Pixelate {
 		TestMaterial->Set<int>("TempFloat", 123);
 		int temp = TestMaterial->Get<int>("TempFloat");
 
+		MaterialSerialization::Serialize("assets/materialTest.pxMaterial", TestMaterial);
+		Ref<Material> loadedMaterial = MaterialSerialization::Deserialize("assets/materialTest.pxMaterial");
 
 	}
 

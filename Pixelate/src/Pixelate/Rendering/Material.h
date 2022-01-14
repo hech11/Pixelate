@@ -54,13 +54,20 @@ namespace Pixelate
 	class Material : public Asset
 	{
 		public :
-			Material(const Ref<Shader>& shader, const std::string& name);
+			Material(const Ref<Shader>& shader, const std::string& name, bool initBufferTable = true);
 
 			const std::string& GetName() const { return m_Name; }
+			const Ref<Shader>& GetShader() const { return m_Shader; }
 
 			void Bind();
 			void UnBind();
 
+
+			void AddUniformBufferEntry(const ShaderUniform& table);
+
+			const std::vector<MaterialUniformTable>& GetUniformTable() const { return m_UniformTable; }
+
+			void UpdateMaterial();
 
 			template<typename T>
 			void Set(const std::string& name, T value, int binding = 0)
@@ -81,8 +88,8 @@ namespace Pixelate
 				return *(T*)((char*)table.Data + member.Offset);
 			}
 
+			
 
-			void UpdateMaterial();
 
 		private :
 			std::pair<Ref<UniformBuffer>, ShaderMember> FindUniformStorage(const std::string& name, int binding = 0);

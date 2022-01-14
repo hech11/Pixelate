@@ -6,25 +6,28 @@
 namespace Pixelate
 {
 
-	Material::Material(const Ref<Shader>& shader, const std::string& name)
+	Material::Material(const Ref<Shader>& shader, const std::string& name, bool initBufferTable)
 		: m_Shader(shader), m_Name(name)
 	{
-		for (auto& resource : m_Shader->GetResources())
+		if (initBufferTable)
 		{
-			for (auto& uniformBuffer : resource.Uniforms)
+			for (auto& resource : m_Shader->GetResources())
 			{
-				MaterialUniformTable table;
+				for (auto& uniformBuffer : resource.Uniforms)
+				{
+					MaterialUniformTable table;
 
-				table.UBO = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
-				table.Size = uniformBuffer.StructSize;
-				table.ReflectedUniformBuffer = uniformBuffer;
-				table.InvalidateData();
+					table.UBO = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
+					table.Size = uniformBuffer.StructSize;
+					table.ReflectedUniformBuffer = uniformBuffer;
+					table.InvalidateData();
 
-				m_UniformTable.push_back(table);
+					m_UniformTable.push_back(table);
 
+
+				}
 
 			}
-
 		}
 	}
 
@@ -49,6 +52,18 @@ namespace Pixelate
 		m_Shader->Unbind();
 	}
 
+
+	void Material::AddUniformBufferEntry(const ShaderUniform& table)
+	{
+
+		MaterialUniformTable entry;
+		entry.UBO = UniformBuffer::Create(table.StructSize, table.Binding);
+		entry.Size = table.StructSize;
+		entry.ReflectedUniformBuffer = table;
+		entry.InvalidateData();
+
+		m_UniformTable.push_back(entry);
+	}
 
 	void Material::UpdateMaterial()
 	{
