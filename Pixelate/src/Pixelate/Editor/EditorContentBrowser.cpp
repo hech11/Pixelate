@@ -337,6 +337,9 @@ namespace Pixelate {
 				if (ImGui::MenuItem("Physics Material2D")) {
 					CreateItem(AssetType::PhysicsMaterial2D);
 				}
+				if (ImGui::MenuItem("Material")) {
+					CreateItem(AssetType::Material);
+				}
 
 				ImGui::EndMenu();
 			}
@@ -589,6 +592,9 @@ namespace Pixelate {
 				break;
 			case Pixelate::AssetType::PhysicsMaterial2D:
 				Embedded::GenerateToDisk(AssetType::PhysicsMaterial2D, m_CurrentDirectory);
+				break;
+			case Pixelate::AssetType::Material:
+				Embedded::GenerateToDisk(AssetType::Material, m_CurrentDirectory);
 				break;
 			default:
 				break;

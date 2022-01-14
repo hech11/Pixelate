@@ -23,7 +23,9 @@
 #include "Pixelate/Asset/AssetManager.h"
 #include "Pixelate/Asset/Asset.h"
 #include "Pixelate/Physics/Physics.h"
-#include "../Rendering/API/Shader/ShaderLibrary.h"
+
+#include "Pixelate/Rendering/API/Shader/ShaderLibrary.h"
+#include "Pixelate/Rendering/MaterialManager.h"
 
 namespace Pixelate {
 
@@ -356,7 +358,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::NextColumn();
 
 				
-				ImGui::Text("Shader path");
+				ImGui::Text("Material path");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
 				ImGui::PushID(2);
@@ -367,9 +369,10 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					if (result == NFD_OKAY) {
 						PX_CORE_TRACE("Success!\n");
 
-// 						auto path = std::filesystem::relative(outPath, "assets/");
-// 						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(),  path.string());
-// 						spriteComp.Shader = shader;
+ 						auto path = std::filesystem::relative(outPath, "assets/");
+
+ 						Ref<Material> mat = MaterialManager::Load(path.string());
+ 						spriteComp.Material = mat;
 
 						free(outPath);
 					}
@@ -383,15 +386,26 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				}
 				ImGui::SameLine();
 				
-				ImGui::InputText("##shaderFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
+
+				if (spriteComp.Material)
+				{
+
+					//TODO: Handle external resources. We only support assets local to the project!
+					const auto& path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle));
+					ImGui::InputText("##MaterialFilepath", (char*)path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+				}
+				else
+				{
+					ImGui::InputText("##MaterialFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
+				}
 
 
 				BeginDragDrop([&](AssetMetadata& metadata) {
-					if (metadata.Type == AssetType::Shader) {
+					if (metadata.Type == AssetType::Material) {
 						std::filesystem::path path = metadata.Filepath;
 
-// 						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(), path.string());
-// 						spriteComp.Shader = shader;
+						Ref<Material> mat = MaterialManager::Load(path.string());
+						spriteComp.Material = mat;
 					}
 				});
 				ImGui::PopID();

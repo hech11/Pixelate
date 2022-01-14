@@ -71,4 +71,11 @@ namespace Pixelate {
 			void Reload(Ref<Asset>& asset) override;
 	};
 
+	class MaterialImporter : public AssetTypeImporter
+	{
+		public:
+			MaterialImporter() = default;
+			bool TryLoadData(const AssetMetadata & metadata, Ref<Asset> & asset) override;
+			void Reload(Ref<Asset> & asset) override;
+	};
 }

@@ -11,13 +11,13 @@ namespace Pixelate
 	class MaterialManager
 	{
 		public :
-			Ref<Material> Load(const std::string& filepath);
-			Ref<Material> LoadExternalResource(const std::string& filepath);
+			static Ref<Material> Load(const std::string& filepath);
+			static Ref<Material> LoadExternalResource(const std::string& filepath);
 
-			std::vector<Ref<Material>> & Get() { return m_Materials; }
+			static std::vector<Ref<Material>> & Get() { return s_Materials; }
 
 		private:
-			std::vector<Ref<Material>> m_Materials;
+			static std::vector<Ref<Material>> s_Materials;
 	};
 
 	class MaterialSerialization

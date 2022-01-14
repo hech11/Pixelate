@@ -20,7 +20,7 @@ namespace Pixelate { namespace Utils {
 		{".pxar",		AssetType::AssetRegistry },
 		{".pxam",		AssetType::AudioMixer },
 		{".pxPhysicsMaterial2D", AssetType::PhysicsMaterial2D },
-		{".pxMaterial", AssetType::PhysicsMaterial2D }
+		{".pxMaterial", AssetType::Material }
 	};
 
 	inline static std::unordered_map<AssetType, std::string> s_AssetTypeStringTable = {

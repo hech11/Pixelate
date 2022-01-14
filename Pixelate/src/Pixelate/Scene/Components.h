@@ -4,6 +4,7 @@
 #include "Pixelate/Rendering/API/Texture.h"
 #include "Pixelate/Rendering/API/Shader/Shader.h"
 #include "Pixelate/Rendering/Material.h"
+#include "Pixelate/Rendering/MaterialManager.h"
 
 #include "Pixelate/Rendering/Renderer2D.h"
 #include "glm/glm.hpp"
@@ -100,7 +101,7 @@ namespace Pixelate {
 		RenderLayer SortingLayer;
 		int RenderOrder;
 		Ref<Pixelate::Texture> Texture;
-		Ref<Pixelate::Material> Material = nullptr;
+		Ref<Pixelate::Material> Material = MaterialManager::LoadExternalResource("resources/materials/DefaultMaterial.pxMaterial");
 
 
 		SpriteRendererComponent() = default;

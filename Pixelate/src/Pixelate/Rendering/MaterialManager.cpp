@@ -8,21 +8,35 @@
 
 namespace Pixelate
 {
+	std::vector<Pixelate::Ref<Pixelate::Material>> MaterialManager::s_Materials;
+
 
 
 	/////// MaterialManager ///////
 	Ref<Material> MaterialManager::Load(const std::string& filepath)
 	{
 		Ref<Material> result = AssetManager::GetAsset<Material>(filepath);
-		m_Materials.push_back(result);
+		for (int i = 0; i < s_Materials.size(); i++)
+		{
+			if (s_Materials[i] == result)
+				return s_Materials[i];
+		}
 
+		s_Materials.push_back(result);
 		return result;
 	}
 
 	Ref<Material> MaterialManager::LoadExternalResource(const std::string& filepath)
 	{
 		Ref<Material> result = MaterialSerialization::Deserialize(filepath);
-		m_Materials.push_back(result);
+
+		for (int i = 0; i < s_Materials.size(); i++)
+		{
+			if (s_Materials[i] == result)
+				return s_Materials[i];
+		}
+
+		s_Materials.push_back(result);
 
 		return result;
 	}

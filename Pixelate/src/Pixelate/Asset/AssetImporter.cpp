@@ -9,6 +9,9 @@
 #include "Pixelate/Physics/Physics.h"
 #include "Pixelate/Rendering/API/Shader/Shader.h"
 
+#include "Pixelate/Rendering/Material.h"
+#include "Pixelate/Rendering/MaterialManager.h"
+
 
 
 namespace Pixelate {
@@ -25,6 +28,7 @@ namespace Pixelate {
 			{AssetType::Audio, CreateRef<AudioImporter>() },
 			{AssetType::PhysicsMaterial2D, CreateRef<PhysicsMaterial2DImporter>() },
 			{AssetType::Shader, CreateRef<ShaderImporter>() },
+			{AssetType::Material, CreateRef<MaterialImporter>() },
 
 		};
 	}
@@ -134,6 +138,22 @@ namespace Pixelate {
 		Ref<Shader> shader = std::dynamic_pointer_cast<Shader>(asset);
 		shader->Reload();
 
+	}
+
+	////////////// --------- Material --------- ////////////// 
+
+
+	bool MaterialImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)
+	{
+		asset = MaterialSerialization::Deserialize(AssetManager::GetFilePathString(metadata));
+		asset->Handle = metadata.Handle;
+		return true;
+	}
+
+	void MaterialImporter::Reload(Ref<Asset>& asset)
+	{
+		//Ref<Material> mat = std::dynamic_pointer_cast<Material>(asset);
+		//mat->Reload();
 	}
 
 }

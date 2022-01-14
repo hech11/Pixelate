@@ -2,6 +2,7 @@
 #include "SceneRenderer.h"
 
 #include "Pixelate/Rendering/TextureManager.h"
+#include "MaterialManager.h"
 
 
 namespace Pixelate
@@ -188,8 +189,8 @@ namespace Pixelate
 		auto& renderPassPool = Renderer2D::GetRenderPassPool();
 		auto& shaderLibrary = Renderer2D::GetShaderLibrary();
 
+		DefaultMaterial = MaterialManager::LoadExternalResource("resources/materials/DefaultMaterial.pxMaterial");
 
-		DefaultMaterial = CreateRef<Material>(shaderLibrary.Get()["DefaultTexturedShader"], "DefaultMaterial");
 
 		s_GeoDrawList[DefaultMaterial] = CreateRef<DrawData>();
 		auto& drawData = s_GeoDrawList[DefaultMaterial];
@@ -221,9 +222,9 @@ namespace Pixelate
 		for (auto& [material, command] : s_GeoDrawList)
  		{
 			
-			DefaultMaterial->Bind();
-			DefaultMaterial->Set("u_ViewProjection", s_CameraBufferData);
-			DefaultMaterial->UpdateMaterial();
+			material->Bind();
+			material->Set("u_ViewProjection", s_CameraBufferData);
+			material->UpdateMaterial();
 
 
  			uint32_t size = (uint8_t*)command->PtrData - (uint8_t*)command->PtrBase;
