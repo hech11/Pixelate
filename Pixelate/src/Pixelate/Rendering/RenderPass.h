@@ -11,7 +11,7 @@ namespace Pixelate
 	struct RenderPass
 	{
 		Ref<Pixelate::Framebuffer> FrameBufferTarget;
-		Ref<Pixelate::Shader> Shader;
+		Ref<Pixelate::Material> Material;
 		std::string DebugName;
 	};
 

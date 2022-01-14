@@ -367,9 +367,9 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					if (result == NFD_OKAY) {
 						PX_CORE_TRACE("Success!\n");
 
-						auto path = std::filesystem::relative(outPath, "assets/");
-						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(),  path.string());
-						spriteComp.Shader = shader;
+// 						auto path = std::filesystem::relative(outPath, "assets/");
+// 						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(),  path.string());
+// 						spriteComp.Shader = shader;
 
 						free(outPath);
 					}
@@ -382,19 +382,16 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				}
 				ImGui::SameLine();
-
-				if (spriteComp.Shader)
-					ImGui::InputText("##shaderFilepath", (char*)AssetManager::GetFilePathString(AssetManager::GetMetadata(spriteComp.Shader->Handle)).c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-				else
-					ImGui::InputText("##shaderFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
+				
+				ImGui::InputText("##shaderFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
 
 
 				BeginDragDrop([&](AssetMetadata& metadata) {
 					if (metadata.Type == AssetType::Shader) {
 						std::filesystem::path path = metadata.Filepath;
 
-						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(), path.string());
-						spriteComp.Shader = shader;
+// 						Ref<Shader> shader = Renderer2D::GetShaderLibrary().Load(path.stem().string(), path.string());
+// 						spriteComp.Shader = shader;
 					}
 				});
 				ImGui::PopID();

@@ -12,6 +12,7 @@ layout(location = 4) in int aEntityID;
 layout(binding = 0) uniform Camera
 {
 	mat4 u_ViewProjection;
+	float TempFloat;
 };
 
 struct VertexOutput

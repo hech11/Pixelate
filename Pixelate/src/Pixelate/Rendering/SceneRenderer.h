@@ -4,6 +4,7 @@
 #include "Pixelate/Rendering/Renderer2D.h"
 #include "Pixelate/Scene/Scene.h"
 #include "Pixelate/Scene/Components.h"
+#include "Pixelate/Rendering/Material.h"
 
 #include "RenderPass.h"
 
@@ -54,7 +55,7 @@ namespace Pixelate
 				return m_RenderOptions;
 			}
 
-
+			Ref<Material>& GetDefaultMaterial() { return DefaultMaterial; }
 		private :
 
 			void CreateGeoPass();
@@ -65,6 +66,9 @@ namespace Pixelate
 			DrawList s_GeoDrawList;
 			Ref<RenderPass> s_GeoRenderPass;
 			Ref<DrawData> GridDrawData;
+
+			Ref<Material> GridMaterial;
+			Ref<Material> DefaultMaterial;
 
 			SceneRendererOptions m_RenderOptions = SceneRendererOptions::RenderCompositeOnly;
 

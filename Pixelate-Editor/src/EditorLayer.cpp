@@ -79,6 +79,16 @@ namespace Pixelate {
 		Application::GetApp().GetWindow().SetVsync(true);
 
 
+		Ref<Shader> TestShader = Shader::Create("assets/Shaders/Color.pxShader");
+		TestShader->Bind();
+
+		Ref<Material> TestMaterial = CreateRef<Material>(TestShader, "TestMaterial");
+		TestMaterial->Bind();
+
+		TestMaterial->Set<int>("TempFloat", 123);
+		int temp = TestMaterial->Get<int>("TempFloat");
+
+
 	}
 
 

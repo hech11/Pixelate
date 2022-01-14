@@ -11,6 +11,8 @@
 #include "Pixelate/Rendering/RendererAPI.h"
 #include "Pixelate/Rendering/RenderCommand.h"
 
+#include "Pixelate/Rendering/Material.h"
+
 
 // Renderer2D interface.
 // The 'Create' method will decide depending on the API choice. OpenGL, DirectX 11 or 12, Vulkan etc.
@@ -162,7 +164,7 @@ namespace Pixelate {
 
 
 
-	using DrawList = std::unordered_map<Ref<Shader>, Ref<DrawData>>;
+	using DrawList = std::unordered_map<Ref<Material>, Ref<DrawData>>;
 
 
 	class PX_API Renderer2D  {
@@ -180,7 +182,7 @@ namespace Pixelate {
 			static void DrawVerticies(glm::vec4* vertices, int vertexCount, const glm::vec4& color);
 
 			
-			static void DrawSpriteWithShader(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, const Ref<Shader>& shader, int entityID);
+			static void DrawSpriteWithShader(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, const Ref<Material>& material, int entityID);
 			static void DrawSpriteWithShader(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID);
 
 

@@ -6,21 +6,90 @@
 namespace Pixelate
 {
 
-
-	std::pair< Pixelate::Ref<Pixelate::UniformBuffer>, Pixelate::ShaderMember> Material::FindUniformStorage(const std::string& name, int binding)
+	Material::Material(const Ref<Shader>& shader, const std::string& name)
+		: m_Shader(shader), m_Name(name)
 	{
-
-		if (m_UBOs.size())
+		for (auto& resource : m_Shader->GetResources())
 		{
-
-			for (auto&& [member, buffer] : m_UBOs)
+			for (auto& uniformBuffer : resource.Uniforms)
 			{
-				if (member.Name == name)
-					return std::make_pair(buffer[binding], member);
+				MaterialUniformTable table;
+
+				table.UBO = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
+				table.Size = uniformBuffer.StructSize;
+				table.ReflectedUniformBuffer = uniformBuffer;
+				table.InvalidateData();
+
+				m_UniformTable.push_back(table);
+
+
+			}
+
+		}
+	}
+
+
+	void Material::Bind()
+	{
+		for (auto&& table : m_UniformTable)
+		{
+			table.UBO->Bind();
+		}
+
+		m_Shader->Bind();
+	}
+
+	void Material::UnBind()
+	{
+		for (auto&& table : m_UniformTable)
+		{
+			table.UBO->UnBind();
+		}
+
+		m_Shader->Unbind();
+	}
+
+
+	void Material::UpdateMaterial()
+	{
+		for (auto&& table : m_UniformTable)
+		{
+			table.UBO->SetData(table.Data, table.Size, 0);
+		}
+	}
+
+	std::pair<Ref<UniformBuffer>, ShaderMember> Material::FindUniformStorage(const std::string& name, int binding)
+	{
+		if (m_UniformTable.size())
+		{
+			for (auto& table : m_UniformTable)
+			{
+				if (table.ReflectedUniformBuffer.Binding == binding)
+				{
+					for (auto& member : table.ReflectedUniformBuffer.Members)
+					{
+						if (member.Name == name)
+						{
+							return std::make_pair(table.UBO, member);
+						}
+					}
+				}
 			}
 		}
 
 	}
 
+
+	Pixelate::MaterialUniformTable& Material::FindMaterialTable(int binding)
+	{
+		if (m_UniformTable.size())
+		{
+			for (auto& table : m_UniformTable)
+			{
+				if (table.ReflectedUniformBuffer.Binding == binding)
+					return table;
+			}
+		}
+	}
 
 }

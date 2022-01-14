@@ -234,10 +234,10 @@ namespace Pixelate {
 		renderPass->FrameBufferTarget->Unbind();
 	}
 
-	void Renderer2D::DrawSpriteWithShader(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, const Ref<Shader>& shader, int entityID)
+	void Renderer2D::DrawSpriteWithShader(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, const Ref<Material>& material, int entityID)
 	{
 		auto& renderPassPool = s_RPPool.GetPool()[SceneData->CurrentRenderPass];
-		auto& command = renderPassPool[shader];
+		auto& command = renderPassPool[material];
 
 		if (command->IndexCount >= command->MaxIndexSize)
 			command->PrepareNewBatch();
@@ -286,7 +286,7 @@ namespace Pixelate {
 
 	void Renderer2D::DrawSpriteWithShader(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID)
 	{
-		DrawSpriteWithShader(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor, sprite.Shader, entityID);
+		DrawSpriteWithShader(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor, sprite.Material, entityID);
 
 	}
 

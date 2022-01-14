@@ -23,6 +23,8 @@ namespace Pixelate
 		shaderLibrary.Load("GridShader", "Shaders/SceneGrid.pxShader");
 
 		shaderLibrary.LoadExternalResource("FinalSceneComposite", "resources/shaders/FinalSceneComposite.pxShader");
+
+
 		CameraUniformBuffer = UniformBuffer::Create(sizeof(CameraData), 0);
 		CreateGeoPass();
 
@@ -64,11 +66,10 @@ namespace Pixelate
 
 	void SceneRenderer::SubmitVertices(glm::vec4* vertices, int vertexCount, const glm::vec4& color)
 	{
-		auto& shader = Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"];
-		if (s_GeoDrawList.find(shader) == s_GeoDrawList.end())
+		if (s_GeoDrawList.find(DefaultMaterial) == s_GeoDrawList.end())
 		{
-			s_GeoDrawList[shader] = CreateRef<DrawData>();
-			s_GeoDrawList[shader]->Invalidate();
+			s_GeoDrawList[DefaultMaterial] = CreateRef<DrawData>();
+			s_GeoDrawList[DefaultMaterial]->Invalidate();
 		}
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
 		Renderer2D::DrawVerticies(vertices, vertexCount, color);
@@ -77,11 +78,10 @@ namespace Pixelate
 
 	void SceneRenderer::SubmitCircle(const glm::vec2& center, float radius, const glm::vec4& color)
 	{
-		auto& shader = Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"];
-		if (s_GeoDrawList.find(shader) == s_GeoDrawList.end())
+		if (s_GeoDrawList.find(DefaultMaterial) == s_GeoDrawList.end())
 		{
-			s_GeoDrawList[shader] = CreateRef<DrawData>();
-			s_GeoDrawList[shader]->Invalidate();
+			s_GeoDrawList[DefaultMaterial] = CreateRef<DrawData>();
+			s_GeoDrawList[DefaultMaterial]->Invalidate();
 		}
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
 		Renderer2D::DrawCircle(center, radius, color);
@@ -90,11 +90,10 @@ namespace Pixelate
 
 	void SceneRenderer::SubmitAABB(const AABB& aabb, const glm::vec4& color)
 	{
-		auto& shader = Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"];
-		if (s_GeoDrawList.find(shader) == s_GeoDrawList.end())
+		if (s_GeoDrawList.find(DefaultMaterial) == s_GeoDrawList.end())
 		{
-			s_GeoDrawList[shader] = CreateRef<DrawData>();
-			s_GeoDrawList[shader]->Invalidate();
+			s_GeoDrawList[DefaultMaterial] = CreateRef<DrawData>();
+			s_GeoDrawList[DefaultMaterial]->Invalidate();
 		}
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
 
@@ -104,11 +103,11 @@ namespace Pixelate
 	void SceneRenderer::SubmitSprite(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID)
 	{
 
-		auto& shader = sprite.Shader;
-		if (s_GeoDrawList.find(shader) == s_GeoDrawList.end())
+		auto& material = sprite.Material;
+		if (s_GeoDrawList.find(material) == s_GeoDrawList.end())
 		{
-			s_GeoDrawList[shader] = CreateRef<DrawData>();
-			s_GeoDrawList[shader]->Invalidate();
+			s_GeoDrawList[material ] = CreateRef<DrawData>();
+			s_GeoDrawList[material ]->Invalidate();
 		}
 
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
@@ -119,11 +118,10 @@ namespace Pixelate
 	void SceneRenderer::SubmitLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4 & color)
 	{
 
-		auto& shader = Renderer2D::GetShaderLibrary().Get()["DefaultTexturedShader"];
-		if (s_GeoDrawList.find(shader) == s_GeoDrawList.end())
+		if (s_GeoDrawList.find(DefaultMaterial) == s_GeoDrawList.end())
 		{
-			s_GeoDrawList[shader] = CreateRef<DrawData>();
-			s_GeoDrawList[shader]->Invalidate();
+			s_GeoDrawList[DefaultMaterial] = CreateRef<DrawData>();
+			s_GeoDrawList[DefaultMaterial]->Invalidate();
 		}
 
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
@@ -190,15 +188,16 @@ namespace Pixelate
 		auto& renderPassPool = Renderer2D::GetRenderPassPool();
 		auto& shaderLibrary = Renderer2D::GetShaderLibrary();
 
-		Ref<Shader> DefaultTexturedShader = shaderLibrary.Get()["DefaultTexturedShader"];
 
-		s_GeoDrawList[DefaultTexturedShader] = CreateRef<DrawData>();
-		 auto& drawData = s_GeoDrawList[DefaultTexturedShader];
+		DefaultMaterial = CreateRef<Material>(shaderLibrary.Get()["DefaultTexturedShader"], "DefaultMaterial");
+
+		s_GeoDrawList[DefaultMaterial] = CreateRef<DrawData>();
+		auto& drawData = s_GeoDrawList[DefaultMaterial];
 		drawData->Invalidate();
 
 		s_GeoRenderPass = CreateRef<RenderPass>();
 		s_GeoRenderPass->DebugName = "GeoPass";
-		s_GeoRenderPass->Shader = DefaultTexturedShader;
+		s_GeoRenderPass->Material = DefaultMaterial;
 
 		FramebufferSpecs specs;
 		specs.Attachments = { FramebufferTextureFormat::RGBA8,  FramebufferTextureFormat::RED_INT, FramebufferTextureFormat::Depth };
@@ -217,13 +216,15 @@ namespace Pixelate
 	{
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
 		
-		CameraUniformBuffer->Bind();
-		CameraUniformBuffer->SetData(&s_CameraBufferData, sizeof(CameraData), 0);
+		
 
-		for (auto& [shader, command] : s_GeoDrawList)
+		for (auto& [material, command] : s_GeoDrawList)
  		{
- 
- 			shader->Bind();
+			
+			DefaultMaterial->Bind();
+			DefaultMaterial->Set("u_ViewProjection", s_CameraBufferData);
+			DefaultMaterial->UpdateMaterial();
+
 
  			uint32_t size = (uint8_t*)command->PtrData - (uint8_t*)command->PtrBase;
  
