@@ -120,7 +120,7 @@ namespace Pixelate {
 	}
 
 
-	////////////// --------- PhysicsMaterial2DImporter --------- ////////////// 
+	////////////// --------- ShaderImporter --------- ////////////// 
 
 
 
@@ -140,7 +140,7 @@ namespace Pixelate {
 
 	}
 
-	////////////// --------- Material --------- ////////////// 
+	////////////// --------- MaterialImporter --------- ////////////// 
 
 
 	bool MaterialImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)

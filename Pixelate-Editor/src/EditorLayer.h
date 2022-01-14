@@ -26,6 +26,7 @@
 #include <Pixelate/Editor/EditorRendererPanel.h>
 #include <Pixelate/Editor/EditorGameViewPanel.h>
 #include <Pixelate/Editor/EditorGameDebugView.h>
+#include <Pixelate/Editor/EditorMaterialEditorPanel.h>
 #include <Pixelate/Editor/EditorPanel.h>
 
 #include <Pixelate/Scene/Scene.h>
@@ -91,6 +92,7 @@ namespace Pixelate {
 			Ref<EditorRendererPanel> m_RendererPanel;
 			Ref<EditorGameViewPanel> m_GameViewPanel;
 			Ref<EditorGameDebugView> m_GameDebugViewPanel;
+			Ref<EditorMaterialEditorPanel> m_MaterialEditorPanel;
 
 
 			Ref<Scene> m_EditorScene;

@@ -27,6 +27,7 @@
 #include "Pixelate/Rendering/API/Shader/ShaderLibrary.h"
 #include "Pixelate/Rendering/MaterialManager.h"
 
+#include "EditorPanel.h"
 namespace Pixelate {
 
 #define LOCK_MOUSE_IF_NEEDED() if (ImGui::IsItemActivated()) {\
@@ -157,7 +158,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				}
 
 				if (ImGui::IsItemClicked()) {
-					SetSelectedEntity(e);
+					EditorPanelManager::Get().SetSelectedEntity(e);
 				}
 
 				if (Input::IsKeyDown(KeyCode::Deletekey))
@@ -172,7 +173,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				if (deleteEntity) {
 					if (e == m_CurrentlySelectedEntity) {
-						SetSelectedEntity({});
+						EditorPanelManager::Get().SetSelectedEntity({});
 						m_SceneContext->DeleteEntity(e);
 						deleteEntity = false;
 					}

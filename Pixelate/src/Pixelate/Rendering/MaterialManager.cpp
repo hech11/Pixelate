@@ -112,13 +112,13 @@ namespace Pixelate
 			Ref<Shader> shader = AssetManager::GetAsset<Shader>(handle);
 			result = CreateRef<Material>(shader, name, false);
 
+
 			YAML::Node tableNode = n["Table"];
 			for (auto table : tableNode)
 			{
 				ShaderUniform entry;
 				entry.Binding = table["Binding"].as<int>();
 				entry.StructSize = table["StructSize"].as<int>();
-				
 				YAML::Node memberNode = table["Members"];
 
 				for (auto member : memberNode)

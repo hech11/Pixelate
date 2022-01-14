@@ -47,6 +47,7 @@ namespace Pixelate {
 
 
 			int GetUniformLocation(const std::string& name) override;
+			std::string& GetName() { return m_Name; }
 
 			void Reload() override;
 

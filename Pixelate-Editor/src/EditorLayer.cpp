@@ -57,6 +57,8 @@ namespace Pixelate {
 		PanelManager.RegisterPanel("RendererPanel", m_RendererPanel = CreateRef<EditorRendererPanel>());
 		PanelManager.RegisterPanel("GameView", m_GameViewPanel = CreateRef<EditorGameViewPanel>());
 		PanelManager.RegisterPanel("GameDebugView", m_GameDebugViewPanel = CreateRef<EditorGameDebugView>());
+		PanelManager.RegisterPanel("MaterialEditor", m_MaterialEditorPanel = CreateRef<EditorMaterialEditorPanel>());
+
 
 		m_GameViewPanel->SetSceneRenderer(m_GameSceneRenderer);
 		m_GameDebugViewPanel->SetSceneRenderer(m_EditorSceneRenderer);
@@ -79,18 +81,6 @@ namespace Pixelate {
 		PanelManager.SetSceneContext(m_EditorScene);
 		Application::GetApp().GetWindow().SetVsync(true);
 
-
-		Ref<Shader> TestShader = AssetManager::GetAsset<Shader>("Shaders/Color.pxShader");
-		TestShader->Bind();
-
-		Ref<Material> TestMaterial = CreateRef<Material>(TestShader, "TestMaterial");
-		TestMaterial->Bind();
-
-		TestMaterial->Set<int>("TempFloat", 123);
-		int temp = TestMaterial->Get<int>("TempFloat");
-
-		MaterialSerialization::Serialize("assets/materialTest.pxMaterial", TestMaterial);
-		Ref<Material> loadedMaterial = MaterialSerialization::Deserialize("assets/materialTest.pxMaterial");
 
 	}
 
@@ -364,6 +354,9 @@ namespace Pixelate {
 				}
 				if (ImGui::MenuItem("Scene View", "")) {
 					m_GameViewPanel->SetOpenPanel(true);
+				}
+				if (ImGui::MenuItem("Material Editor", "")) {
+					m_MaterialEditorPanel->SetOpenPanel(true);
 				}
 
 				ImGui::EndMenu();

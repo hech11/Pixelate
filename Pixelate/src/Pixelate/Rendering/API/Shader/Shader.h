@@ -94,6 +94,7 @@ namespace Pixelate {
 
 
 			virtual std::vector<ShaderResource>& GetResources() { return m_Resources; }
+			virtual std::string& GetName() = 0;
 
 
 			virtual void Reload() = 0;

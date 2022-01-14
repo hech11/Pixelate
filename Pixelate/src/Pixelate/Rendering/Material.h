@@ -56,6 +56,8 @@ namespace Pixelate
 		public :
 			Material(const Ref<Shader>& shader, const std::string& name, bool initBufferTable = true);
 
+			void Invalidate(const Ref<Shader>& shader, const std::string& name, bool initBufferTable = true);
+
 			const std::string& GetName() const { return m_Name; }
 			const Ref<Shader>& GetShader() const { return m_Shader; }
 
@@ -64,6 +66,8 @@ namespace Pixelate
 
 
 			void AddUniformBufferEntry(const ShaderUniform& table);
+			void SetShader(const Ref<Shader>& shader);
+
 
 			const std::vector<MaterialUniformTable>& GetUniformTable() const { return m_UniformTable; }
 

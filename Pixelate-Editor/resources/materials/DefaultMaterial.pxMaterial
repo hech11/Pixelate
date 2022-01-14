@@ -9,3 +9,7 @@ Material:
             Type: 6
             Size: 64
             Offset: 0
+          - Name: abc
+            Type: 4
+            Size: 4
+            Offset: 64

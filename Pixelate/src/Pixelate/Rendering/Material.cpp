@@ -9,6 +9,12 @@ namespace Pixelate
 	Material::Material(const Ref<Shader>& shader, const std::string& name, bool initBufferTable)
 		: m_Shader(shader), m_Name(name)
 	{
+		Invalidate(shader, name, initBufferTable);
+	}
+
+
+	void Material::Invalidate(const Ref<Shader>& shader, const std::string& name, bool initBufferTable /*= true*/)
+	{
 		if (initBufferTable)
 		{
 			for (auto& resource : m_Shader->GetResources())
@@ -30,7 +36,6 @@ namespace Pixelate
 			}
 		}
 	}
-
 
 	void Material::Bind()
 	{
@@ -63,6 +68,15 @@ namespace Pixelate
 		entry.InvalidateData();
 
 		m_UniformTable.push_back(entry);
+	}
+
+	void Material::SetShader(const Ref<Shader>& shader)
+	{
+		m_Shader = shader;
+		m_UniformTable.clear();
+
+		Invalidate(shader, m_Name);
+		
 	}
 
 	void Material::UpdateMaterial()
