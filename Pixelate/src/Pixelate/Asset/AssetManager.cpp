@@ -24,7 +24,7 @@ namespace Pixelate {
 	std::string AssetManager::m_FilterBuffer;
 	bool AssetManager::m_IsFiltering;
 
-	Pixelate::FileWatcherCallback AssetManager::s_Callback;
+	std::vector<Pixelate::FileWatcherCallback> AssetManager::s_Callbacks;
 
 	
 
@@ -57,8 +57,10 @@ namespace Pixelate {
 
 	void AssetManager::OnFileWatcherAction(FileWatcherCallbackData data)
 	{
-
-		s_Callback(data);
+		for (auto& callback : s_Callbacks)
+		{
+			callback(data);
+		}
 		Audio::StopAllSources();
 		if (!data.IsDirectory) {
 			switch (data.Action)

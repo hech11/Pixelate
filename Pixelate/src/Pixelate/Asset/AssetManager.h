@@ -21,7 +21,7 @@ namespace Pixelate {
 			static void Init();
 			static void Shutdown();
 
-			static void SetAssetChangeCallback(const FileWatcherCallback& callback) { s_Callback = callback; }
+			static void AddAssetCallback(const FileWatcherCallback& callback) { s_Callbacks.push_back(callback); }
 
 			static void OnFileWatcherAction(FileWatcherCallbackData data);
 
@@ -105,7 +105,7 @@ namespace Pixelate {
 			static bool m_IsFiltering;
 			
 
-			static FileWatcherCallback s_Callback;
+			static std::vector<FileWatcherCallback> s_Callbacks;
 
 	};
 

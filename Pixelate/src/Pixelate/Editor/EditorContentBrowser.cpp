@@ -24,7 +24,7 @@ namespace Pixelate {
 		m_FolderIcon = Texture::Create("resources/icons/content-browser/folder.png");
 		m_FileIcon = Texture::Create("resources/icons/content-browser/file.png");
 
-		AssetManager::SetAssetChangeCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
+		AssetManager::AddAssetCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
 	}
 
 	void EditorContentBrowser::RenderDirectory(const std::filesystem::path& dir) {

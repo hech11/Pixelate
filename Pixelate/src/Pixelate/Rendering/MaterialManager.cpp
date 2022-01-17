@@ -136,32 +136,36 @@ namespace Pixelate
 
 
 			YAML::Node tableNode = n["Table"];
-			for (auto table : tableNode)
+			if (tableNode)
 			{
-				ShaderUniform entry;
-				entry.Binding = table["Binding"].as<int>();
-				entry.StructSize = table["StructSize"].as<int>();
-				YAML::Node memberNode = table["Members"];
-
-				result->AddUniformBufferEntry(entry);
-				auto& uniformTable = result->GetUniformTable()[entry.Binding];
-
-				for (auto member : memberNode)
+				for (auto table : tableNode)
 				{
-					ShaderMember e2;
-					
-					e2.Name = member["Name"].as<std::string>();
-					e2.Offset = member["Offset"].as<int>();
-					e2.Type = (ShaderBaseType)member["Type"].as<int>();
-					e2.Size = member["Size"].as<int>();
+					ShaderUniform entry;
+					if(!table["Binding"])
+						continue;
+					entry.Binding = table["Binding"].as<int>();
+					entry.StructSize = table["StructSize"].as<int>();
+					YAML::Node memberNode = table["Members"];
 
+					result->AddUniformBufferEntry(entry);
+					auto& uniformTable = result->GetUniformTable()[entry.Binding];
 
-					auto value = member["Value"];
-					if (value)
+					for (auto member : memberNode)
 					{
-						switch (e2.Type)
+						ShaderMember e2;
+
+						e2.Name = member["Name"].as<std::string>();
+						e2.Offset = member["Offset"].as<int>();
+						e2.Type = (ShaderBaseType)member["Type"].as<int>();
+						e2.Size = member["Size"].as<int>();
+
+
+						auto value = member["Value"];
+						if (value)
 						{
-							case ShaderBaseType::Float : 
+							switch (e2.Type)
+							{
+							case ShaderBaseType::Float:
 							{
 								float v = value.as<float>();
 								memcpy((char*)uniformTable.Data + e2.Offset, &v, e2.Size);
@@ -173,15 +177,17 @@ namespace Pixelate
 								memcpy((char*)uniformTable.Data + e2.Offset, &v, e2.Size);
 								break;
 							}
+							}
+
 						}
+						uniformTable.ReflectedUniformBuffer.Members.push_back(e2);
+
 
 					}
-					uniformTable.ReflectedUniformBuffer.Members.push_back(e2);
-					
 
 				}
-
 			}
+		
 
 
 		}

@@ -14,10 +14,7 @@ namespace Pixelate {
 		std::filesystem::create_directories(directory);
 	}
 
-	void FileSystem::DeleteDirectory(const std::string& directory)
-	{
-		std::filesystem::remove_all(directory);
-	}
+
 
 	void FileSystem::DeleteDirectory(const std::filesystem::path& directory)
 	{

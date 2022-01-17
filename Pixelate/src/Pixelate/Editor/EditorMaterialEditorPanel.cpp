@@ -29,7 +29,6 @@ namespace Pixelate
 			{
 				bool changedShader = false;
 				Ref<Material> material = m_CurrentlySelectedEntity.GetComponent<SpriteRendererComponent>().Material;
-				
 				std::vector<const char*> items;
 				items.push_back(material->GetShader()->GetName().c_str());
 				const char* current_item = items[0];
@@ -44,6 +43,7 @@ namespace Pixelate
 					items.push_back(name.c_str());
 				}
 
+				ImGui::TextDisabled(material->GetName().c_str());
 				if (ImGui::BeginCombo("Shader list", current_item))
 				{
 					for (auto& item : items) {
@@ -76,11 +76,13 @@ namespace Pixelate
 						for (auto& member : table.ReflectedUniformBuffer.Members)
 						{
 
-							ImGui::Text(member.Name.c_str());
 							switch (member.Type)
 							{
 							case ShaderBaseType::Int32:
 							{
+								ImGui::Columns(2);
+								ImGui::Text(member.Name.c_str());
+								ImGui::NextColumn();
 								int temp = material->Get<int>(member.Name, table.ReflectedUniformBuffer.Binding);
 								if (ImGui::DragInt(std::string(std::string("##valuemem") + member.Name).c_str(), &temp))
 								{
@@ -88,11 +90,17 @@ namespace Pixelate
 									MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
 
 								}
+								ImGui::Columns(1);
+
 								break;
 
 							}
 							case ShaderBaseType::Float:
 							{
+								ImGui::Columns(2);
+								ImGui::Text(member.Name.c_str());
+								ImGui::NextColumn();
+
 								float temp = material->Get<float>(member.Name, table.ReflectedUniformBuffer.Binding);
 								if (ImGui::DragFloat(std::string(std::string("##valuemem") + member.Name).c_str(), &temp))
 								{
@@ -100,6 +108,8 @@ namespace Pixelate
 									MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
 
 								}
+								ImGui::Columns(1);
+
 								break;
 							}
 							}

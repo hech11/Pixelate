@@ -82,7 +82,7 @@ namespace Pixelate {
 		Application::GetApp().GetWindow().SetVsync(true);
 
 
-		Renderer2D::GetShaderLibrary().Load("BlueShader", "Shaders/BlueShader.pxShader");
+		Renderer2D::GetShaderLibrary().Add("BlueShader", "Shaders/BlueShader.pxShader");
 
 	}
 
@@ -112,6 +112,7 @@ namespace Pixelate {
 		}
 
 		AssetManager::ApplyAssetChanges();
+		Renderer2D::GetShaderLibrary().ApplyQueuedChanges();
 	}
 
 	bool EditorLayer::OnKeyPressedEvent(KeyPressedEvent& e) {

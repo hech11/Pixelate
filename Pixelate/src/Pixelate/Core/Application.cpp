@@ -60,6 +60,7 @@ namespace Pixelate {
 #endif
 
 
+		AssetManager::Init();
 
 
 		SortingLayerManager::Deserialize("resources/RenderingSettings.pxsettings");
@@ -67,7 +68,6 @@ namespace Pixelate {
 
 		ScriptingMaster::Init("assets/scripts/Sandbox-CSharpApp/Sandbox-CSharpApp.dll");
 
-		AssetManager::Init();
 		Renderer2D::Init();
 
 

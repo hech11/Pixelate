@@ -24,7 +24,6 @@ namespace Pixelate {
 		public :
 			static void CreateDir(const std::filesystem::path& directory);
 
-			static void DeleteDirectory(const std::string& directory);
 			static void DeleteDirectory(const std::filesystem::path& directory);
 
 			static void RenameDirectory(const std::string& oldDirectory, const std::string& newName);

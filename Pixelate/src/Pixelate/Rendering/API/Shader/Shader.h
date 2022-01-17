@@ -84,7 +84,8 @@ namespace Pixelate {
 			virtual void SetUniform3i(const std::string& uniformName, const glm::i8vec3& values) = 0;
 			virtual void SetUniform4i(const std::string& uniformName, const glm::i8vec4& values) = 0;
 
-
+			virtual void SetName(const std::string& name) = 0;
+			virtual void SetPath(const std::string& path) = 0;
 
 			virtual void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) = 0;
 

@@ -44,7 +44,8 @@ namespace Pixelate {
 
 			void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) override;
 
-
+			void SetName(const std::string& name) override { m_Name = name; }
+			void SetPath(const std::string& path) override { m_Filepath = path; }
 
 			int GetUniformLocation(const std::string& name) override;
 			std::string& GetName() { return m_Name; }
