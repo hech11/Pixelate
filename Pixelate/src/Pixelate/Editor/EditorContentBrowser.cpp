@@ -329,17 +329,32 @@ namespace Pixelate {
 		if (ImGui::BeginPopupContextItem("WindowContextPopup")) {
 
 			if (ImGui::BeginMenu("Create")) {
+				if (ImGui::BeginMenu("Rendering"))
+				{
+					if (ImGui::MenuItem("Shader")) {
+						CreateItem(AssetType::Shader);
+					}
+					if (ImGui::MenuItem("Material")) {
+						CreateItem(AssetType::Material);
+					}
+					ImGui::EndMenu();
+				}
+				if (ImGui::BeginMenu("Audio"))
+				{
+					if (ImGui::MenuItem("Audio Mixer")) {
+						CreateItem(AssetType::AudioMixer);
+					}
+					ImGui::EndMenu();
+				}
+				if (ImGui::BeginMenu("Physics"))
+				{
+					if (ImGui::MenuItem("Physics Material2D")) {
+						CreateItem(AssetType::PhysicsMaterial2D);
+					}
 
-				if (ImGui::MenuItem("Audio Mixer")) {
-					CreateItem(AssetType::AudioMixer);
+					ImGui::EndMenu();
 				}
-
-				if (ImGui::MenuItem("Physics Material2D")) {
-					CreateItem(AssetType::PhysicsMaterial2D);
-				}
-				if (ImGui::MenuItem("Material")) {
-					CreateItem(AssetType::Material);
-				}
+				
 
 				ImGui::EndMenu();
 			}
@@ -584,6 +599,7 @@ namespace Pixelate {
 			case Pixelate::AssetType::Scene:
 				break;
 			case Pixelate::AssetType::Shader:
+				Embedded::GenerateToDisk(AssetType::Shader, m_CurrentDirectory);
 				break;
 			case Pixelate::AssetType::AssetRegistry:
 				break;

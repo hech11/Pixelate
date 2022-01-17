@@ -67,6 +67,28 @@ namespace Pixelate
 			{
 				out << YAML::BeginMap;
 				out << YAML::Key << "Name" << YAML::Value << member.Name;
+
+				
+				switch (member.Type)
+				{
+					case ShaderBaseType::Int32: 
+					{
+						int value = material->Get<int>(member.Name, table.ReflectedUniformBuffer.Binding);
+						out << YAML::Key << "Value" << YAML::Value << value;
+						break;
+					}
+
+					case ShaderBaseType::Float:
+					{
+						float value = material->Get<float>(member.Name, table.ReflectedUniformBuffer.Binding);
+						out << YAML::Key << "Value" << YAML::Value << value;
+						break;
+					}
+				}
+
+
+
+				
 				out << YAML::Key << "Type" << YAML::Value << (int)member.Type;
 				out << YAML::Key << "Size" << YAML::Value << member.Size;
 				out << YAML::Key << "Offset" << YAML::Value << member.Offset;
@@ -121,6 +143,9 @@ namespace Pixelate
 				entry.StructSize = table["StructSize"].as<int>();
 				YAML::Node memberNode = table["Members"];
 
+				result->AddUniformBufferEntry(entry);
+				auto& uniformTable = result->GetUniformTable()[entry.Binding];
+
 				for (auto member : memberNode)
 				{
 					ShaderMember e2;
@@ -129,11 +154,35 @@ namespace Pixelate
 					e2.Offset = member["Offset"].as<int>();
 					e2.Type = (ShaderBaseType)member["Type"].as<int>();
 					e2.Size = member["Size"].as<int>();
-					entry.Members.push_back(e2);
+
+
+					auto value = member["Value"];
+					if (value)
+					{
+						switch (e2.Type)
+						{
+							case ShaderBaseType::Float : 
+							{
+								float v = value.as<float>();
+								memcpy((char*)uniformTable.Data + e2.Offset, &v, e2.Size);
+								break;
+							}
+							case ShaderBaseType::Int32:
+							{
+								float v = value.as<float>();
+								memcpy((char*)uniformTable.Data + e2.Offset, &v, e2.Size);
+								break;
+							}
+						}
+
+					}
+					uniformTable.ReflectedUniformBuffer.Members.push_back(e2);
+					
+
 				}
 
-				result->AddUniformBufferEntry(entry);
 			}
+
 
 		}
 

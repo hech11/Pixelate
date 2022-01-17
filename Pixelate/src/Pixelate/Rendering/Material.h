@@ -2,54 +2,11 @@
 
 
 #include <string>
-#include "API/Shader/Shader.h"
-#include "API/Buffer.h"
+#include "MaterialUniformTable.h"
 
 
 namespace Pixelate
 {
-
-	// Research: Does each table need it's own instance of the data or should it be stored onto the material?
-	struct MaterialUniformTable
-	{
-		ShaderUniform ReflectedUniformBuffer;
-		Ref<UniformBuffer> UBO;
-
-		void* Data = nullptr;
-		uint32_t Size = 0;
-
-		void InvalidateData()
-		{
-			if (Data)
-			{
-				delete[] Data;
-			}
-
-			Data = new char[Size];
-		}
-
-		MaterialUniformTable()
-		{
-
-		}
-		MaterialUniformTable(const MaterialUniformTable& other)
-		{
-			Data = new char[other.Size];
-			memcpy(Data, other.Data, other.Size);
-			Size = other.Size;
-			ReflectedUniformBuffer = other.ReflectedUniformBuffer;
-			UBO = other.UBO;
-		}
-		~MaterialUniformTable()
-		{
-			if(Data)
-				delete[] Data;
-
-			Data = nullptr;
-			Size = 0;
-
-		}
-	};
 
 	class Material : public Asset
 	{
@@ -70,6 +27,7 @@ namespace Pixelate
 
 
 			const std::vector<MaterialUniformTable>& GetUniformTable() const { return m_UniformTable; }
+			std::vector<MaterialUniformTable>& GetUniformTable() { return m_UniformTable; }
 
 			void UpdateMaterial();
 

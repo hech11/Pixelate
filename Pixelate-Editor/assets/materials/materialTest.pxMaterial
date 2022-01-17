@@ -1,0 +1,16 @@
+Material:
+  - Name: TestMaterial
+    Shader: 16702973922822713939
+    Table:
+      - Binding: 0
+        StructSize: 68
+        Members:
+          - Name: u_ViewProjection
+            Type: 6
+            Size: 64
+            Offset: 0
+          - Name: TempFloat
+            Value: 1
+            Type: 4
+            Size: 4
+            Offset: 64

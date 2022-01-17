@@ -82,6 +82,8 @@ namespace Pixelate {
 		Application::GetApp().GetWindow().SetVsync(true);
 
 
+		Renderer2D::GetShaderLibrary().Load("BlueShader", "Shaders/BlueShader.pxShader");
+
 	}
 
 

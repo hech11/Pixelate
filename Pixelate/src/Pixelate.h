@@ -38,7 +38,6 @@
 #include "Pixelate/Rendering/API/Buffer.h"
 #include "Pixelate/Rendering/API/VertexArray.h"
 
-#include "Pixelate/Rendering/API/Shader/ShaderGenerator.h"
 #include "Pixelate/Rendering/API/Shader/ShaderManager.h"
 #include "Pixelate/Rendering/API/Texture.h"
 #include "Pixelate/Rendering/API/Framebuffer.h"
