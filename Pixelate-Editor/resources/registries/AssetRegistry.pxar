@@ -2,12 +2,12 @@ Assets:
   - Handle: 11872943128402416174
     Filepath: ""
     Type: Texture
-  - Handle: 16875867529767079503
-    Filepath: AssetRegistry.pxar
-    Type: Asset Registry
   - Handle: 14753504238286453007
     Filepath: graphics\test.png
     Type: Texture
+  - Handle: 8213085929612521939
+    Filepath: NewShader.pxShader
+    Type: Shader
   - Handle: 16809476356410631126
     Filepath: ACTIVESCENE.PXScene
     Type: Scene
@@ -83,6 +83,15 @@ Assets:
   - Handle: 4131169557384066883
     Filepath: materials\BlueMaterial.pxMaterial
     Type: Material
-  - Handle: 7782323198376754907
-    Filepath: San.pxShader
+  - Handle: 2155851181393762227
+    Filepath: Sans.pxShader
+    Type: Shader
+  - Handle: 9703829770144942497
+    Filepath: materials\RedMaterial.pxMaterial
+    Type: Material
+  - Handle: 9270969387135114838
+    Filepath: NewShader (1).pxShader
+    Type: Shader
+  - Handle: 14620561520535474729
+    Filepath: RedShader.pxShader
     Type: Shader

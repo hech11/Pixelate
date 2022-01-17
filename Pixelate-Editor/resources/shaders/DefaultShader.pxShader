@@ -1,12 +1,4 @@
-#include "PXpch.h"
-#include "ShaderGenerator.h"
-#include "Pixelate/Rendering/Renderer2D.h"
-
-
-namespace Pixelate {
-
-
-	static const char* buffer = R"(#shader vertex
+#shader vertex
 
 #version 450 core
 
@@ -113,55 +105,4 @@ void main() {
 
 
 	EntityColor = v_EntityID;
-})";
-
-	static const char* DefaultFilename = "NewShader.pxShader";
-
-	
-
-
-	void ShaderGenerator::GenerateToDisk(std::filesystem::path path)
-	{
-		path /= DefaultFilename;
-
-		std::stringstream name;
-		name << "NewShader";
-
-		std::stringstream extra;
-		int ext = 1;
-
-		while (true)
-		{
-			std::ifstream file(path);
-
-			if (!file.is_open())
-				break;
-
-			extra.str(std::string());
-			name.str(std::string());
-			name << "NewShader";
-
-			path.clear();
-
-
-			extra << " (" << ext << ")";
-			path.clear();
-
-			path = "assets" / path / std::string(name.str() + extra.str() + ".pxShader");
-			file.close();
-			file.open(path);
-			name << extra.str();
-
-			ext++;
-		}
-
-
-		std::ofstream file(path);
-		file << buffer;
-		file.close();
-		AssetManager::ImportAsset(path.string());
-		Renderer2D::GetShaderLibrary().Add(name.str(), path.string());
-	}
-
 }
-

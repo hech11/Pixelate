@@ -42,6 +42,7 @@ namespace Pixelate
 	}
 
 
+
 	/////// MaterialSerialization ///////
 
 	void MaterialSerialization::Serialize(const std::filesystem::path& path, const Ref<Material>& material)
@@ -132,6 +133,10 @@ namespace Pixelate
 			uint64_t handle = n["Shader"].as<uint64_t>();
 
 			Ref<Shader> shader = AssetManager::GetAsset<Shader>(handle);
+			if (!shader)
+			{
+				shader = Shader::Create("resources/shaders/ErrorShader.pxShader");
+			}
 			result = CreateRef<Material>(shader, name, false);
 
 

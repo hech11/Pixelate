@@ -14,9 +14,8 @@
 namespace Pixelate {
 
 
-	static std::string s_AssetRegistryPath = "assets/AssetRegistry.pxar";
 
-	void AssetRegistry::Serialize()
+	void AssetRegistry::Serialize(const std::filesystem::path& path)
 	{
 		PX_PROFILE_FUNCTION();
 		YAML::Emitter out;
@@ -38,20 +37,20 @@ namespace Pixelate {
 
 
 
-		std::ofstream file(s_AssetRegistryPath);
+		std::ofstream file(path);
 		file << out.c_str();
 
 		file.close();
 
 	}
 
-	bool AssetRegistry::Deserialize()
+	bool AssetRegistry::Deserialize(const std::filesystem::path& path, bool isResource)
 	{
 		PX_PROFILE_FUNCTION();
-		if (!FileSystem::Exists(s_AssetRegistryPath)) {
+		if (!FileSystem::Exists(path)) {
 			return false;
 		}
-		std::ifstream stream(s_AssetRegistryPath);
+		std::ifstream stream(path);
 
 		YAML::Node data = YAML::Load(stream);
 		auto handles = data["Assets"];
@@ -72,7 +71,7 @@ namespace Pixelate {
 
 
 			// could not find the path despite it being in our asset registry so we must search every directory to try and correct this.
-			if (!FileSystem::Exists(AssetManager::GetFilePath(metadata))) {
+			if (!FileSystem::Exists(AssetManager::GetFilePath(metadata, isResource))) {
 				PX_PROFILE_SCOPE("AssetRegristy::Deserialize::FileSystem::Exists()");
 
 				PX_CORE_WARN("Asset %s not found in registry file, trying to locate a possible match...\n", metadata.Filepath.string().c_str());

@@ -43,6 +43,17 @@ namespace Pixelate
 	void ShaderLibrary::OnFileWatcherAction(FileWatcherCallbackData data)
 	{
 
+		auto path = std::filesystem::relative("assets", data.OldFilepath);
+		bool isShader = AssetManager::GetMetadata(path.string()).Type == AssetType::Shader;
+
+		if (isShader)
+			return;
+
+		path = std::filesystem::relative("assets", data.Filepath);
+		isShader = AssetManager::GetMetadata(path.string()).Type == AssetType::Shader;
+		if (isShader)
+			return;
+
 		switch (data.Action)
 		{
 
@@ -58,12 +69,14 @@ namespace Pixelate
 				auto old = data.OldFilepath.stem().string();
 				auto value = data.Filepath.stem().string();
 
-				m_Shaders[old]->SetName(value);
-				m_Shaders[old]->SetPath(data.Filepath.string());
-
 				auto node = m_Shaders.extract(old);
 				node.key() = value;
+
 				m_Shaders.insert(std::move(node));
+
+
+				m_Shaders[value]->SetName(value);
+				m_Shaders[value]->SetPath(data.Filepath.string());
 				m_Shaders.erase(old);
 
 			};

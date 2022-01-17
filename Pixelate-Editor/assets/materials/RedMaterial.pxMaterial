@@ -1,0 +1,28 @@
+Material:
+  - Name: DefaultMaterial
+    Shader: 6682231211999168143
+    Table:
+      - Binding: 0
+        StructSize: 68
+        Members:
+          - Name: u_ViewProj
+            Type: 6
+            Size: 64
+            Offset: 0
+          - Name: u_SceneCameraZoom
+            Value: -431602080
+            Type: 4
+            Size: 4
+            Offset: 64
+        Binding: 0
+        StructSize: 68
+        Members:
+          - Name: u_ViewProj
+            Type: 6
+            Size: 64
+            Offset: 0
+          - Name: u_SceneCameraZoom
+            Value: -431602080
+            Type: 4
+            Size: 4
+            Offset: 64
