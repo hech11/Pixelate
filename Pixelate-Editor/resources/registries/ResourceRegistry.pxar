@@ -32,3 +32,9 @@ Assets:
   - Handle: 14482420567857561303
     Filepath: shaders\ErrorShader.pxShader
     Type: Shader
+  - Handle: 8149533505102044599
+    Filepath: shaders\SceneGrid.pxShader
+    Type: Shader
+  - Handle: 18258398560536971753
+    Filepath: ""
+    Type: Texture

@@ -392,7 +392,15 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				{
 
 					//TODO: Handle external resources. We only support assets local to the project!
-					const auto& path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle));
+					std::filesystem::path path;
+					if (AssetManager::IsResource(spriteComp.Material->Handle))
+					{
+						path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle), true);
+					}
+					else
+					{
+						path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle), false);
+					}
 					ImGui::InputText("##MaterialFilepath", (char*)path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
 				}
 				else

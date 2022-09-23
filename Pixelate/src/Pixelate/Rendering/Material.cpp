@@ -21,12 +21,12 @@ namespace Pixelate
 			{
 				for (auto& uniformBuffer : resource.Uniforms)
 				{
-					MaterialUniformTable table;
+					Ref<MaterialUniformTable> table = CreateRef<MaterialUniformTable>();
 
-					table.UBO = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
-					table.Size = uniformBuffer.StructSize;
-					table.ReflectedUniformBuffer = uniformBuffer;
-					table.InvalidateData();
+					table->UBO = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
+					table->Size = uniformBuffer.StructSize;
+					table->ReflectedUniformBuffer = uniformBuffer;
+					table->InvalidateData();
 
 					m_UniformTable.push_back(table);
 
@@ -41,7 +41,7 @@ namespace Pixelate
 	{
 		for (auto&& table : m_UniformTable)
 		{
-			table.UBO->Bind();
+			table->UBO->Bind();
 		}
 
 		m_Shader->Bind();
@@ -51,7 +51,7 @@ namespace Pixelate
 	{
 		for (auto&& table : m_UniformTable)
 		{
-			table.UBO->UnBind();
+			table->UBO->UnBind();
 		}
 
 		m_Shader->Unbind();
@@ -61,11 +61,11 @@ namespace Pixelate
 	void Material::AddUniformBufferEntry(const ShaderUniform& table)
 	{
 
-		MaterialUniformTable entry;
-		entry.UBO = UniformBuffer::Create(table.StructSize, table.Binding);
-		entry.Size = table.StructSize;
-		entry.ReflectedUniformBuffer = table;
-		entry.InvalidateData();
+		Ref<MaterialUniformTable> entry = CreateRef<MaterialUniformTable>();
+		entry->UBO = UniformBuffer::Create(table.StructSize, table.Binding);
+		entry->Size = table.StructSize;
+		entry->ReflectedUniformBuffer = table;
+		entry->InvalidateData();
 
 		m_UniformTable.push_back(entry);
 	}
@@ -83,7 +83,7 @@ namespace Pixelate
 	{
 		for (auto&& table : m_UniformTable)
 		{
-			table.UBO->SetData(table.Data, table.Size, 0);
+			table->UBO->SetData(table->Data.data(), table->Size, 0);
 		}
 	}
 
@@ -93,13 +93,13 @@ namespace Pixelate
 		{
 			for (auto& table : m_UniformTable)
 			{
-				if (table.ReflectedUniformBuffer.Binding == binding)
+				if (table->ReflectedUniformBuffer.Binding == binding)
 				{
-					for (auto& member : table.ReflectedUniformBuffer.Members)
+					for (auto& member : table->ReflectedUniformBuffer.Members)
 					{
 						if (member.Name == name)
 						{
-							return std::make_pair(table.UBO, member);
+							return std::make_pair(table->UBO, member);
 						}
 					}
 				}
@@ -109,15 +109,32 @@ namespace Pixelate
 	}
 
 
-	Pixelate::MaterialUniformTable& Material::FindMaterialTable(int binding)
+	Ref<Pixelate::MaterialUniformTable>& Material::FindMaterialTable(int binding)
 	{
 		if (m_UniformTable.size())
 		{
 			for (auto& table : m_UniformTable)
 			{
-				if (table.ReflectedUniformBuffer.Binding == binding)
+				if (table->ReflectedUniformBuffer.Binding == binding)
 					return table;
 			}
+		}
+	}
+
+
+	uint32_t Material::GetShaderBaseTypeInBytes(ShaderBaseType type)
+	{
+		switch (type)
+		{
+			case Pixelate::ShaderBaseType::None: return -1;
+			case Pixelate::ShaderBaseType::Int8: return 1;
+			case Pixelate::ShaderBaseType::Int16: return 2;
+			case Pixelate::ShaderBaseType::Int32: return 4;
+			case Pixelate::ShaderBaseType::UInt32: return 4;
+			case Pixelate::ShaderBaseType::Float: return 4;
+			case Pixelate::ShaderBaseType::Bool: return 1;
+			case Pixelate::ShaderBaseType::Mat4: return -1;
+			case Pixelate::ShaderBaseType::SampledImage: return -1;
 		}
 	}
 

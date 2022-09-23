@@ -5,9 +5,6 @@ Assets:
   - Handle: 14753504238286453007
     Filepath: graphics\test.png
     Type: Texture
-  - Handle: 8213085929612521939
-    Filepath: NewShader.pxShader
-    Type: Shader
   - Handle: 16809476356410631126
     Filepath: ACTIVESCENE.PXScene
     Type: Scene
@@ -59,39 +56,24 @@ Assets:
   - Handle: 13053056233834121195
     Filepath: graphics\cross.png
     Type: Texture
-  - Handle: 16702973922822713939
-    Filepath: Shaders\Color.pxShader
-    Type: Shader
   - Handle: 14700277572969831948
     Filepath: materials\materialTest.pxMaterial
     Type: Material
-  - Handle: 9493763084305907703
-    Filepath: Shaders\DefaultTexturedShader.pxShader
-    Type: Shader
   - Handle: 14813573490053508137
     Filepath: audio\Default Mixer.pxam
     Type: Audio Mixer
   - Handle: 5303152987274124230
     Filepath: scenes\PhysicsBouncinessTest.PXScene
     Type: Scene
-  - Handle: 4759195160222876570
-    Filepath: Shaders\SceneGrid.pxShader
-    Type: Shader
   - Handle: 10350709298579271351
     Filepath: Shaders\BlueShader.pxShader
     Type: Shader
   - Handle: 4131169557384066883
     Filepath: materials\BlueMaterial.pxMaterial
     Type: Material
-  - Handle: 2155851181393762227
-    Filepath: Sans.pxShader
-    Type: Shader
   - Handle: 9703829770144942497
     Filepath: materials\RedMaterial.pxMaterial
     Type: Material
-  - Handle: 9270969387135114838
-    Filepath: NewShader (1).pxShader
-    Type: Shader
   - Handle: 14620561520535474729
-    Filepath: RedShader.pxShader
+    Filepath: Shaders\RedShader.pxShader
     Type: Shader

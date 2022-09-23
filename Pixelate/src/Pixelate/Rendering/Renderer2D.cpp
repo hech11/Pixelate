@@ -116,7 +116,7 @@ namespace Pixelate {
 		
 
 		uint32_t lineSize = (uint8_t*)SceneData->LineDrawData->PtrData - (uint8_t*)SceneData->LineDrawData->PtrBase;
-		s_ShaderLibrary.Get()["DefaultTexturedShader"]->Bind();
+		s_ShaderLibrary.GetResources()["DefaultShader"]->Bind();
 		if (lineSize) {
 			SceneData->LineDrawData->Vao->Bind();
 			SceneData->LineDrawData->Vao->GetIbos().Bind();
@@ -168,7 +168,7 @@ namespace Pixelate {
 		}
 
 
-		s_ShaderLibrary.Get()["DefaultTexturedShader"]->Unbind();
+		s_ShaderLibrary.GetResources()["DefaultShader"]->Unbind();
 
 
 	}

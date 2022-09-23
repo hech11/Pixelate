@@ -14,6 +14,7 @@ namespace Pixelate
 			Ref<Shader> LoadExternalResource(const std::string& name, const std::string& filepath);
 
 			std::unordered_map<std::string, Ref<Shader>>& Get() { return m_Shaders; }
+			std::unordered_map<std::string, Ref<Shader>>& GetResources() { return m_ResourceShaders; }
 
 			void ApplyQueuedChanges();
 
@@ -21,6 +22,7 @@ namespace Pixelate
 			void OnFileWatcherAction(FileWatcherCallbackData data);
 
 			std::unordered_map<std::string, Ref<Shader>> m_Shaders;
+			std::unordered_map<std::string, Ref<Shader>> m_ResourceShaders;
 			std::vector<std::pair<std::string, std::string>> m_QueuedPaths;
 
 	};

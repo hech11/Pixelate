@@ -73,7 +73,7 @@ namespace Pixelate
 				{
 					for (auto& table : material->GetUniformTable())
 					{
-						for (auto& member : table.ReflectedUniformBuffer.Members)
+						for (auto& member : table->ReflectedUniformBuffer.Members)
 						{
 
 							switch (member.Type)
@@ -83,10 +83,10 @@ namespace Pixelate
 								ImGui::Columns(2);
 								ImGui::Text(member.Name.c_str());
 								ImGui::NextColumn();
-								int temp = material->Get<int>(member.Name, table.ReflectedUniformBuffer.Binding);
+								int temp = material->Get<int>(member.Name, table->ReflectedUniformBuffer.Binding);
 								if (ImGui::DragInt(std::string(std::string("##valuemem") + member.Name).c_str(), &temp))
 								{
-									material->Set(member.Name, temp, table.ReflectedUniformBuffer.Binding);
+									material->Set(member.Name, temp, table->ReflectedUniformBuffer.Binding);
 									MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
 
 								}
@@ -101,10 +101,10 @@ namespace Pixelate
 								ImGui::Text(member.Name.c_str());
 								ImGui::NextColumn();
 
-								float temp = material->Get<float>(member.Name, table.ReflectedUniformBuffer.Binding);
+								float temp = material->Get<float>(member.Name, table->ReflectedUniformBuffer.Binding);
 								if (ImGui::DragFloat(std::string(std::string("##valuemem") + member.Name).c_str(), &temp))
 								{
-									material->Set(member.Name, temp, table.ReflectedUniformBuffer.Binding);
+									material->Set(member.Name, temp, table->ReflectedUniformBuffer.Binding);
 									MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
 
 								}

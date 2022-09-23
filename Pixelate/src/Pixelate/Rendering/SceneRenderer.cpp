@@ -21,8 +21,8 @@ namespace Pixelate
 
 		// TODO : Should be able to write "assets/Shaders/...." instead of "Shaders/.."
 		shaderLibrary.LoadExternalResource("FinalSceneComposite", "resources/shaders/FinalSceneComposite.pxShader");
-		shaderLibrary.LoadExternalResource("GridShader", "assets/Shaders/SceneGrid.pxShader");
-		shaderLibrary.LoadExternalResource("DefaultTexturedShader", "assets/Shaders/DefaultTexturedShader.pxShader");
+		shaderLibrary.LoadExternalResource("GridShader", "resources/shaders/SceneGrid.pxShader");
+		shaderLibrary.LoadExternalResource("DefaultShader", "resources/Shaders/DefaultShader.pxShader");
 
 
 		CameraUniformBuffer = UniformBuffer::Create(sizeof(CameraData), 0);
@@ -167,7 +167,7 @@ namespace Pixelate
 		GridUniformBuffer->Bind();
 		GridUniformBuffer->SetData(&s_GridBufferData, sizeof(GridData), 0);
 
-		Ref<Shader>& gridShader = Renderer2D::GetShaderLibrary().Get()["GridShader"];
+		Ref<Shader>& gridShader = Renderer2D::GetShaderLibrary().GetResources()["GridShader"];
 		gridShader->Bind();
 
 

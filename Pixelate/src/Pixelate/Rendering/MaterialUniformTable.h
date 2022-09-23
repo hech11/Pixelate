@@ -12,17 +12,13 @@ namespace Pixelate
 		ShaderUniform ReflectedUniformBuffer;
 		Ref<UniformBuffer> UBO;
 
-		void* Data = nullptr;
+		std::vector<uint8_t> Data;
 		uint32_t Size = 0;
 
 		void InvalidateData()
 		{
-			if (Data)
-			{
-				delete[] Data;
-			}
-
-			Data = new char[Size];
+			Data.clear();
+			Data.resize(Size);
 		}
 
 
@@ -32,18 +28,19 @@ namespace Pixelate
 		}
 		MaterialUniformTable(const MaterialUniformTable& other)
 		{
-			Data = new char[other.Size];
-			memcpy(Data, other.Data, other.Size);
+			Data.clear();
+			Data.resize(Size);
+
+			memcpy(Data.data(), other.Data.data(), other.Size);
 			Size = other.Size;
 			ReflectedUniformBuffer = other.ReflectedUniformBuffer;
 			UBO = other.UBO;
 		}
 		~MaterialUniformTable()
 		{
-			if (Data)
-				delete[] Data;
+			if (Data.size())
+				Data.clear();
 
-			Data = nullptr;
 			Size = 0;
 
 		}
@@ -53,13 +50,11 @@ namespace Pixelate
 		{
 			if (data)
 			{
-				if (Data)
-				{
-					delete[] Data;
-				}
+				if (Data.size())
+					Data.clear();
 
-				Data = new char[size];
-				memcpy(Data, data, size);
+				Data.resize(size);
+				memcpy(Data.data(), data, size);
 				Size = size;
 			}
 		}

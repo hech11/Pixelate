@@ -20,7 +20,7 @@ namespace Pixelate
 	Ref<Shader> ShaderLibrary::LoadExternalResource(const std::string& name, const std::string& filepath)
 	{
 		Ref<Shader> result = Shader::Create(filepath);
-		m_Shaders[name] = result;
+		m_ResourceShaders[name] = result;
 
 		return result;
 	}

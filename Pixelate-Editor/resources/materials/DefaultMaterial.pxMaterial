@@ -1,6 +1,6 @@
 Material:
   - Name: DefaultMaterial
-    Shader: 9493763084305907703
+    Shader: 7968149936872318425
     Table:
       - Binding: 0
         StructSize: 64
@@ -10,6 +10,7 @@ Material:
             Size: 64
             Offset: 0
           - Name: abc
+            Value: 0.5
             Type: 4
             Size: 4
             Offset: 64

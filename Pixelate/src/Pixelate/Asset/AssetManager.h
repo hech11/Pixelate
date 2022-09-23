@@ -31,12 +31,13 @@ namespace Pixelate {
 
 				return s_AssetPath / metadata.Filepath;
 			}
-			static std::string GetFilePathString(const AssetMetadata& metadata) { return GetFilePath(metadata).string(); }
+			static std::string GetFilePathString(const AssetMetadata& metadata, bool isResource = false) { return GetFilePath(metadata, isResource).string(); }
 
 			static AssetMetadata& GetMetadata(AssetHandle handle);
 			static AssetMetadata& GetMetadata(const std::filesystem::path& path);
 
 			static bool IsAssetHandleValid(AssetHandle handle) { return GetMetadata(handle).IsValid(); }
+			static bool IsResource(AssetHandle handle) { return s_ResourceRegistry.GetRegistry()[GetMetadata(handle).Filepath].IsValid(); }
 
 			static AssetHandle ImportAsset(const std::filesystem::path& filepath);
 			static AssetHandle ImportResource(const std::filesystem::path& filepath);
@@ -77,13 +78,13 @@ namespace Pixelate {
 			}
 
 			template<typename T>
-			static Ref<T> GetAsset(AssetHandle handle) {
+			static Ref<T> GetAsset(AssetHandle handle, bool isResource = false) {
 				auto& metadata = GetMetadata(handle);
 
 				Ref<Asset> asset = nullptr;
 				if (!metadata.IsLoaded)
 				{
-					metadata.IsLoaded = AssetImporter::TryLoadData(metadata, asset);
+					metadata.IsLoaded = AssetImporter::TryLoadData(metadata, asset, isResource);
 					if (!metadata.IsLoaded)
 						return nullptr;
 

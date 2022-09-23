@@ -12,7 +12,7 @@ namespace Pixelate {
 		public:
 			virtual ~AssetTypeImporter() = default;
 
-			virtual bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) = 0;
+			virtual bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource = false) = 0;
 			virtual void Reload(Ref<Asset>& asset) = 0;
 	};
 
@@ -22,7 +22,7 @@ namespace Pixelate {
 			static void Init();
 			static void Shutdown();
 
-			static bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset);
+			static bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource = false);
 			static void Reload(Ref<Asset>& asset);
 
 		private :
@@ -35,7 +35,7 @@ namespace Pixelate {
 
 		public :
 			TextureImporter() = default;
-			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource = false) override;
 			void Reload(Ref<Asset>& asset) override;
 
 
@@ -47,7 +47,7 @@ namespace Pixelate {
 
 		public:
 			AudioImporter() = default;
-			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource = false) override;
 			void Reload(Ref<Asset>& asset) override;
 
 	};
@@ -58,7 +58,7 @@ namespace Pixelate {
 
 		public:
 			PhysicsMaterial2DImporter() = default;
-			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource = false) override;
 			void Reload(Ref<Asset>& asset) override;
 
 	};
@@ -67,7 +67,7 @@ namespace Pixelate {
 	{
 		public :
 			ShaderImporter() = default;
-			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) override;
+			bool TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource = false) override;
 			void Reload(Ref<Asset>& asset) override;
 	};
 
@@ -75,7 +75,7 @@ namespace Pixelate {
 	{
 		public:
 			MaterialImporter() = default;
-			bool TryLoadData(const AssetMetadata & metadata, Ref<Asset> & asset) override;
+			bool TryLoadData(const AssetMetadata & metadata, Ref<Asset> & asset, bool isResource = false) override;
 			void Reload(Ref<Asset> & asset) override;
 	};
 }

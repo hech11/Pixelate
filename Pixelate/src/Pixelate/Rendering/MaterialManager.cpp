@@ -59,12 +59,12 @@ namespace Pixelate
 		out << YAML::BeginMap;
 		for (auto& table : material->GetUniformTable())
 		{
-			out << YAML::Key << "Binding" << YAML::Value << table.ReflectedUniformBuffer.Binding;
-			out << YAML::Key << "StructSize" << YAML::Value << table.ReflectedUniformBuffer.StructSize;
+			out << YAML::Key << "Binding" << YAML::Value << table->ReflectedUniformBuffer.Binding;
+			out << YAML::Key << "StructSize" << YAML::Value << table->ReflectedUniformBuffer.StructSize;
 
 
 			out << YAML::Key << "Members" << YAML::BeginSeq;
-			for (auto& member : table.ReflectedUniformBuffer.Members)
+			for (auto& member : table->ReflectedUniformBuffer.Members)
 			{
 				out << YAML::BeginMap;
 				out << YAML::Key << "Name" << YAML::Value << member.Name;
@@ -74,14 +74,14 @@ namespace Pixelate
 				{
 					case ShaderBaseType::Int32: 
 					{
-						int value = material->Get<int>(member.Name, table.ReflectedUniformBuffer.Binding);
+						int value = material->Get<int>(member.Name, table->ReflectedUniformBuffer.Binding);
 						out << YAML::Key << "Value" << YAML::Value << value;
 						break;
 					}
 
 					case ShaderBaseType::Float:
 					{
-						float value = material->Get<float>(member.Name, table.ReflectedUniformBuffer.Binding);
+						float value = material->Get<float>(member.Name, table->ReflectedUniformBuffer.Binding);
 						out << YAML::Key << "Value" << YAML::Value << value;
 						break;
 					}
@@ -132,7 +132,17 @@ namespace Pixelate
 			std::string name = n["Name"].as<std::string>();
 			uint64_t handle = n["Shader"].as<uint64_t>();
 
-			Ref<Shader> shader = AssetManager::GetAsset<Shader>(handle);
+			Ref<Shader> shader;
+			if (AssetManager::IsResource(handle))
+			{
+				shader = AssetManager::GetAsset<Shader>(handle, true);
+			}
+			else 
+			{
+				shader = AssetManager::GetAsset<Shader>(handle, false);
+			}
+
+
 			if (!shader)
 			{
 				shader = Shader::Create("resources/shaders/ErrorShader.pxShader");
@@ -173,19 +183,19 @@ namespace Pixelate
 							case ShaderBaseType::Float:
 							{
 								float v = value.as<float>();
-								memcpy((char*)uniformTable.Data + e2.Offset, &v, e2.Size);
+								memcpy((uint8_t*)uniformTable->Data.data() + e2.Offset, &v, e2.Size);
 								break;
 							}
 							case ShaderBaseType::Int32:
 							{
-								float v = value.as<float>();
-								memcpy((char*)uniformTable.Data + e2.Offset, &v, e2.Size);
+								int v = value.as<int32_t>();
+								memcpy((uint8_t*)uniformTable->Data.data() + e2.Offset, &v, e2.Size);
 								break;
 							}
 							}
 
 						}
-						uniformTable.ReflectedUniformBuffer.Members.push_back(e2);
+						uniformTable->ReflectedUniformBuffer.Members.push_back(e2);
 
 
 					}

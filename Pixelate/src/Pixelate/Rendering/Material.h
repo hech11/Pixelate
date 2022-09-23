@@ -26,8 +26,8 @@ namespace Pixelate
 			void SetShader(const Ref<Shader>& shader);
 
 
-			const std::vector<MaterialUniformTable>& GetUniformTable() const { return m_UniformTable; }
-			std::vector<MaterialUniformTable>& GetUniformTable() { return m_UniformTable; }
+			const std::vector<Ref<MaterialUniformTable>>& GetUniformTable() const { return m_UniformTable; }
+			std::vector<Ref<MaterialUniformTable>>& GetUniformTable() { return m_UniformTable; }
 
 			void UpdateMaterial();
 
@@ -37,8 +37,9 @@ namespace Pixelate
 				const auto&& [buffer, member] = FindUniformStorage(name, binding);
 				auto& table = FindMaterialTable(binding);
 
-				memcpy((char*)table.Data + member.Offset, &value, member.Size);
-				buffer->SetData(&value, member.Size, member.Offset);
+				memcpy((uint8_t*)table->Data.data() + member.Offset, &value, member.Size);
+
+				buffer->SetData(table->Data.data(), table->Size, 0);
 			}
 
 			template<typename T>
@@ -47,7 +48,7 @@ namespace Pixelate
 				const auto&& [buffer, member] = FindUniformStorage(name, binding);
 				auto& table = FindMaterialTable(binding);
 
-				return *(T*)((char*)table.Data + member.Offset);
+				return *(T*)((uint8_t*)table->Data.data() + member.Offset);
 			}
 
 			
@@ -55,10 +56,12 @@ namespace Pixelate
 
 		private :
 			std::pair<Ref<UniformBuffer>, ShaderMember> FindUniformStorage(const std::string& name, int binding = 0);
-			MaterialUniformTable& FindMaterialTable(int binding = 0);
+			Ref<MaterialUniformTable>& FindMaterialTable(int binding = 0);
+
+			uint32_t GetShaderBaseTypeInBytes(ShaderBaseType type);
 		private :
 			Ref<Shader> m_Shader;
-			std::vector<MaterialUniformTable> m_UniformTable;
+			std::vector<Ref<MaterialUniformTable>> m_UniformTable;
 			std::string m_Name;
 	};
 }
