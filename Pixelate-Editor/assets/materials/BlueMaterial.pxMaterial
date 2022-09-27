@@ -1,5 +1,5 @@
 Material:
-  - Name: DefaultMaterial
+  - Name: BlueMaterial
     Shader: 10350709298579271351
     Table:
       - Binding: 0
@@ -10,7 +10,7 @@ Material:
             Size: 64
             Offset: 0
           - Name: Blueness
-            Value: 0.600000024
+            Value: 4
             Type: 4
             Size: 4
             Offset: 64

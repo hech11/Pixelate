@@ -13,6 +13,11 @@ namespace Pixelate {
 			void OnEvent(Event& e) override;
 			void OnImguiRender() override;
 
+		private :
+			void RenderShaderList();
+			void RenderMaterialList();
+
+
 	};
 
 }

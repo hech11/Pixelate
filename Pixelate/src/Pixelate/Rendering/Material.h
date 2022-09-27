@@ -15,6 +15,7 @@ namespace Pixelate
 
 			void Invalidate(const Ref<Shader>& shader, const std::string& name, bool initBufferTable = true);
 
+			void SetName(const std::string& name) { m_Name = name; }
 			const std::string& GetName() const { return m_Name; }
 			const Ref<Shader>& GetShader() const { return m_Shader; }
 

@@ -117,6 +117,40 @@ namespace Pixelate {
 		return s_NullMetadata;
 	}
 
+	std::vector<AssetMetadata> AssetManager::GetMetadataOfType(AssetType type, bool includeAssets, bool includeResources)
+	{
+		std::vector<AssetMetadata> result;
+
+		PX_PROFILE_FUNCTION();
+
+		if (includeAssets)
+		{
+			for (auto& [filepath, metadata] : s_AssetRegistry.GetRegistry())
+			{
+				if (metadata.Type == type)
+				{
+					result.push_back(metadata);
+				}
+			}
+		}
+
+		if (includeResources)
+		{
+			for (auto& [filepath, metadata] : s_ResourceRegistry.GetRegistry()) {
+			
+				if (metadata.Type == type)
+				{
+					result.push_back(metadata);
+				}
+			}
+		}
+
+
+
+		return result;
+	}
+
+
 	AssetHandle AssetManager::ImportAsset(const std::filesystem::path& filepath) {
 
 		PX_PROFILE_FUNCTION();
@@ -270,6 +304,11 @@ namespace Pixelate {
 
 		if (nPath.extension() == ".pxShader")
 			ReloadAsset(nPath);
+
+		if (nPath.extension() == ".pxMaterial")
+		{
+			ReloadAsset(nPath);
+		}
 
 
 	}

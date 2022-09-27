@@ -28,7 +28,9 @@ namespace Pixelate
 
 	Ref<Material> MaterialManager::LoadExternalResource(const std::string& filepath)
 	{
-		Ref<Material> result = MaterialSerialization::Deserialize(filepath);
+		std::filesystem::path p = std::filesystem::relative(filepath, "resources");
+
+		Ref<Material> result = AssetManager::GetAsset<Material>(AssetManager::GetMetadata(p.c_str()).Handle, true);
 
 		for (int i = 0; i < s_Materials.size(); i++)
 		{

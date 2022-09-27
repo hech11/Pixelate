@@ -5,18 +5,6 @@
 
 
 
-namespace std {
-
-	// Used for std::unordered_map
-	template <>
-	struct hash<std::filesystem::path> {
-
-		std::size_t operator()(const std::filesystem::path& path) const {
-			return hash_value(path);
-		}
-	};
-
-}
 
 namespace Pixelate {
 

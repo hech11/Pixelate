@@ -152,8 +152,13 @@ namespace Pixelate {
 
 	void MaterialImporter::Reload(Ref<Asset>& asset)
 	{
-		//Ref<Material> mat = std::dynamic_pointer_cast<Material>(asset);
-		//mat->Reload();
+		Ref<Material> mat = std::dynamic_pointer_cast<Material>(asset);
+		auto path = AssetManager::GetMetadata(asset->Handle).Filepath;
+		 
+		std::string name = path.stem().string();
+
+		mat->SetName(name);
+		mat->Invalidate(mat->GetShader(), name);
 	}
 
 }

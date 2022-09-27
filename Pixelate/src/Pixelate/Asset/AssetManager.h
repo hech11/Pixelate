@@ -12,6 +12,7 @@ namespace Pixelate {
 
 	struct AssetManagerConfiguration {
 		std::string AssetDirectory = "assets";
+		std::string ResourcesDirectory = "resources";
 	};
 
 	class AssetManager {
@@ -35,6 +36,9 @@ namespace Pixelate {
 
 			static AssetMetadata& GetMetadata(AssetHandle handle);
 			static AssetMetadata& GetMetadata(const std::filesystem::path& path);
+
+			static std::vector<AssetMetadata> GetMetadataOfType(AssetType type, bool includeAssets = true, bool includeResources = true);
+
 
 			static bool IsAssetHandleValid(AssetHandle handle) { return GetMetadata(handle).IsValid(); }
 			static bool IsResource(AssetHandle handle) { return s_ResourceRegistry.GetRegistry()[GetMetadata(handle).Filepath].IsValid(); }
