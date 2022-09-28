@@ -10,7 +10,7 @@ Material:
             Size: 64
             Offset: 0
           - Name: Blueness
-            Value: 4
+            Value: 0.200000003
             Type: 4
             Size: 4
             Offset: 64
