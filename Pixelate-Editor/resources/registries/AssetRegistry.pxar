@@ -2,9 +2,9 @@ Assets:
   - Handle: 9025024172503938240
     Filepath: ""
     Type: Texture
-  - Handle: 14753504238286453007
-    Filepath: graphics\test.png
-    Type: Texture
+  - Handle: 15401950371930225587
+    Filepath: audio\noise.wav
+    Type: Audio
   - Handle: 16809476356410631126
     Filepath: ACTIVESCENE.PXScene
     Type: Scene
@@ -23,9 +23,6 @@ Assets:
   - Handle: 18069192197029962527
     Filepath: graphics\TestSpritesheet.png
     Type: Texture
-  - Handle: 15401950371930225587
-    Filepath: audio\noise.wav
-    Type: Audio
   - Handle: 4020195025803029489
     Filepath: scenes\test123_Scripts.PXScene
     Type: Scene
@@ -53,9 +50,6 @@ Assets:
   - Handle: 3092266599181260790
     Filepath: scenes\test123_Scripts_2.PXScene.PXScene
     Type: Scene
-  - Handle: 13053056233834121195
-    Filepath: graphics\cross.png
-    Type: Texture
   - Handle: 14813573490053508137
     Filepath: audio\Default Mixer.pxam
     Type: Audio Mixer

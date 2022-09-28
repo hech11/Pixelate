@@ -1,22 +1,24 @@
 Scene: Scene
 Entities:
-  - Entity: 1554941975187726595
+  - Entity: 8829907738613486222
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -1, 1]
+      Transform: [33.2514038, 0, 0, 0, 0, 26.7987022, 0, 0, 0, 0, 6.44000006, 0, -0.00317971222, -2.4586916e-07, -1, 1]
     SpriteRendererComponent:
       Texture:
         AssetHandle: 18069192197029962527
+      Material:
+        AssetHandle: 2150874349211282972
       Rect:
         Position: [0, 0]
-        Scale: [128, 128]
+        Scale: [1024, 1024]
       SortingLayer: 0
       RenderOrder: 0
       TintColor: [1, 1, 1, 1]
-  - Entity: 2260036416654781824
+  - Entity: 12026916381553012072
     NameComponent:
       Name: Camera
     TagComponent:

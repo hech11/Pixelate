@@ -134,7 +134,7 @@ namespace Pixelate
 			case Pixelate::ShaderBaseType::Float: return 4;
 			case Pixelate::ShaderBaseType::Bool: return 1;
 			case Pixelate::ShaderBaseType::Mat4: return -1;
-			case Pixelate::ShaderBaseType::SampledImage: return -1;
+			case Pixelate::ShaderBaseType::SampledImage: return 1;
 		}
 	}
 

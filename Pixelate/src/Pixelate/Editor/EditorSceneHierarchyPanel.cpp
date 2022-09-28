@@ -300,7 +300,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::SetColumnWidth(0, 150);
 
 
-				ImGui::Text("FilePath");
+				/*ImGui::Text("FilePath");
 
 
 
@@ -354,80 +354,12 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				ImGui::PopID();
 
-
 				ImGui::PopItemWidth();
 				ImGui::NextColumn();
 
+				*/
 				
-				ImGui::Text("Material path");
-				ImGui::NextColumn();
-				ImGui::PushItemWidth(-1);
-				ImGui::PushID(2);
-				if (ImGui::Button("open")) {
-					nfdchar_t* outPath = NULL;
-					nfdresult_t result = NFD_OpenDialog("pxShader", NULL, &outPath);
-
-					if (result == NFD_OKAY) {
-						PX_CORE_TRACE("Success!\n");
-
- 						auto path = std::filesystem::relative(outPath, "assets/");
-
- 						Ref<Material> mat = MaterialManager::Load(path.string());
- 						spriteComp.Material = mat;
-
-						free(outPath);
-					}
-					else if (result == NFD_CANCEL) {
-						PX_CORE_MSG("User pressed cancel.\n");
-					}
-					else {
-						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
-					}
-
-				}
-				ImGui::SameLine();
-				
-
-				if (spriteComp.Material)
-				{
-
-					//TODO: Handle external resources. We only support assets local to the project!
-					std::filesystem::path path;
-					if (AssetManager::IsResource(spriteComp.Material->Handle))
-					{
-						path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle), true);
-					}
-					else
-					{
-						path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle), false);
-					}
-					ImGui::InputText("##MaterialFilepath", (char*)path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-				}
-				else
-				{
-					ImGui::InputText("##MaterialFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
-				}
-
-
-				BeginDragDrop([&](AssetMetadata& metadata) {
-					if (metadata.Type == AssetType::Material) {
-						std::filesystem::path path = metadata.Filepath;
-
-						Ref<Material> mat = MaterialManager::Load(path.string());
-						spriteComp.Material = mat;
-					}
-				});
-				ImGui::PopID();
-
-
-
-				ImGui::PopItemWidth();
-
-
-
-
-
-				ImGui::NextColumn();
+				/*
 				ImGui::Text("Tint color");
 				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
@@ -448,6 +380,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::NextColumn();
 
 				}
+				*/
 
 
 				ImGui::Text("Sorting Layer");
@@ -493,7 +426,148 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				ImGui::NextColumn();
 
 
-				if (spriteRect) {
+				ImGui::Text("Material path");
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
+				ImGui::PushID(2);
+				if (ImGui::Button("open")) {
+					nfdchar_t* outPath = NULL;
+					nfdresult_t result = NFD_OpenDialog("pxShader", NULL, &outPath);
+
+					if (result == NFD_OKAY) {
+						PX_CORE_TRACE("Success!\n");
+
+						auto path = std::filesystem::relative(outPath, "assets/");
+
+						Ref<Material> mat = MaterialManager::Load(path.string());
+						spriteComp.Material = mat;
+
+						free(outPath);
+					}
+					else if (result == NFD_CANCEL) {
+						PX_CORE_MSG("User pressed cancel.\n");
+					}
+					else {
+						PX_CORE_ERROR("Error: %s\n", NFD_GetError());
+					}
+
+				}
+				ImGui::SameLine();
+
+
+				if (spriteComp.Material)
+				{
+
+					//TODO: Handle external resources. We only support assets local to the project!
+					std::filesystem::path path;
+					if (AssetManager::IsResource(spriteComp.Material->Handle))
+					{
+						path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle), true);
+					}
+					else
+					{
+						path = AssetManager::GetFilePath(AssetManager::GetMetadata(spriteComp.Material->Handle), false);
+					}
+					ImGui::InputText("##MaterialFilepath", (char*)path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+				}
+				else
+				{
+					ImGui::InputText("##MaterialFilepath", (char*)"No path...", 256, ImGuiInputTextFlags_ReadOnly);
+				}
+
+
+				BeginDragDrop([&](AssetMetadata& metadata) {
+					if (metadata.Type == AssetType::Material) {
+						std::filesystem::path path = metadata.Filepath;
+
+						Ref<Material> mat = MaterialManager::Load(path.string());
+						spriteComp.Material = mat;
+					}
+					});
+				ImGui::PopID();
+				ImGui::PopItemWidth();
+
+
+				ImGui::Columns(1);
+				ImGui::Separator();
+				ImGui::PushItemWidth(-1);
+				ImGui::SetCursorPos({ ImGui::GetWindowWidth() / 2 - ImGui::CalcTextSize("Material Editor").x / 2, ImGui::GetCursorPosY()});
+				ImGui::Text("Material Editor");
+
+				ImGui::Columns(2);
+				ImGui::PushID(2);
+				ImGui::Text("Material");
+				ImGui::NextColumn();
+
+				bool changedShader = false;
+				Ref<Material>& material = m_CurrentlySelectedEntity.GetComponent<SpriteRendererComponent>().Material;
+				std::vector<std::string> items;
+				items.push_back(material->GetName().c_str());
+				std::string current_item = items[0];
+
+				auto metadatas = AssetManager::GetMetadataOfType(AssetType::Material);
+
+
+				for (auto& metadata : metadatas)
+				{
+
+					std::string name = metadata.Filepath.stem().string();
+					if (name == items[0])
+					{
+						continue;
+					}
+					items.push_back(name);
+				}
+
+
+				if (ImGui::BeginCombo("##Material-list", current_item.c_str()))
+				{
+					for (auto& item : items) {
+						bool is_selected = (current_item == item.c_str());
+						if (ImGui::Selectable(item.c_str(), is_selected))
+						{
+							current_item = item;
+
+							Ref<Material> result = nullptr;
+							for (auto& metadata : metadatas)
+							{
+								std::string name = metadata.Filepath.stem().string();
+								if (name == item)
+								{
+									result = AssetManager::GetAsset<Material>(metadata.Handle);
+									break;
+								}
+							}
+							material = result;
+
+
+							changedShader = true;
+						}
+
+						if (is_selected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+				ImGui::PopID();
+
+
+				ImGui::PopItemWidth();
+
+				ImGui::NextColumn();
+
+				for (auto& materialTable: material->GetUniformTable())
+				{
+
+					for (auto& materialProperty : materialTable->ReflectedUniformBuffer.Members)
+					{
+						RenderMaterialProperty(material, materialProperty, materialTable->ReflectedUniformBuffer.Binding);
+					}
+
+				}
+
+/*				if (spriteRect) {
 					ImGui::Text("Texture");
 					ImGui::NextColumn();
 					ImGui::PushItemWidth(-1);
@@ -517,8 +591,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::PopItemWidth();
 					ImGui::NextColumn();
 				}
-
-
+				*/
 			});
 		
 			DrawEntityComponents<CameraComponent>("Orthographic Camera", m_CurrentlySelectedEntity, [](CameraComponent& cc) {
@@ -1448,4 +1521,63 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		ImGui::End();
 
 	}
+
+
+	void EditorSceneHierarchyPanel::RenderMaterialProperty(Ref<Material>& material, ShaderMember prop, int binding)
+	{
+	
+
+		switch (prop.Type)
+		{
+			case ShaderBaseType::Float: 
+			{
+
+				ImGui::Text(prop.Name.c_str());
+				ImGui::NextColumn();
+				std::string id = std::string("##") + prop.Name;
+
+				float temp = material->Get<float>(prop.Name, binding);
+				if (ImGui::DragFloat(id.c_str(), &temp))
+				{
+					material->Set<float>(prop.Name, temp, binding);
+				}
+
+
+				ImGui::NextColumn();
+
+
+				break;
+			}
+
+			case ShaderBaseType::SampledImage: 
+			{
+				ImGui::Text(prop.Name.c_str());
+				ImGui::NextColumn();
+				std::string id = std::string("##") + prop.Name;
+
+
+					//if (ImGui::ImageButton((void*)spriteRect->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 })) {
+					//	const auto& inspector = std::dynamic_pointer_cast<EditorTextureInspector>(EditorPanelManager::Get().GetPanel("TextureInspector"));
+
+					//	inspector->SetOpenPanel(true);
+					//	inspector->SetTextureContext(spriteRect);
+
+					//}
+
+					//BeginDragDrop([&](AssetMetadata& metadata) {
+					//	if (metadata.Type == AssetType::Texture) {
+					//		spriteComp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
+					//		spriteComp.Rect = { {0, 0}, {spriteComp.Texture->GetWidth(), spriteComp.Texture->GetHeight()} };
+
+					//	}
+					//	});
+
+					//ImGui::PopItemWidth();
+					ImGui::NextColumn();
+			}
+		}
+
+	}
+
+
 }

@@ -39,12 +39,15 @@ namespace Pixelate {
 
 	struct ShaderUniform
 	{
-		uint32_t StructSize;
-		uint32_t Binding;
-		uint32_t MemberSize;
+		uint32_t StructSize = 0;
+		uint32_t Binding = 0;
+		uint32_t MemberSize = 0;
 
 		std::vector<ShaderMember> Members;
 	};
+
+	
+
 	struct ShaderResource
 	{
 		std::string Name;
