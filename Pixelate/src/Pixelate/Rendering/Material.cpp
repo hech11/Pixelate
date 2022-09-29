@@ -17,20 +17,35 @@ namespace Pixelate
 	{
 		if (initBufferTable)
 		{
+			int binding = 0;
 			for (auto& resource : m_Shader->GetResources())
 			{
+				Ref<MaterialUniformTable> table = nullptr;
+
 				for (auto& uniformBuffer : resource.Uniforms)
 				{
-					Ref<MaterialUniformTable> table = CreateRef<MaterialUniformTable>();
-
-					table->UBO = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
+					table = CreateRef<MaterialUniformTable>();
+					table->UBOs[uniformBuffer.Binding] = UniformBuffer::Create(uniformBuffer.StructSize, uniformBuffer.Binding);
 					table->Size = uniformBuffer.StructSize;
-					table->ReflectedUniformBuffer = uniformBuffer;
+					table->ReflectedUniformBuffers[uniformBuffer.Binding] = uniformBuffer;
 					table->InvalidateData();
 
 					m_UniformTable.push_back(table);
 
+				}
 
+				for (auto&& [shaderMember, sampledImage] : resource.SampledImage2DContainers)
+				{
+
+					if (table == nullptr)
+					{
+						table = CreateRef<MaterialUniformTable>();
+					}
+					table->Size = shaderMember.Size;
+					table->ReflectedSampledImage2Ds[binding] = sampledImage;
+					table->InvalidateData();
+
+					m_UniformTable.push_back(table);
 				}
 
 			}
@@ -41,7 +56,10 @@ namespace Pixelate
 	{
 		for (auto&& table : m_UniformTable)
 		{
-			table->UBO->Bind();
+			for (auto&& [bnding, ub] : table->UBOs)
+			{
+				ub->Bind();
+			}
 		}
 
 		m_Shader->Bind();
@@ -51,7 +69,10 @@ namespace Pixelate
 	{
 		for (auto&& table : m_UniformTable)
 		{
-			table->UBO->UnBind();
+			for (auto&& [bnding, ub] : table->UBOs)
+			{
+				ub->UnBind();
+			}
 		}
 
 		m_Shader->Unbind();
@@ -60,14 +81,25 @@ namespace Pixelate
 
 	void Material::AddUniformBufferEntry(const ShaderUniform& table)
 	{
-
 		Ref<MaterialUniformTable> entry = CreateRef<MaterialUniformTable>();
-		entry->UBO = UniformBuffer::Create(table.StructSize, table.Binding);
+		entry->UBOs[table.Binding] = UniformBuffer::Create(table.StructSize, table.Binding);
 		entry->Size = table.StructSize;
-		entry->ReflectedUniformBuffer = table;
+		entry->ReflectedUniformBuffers[table.Binding] = table;
 		entry->InvalidateData();
 
 		m_UniformTable.push_back(entry);
+	}
+
+	void Material::AddSampledImageEntry(int binding, SampledImage2DContainer& container)
+	{
+		Ref<MaterialUniformTable> entry = CreateRef<MaterialUniformTable>();
+
+		entry->Size = 1;
+		entry->ReflectedSampledImage2Ds[binding] = container;
+		entry->InvalidateData();
+
+		m_UniformTable.push_back(entry);
+
 	}
 
 	void Material::SetShader(const Ref<Shader>& shader)
@@ -83,7 +115,11 @@ namespace Pixelate
 	{
 		for (auto&& table : m_UniformTable)
 		{
-			table->UBO->SetData(table->Data.data(), table->Size, 0);
+			for (auto&& [binding, ub] : table->UBOs)
+			{
+				ub->SetData(table->Data.data(), table->Size, 0);
+			}
+			
 		}
 	}
 
@@ -93,14 +129,12 @@ namespace Pixelate
 		{
 			for (auto& table : m_UniformTable)
 			{
-				if (table->ReflectedUniformBuffer.Binding == binding)
+				
+				for (auto& member : table->ReflectedUniformBuffers[binding].Members)
 				{
-					for (auto& member : table->ReflectedUniformBuffer.Members)
+					if (member.Name == name)
 					{
-						if (member.Name == name)
-						{
-							return std::make_pair(table->UBO, member);
-						}
+						return std::make_pair(table->UBOs[binding], member);
 					}
 				}
 			}
@@ -115,7 +149,7 @@ namespace Pixelate
 		{
 			for (auto& table : m_UniformTable)
 			{
-				if (table->ReflectedUniformBuffer.Binding == binding)
+				if (table->ReflectedUniformBuffers[binding].Binding == binding)
 					return table;
 			}
 		}

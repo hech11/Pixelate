@@ -24,6 +24,8 @@ namespace Pixelate
 
 
 			void AddUniformBufferEntry(const ShaderUniform& table);
+			void AddSampledImageEntry(int binding, SampledImage2DContainer& container);
+
 			void SetShader(const Ref<Shader>& shader);
 
 

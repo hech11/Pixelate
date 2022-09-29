@@ -303,6 +303,23 @@ namespace Pixelate {
 		shaderResource.UniformBufferSize = resources.uniform_buffers.size();
 		shaderResource.SampledBufferSize = resources.sampled_images.size();
 
+		// We only support 2D textures for now
+		for (auto& sampledImages : resources.sampled_images)
+		{
+			std::pair<ShaderMember, SampledImage2DContainer> result;
+
+			auto& member = result.first;
+			auto& sampledImage = result.second;
+
+			member.Name = sampledImages.name;
+			member.Offset = 0;
+			member.Size = PXShaderTypeToBytes(member.Type);
+			member.Type = SpirVShaderTypeToPXShaderType(compiler.get_type(sampledImages.type_id));
+
+
+			shaderResource.SampledImage2DContainers.push_back(result);
+		}
+
 
 
 		for (auto& resource : resources.uniform_buffers)
@@ -315,6 +332,7 @@ namespace Pixelate {
 			uniform.MemberSize = id.member_types.size();
 
 
+		
 			uint32_t offset = 0;
 			for (int i = 0; i < uniform.MemberSize; i++)
 			{

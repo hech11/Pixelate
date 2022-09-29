@@ -6,6 +6,9 @@
 
 #include "Pixelate/Asset/Asset.h"
 
+#include "Pixelate/Rendering/API/Texture.h"
+#include "Pixelate/Core/Rect.h"
+
 
 // Shader interface.
 // The 'Create' method will decide depending on the API choice. OpenGL, Directx 11 or 12, vulkan etc.
@@ -16,6 +19,13 @@
 namespace Pixelate {
 
 
+
+	// Should this even be here?
+	struct SampledImage2DContainer
+	{
+		Ref<Pixelate::Texture> Texture;
+		Pixelate::Rect Rect;
+	};
 	enum class ShaderBaseType
 	{
 		None = -1,
@@ -56,6 +66,8 @@ namespace Pixelate {
 		uint32_t SampledBufferSize;
 
 		std::vector<ShaderUniform> Uniforms;
+		std::vector<std::pair<ShaderMember, SampledImage2DContainer>> SampledImage2DContainers;
+
 	};
 
 

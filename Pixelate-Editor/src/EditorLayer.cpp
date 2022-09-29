@@ -84,6 +84,7 @@ namespace Pixelate {
 
 		Renderer2D::GetShaderLibrary().Add("BlueShader", "Shaders/BlueShader.pxShader");
 
+
 	}
 
 

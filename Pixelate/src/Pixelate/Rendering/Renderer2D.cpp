@@ -285,6 +285,69 @@ namespace Pixelate {
 		command->IndexCount += 6;
 	}
 
+	void Renderer2D::DrawSpriteWithMaterial(const glm::mat4& transform, const Ref<Material>& material, int entityID)
+	{
+		auto& renderPassPool = s_RPPool.GetPool()[SceneData->CurrentRenderPass];
+		auto& command = renderPassPool[material];
+
+		if (command->IndexCount >= command->MaxIndexSize)
+			command->PrepareNewBatch();
+
+		constexpr unsigned int VertexCount = 4;
+
+		float textureIndex = 0.0f;
+		std::array<glm::vec2, 4> texCoords = { {{0.0f, 0.0f}, {0.0f, 0.0f},{0.0f, 0.0f},{0.0f, 0.0f}} };
+
+		SampledImage2DContainer* hasTexture = nullptr;
+		/*for (auto& tables : material->GetUniformTable())
+		{
+			for (auto& texture : tables->ReflectedUniformBuffer)
+			{
+				hasTexture = texture;
+				break;
+			}
+			if (hasTexture)
+				break;
+		}
+
+
+
+		if (hasTexture)
+		{
+			textureIndex = TextureManager::IsTextureValid(hasTexture.Texture);
+
+			if (textureIndex == 0.0f) {
+				auto& manager = TextureManager::GetManagerData();
+				if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
+					command->PrepareNewBatch();
+				textureIndex = manager.TextureSlotIndex;
+				TextureManager::DirectAdd(hasTexture.Texture);
+			}
+
+			texCoords = NormalizedCoordinates(hasTexture.Rect, hasTexture.Texture);
+		}
+		*/		
+		unsigned char r = 255 * 255.0f;
+		unsigned char g = 255  * 255.0f;
+		unsigned char b = 255  * 255.0f;
+		unsigned char a = 255  * 255.0f;
+		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+
+		for (unsigned int i = 0; i < VertexCount; i++) {
+
+			command->PtrData->Verticies = transform * SceneData->QuadPivotPointPositions[i];
+			command->PtrData->Color = color;
+			command->PtrData->TextureCoords = texCoords[i];
+			command->PtrData->TextureIndex = textureIndex;
+			command->PtrData->EntityID = entityID;
+			command->PtrData++;
+		}
+
+
+		command->IndexCount += 6;
+	}
+
 	void Renderer2D::DrawSpriteWithShader(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID)
 	{
 		DrawSpriteWithShader(transform.Transform, sprite.Texture, sprite.Rect, sprite.TintColor, sprite.Material, entityID);

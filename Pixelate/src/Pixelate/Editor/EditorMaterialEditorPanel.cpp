@@ -130,7 +130,7 @@ namespace Pixelate
 
 		if (!changedShader)
 		{
-			for (auto& table : material->GetUniformTable())
+			/*for (auto& table : material->GetUniformTable())
 			{
 				for (auto& member : table->ReflectedUniformBuffer.Members)
 				{
@@ -174,7 +174,7 @@ namespace Pixelate
 					}
 				}
 
-			}
+			}*/
 		}
 		ImGui::PopID();
 

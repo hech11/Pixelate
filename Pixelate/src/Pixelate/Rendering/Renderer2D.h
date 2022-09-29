@@ -185,6 +185,8 @@ namespace Pixelate {
 			static void DrawSpriteWithShader(const glm::mat4& transform, const Ref<Texture>& texture, const Rect& textureDestRect, const glm::vec4& tintColor, const Ref<Material>& material, int entityID);
 			static void DrawSpriteWithShader(const TransformComponent& transform, const SpriteRendererComponent& sprite, int entityID);
 
+			static void DrawSpriteWithMaterial(const glm::mat4& transform, const Ref<Material>& material, int entityID);
+
 
 			static void DrawLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& color);
 			static void DrawAABB(const AABB& aabb, const glm::vec4& color);

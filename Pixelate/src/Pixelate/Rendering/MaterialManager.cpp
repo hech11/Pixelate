@@ -61,47 +61,86 @@ namespace Pixelate
 		out << YAML::BeginMap;
 		for (auto& table : material->GetUniformTable())
 		{
-			out << YAML::Key << "Binding" << YAML::Value << table->ReflectedUniformBuffer.Binding;
-			out << YAML::Key << "StructSize" << YAML::Value << table->ReflectedUniformBuffer.StructSize;
 
+			out << YAML::Key << "ReflectedUniformBuffers" << YAML::BeginSeq;
+			out << YAML::BeginMap;
 
-			out << YAML::Key << "Members" << YAML::BeginSeq;
-			for (auto& member : table->ReflectedUniformBuffer.Members)
+			for (auto&& [binding, ubs] : table->ReflectedUniformBuffers)
 			{
-				out << YAML::BeginMap;
-				out << YAML::Key << "Name" << YAML::Value << member.Name;
+				out << YAML::Key << "Binding" << YAML::Value << binding;
+				out << YAML::Key << "StructSize" << YAML::Value << ubs.StructSize;
 
-				
-				switch (member.Type)
+				out << YAML::Key << "Members" << YAML::BeginSeq;
+
+				for (auto& member : ubs.Members)
 				{
-					case ShaderBaseType::Int32: 
+					out << YAML::BeginMap;
+					out << YAML::Key << "Name" << YAML::Value << member.Name;
+
+
+					switch (member.Type)
 					{
-						int value = material->Get<int>(member.Name, table->ReflectedUniformBuffer.Binding);
+					case ShaderBaseType::Int32:
+					{
+						int value = material->Get<int>(member.Name, binding);
 						out << YAML::Key << "Value" << YAML::Value << value;
 						break;
 					}
 
 					case ShaderBaseType::Float:
 					{
-						float value = material->Get<float>(member.Name, table->ReflectedUniformBuffer.Binding);
+						float value = material->Get<float>(member.Name, binding);
 						out << YAML::Key << "Value" << YAML::Value << value;
 						break;
 					}
+					}
+
+					out << YAML::Key << "Type" << YAML::Value << (int)member.Type;
+					out << YAML::Key << "Size" << YAML::Value << member.Size;
+					out << YAML::Key << "Offset" << YAML::Value << member.Offset;
+					out << YAML::EndMap;
+
 				}
 
+				out << YAML::EndSeq;
 
-
-				
-				out << YAML::Key << "Type" << YAML::Value << (int)member.Type;
-				out << YAML::Key << "Size" << YAML::Value << member.Size;
-				out << YAML::Key << "Offset" << YAML::Value << member.Offset;
-				out << YAML::EndMap;
 			}
 			out << YAML::EndSeq;
+			out << YAML::EndMap;
+
+
+			out << YAML::Key << "ReflectedSamplerImages" << YAML::BeginSeq;
+			out << YAML::BeginMap;
+
+			for (auto&& [binding, samplers] : table->ReflectedSampledImage2Ds)
+			{
+				
+				out << YAML::Key << "Texture";
+				out << YAML::BeginMap;
+				out << YAML::Key << "AssetHandle" << YAML::Value << (UUID)AssetManager::GetMetadata(samplers.Texture->Handle).Handle;
+				out << YAML::EndMap;
+
+
+				out << YAML::Key << "Rect";
+				out << YAML::BeginMap;
+
+				out << YAML::Key << "PositionX" << YAML::Value << samplers.Rect.Position.x;
+				out << YAML::Key << "PositionY" << YAML::Value << samplers.Rect.Position.y;
+				out << YAML::Key << "ScaleX" << YAML::Value << samplers.Rect.Scale.x;
+				out << YAML::Key << "ScaleY" << YAML::Value << samplers.Rect.Scale.y;
+
+
+				out << YAML::EndMap;
+			}
+
+			out << YAML::EndSeq;
+			out << YAML::EndMap;
+
 		}
-		out << YAML::EndSeq;
 
 		out << YAML::EndMap;
+		out << YAML::EndSeq;
+
 		out << YAML::EndMap;
 
 		out << YAML::EndSeq;
@@ -157,50 +196,71 @@ namespace Pixelate
 			{
 				for (auto table : tableNode)
 				{
-					ShaderUniform entry;
-					if(!table["Binding"])
-						continue;
-					entry.Binding = table["Binding"].as<int>();
-					entry.StructSize = table["StructSize"].as<int>();
-					YAML::Node memberNode = table["Members"];
 
-					result->AddUniformBufferEntry(entry);
-					auto& uniformTable = result->GetUniformTable()[entry.Binding];
+					YAML::Node reflectedBuffersNode = table["ReflectedUniformBuffers"];
+					YAML::Node reflectedSamplerImages = reflectedBuffersNode["ReflectedSamplerImages"];
 
-					for (auto member : memberNode)
+
+
+					for (auto reflectedBuffer : reflectedBuffersNode)
 					{
-						ShaderMember e2;
+						ShaderUniform entry;
+						entry.Binding = reflectedBuffer["Binding"].as<int>();
+						entry.StructSize = reflectedBuffer["StructSize"].as<int>();
+						YAML::Node memberNode = reflectedBuffer["Members"];
 
-						e2.Name = member["Name"].as<std::string>();
-						e2.Offset = member["Offset"].as<int>();
-						e2.Type = (ShaderBaseType)member["Type"].as<int>();
-						e2.Size = member["Size"].as<int>();
+						result->AddUniformBufferEntry(entry);
+						auto& uniformTable = result->GetUniformTable()[entry.Binding];
 
-
-						auto value = member["Value"];
-						if (value)
+						for (auto member : memberNode)
 						{
-							switch (e2.Type)
+							ShaderMember e2;
+
+							e2.Name = member["Name"].as<std::string>();
+							e2.Offset = member["Offset"].as<int>();
+							e2.Type = (ShaderBaseType)member["Type"].as<int>();
+							e2.Size = member["Size"].as<int>();
+
+
+							auto value = member["Value"];
+							if (value)
 							{
-							case ShaderBaseType::Float:
-							{
-								float v = value.as<float>();
-								memcpy((uint8_t*)uniformTable->Data.data() + e2.Offset, &v, e2.Size);
-								break;
+								switch (e2.Type)
+								{
+								case ShaderBaseType::Float:
+								{
+									float v = value.as<float>();
+									memcpy((uint8_t*)uniformTable->Data.data() + e2.Offset, &v, e2.Size);
+									break;
+								}
+								case ShaderBaseType::Int32:
+								{
+									int v = value.as<int32_t>();
+									memcpy((uint8_t*)uniformTable->Data.data() + e2.Offset, &v, e2.Size);
+									break;
+								}
+								}
+
 							}
-							case ShaderBaseType::Int32:
-							{
-								int v = value.as<int32_t>();
-								memcpy((uint8_t*)uniformTable->Data.data() + e2.Offset, &v, e2.Size);
-								break;
-							}
-							}
+							uniformTable->ReflectedUniformBuffers[entry.Binding].Members.push_back(e2);
 
 						}
-						uniformTable->ReflectedUniformBuffer.Members.push_back(e2);
-
-
 					}
+					
+				
+					for (auto reflectedSample : reflectedSamplerImages)
+					{
+						Ref<Texture> texture = AssetManager::GetAsset<Texture>((AssetHandle)reflectedSample["Texture"].as<uint64_t>());
+						int posx = reflectedSample["PositionX"].as<int>();
+						int posy = reflectedSample["PositionY"].as<int>();
+						int scalex = reflectedSample["ScaleX"].as<int>();
+						int scaley = reflectedSample["ScaleY"].as<int>();
+
+						SampledImage2DContainer cont = { texture, {{posx, posy}, {scalex, scaley}} };
+
+						result->AddSampledImageEntry(0, cont);
+					}
+
 
 				}
 			}

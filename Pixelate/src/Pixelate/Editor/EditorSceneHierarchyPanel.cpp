@@ -559,12 +559,19 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 				for (auto& materialTable: material->GetUniformTable())
 				{
-
-					for (auto& materialProperty : materialTable->ReflectedUniformBuffer.Members)
+					for (auto&& [binding, ubs] : materialTable->ReflectedUniformBuffers)
 					{
-						RenderMaterialProperty(material, materialProperty, materialTable->ReflectedUniformBuffer.Binding);
+						for (auto& materialProperty : ubs.Members)
+						{
+							RenderMaterialProperty(material, materialProperty, ubs.Binding);
+						}
 					}
 
+					for (auto&& [binding, sampledImageContainers] : materialTable->ReflectedSampledImage2Ds)
+					{
+						RenderMaterialSampledImage2D(material, sampledImageContainers, binding);
+					}
+					
 				}
 
 /*				if (spriteRect) {
@@ -1540,6 +1547,8 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				if (ImGui::DragFloat(id.c_str(), &temp))
 				{
 					material->Set<float>(prop.Name, temp, binding);
+					MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
+
 				}
 
 
@@ -1576,6 +1585,38 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 					ImGui::NextColumn();
 			}
 		}
+
+	}
+
+	void EditorSceneHierarchyPanel::RenderMaterialSampledImage2D(Ref<Material>& material, SampledImage2DContainer& container, int binding)
+	{
+		std::filesystem::path p(container.Texture->GetFilepath());
+
+		std::string name = p.stem().string();
+		ImGui::Text(name.c_str());
+		ImGui::NextColumn();
+		std::string id = std::string("##") + name;
+
+
+			if (ImGui::ImageButton((void*)container.Texture->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 }))
+			{
+				const auto& inspector = std::dynamic_pointer_cast<EditorTextureInspector>(EditorPanelManager::Get().GetPanel("TextureInspector"));
+
+				inspector->SetOpenPanel(true);
+				inspector->SetTextureContext(container.Texture);
+			}
+
+			BeginDragDrop([&](AssetMetadata& metadata) {
+				if (metadata.Type == AssetType::Texture) {
+//					spriteComp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
+					//spriteComp.Rect = { {0, 0}, {spriteComp.Texture->GetWidth(), spriteComp.Texture->GetHeight()} };
+
+				}
+				});
+
+			ImGui::PopItemWidth();
+
+		ImGui::NextColumn();
 
 	}
 

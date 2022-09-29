@@ -2,10 +2,17 @@ Material:
   - Name: DefaultMaterial
     Shader: 7968149936872318425
     Table:
-      - Binding: 0
-        StructSize: 64
-        Members:
-          - Name: u_ViewProjection
-            Type: 6
-            Size: 64
-            Offset: 0
+      - ReflectedUniformBuffers:
+          - Binding: 0
+            StructSize: 68
+            Members:
+              - Name: u_ViewProjection
+                Type: 6
+                Size: 64
+                Offset: 0
+      - ReflectedSamplerImages:
+          - Texture: 18069192197029962527
+            PositionX: 0
+            PositionY: 0
+            ScaleX: 1024
+            ScaleY: 1024

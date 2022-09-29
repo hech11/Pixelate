@@ -17,8 +17,8 @@ namespace Pixelate {
 
 		private :
 			// TODO: abstact this into its own class?
-
 			void RenderMaterialProperty(Ref<Material>& material, ShaderMember prop, int binding);
+			void RenderMaterialSampledImage2D(Ref<Material>& material, SampledImage2DContainer& container, int binding);
 
 	};
 

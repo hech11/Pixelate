@@ -9,10 +9,13 @@ namespace Pixelate
 
 	struct MaterialUniformTable
 	{
-		ShaderUniform ReflectedUniformBuffer;
-		Ref<UniformBuffer> UBO;
+		std::unordered_map<int, ShaderUniform> ReflectedUniformBuffers;
+		std::unordered_map<int, Ref<UniformBuffer>> UBOs;
+		std::unordered_map<int, SampledImage2DContainer> ReflectedSampledImage2Ds;
+
 
 		std::vector<uint8_t> Data;
+
 		uint32_t Size = 0;
 
 		void InvalidateData()
@@ -33,8 +36,9 @@ namespace Pixelate
 
 			memcpy(Data.data(), other.Data.data(), other.Size);
 			Size = other.Size;
-			ReflectedUniformBuffer = other.ReflectedUniformBuffer;
-			UBO = other.UBO;
+			ReflectedUniformBuffers = other.ReflectedUniformBuffers;
+			UBOs = other.UBOs;
+			ReflectedSampledImage2Ds = other.ReflectedSampledImage2Ds;
 		}
 		~MaterialUniformTable()
 		{
