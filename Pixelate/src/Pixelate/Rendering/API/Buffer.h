@@ -211,4 +211,23 @@ namespace Pixelate {
 	};
 
 
+	class UniformBuffer 
+	{
+		public :
+			virtual ~UniformBuffer() = default;
+			virtual uint32_t GetRendererID() const = 0;
+			virtual uint32_t GetBinding() const = 0;
+
+			virtual void Bind() const = 0;
+			virtual void UnBind() const = 0;
+
+			virtual void SetData(const void* data, uint32_t size, uint32_t offset) = 0;
+			virtual void* GetData(uint32_t offset) = 0;
+
+		public :
+			static Ref<UniformBuffer> Create(uint32_t size, uint32_t binding);
+
+	};
+
+
 }

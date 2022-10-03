@@ -12,8 +12,8 @@ namespace Pixelate {
 	class AssetRegistry {
 		public :
 
-			void Serialize();
-			bool Deserialize();
+			void Serialize(const std::filesystem::path& path);
+			bool Deserialize(const std::filesystem::path& path, bool isResource = false);
 
 
 			inline std::unordered_map<std::filesystem::path, AssetMetadata>& const GetRegistry() { return m_Registry; }

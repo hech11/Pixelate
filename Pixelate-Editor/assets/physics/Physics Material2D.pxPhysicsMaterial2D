@@ -1,0 +1,4 @@
+PhysicsMaterial2D:
+  - Mass: 0
+    Friction: 0.200000003
+    Bounciness: 0

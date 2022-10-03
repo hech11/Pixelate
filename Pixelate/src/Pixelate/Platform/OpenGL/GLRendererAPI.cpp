@@ -142,7 +142,7 @@ namespace Pixelate {
 		switch (type)
 		{
 		case Pixelate::PimitiveRenderType::Triangles:
-			glDrawElements(GL_TRIANGLES, indexCount, vao->GetIbos().GetType(), nullptr);
+			GLCall(glDrawElements(GL_TRIANGLES, indexCount, vao->GetIbos().GetType(), nullptr));
 			break;
 		case Pixelate::PimitiveRenderType::Lines:
 			glDrawElements(GL_LINES, indexCount, vao->GetIbos().GetType(), nullptr);

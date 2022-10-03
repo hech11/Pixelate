@@ -61,7 +61,7 @@ namespace Pixelate {
 		static void APIENTRY OpenGLDebugOuput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userData)
 		{
 			std::string _source, _type, _severity;
-
+			bool discardLogMessage = false;
 
 			switch (source)
 			{
@@ -73,7 +73,7 @@ namespace Pixelate {
 				break;
 
 			case GL_DEBUG_SOURCE_OTHER:
-				_source = "Unknown";
+				_source = "Other";
 				break;
 
 			case GL_DEBUG_SOURCE_SHADER_COMPILER:
@@ -98,7 +98,7 @@ namespace Pixelate {
 				break;
 
 			case GL_DEBUG_TYPE_OTHER:
-				_type = "Unknown";
+				_type = "Other";
 				break;
 
 			case GL_DEBUG_TYPE_PORTABILITY:
@@ -125,11 +125,13 @@ namespace Pixelate {
 				_severity = "L Severity";
 				break;
 			default:
+				discardLogMessage = true;
 				_severity = "Unknown (not listed)";
 				break;
 			}
 
-			PX_CORE_ERROR("[OpenGL][%s][%s][%d][%s]: %s\n", _source.c_str(), _type.c_str(), id, _severity.c_str(), message);
+			if(!discardLogMessage)
+				PX_CORE_ERROR("[OpenGL][%s][%s][%d][%s]: %s\n", _source.c_str(), _type.c_str(), id, _severity.c_str(), message);
 
 
 		}

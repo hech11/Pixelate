@@ -13,6 +13,11 @@ namespace Pixelate {
 
 
 	std::filesystem::path AssetManager::s_AssetPath = "assets"; //TODO: add to a "project" class
+	std::filesystem::path AssetManager::s_ResourcePath = "resources"; //TODO: add to a "project" class
+
+	std::filesystem::path AssetManager::s_AssetRegistryPath = s_ResourcePath / "registries/AssetRegistry.pxar";
+	std::filesystem::path AssetManager::s_ResourceRegistryPath = s_ResourcePath / "registries/ResourceRegistry.pxar";
+
 	Pixelate::AssetMetadata AssetManager::s_NullMetadata;
 
 	std::unordered_map<AssetHandle, Ref<Asset>> AssetManager::s_LoadedAssets;
@@ -24,7 +29,7 @@ namespace Pixelate {
 	std::string AssetManager::m_FilterBuffer;
 	bool AssetManager::m_IsFiltering;
 
-	Pixelate::FileWatcherCallback AssetManager::s_Callback;
+	std::vector<Pixelate::FileWatcherCallback> AssetManager::s_Callbacks;
 
 	
 
@@ -37,9 +42,13 @@ namespace Pixelate {
 
 		FileSystem::SetFileWatcherCallback(AssetManager::OnFileWatcherAction);
 
-		s_AssetRegistry.Deserialize();
+		s_ResourceRegistry.Deserialize(s_ResourceRegistryPath, true);
+		ReloadResources();
+		s_ResourceRegistry.Serialize(s_ResourceRegistryPath);
+
+		s_AssetRegistry.Deserialize(s_AssetRegistryPath);
 		ReloadAssets();
-		s_AssetRegistry.Serialize();
+		s_AssetRegistry.Serialize(s_AssetRegistryPath);
 		
 
 	}
@@ -50,15 +59,21 @@ namespace Pixelate {
 		AssetImporter::Shutdown();
 
 
-		s_AssetRegistry.Serialize();
+		s_AssetRegistry.Serialize(s_AssetRegistryPath);
 		s_AssetRegistry.GetRegistry().clear();
+
+		s_ResourceRegistry.Serialize(s_ResourceRegistryPath);
+		s_ResourceRegistry.GetRegistry().clear();;
+
 		s_LoadedAssets.clear();
 	}
 
 	void AssetManager::OnFileWatcherAction(FileWatcherCallbackData data)
 	{
-
-		s_Callback(data);
+		for (auto& callback : s_Callbacks)
+		{
+			callback(data);
+		}
 		Audio::StopAllSources();
 		if (!data.IsDirectory) {
 			switch (data.Action)
@@ -78,6 +93,10 @@ namespace Pixelate {
 			if (metadata.Handle == handle)
 				return metadata;
 		}
+		for (auto& [filepath, metadata] : s_ResourceRegistry.GetRegistry()) {
+			if (metadata.Handle == handle)
+				return metadata;
+		}
 
 		return s_NullMetadata;
 	}
@@ -90,13 +109,55 @@ namespace Pixelate {
 				return metadata;
 		}
 
+		for (auto& [filepath, metadata] : s_ResourceRegistry.GetRegistry()) {
+			if (filepath == path)
+				return metadata;
+		}
+
 		return s_NullMetadata;
 	}
+
+	std::vector<AssetMetadata> AssetManager::GetMetadataOfType(AssetType type, bool includeAssets, bool includeResources)
+	{
+		std::vector<AssetMetadata> result;
+
+		PX_PROFILE_FUNCTION();
+
+		if (includeAssets)
+		{
+			for (auto& [filepath, metadata] : s_AssetRegistry.GetRegistry())
+			{
+				if (metadata.Type == type)
+				{
+					result.push_back(metadata);
+				}
+			}
+		}
+
+		if (includeResources)
+		{
+			for (auto& [filepath, metadata] : s_ResourceRegistry.GetRegistry()) {
+			
+				if (metadata.Type == type)
+				{
+					result.push_back(metadata);
+				}
+			}
+		}
+
+
+
+		return result;
+	}
+
 
 	AssetHandle AssetManager::ImportAsset(const std::filesystem::path& filepath) {
 
 		PX_PROFILE_FUNCTION();
 		auto path = std::filesystem::relative(filepath, s_AssetPath); // should be the asset directory
+
+		if (path.empty())
+			path = filepath;
 
 		if (FileSystem::IsDirectory(filepath))
 			return s_NullMetadata.Handle;
@@ -124,6 +185,36 @@ namespace Pixelate {
 
 	}
 
+	Pixelate::AssetHandle AssetManager::ImportResource(const std::filesystem::path& filepath)
+	{
+		PX_PROFILE_FUNCTION();
+		auto path = std::filesystem::relative(filepath, s_ResourcePath); // should be the asset directory
+
+		if (FileSystem::IsDirectory(filepath))
+			return s_NullMetadata.Handle;
+
+		if (s_ResourceRegistry.GetRegistry().find(path) != s_ResourceRegistry.GetRegistry().end()) {
+			return s_ResourceRegistry.GetRegistry()[path].Handle;
+		}
+
+
+		AssetMetadata metadata;
+		metadata.Handle = 0;
+
+		AssetType type = Pixelate::Utils::StringToAssetTypeExtension(path.string());
+		if (type != AssetType::None) {
+			metadata.Handle = AssetHandle();
+			metadata.Filepath = path;
+			metadata.Type = type;
+
+			s_ResourceRegistry.GetRegistry()[metadata.Filepath] = metadata;
+		}
+
+
+
+		return metadata.Handle;
+	}
+
 	void AssetManager::ReloadAssets()
 	{
 		PX_PROFILE_FUNCTION();
@@ -133,16 +224,37 @@ namespace Pixelate {
 
 
 
-	void AssetManager::ProcessDirectoryWhenReloading(const std::filesystem::path& dir)
+	void AssetManager::ReloadResources()
 	{
+		ProcessDirectoryWhenReloading(s_ResourcePath, true);
+	}
+
+	void AssetManager::ProcessDirectoryWhenReloading(const std::filesystem::path& dir, bool isResource)
+	{
+
 		PX_PROFILE_FUNCTION();
-		for (auto& path : std::filesystem::directory_iterator(dir)) {
 
-			if (path.is_directory())
-				ProcessDirectoryWhenReloading(path.path());
-			else
-				ImportAsset(path.path());
+		if (!isResource)
+		{
+			for (auto& path : std::filesystem::directory_iterator(dir)) {
 
+				if (path.is_directory())
+					ProcessDirectoryWhenReloading(path.path(), isResource);
+				else
+					ImportAsset(path.path());
+
+			}
+		} 
+		else
+		{
+			for (auto& path : std::filesystem::directory_iterator(dir)) {
+
+				if (path.is_directory())
+					ProcessDirectoryWhenReloading(path.path(), isResource);
+				else
+					ImportResource(path.path());
+
+			}
 		}
 	}
 
@@ -168,10 +280,16 @@ namespace Pixelate {
 	void AssetManager::RemoveAssetFromRegistry(const std::filesystem::path& filepath)
 	{
 		auto path = std::filesystem::relative(filepath, s_AssetPath);
-		s_AssetRegistry.GetRegistry().erase(filepath);
+		s_AssetRegistry.GetRegistry().erase(path);
 
 	}
 
+
+	void AssetManager::RemoveResourceFromRegistry(const std::filesystem::path& filepath)
+	{
+		auto path = std::filesystem::relative(filepath, s_ResourcePath);
+		s_AssetRegistry.GetRegistry().erase(path);
+	}
 
 	void AssetManager::OnAssetRenamed(const std::filesystem::path& oldPath, const std::filesystem::path& newPath) {
 		auto oPath = std::filesystem::relative(oldPath, s_AssetPath);
@@ -179,8 +297,19 @@ namespace Pixelate {
 
 		AssetMetadata metadata = s_AssetRegistry.GetRegistry()[oPath];
 		metadata.Filepath = nPath;
+
+		
 		s_AssetRegistry.GetRegistry().erase(oPath);
 		s_AssetRegistry.GetRegistry().insert({ nPath, metadata });
+
+		if (nPath.extension() == ".pxShader")
+			ReloadAsset(nPath);
+
+		if (nPath.extension() == ".pxMaterial")
+		{
+			ReloadAsset(nPath);
+		}
+
 
 	}
 
@@ -213,6 +342,29 @@ namespace Pixelate {
 
 				ImGui::Separator();
 			} else {
+				auto filename = metadata.Filepath.filename().string();
+				if (filename.find(m_FilterBuffer) < filename.length()) {
+					ImGui::Text("Handle: %s", std::to_string(metadata.Handle).c_str());
+					ImGui::Text("Filepath: %s", metadata.Filepath.string().c_str());
+					ImGui::Text("Type: %s", Pixelate::Utils::AssetTypeToString(metadata.Type).c_str());
+
+					ImGui::Separator();
+				}
+			}
+
+		}
+
+		ImGui::Separator();
+		for (const auto& [path, metadata] : s_ResourceRegistry.GetRegistry()) {
+
+			if (!m_IsFiltering) {
+				ImGui::Text("Handle: %s", std::to_string(metadata.Handle).c_str());
+				ImGui::Text("Filepath: %s", metadata.Filepath.string().c_str());
+				ImGui::Text("Type: %s", Pixelate::Utils::AssetTypeToString(metadata.Type).c_str());
+
+				ImGui::Separator();
+			}
+			else {
 				auto filename = metadata.Filepath.filename().string();
 				if (filename.find(m_FilterBuffer) < filename.length()) {
 					ImGui::Text("Handle: %s", std::to_string(metadata.Handle).c_str());

@@ -27,12 +27,14 @@ IncludeDir["MiniMp3"] = "Pixelate/vendor/MiniMp3"
 IncludeDir["Box2D"] = "Pixelate/vendor/Box2D"
 IncludeDir["entt"] = "Pixelate/vendor/entt"
 IncludeDir["yamlcpp"] = "Pixelate/vendor/yaml-cpp"
+IncludeDir["VulkanSDK"] = "Pixelate/vendor/VulkanSDK"
 
 IncludeDir["mono"] = "Pixelate-Scripting/Pixelate-Scripting/include/mono-2.0/"
-
-
-
 IncludeDir["NativeFileDialog"] = "Pixelate-Editor/vendor/NativeFileDialog"
+
+
+LibraryDir = {}
+LibraryDir["VulkanSDK"] = "Pixelate/vendor/VulkanSDK/lib"
 
 
 
@@ -57,7 +59,8 @@ project "Pixelate"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
+
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -83,7 +86,9 @@ project "Pixelate"
 		"%{prj.name}/vendor/LIBOGG/include/**.h",
 		"%{prj.name}/vendor/VORBIS/include/**.h",
 		"%{prj.name}/vendor/VORBIS/lib/**.h",
-		"%{prj.name}/vendor/entt/**.hpp"
+		"%{prj.name}/vendor/entt/**.hpp",
+		"%{prj.name}/vendor/VulkanSDK/**.hpp",
+		"%{prj.name}/vendor/VulkanSDK/**.h"
 		
 	}
 
@@ -111,22 +116,12 @@ project "Pixelate"
 		"%{IncludeDir.Box2D}/include",
 		"%{IncludeDir.entt}/vendor/entt/",
 		"%{IncludeDir.mono}",
-		"%{IncludeDir.yamlcpp}/include/"
-
-
-
+		"%{IncludeDir.yamlcpp}/include/",
+		"%{IncludeDir.VulkanSDK}/include/"
 
 	}
 
-	links 
-	{ 
-		"Glad",
-		"Glfw",
-		"opengl32.lib",
-		"OpenAL_Soft",
-		"yaml-cpp",
-		"Box2D",
-	}
+
 
 	filter "system:windows"
 		systemversion "latest"
@@ -147,8 +142,24 @@ project "Pixelate"
 		}
 		runtime "Debug"
 		symbols "on"
-		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
+		links
+		{
+
+			"Glad",
+			"Glfw",
+
+			"OpenAL_Soft",
+			"yaml-cpp",
+			"Box2D",
+
+
+			"Pixelate/vendor/VulkanSDK/debugLib/shaderc_sharedd.lib",
+			"Pixelate/vendor/VulkanSDK/debugLib/spirv-cross-cored.lib",
+			"Pixelate/vendor/VulkanSDK/debugLib/spirv-cross-glsld.lib",
+			"Pixelate/vendor/VulkanSDK/debugLib/vulkan-1.lib"
+		}
 
 
 	filter "configurations:Release"
@@ -159,8 +170,25 @@ project "Pixelate"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
+		links
+		{
+		
+		
+			"Glad",
+			"Glfw",
+
+			"OpenAL_Soft",
+			"yaml-cpp",
+			"Box2D",
+
+			"Pixelate/vendor/VulkanSDK/lib/shaderc_shared.lib",
+			"Pixelate/vendor/VulkanSDK/lib/spirv-cross-core.lib",
+			"Pixelate/vendor/VulkanSDK/lib/spirv-cross-glsl.lib",
+			"Pixelate/vendor/VulkanSDK/debugLib/vulkan-1.lib"
+
+		}
 	filter "configurations:Distribute"
 		defines
 		{
@@ -170,7 +198,25 @@ project "Pixelate"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
+		links
+		{
+		
+		
+			"Glad",
+			"Glfw",
+
+			"OpenAL_Soft",
+			"yaml-cpp",
+			"Box2D",
+
+			"Pixelate/vendor/VulkanSDK/lib/shaderc_shared.lib",
+			"Pixelate/vendor/VulkanSDK/lib/spirv-cross-core.lib",
+			"Pixelate/vendor/VulkanSDK/lib/spirv-cross-glsl.lib",
+			"Pixelate/vendor/VulkanSDK/debugLib/vulkan-1.lib"
+
+		}
 
 group ""
 group "Tools"
@@ -179,7 +225,8 @@ project "Pixelate-Editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
+
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -207,8 +254,6 @@ project "Pixelate-Editor"
 		"%{IncludeDir.entt}/vendor/entt/",
 		"%{IncludeDir.mono}",
 		"%{IncludeDir.yamlcpp}"
-
-
 	}
 
 	links
@@ -220,7 +265,7 @@ project "Pixelate-Editor"
 	
 	postbuildcommands 
 	{
-		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"/assets',
+		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Editor/imgui.ini" "%{cfg.targetdir}"',
 		'{COPY} "../Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
 	}
@@ -248,7 +293,14 @@ project "Pixelate-Editor"
 		}
 		runtime "Debug"
 		symbols "on"
-		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MDd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/shaderc_sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/spirv-cross-c-sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/SPIRV-Tools-sharedd.dll" "%{cfg.targetdir}"'
+		}
 
 
 	filter "configurations:Release"
@@ -260,8 +312,14 @@ project "Pixelate-Editor"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 		
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/shaderc_shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/spirv-cross-c-shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/SPIRV-Tools-shared.dll" "%{cfg.targetdir}"'
+		}
 
 
 	filter "configurations:Distribute"
@@ -272,7 +330,7 @@ project "Pixelate-Editor"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MD", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
 
 
@@ -327,11 +385,13 @@ project "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
+
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -351,16 +411,28 @@ project "Sandbox"
 		"%{IncludeDir.OpenAL_Soft}/src/al",
 		"%{IncludeDir.MiniMp3}/",
 		"%{IncludeDir.Box2D}/include",
-		"%{IncludeDir.entt}/vendor/entt/"
-		
+		"%{IncludeDir.NativeFileDialog}src/include",
+		"%{IncludeDir.entt}/vendor/entt/",
+		"%{IncludeDir.mono}",
+		"%{IncludeDir.yamlcpp}"
 	}
 
 	links
 	{
+		"NativeFileDialog",
+		"Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.lib",
 		"Pixelate"
 	}
 	
-	filter "system:windows"
+	postbuildcommands 
+	{
+		'{COPY} "../Pixelate-Editor/assets" "%{cfg.targetdir}"',
+		'{COPY} "../Pixelate-Editor/imgui.ini" "%{cfg.targetdir}"',
+		'{COPY} "../Pixelate-Scripting/Pixelate-Scripting/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+
+	}
+
+filter "system:windows"
 		systemversion "latest"
 
 
@@ -381,21 +453,35 @@ project "Sandbox"
 			"PX_USE_INSTRUMENTOR",
 
 		}
+
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/shaderc_sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/spirv-cross-c-sharedd.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/debug/SPIRV-Tools-sharedd.dll" "%{cfg.targetdir}"'
+		}
+
 		runtime "Debug"
 		symbols "on"
-		buildoptions { "/JMC", "/permissive-",  "/GS", "/W3", "/Zc:wchar_t",  "/ZI", "/Gm-", "/Od", "/sdl", "/Zc:inline", "/fp:precise", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/RTC1", "/Gd", "/MTd", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+
 
 	filter "configurations:Release"
 		defines 
 		{
 			"PX_RELEASE",
 			"PX_USE_IMGUI",
-			"PX_USE_LOGGING",
-			"PX_USE_INSTRUMENTOR",
+
+		}
+		postbuildcommands
+		{
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/shaderc_shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/spirv-cross-c-shared.dll" "%{cfg.targetdir}"',
+			'{COPY} "../Pixelate/vendor/VulkanSDK/bin/release/SPIRV-Tools-shared.dll" "%{cfg.targetdir}"'
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
+		
+
 
 	filter "configurations:Distribute"
 		defines
@@ -405,7 +491,4 @@ project "Sandbox"
 		}
 		runtime "Release"
 		optimize "on"
-		buildoptions {"/permissive-", "/MP", "/GS", "/GL", "/W0", "/Gy", "/Zc:wchar_t",  "/Zi", "/Gm-", "/O2", "/Ob2", "/sdl", "/Zc:inline", "/fp:fast", "/errorReport:prompt", "/WX-", "/Zc:forScope", "/Gd", "/Oi", "/MT", "/FC", "/EHsc", "/nologo", "/diagnostics:column"}
 
-
-		group ""

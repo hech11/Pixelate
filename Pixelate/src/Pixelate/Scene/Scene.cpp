@@ -15,6 +15,9 @@
 #include "Pixelate/Scene/SceneManager.h"
 #include "Pixelate/Audio/Audio.h"
 
+#include "Pixelate/Rendering/SceneRenderer.h"
+#include "Pixelate/Editor/EditorPanel.h"
+
 
 namespace Pixelate {
 
@@ -41,175 +44,218 @@ namespace Pixelate {
 
 		m_Reg.emplace<PhysicsWorldComponent>(m_SceneEntity); // temp for now...
 
+
+
 	}
 
 
 	
 
-	void Scene::OnUpdate(float ts, const Ref<EditorCamera>& camera, Entity selectedEntity,bool hasEntityBeenSelected)
+	void Scene::OnUpdate(const Ref<SceneRenderer>& renderer, const Ref<EditorCamera>& camera)
 	{
 
+		auto renderGroup = m_Reg.view<SpriteRendererComponent>();
+		auto boxColliderGroup = m_Reg.view<BoxColliderComponent>();
+		auto circleColliderGroup = m_Reg.view<CircleColliderComponent>();
+		auto polyColliderGroup = m_Reg.view<PolygonColliderComponent>();
+		auto edgeColliderGroup = m_Reg.view<EdgeColliderComponent>();
+		auto audioSrcGroup = m_Reg.view<AudioSourceComponent>();
 
-		// Rendering the scene editor viewport
-		Renderer2D::ResetStatistics();
+		auto& editorPanel = EditorPanelManager::Get().GetPanel("SceneHierarcy");
+		// find the primary camera to use for rendering.
+		CameraComponent* targetCam = nullptr;
 
-		Renderer2D::BeginScene(camera.get());
-		Renderer2D::DrawSceneGrid(camera->GetOrthographicSize());
+		bool renderSelectedEntity = renderer->GetOptions() & SceneRendererOptions::RenderEntitySelection;
 
-		auto renderGroup = m_Reg.view<TransformComponent>();
+		if (!camera)
+		{
+			auto allCameras = m_Reg.view<CameraComponent>();
+			bool continueloop = true;
+			for (auto entity : allCameras) {
+				if (continueloop) {
+					Entity e{ entity, this };
+					auto& transformComp = e.GetComponent<TransformComponent>();
+					auto& camComp = e.GetComponent<CameraComponent>();
+					camComp.Camera.SetViewMatrix(transformComp.Transform);
+					const auto& orthoSize = camComp.Camera.GetOrthographicSize();
+					camComp.Camera.SetProjection({ -m_AspectRatio * orthoSize, m_AspectRatio * orthoSize, -orthoSize, orthoSize });
+
+					if (camComp.PrimaryCamera) {
+						targetCam = &camComp;
+						continueloop = false;
+					}
+
+				}
+
+			}
+
+			if (targetCam != nullptr) {
+				RenderCommand::SetClearColor(targetCam->ClearColor.r, targetCam->ClearColor.g, targetCam->ClearColor.b, targetCam->ClearColor.a);
+				renderer->BeginScene(targetCam->Camera.GetViewProjectionMatrix());
+			}
+			else {
+				PX_CORE_WARN("Currently no primary camera in the scene!\n");
+			}
+
+		}
+		else
+		{
+			renderer->BeginScene(camera->GetViewProjectionMatrix());
+		}
+
 
 		for (auto entity : renderGroup) {
 			Entity e{ entity, this };
+			bool isEntitySelected = editorPanel->HasAnEntitySelected() && editorPanel->CurrentlySelectedEntity() == e;
+
 			auto& transformComp = e.GetComponent<TransformComponent>();
+			auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
 
-			if (e.HasComponent<SpriteRendererComponent>()) {
-				auto& spriteComp = e.GetComponent<SpriteRendererComponent>();
+			renderer->SubmitSprite(transformComp, spriteComp, (int)entity);
 
-				if (spriteComp.Texture) {
-					Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
-				} else {
-					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
-				}
+			if (isEntitySelected && renderSelectedEntity) {
+				AABB boundingBox;
+				glm::vec4 color;
 
-				if (hasEntityBeenSelected && selectedEntity == e) {
-					AABB boundingBox;
-					glm::vec4 color;
+				auto [Pos, Rot, Scale] = transformComp.DecomposeTransform();
 
-					auto [Pos, Rot, Scale] = transformComp.DecomposeTransform();
+				boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
+				boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
 
-					boundingBox.Min = { -Scale.x / 2.0f + Pos.x, -Scale.y / 2.0f + Pos.y, 1.0f };
-					boundingBox.Max = { Scale.x / 2.0f + Pos.x, Scale.y / 2.0f + Pos.y, 1.0f };
-
-					color = { 0.0f, 1.0f, 1.0f, 1.0f };
-					Renderer2D::DrawAABB(boundingBox, color);
-
-					if (e.HasComponent<BoxColliderComponent>()) {
-						auto& bcc = e.GetComponent<BoxColliderComponent>();
-						color = { 0.0f, 1.0f, 0.0f, 1.0f };
-
-						glm::vec2 transformPos = { Pos.x, Pos.y };
-						const auto Position = bcc.Center + transformPos;
-						const auto& Scale = bcc.Size;
-
-						boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
-						boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
-						Renderer2D::DrawAABB(boundingBox, color);
-
-					}
-
-					if (e.HasComponent<CircleColliderComponent>()) {
-						auto& cc = e.GetComponent<CircleColliderComponent>();
-						color = { 0.0f, 1.0f, 0.0f, 1.0f };
-
-						glm::vec2 transformPos = { Pos.x, Pos.y };
-						const auto Position = cc.Center + transformPos;
-
-						Renderer2D::DrawCircle(Position, cc.Radius, color);
-					}
-
-					if (e.HasComponent<EdgeColliderComponent>()) {
-						auto& ecc = e.GetComponent<EdgeColliderComponent>();
-						color = { 0.0f, 1.0f, 0.0f, 1.0f };
-
-						glm::vec2 transformPos = { Pos.x, Pos.y };
-						const auto PositionA = ecc.Point1 + transformPos;
-						const auto PositionB = ecc.Point2 + transformPos;
-
-						Renderer2D::DrawLine({ PositionA.x, PositionA.y, 0.0f}, { PositionB.x, PositionB.y, 0.0f }, color);
-
-					}
-
-					if (e.HasComponent<PolygonColliderComponent>()) {
-						auto& ecc = e.GetComponent<PolygonColliderComponent>();
-						color = { 0.0f, 1.0f, 0.0f, 1.0f };
-
-						glm::vec2 transformPos = { Pos.x, Pos.y };
-
-						std::vector<glm::vec4> verts;
-						for (int i = 0; i < ecc.Vertices.size(); i++) {
-							verts.push_back({ ecc.Vertices[i].x + transformPos.x, ecc.Vertices[i].y + transformPos.y, 0.0f, 1.0f });
-						}
-
-						Renderer2D::DrawVerticies(verts.data(), ecc.Vertices.size(), color);
-
-					}
-
-
-
-
-
-
-				}
-
-
+				color = { 0.0f, 1.0f, 1.0f, 1.0f };
+				renderer->SubmitAABB(boundingBox, color);
 
 			}
 
-			if (e.HasComponent<AudioSourceComponent>())
-				Renderer2D::DrawSprite(transformComp.Transform, s_AudioIcon, { {0, 0}, {512, 512} }, { 1.0f, 1.0f, 1.0f, 1.0f }, (int)entity);
-
-
-
+		
 		}
 
-		Renderer2D::EndScene();
+		if (renderer->GetOptions() & SceneRendererOptions::RenderPhysicsPrimitives)
+		{
 
-	}
-
-
-	void Scene::OnGameViewportRender()
-	{
-		// find the primary camera to use for rendering.
-		CameraComponent* renderCam = nullptr;
-		auto allCameras = m_Reg.view<CameraComponent>();
-		bool continueloop = true;
-		for (auto entity : allCameras) {
-			if (continueloop) {
+			for (auto entity : boxColliderGroup) {
 				Entity e{ entity, this };
-				auto& transformComp = e.GetComponent<TransformComponent>();
-				auto& camComp = e.GetComponent<CameraComponent>();
-				camComp.Camera.SetViewMatrix(transformComp.Transform);
-				const auto& orthoSize = camComp.Camera.GetOrthographicSize();
-				camComp.Camera.SetProjection({ -m_AspectRatio * orthoSize, m_AspectRatio * orthoSize, -orthoSize, orthoSize });
+				bool isEntitySelected = editorPanel->HasAnEntitySelected() && editorPanel->CurrentlySelectedEntity() == e;
+				auto [Pos, rot, scale] = e.GetComponent<TransformComponent>().DecomposeTransform();
 
-				if (camComp.PrimaryCamera) {
-					renderCam = &camComp;
-					continueloop = false;
-				}
+				AABB boundingBox;
+				glm::vec4 color;
 
-			}
-
-		}
-
-		// if there was no camera found in the scene
-		if (renderCam != nullptr) {
-
-			RenderCommand::SetClearColor(renderCam->ClearColor.r, renderCam->ClearColor.g, renderCam->ClearColor.b, renderCam->ClearColor.a);
-
-			RenderCommand::Clear();
-			Renderer2D::ResetStatistics();
-
-			Renderer2D::BeginScene(&renderCam->Camera);
-
-			auto renderGroup = m_Reg.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-
-			for (auto entity : renderGroup) {
-				auto [transformComp, spriteComp] = renderGroup.get<TransformComponent, SpriteRendererComponent>(entity);
-
-				if (spriteComp.Texture) {
-					Renderer2D::DrawSprite(transformComp, spriteComp, (int)entity);
+				auto& bcc = e.GetComponent<BoxColliderComponent>();
+				if (isEntitySelected)
+				{
+					color = { 0.0f, 1.0f, 0.0f, 1.0f };
 				}
 				else {
-					Renderer2D::DrawSprite(transformComp.Transform, spriteComp.TintColor, (int)entity);
+					color = { 0.0f, 1.0f, 0.0f, 0.5f };
 				}
 
+				glm::vec2 transformPos = { Pos.x, Pos.y };
+				const auto Position = bcc.Center + transformPos;
+				const auto& Scale = bcc.Size;
+
+				boundingBox.Min = { -Scale.x + Position.x, -Scale.y + Position.y, 1.0f };
+				boundingBox.Max = { Scale.x + Position.x, Scale.y + Position.y, 1.0f };
+				renderer->SubmitAABB(boundingBox, color);
+			}
+
+			for (auto entity : circleColliderGroup) {
+				Entity e{ entity, this };
+				bool isEntitySelected = editorPanel->HasAnEntitySelected() && editorPanel->CurrentlySelectedEntity() == e;
+				auto [Pos, rot, scale] = e.GetComponent<TransformComponent>().DecomposeTransform();
+
+				glm::vec4 color;
+				auto& cc = e.GetComponent<CircleColliderComponent>();
+				if (isEntitySelected)
+				{
+					color = { 0.0f, 1.0f, 0.0f, 1.0f };
+				}
+				else {
+					color = { 0.0f, 1.0f, 0.0f, 0.5f };
+				}
+
+				glm::vec2 transformPos = { Pos.x, Pos.y };
+				const auto Position = cc.Center + transformPos;
+
+				renderer->SubmitCircle(Position, cc.Radius, color);
+			}
+
+			for (auto entity : edgeColliderGroup) {
+				Entity e{ entity, this };
+				bool isEntitySelected = editorPanel->HasAnEntitySelected() && editorPanel->CurrentlySelectedEntity() == e;
+				auto [Pos, rot, scale] = e.GetComponent<TransformComponent>().DecomposeTransform();
+
+				glm::vec4 color;
+				auto& ecc = e.GetComponent<EdgeColliderComponent>();
+				if (isEntitySelected)
+				{
+					color = { 0.0f, 1.0f, 0.0f, 1.0f };
+				}
+				else {
+					color = { 0.0f, 1.0f, 0.0f, 0.5f };
+				}
+
+				glm::vec2 transformPos = { Pos.x, Pos.y };
+				const auto PositionA = ecc.Point1 + transformPos;
+				const auto PositionB = ecc.Point2 + transformPos;
+
+				renderer->SubmitLine({ PositionA.x, PositionA.y, 0.0f }, { PositionB.x, PositionB.y, 0.0f }, color);
 
 			}
-			Renderer2D::EndScene();
-		} else {
-			PX_CORE_WARN("Currently no primary camera in the scene!\n");
+
+			for (auto entity : polyColliderGroup) {
+
+				Entity e{ entity, this };
+				bool isEntitySelected = editorPanel->HasAnEntitySelected() && editorPanel->CurrentlySelectedEntity() == e;
+				auto [Pos, rot, scale] = e.GetComponent<TransformComponent>().DecomposeTransform();
+
+				glm::vec4 color;
+				auto& ecc = e.GetComponent<PolygonColliderComponent>();
+				if (isEntitySelected)
+				{
+					color = { 0.0f, 1.0f, 0.0f, 1.0f };
+				}
+				else {
+					color = { 0.0f, 1.0f, 0.0f, 0.5f };
+				}
+
+				glm::vec2 transformPos = { Pos.x, Pos.y };
+
+				std::vector<glm::vec4> verts;
+				for (auto& Vertice : ecc.Vertices) {
+					verts.emplace_back(Vertice.x + transformPos.x, Vertice.y + transformPos.y, 0.0f, 1.0f);
+				}
+
+				renderer->SubmitVertices(verts.data(), ecc.Vertices.size(), color);
+
+			}
 		}
+
+		
+		bool renderGizmos = renderer->GetOptions() & SceneRendererOptions::RenderGizmos;
+
+		if (renderGizmos)
+		{
+			for (auto entity : audioSrcGroup)
+			{
+				Entity e{ entity, this };
+				auto& transformComp = e.GetComponent<TransformComponent>();
+				SpriteRendererComponent src;
+				src.Texture = s_AudioIcon;
+				src.Rect = Rect({ 0, 0 }, { 512, 512 });
+				renderer->SubmitSprite(transformComp, src, (int)entity);
+
+			}
+		}
+
+		RenderCommand::Clear();
+
+		if (renderer->GetOptions() & SceneRendererOptions::RenderGrid)
+			renderer->DrawSceneGrid(camera->GetOrthographicSize());
+		renderer->EndScene();
+
 	}
+
 
 	void Scene::OnRuntimeStart() {
 		// Init Physics

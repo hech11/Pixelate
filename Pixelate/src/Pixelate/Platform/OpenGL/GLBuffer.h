@@ -75,4 +75,30 @@ namespace Pixelate {
 
 	};
 
+
+	class GLUniformBuffer : public UniformBuffer
+	{
+
+		public:
+			GLUniformBuffer(uint32_t size, uint32_t binding);
+			~GLUniformBuffer();
+
+			void SetData(const void* data, uint32_t size, uint32_t offset) override;
+			void* GetData(uint32_t offset) override;
+
+			uint32_t GetRendererID() const override { return m_RendererID; }
+			uint32_t GetBinding() const override { return m_Binding; }
+
+			void Bind() const override;
+			void UnBind() const override;
+
+		private:
+			uint32_t m_RendererID;
+			uint32_t m_Binding;
+
+
+			char* m_Data;
+			uint32_t m_Size;
+	};
+
 }

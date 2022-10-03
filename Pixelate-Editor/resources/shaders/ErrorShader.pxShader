@@ -1,0 +1,53 @@
+#shader vertex
+
+#version 450 core
+
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec4 aColor;
+layout(location = 2) in vec2 aUV;
+layout(location = 3) in float aTexIndex;
+layout(location = 4) in int aEntityID;
+
+
+layout(binding = 0) uniform Camera
+{
+	mat4 u_ViewProjection;
+};
+
+
+
+layout(location = 0) out int v_EntityID;
+
+
+void main() {
+
+	v_EntityID = aEntityID;
+
+
+	gl_Position = u_ViewProjection * vec4(aPos, 1.0f);
+}
+
+
+
+#shader fragment
+
+#version 450 core
+
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out int EntityColor;
+
+
+
+
+layout(location = 0) in flat int v_EntityID;
+
+layout(binding = 0) uniform sampler2D u_Textures[32];
+
+
+// This only supports up to 32 texture slots. Most GPU's can support more than this.
+// This switch/case is done since modern AMD GPU's do not support sampler indexing.
+
+void main() {
+	FragColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
+	EntityColor = v_EntityID;
+}

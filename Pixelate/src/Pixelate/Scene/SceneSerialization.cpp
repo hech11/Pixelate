@@ -287,6 +287,18 @@ namespace Pixelate {
 
 				data << YAML::EndMap;
 
+				// Texture
+				data << YAML::Key << "Material";
+				data << YAML::BeginMap;
+
+				if (src.Material)
+					data << YAML::Key << "AssetHandle" << YAML::Value << (UUID)AssetManager::GetMetadata(src.Material->Handle).Handle;
+				else
+					data << YAML::Key << "AssetHandle" << (AssetHandle)0;
+
+				data << YAML::EndMap;
+
+
 
 				// Sprite rect
 				data << YAML::Key << "Rect";
@@ -297,6 +309,8 @@ namespace Pixelate {
 				
 
 				data << YAML::EndMap;
+				data << YAML::Key << "SortingLayer" << YAML::Value << src.SortingLayer;
+				data << YAML::Key << "RenderOrder" << YAML::Value << src.RenderOrder;
 				data << YAML::Key << "TintColor" << YAML::Value << src.TintColor;
 				data << YAML::EndMap;
 
@@ -571,32 +585,46 @@ namespace Pixelate {
 				if (auto spriteRendererComp = entity["SpriteRendererComponent"]) {
 					auto& comp = e.AddComponent<SpriteRendererComponent>();
 					auto texture = spriteRendererComp["Texture"];
+					auto material = spriteRendererComp["Material"];
 					if (texture["AssetHandle"].as<uint64_t>() != 0) {
-						Ref<Texture> tex;
 
+						Ref<Texture> tex;
 
 						AssetHandle handle = texture["AssetHandle"].as<uint64_t>();
 
+						//TODO: Texture manager needs a redo
 						if (AssetManager::IsAssetHandleValid(handle)) {
 							tex = AssetManager::GetAsset<Texture>(handle);
 						}
 
-						//TODO: Texture manager needs a redo
-// 						if (auto id = TextureManager::IsTextureValid(filepath)) {
-// 							tex = TextureManager::GetTexture(id);
-// 
-// 						}
-// 						else {
-// 							tex = Texture::Create(filepath);
-// 							TextureManager::DirectAdd(tex);
-// 						}
-// 						
 
 
 						comp.Texture = tex;
 						auto r = spriteRendererComp["Rect"];
 						comp.Rect = Rect(r["Position"].as<glm::uvec2>(), r["Scale"].as<glm::uvec2>());
+
 					}
+
+					if (material["AssetHandle"].as<uint64_t>() != 0)
+					{
+						Ref<Material> mat;
+
+						AssetHandle handle = material["AssetHandle"].as<uint64_t>();
+
+						//TODO: Texture manager needs a redo
+						if (AssetManager::IsAssetHandleValid(handle)) {
+							mat = AssetManager::GetAsset<Material>(handle);
+						}
+
+						comp.Material = mat;
+
+					}
+
+					auto sortingLayer = spriteRendererComp["SortingLayer"].as<int>();
+					comp.SortingLayer = sortingLayer;
+
+					auto renderOrder = spriteRendererComp["RenderOrder"].as<int>();
+					comp.RenderOrder = renderOrder;
 					comp.TintColor = spriteRendererComp["TintColor"].as<glm::vec4>();
 
 				}

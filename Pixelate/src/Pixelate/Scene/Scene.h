@@ -8,9 +8,11 @@
 #include "glm/glm.hpp"
 #include "Pixelate/Core/UUID.h"
 
+
 namespace Pixelate {
 
 	class Entity;
+	class SceneRenderer;
 	class Scene {
 
 		public :
@@ -20,8 +22,7 @@ namespace Pixelate {
 			void Init(); // Does nothing at the moment. This would init a scene from a file saved externally.
 
 			// always update regardless of editor state
-			void OnUpdate(float ts, const Ref<EditorCamera>& camera, Entity selectedEntity, bool hasEntityBeenSelected);
-			void OnGameViewportRender();
+			void OnUpdate(const Ref<SceneRenderer>& renderer, const Ref<EditorCamera>& camera = nullptr);
 
 			// Runtime functions
 			void OnRuntimeStart();

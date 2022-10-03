@@ -1,0 +1,40 @@
+Scene: newAssetManager
+Entities:
+  - Entity: 14902889225442509790
+    NameComponent:
+      Name: tone
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    AudioSourceComponent:
+      AssetHandle: 1564386651501461505
+      Gain: 1
+      ShouldLoop: false
+  - Entity: 7604785617767803533
+    NameComponent:
+      Name: Texture loaded via asset handle
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    SpriteRendererComponent:
+      Texture:
+        AssetHandle: 18069192197029962527
+      Rect:
+        Position: [0, 0]
+        Scale: [128, 128]
+      TintColor: [1, 1, 1, 1]
+  - Entity: 3683196808380310624
+    NameComponent:
+      Name: Camera
+    TagComponent:
+      Tag: No tag
+    TransformComponent:
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    CameraComponent:
+      ClearColor: [0.25, 0.5, 0.699999988, 1]
+      OrthoSize: 1
+      Primary: true
+    AudioListenerComponent:
+      Spatial: false

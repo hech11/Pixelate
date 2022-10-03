@@ -6,27 +6,23 @@
 
 namespace Pixelate {
 
+
+	struct ShaderSources {
+		std::string VertexShaderStr;
+		std::string FragmentShaderStr;
+	};
+
+
 	class PX_API GLShader : public Shader {
 
 		public:
-			struct ShaderSource {
-				std::string VertexShaderStr;
-				std::string FragmentShaderStr;
-			};
-
-			GLShader();
+		
+			GLShader(const std::string& filepath);
 			~GLShader();
-
-			void Init() override;
-			void ShutDown() override;
 
 
 			void Bind() const override;
 			void Unbind() const override;
-
-			void LoadFromFile(const std::string& filepath) override;
-			void LoadFromSrc(const char* data) override;
-
 
 			
 			void SetUniform1f(const std::string& uniformName, const float value) override;
@@ -48,20 +44,44 @@ namespace Pixelate {
 
 			void SetUniformMatrix(const std::string& uniformName, const glm::mat4& matrix) override;
 
-
+			void SetName(const std::string& name) override { m_Name = name; }
+			void SetPath(const std::string& path) override { m_Filepath = path; }
 
 			int GetUniformLocation(const std::string& name) override;
+			std::string& GetName() { return m_Name; }
+
+			void Reload() override;
+
 
 		private :
-			ShaderSource PraseShader(const std::string& shaderFile);
-			ShaderSource PraseShader(const char* data);
-			unsigned int CreateShader(unsigned int type, const std::string& shaderSource);
+			void CompileVulkanIntoSpirV();
+			void CompileSpirvIntoGLSL();
+
+
+			void Reflect(uint32_t type, const std::vector<uint32_t>& shaderData);
+
+			std::string DeduceSPIRVCachedFileExtention(uint32_t type);
+			std::string DeduceOpenGLCachedFileExtention(uint32_t type);
+
+			void ClearCachedFiles();
+
+			void ParseSources(const std::string& source);
+			void CreateProgram();
+
 
 		private :
-			unsigned int m_RendererID;
+			uint32_t m_RendererID;
 
+			std::string m_Name;
 			std::string m_Filepath;
+
+			std::unordered_map<uint32_t, std::string> m_OpenGLSources;
+
+			std::unordered_map<uint32_t, std::vector<uint32_t>> m_OpenGLSpirVData;
+			std::unordered_map<uint32_t, std::vector<uint32_t>> m_VulkanSpirVData;
+
 			std::unordered_map<std::string, int> m_CachedUniformLocations;
+
 
 
 	};

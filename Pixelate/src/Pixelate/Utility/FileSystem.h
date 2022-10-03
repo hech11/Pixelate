@@ -22,10 +22,8 @@ namespace Pixelate {
 	class FileSystem {
 
 		public :
-			static void CreateDirectory(const std::string& directory);
-			static void CreateDirectory(const std::filesystem::path& directory);
+			static void CreateDir(const std::filesystem::path& directory);
 
-			static void DeleteDirectory(const std::string& directory);
 			static void DeleteDirectory(const std::filesystem::path& directory);
 
 			static void RenameDirectory(const std::string& oldDirectory, const std::string& newName);
@@ -46,8 +44,8 @@ namespace Pixelate {
 			static void DeleteFile(const std::string& filepath);
 			static void DeleteFile(const std::filesystem::path& filepath);
 
-			static void ReadText(const std::string& filepath, std::string& outBuffer);
-			static void ReadText(const std::filesystem::path& filepath, std::string& outBuffer);
+			static std::string ReadText(const std::string& filepath);
+			static std::string ReadText(const std::filesystem::path& filepath);
 
 
 			static bool Exists(const std::string& filepath);

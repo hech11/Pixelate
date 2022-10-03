@@ -1,0 +1,73 @@
+Assets:
+  - Handle: 9025024172503938240
+    Filepath: ""
+    Type: Texture
+  - Handle: 16809476356410631126
+    Filepath: ACTIVESCENE.PXScene
+    Type: Scene
+  - Handle: 15401950371930225587
+    Filepath: audio\noise.wav
+    Type: Audio
+  - Handle: 14995343214189438174
+    Filepath: physics\Physics Material2D.pxPhysicsMaterial2D
+    Type: Physics Material2D
+  - Handle: 16072470196708842148
+    Filepath: audio\tone-ogg.ogg
+    Type: Audio
+  - Handle: 5767884922789449816
+    Filepath: audio\tone-mp3.mp3
+    Type: Audio
+  - Handle: 18069192197029962527
+    Filepath: graphics\TestSpritesheet.png
+    Type: Texture
+  - Handle: 4993231541211841246
+    Filepath: scenes\newAssetManager.PXScene
+    Type: Scene
+  - Handle: 1564386651501461505
+    Filepath: audio\tone.wav
+    Type: Audio
+  - Handle: 4020195025803029489
+    Filepath: scenes\test123_Scripts.PXScene
+    Type: Scene
+  - Handle: 16257840863795969837
+    Filepath: graphics\sprite.png
+    Type: Texture
+  - Handle: 884871052580740198
+    Filepath: scenes\DefaultScene.PXScene
+    Type: Scene
+  - Handle: 8053671804048753637
+    Filepath: scenes\PhysicsTests.PXScene
+    Type: Scene
+  - Handle: 16622705045210201503
+    Filepath: scenes\PXT-spriteRect.PXScene
+    Type: Scene
+  - Handle: 3437332282220260737
+    Filepath: scenes\test123.PXScene
+    Type: Scene
+  - Handle: 12510560170843226036
+    Filepath: scenes\test123_LoadingOtherScenes.PXScene
+    Type: Scene
+  - Handle: 3092266599181260790
+    Filepath: scenes\test123_Scripts_2.PXScene.PXScene
+    Type: Scene
+  - Handle: 14813573490053508137
+    Filepath: audio\Default Mixer.pxam
+    Type: Audio Mixer
+  - Handle: 5303152987274124230
+    Filepath: scenes\PhysicsBouncinessTest.PXScene
+    Type: Scene
+  - Handle: 10350709298579271351
+    Filepath: Shaders\BlueShader.pxShader
+    Type: Shader
+  - Handle: 14620561520535474729
+    Filepath: Shaders\RedShader.pxShader
+    Type: Shader
+  - Handle: 12776348810065080357
+    Filepath: scenes\materialbluetest.PXScene.PXScene
+    Type: Scene
+  - Handle: 12218528700155114938
+    Filepath: scenes\materialbluetest.PXScene
+    Type: Scene
+  - Handle: 16822601422350095720
+    Filepath: materials\BlueMaterial.pxMaterial
+    Type: Material

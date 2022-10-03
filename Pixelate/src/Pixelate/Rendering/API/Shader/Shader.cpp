@@ -12,10 +12,10 @@ namespace Pixelate {
 	Shader::Shader() {
 	}
 
-	Ref<Shader> Shader::Create() {
+	Ref<Shader> Shader::Create(const std::string& filepath) {
 		switch (RendererAPI::GetAPI()) {
 			case RendererAPI::API::OpenGL:
-				return CreateRef<GLShader>();
+				return CreateRef<GLShader>(filepath);
 			}
 
 	}

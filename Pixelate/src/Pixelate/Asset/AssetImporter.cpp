@@ -7,6 +7,10 @@
 #include "Pixelate/Audio/Audio.h"
 #include "Pixelate/Audio/AudioLoader.h"
 #include "Pixelate/Physics/Physics.h"
+#include "Pixelate/Rendering/API/Shader/Shader.h"
+
+#include "Pixelate/Rendering/Material.h"
+#include "Pixelate/Rendering/MaterialManager.h"
 
 
 
@@ -23,6 +27,8 @@ namespace Pixelate {
 		{	{AssetType::Texture, CreateRef<TextureImporter>() },
 			{AssetType::Audio, CreateRef<AudioImporter>() },
 			{AssetType::PhysicsMaterial2D, CreateRef<PhysicsMaterial2DImporter>() },
+			{AssetType::Shader, CreateRef<ShaderImporter>() },
+			{AssetType::Material, CreateRef<MaterialImporter>() },
 
 		};
 	}
@@ -32,7 +38,7 @@ namespace Pixelate {
 		m_Importers.clear();
 	}
 
-	bool AssetImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset) {
+	bool AssetImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource) {
 
 		AssetType type = metadata.Type;
 
@@ -42,7 +48,7 @@ namespace Pixelate {
 			return false;
 		}
 
-		bool success = m_Importers[type]->TryLoadData(metadata, asset);
+		bool success = m_Importers[type]->TryLoadData(metadata, asset, isResource);
 		return success;
 
 	}
@@ -65,9 +71,9 @@ namespace Pixelate {
 
 	////////////// --------- TextureImporter --------- ////////////// 
 
-	bool TextureImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)
+	bool TextureImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource)
 	{
-		asset = Texture::Create(AssetManager::GetFilePathString(metadata));
+		asset = Texture::Create(AssetManager::GetFilePathString(metadata, isResource));
 		asset->Handle = metadata.Handle;
 		return true;
 	}
@@ -80,9 +86,9 @@ namespace Pixelate {
 	}
 
 	////////////// --------- AudioImporter --------- ////////////// 
-	bool AudioImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)
+	bool AudioImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource)
 	{
-		asset = CreateRef<AudioBuffer>(AudioLoader::Load(AssetManager::GetFilePathString(metadata)));
+		asset = CreateRef<AudioBuffer>(AudioLoader::Load(AssetManager::GetFilePathString(metadata, isResource)));
 		asset->Handle = metadata.Handle;
 
 		return true;
@@ -99,9 +105,9 @@ namespace Pixelate {
 
 	////////////// --------- PhysicsMaterial2DImporter --------- ////////////// 
 
-	bool PhysicsMaterial2DImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset)
+	bool PhysicsMaterial2DImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource)
 	{
-		asset = PhysicsMaterial2DSerialization::Deserialize(AssetManager::GetFilePathString(metadata));
+		asset = PhysicsMaterial2DSerialization::Deserialize(AssetManager::GetFilePathString(metadata, isResource));
 		asset->Handle = metadata.Handle;
 
 		return true;
@@ -111,6 +117,48 @@ namespace Pixelate {
 	void PhysicsMaterial2DImporter::Reload(Ref<Asset>& asset)
 	{
 
+	}
+
+
+	////////////// --------- ShaderImporter --------- ////////////// 
+
+
+
+	bool ShaderImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource)
+	{
+		asset = Shader::Create(AssetManager::GetFilePathString(metadata, isResource));
+		asset->Handle = metadata.Handle;
+
+		return true;
+	}
+
+	void ShaderImporter::Reload(Ref<Asset>& asset)
+	{
+
+		Ref<Shader> shader = std::dynamic_pointer_cast<Shader>(asset);
+		shader->Reload();
+
+	}
+
+	////////////// --------- MaterialImporter --------- ////////////// 
+
+
+	bool MaterialImporter::TryLoadData(const AssetMetadata& metadata, Ref<Asset>& asset, bool isResource)
+	{
+		asset = MaterialSerialization::Deserialize(AssetManager::GetFilePathString(metadata, isResource));
+		asset->Handle = metadata.Handle;
+		return true;
+	}
+
+	void MaterialImporter::Reload(Ref<Asset>& asset)
+	{
+		Ref<Material> mat = std::dynamic_pointer_cast<Material>(asset);
+		auto path = AssetManager::GetMetadata(asset->Handle).Filepath;
+		 
+		std::string name = path.stem().string();
+
+		mat->SetName(name);
+		mat->Invalidate(mat->GetShader(), name);
 	}
 
 }

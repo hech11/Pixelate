@@ -24,7 +24,7 @@ namespace Pixelate {
 		m_FolderIcon = Texture::Create("resources/icons/content-browser/folder.png");
 		m_FileIcon = Texture::Create("resources/icons/content-browser/file.png");
 
-		AssetManager::SetAssetChangeCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
+		AssetManager::AddAssetCallback(PX_BIND_EVENT_FNC(EditorContentBrowser::OnFileWatcherAction));
 	}
 
 	void EditorContentBrowser::RenderDirectory(const std::filesystem::path& dir) {
@@ -329,14 +329,32 @@ namespace Pixelate {
 		if (ImGui::BeginPopupContextItem("WindowContextPopup")) {
 
 			if (ImGui::BeginMenu("Create")) {
-
-				if (ImGui::MenuItem("Audio Mixer")) {
-					CreateItem(AssetType::AudioMixer);
+				if (ImGui::BeginMenu("Rendering"))
+				{
+					if (ImGui::MenuItem("Shader")) {
+						CreateItem(AssetType::Shader);
+					}
+					if (ImGui::MenuItem("Material")) {
+						CreateItem(AssetType::Material);
+					}
+					ImGui::EndMenu();
 				}
-
-				if (ImGui::MenuItem("Physics Material2D")) {
-					CreateItem(AssetType::PhysicsMaterial2D);
+				if (ImGui::BeginMenu("Audio"))
+				{
+					if (ImGui::MenuItem("Audio Mixer")) {
+						CreateItem(AssetType::AudioMixer);
+					}
+					ImGui::EndMenu();
 				}
+				if (ImGui::BeginMenu("Physics"))
+				{
+					if (ImGui::MenuItem("Physics Material2D")) {
+						CreateItem(AssetType::PhysicsMaterial2D);
+					}
+
+					ImGui::EndMenu();
+				}
+				
 
 				ImGui::EndMenu();
 			}
@@ -566,7 +584,7 @@ namespace Pixelate {
 		}
 
 
-		FileSystem::CreateDirectory(newFile);
+		FileSystem::CreateDir(newFile);
 	}
 
 	void EditorContentBrowser::CreateItem(AssetType type) {
@@ -581,6 +599,7 @@ namespace Pixelate {
 			case Pixelate::AssetType::Scene:
 				break;
 			case Pixelate::AssetType::Shader:
+				Embedded::GenerateToDisk(AssetType::Shader, m_CurrentDirectory);
 				break;
 			case Pixelate::AssetType::AssetRegistry:
 				break;
@@ -589,6 +608,9 @@ namespace Pixelate {
 				break;
 			case Pixelate::AssetType::PhysicsMaterial2D:
 				Embedded::GenerateToDisk(AssetType::PhysicsMaterial2D, m_CurrentDirectory);
+				break;
+			case Pixelate::AssetType::Material:
+				Embedded::GenerateToDisk(AssetType::Material, m_CurrentDirectory);
 				break;
 			default:
 				break;

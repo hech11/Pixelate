@@ -2,6 +2,8 @@ project "Box2D"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
+	staticruntime "off"
+
 
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -33,13 +35,14 @@ project "Box2D"
 	}
 	filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
+		staticruntime "off"
 
 
 
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
+
 
 	filter "configurations:Release"
 		runtime "Release"

@@ -1,0 +1,11 @@
+Material:
+  Name: BlueMaterial
+  Shader: 7968149936872318425
+ReflectedUniformBuffers:
+  - Binding: 0
+    StructSize: 64
+    Members:
+      - Name: u_ViewProjection
+        Type: 6
+        Size: 64
+        Offset: 0

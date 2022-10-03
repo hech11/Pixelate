@@ -12,7 +12,7 @@
 namespace Pixelate {
 
 
-	static int16_t s_LayerCounter = BIT(0);
+	static int16_t s_LayerCounter = BIT(1);
 
 	std::vector<PhysicsLayer> Physics::s_Layers = {
 		{PhysicsLayersIndex::Layer1, GenerateDefaultLayerMask() , "Default"},

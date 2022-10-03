@@ -9,20 +9,12 @@ namespace Pixelate {
 
 
 
-	void FileSystem::CreateDirectory(const std::string& directory)
+	void FileSystem::CreateDir(const std::filesystem::path& directory)
 	{
 		std::filesystem::create_directories(directory);
 	}
 
-	void FileSystem::CreateDirectory(const std::filesystem::path& directory)
-	{
-		std::filesystem::create_directories(directory);
-	}
 
-	void FileSystem::DeleteDirectory(const std::string& directory)
-	{
-		std::filesystem::remove_all(directory);
-	}
 
 	void FileSystem::DeleteDirectory(const std::filesystem::path& directory)
 	{
@@ -45,7 +37,7 @@ namespace Pixelate {
 		auto copyOptions = std::filesystem::copy_options::update_existing | std::filesystem::copy_options::recursive;
 		std::filesystem::path path = newDirectory / oldDirectory.filename();
 
-		CreateDirectory(path);
+		CreateDir(path);
 
 		std::filesystem::copy(oldDirectory, path, copyOptions);
 		DeleteDirectory(oldDirectory);
@@ -103,28 +95,33 @@ namespace Pixelate {
 		std::filesystem::remove(filepath);
 	}
 
-	void FileSystem::ReadText(const std::string& filepath, std::string& outBuffer)
+	std::string FileSystem::ReadText(const std::string& filepath)
 	{
 		std::ifstream file(filepath);
-		outBuffer.clear();
+		std::string result;
 
 		file.seekg(0, std::ios::end);
-		outBuffer.reserve(file.tellg());
+		result.reserve(file.tellg());
 		file.seekg(0, std::ios::beg);
 
-		outBuffer.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+		result.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+
+		return result;
 	}
 
-	void FileSystem::ReadText(const std::filesystem::path& filepath, std::string& outBuffer)
+	std::string FileSystem::ReadText(const std::filesystem::path& filepath)
 	{
+
 		std::ifstream file(filepath);
-		outBuffer.clear();
+		std::string result;
 
 		file.seekg(0, std::ios::end);
-		outBuffer.reserve(file.tellg());
+		result.reserve(file.tellg());
 		file.seekg(0, std::ios::beg);
 
-		outBuffer.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+		result.assign((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+
+		return result;
 	}
 
 	bool FileSystem::Exists(const std::string& filepath)

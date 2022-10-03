@@ -7,6 +7,7 @@
 #include <Pixelate/Rendering/API/Texture.h>
 #include <Pixelate/Rendering/ParticleSystem.h>
 #include <Pixelate/Rendering/API/Framebuffer.h>
+#include <Pixelate/Rendering/SceneRenderer.h>
 
 #include <Pixelate/Audio/AudioSource.h>
 
@@ -22,6 +23,10 @@
 #include <Pixelate/Editor/EditorAudioMixerPanel.h>
 #include <Pixelate/Editor/EditorContentBrowser.h>
 #include <Pixelate/Editor/EditorPhysicsPropertiesPanel.h>
+#include <Pixelate/Editor/EditorRendererPanel.h>
+#include <Pixelate/Editor/EditorGameViewPanel.h>
+#include <Pixelate/Editor/EditorGameDebugView.h>
+#include <Pixelate/Editor/EditorMaterialEditorPanel.h>
 #include <Pixelate/Editor/EditorPanel.h>
 
 #include <Pixelate/Scene/Scene.h>
@@ -73,37 +78,10 @@ namespace Pixelate {
 
 			SceneState m_SceneState = SceneState::Edit;
 
+			Ref<SceneRenderer> m_GameSceneRenderer;
+			Ref<SceneRenderer> m_EditorSceneRenderer;
 
-			// Scene Viewport panel 
-
-
-			Ref<Framebuffer> m_SceneViewportFramebuffer;
-
-			glm::vec2 m_SceneViewportSize = { 0.0f, 0.0f };
-			glm::vec2 m_SceneViewportPanelSize = { 0.0f, 0.0f };
-			glm::vec2 m_SceneViewportPanelPosition = { 0.0f, 0.0f };
-
-			bool m_IsSceneViewportHovered;
-			bool m_IsSceneViewportFocused;
-
-			//
-
-			// Game Viewport panel 
-
-			Ref<Framebuffer> m_GameViewportFramebuffer;
-
-			glm::vec2 m_GameViewportSize = { 0.0f, 0.0f };
-			glm::vec2 m_GameViewportPanelSize = { 0.0f, 0.0f };
-			glm::vec2 m_GameViewportPanelPosition = { 0.0f, 0.0f };
-
-			bool m_IsGameViewportHovered;
-			bool m_IsGameViewportFocused;
-
-			//
-
-// 
 			Ref<EditorSceneHierarchyPanel> m_SceneHierarcyPanel;
-			Ref<EditorCamera> m_EditorCamera;
 			Ref<EditorConsoleLogger> m_ConsoleLog;
 			Ref<EditorAnimationPanel> m_AnimatorPanel;
 			Ref<EditorTextureInspector> m_TextureInspector;
@@ -111,10 +89,12 @@ namespace Pixelate {
 			Ref<EditorAudioMixerPanel> m_AudioMixerPanel;
 			Ref<EditorContentBrowser> m_ContentBrowser;
 			Ref<EditorPhysicsPropertiesPanel> m_PhysicsPanel;
+			Ref<EditorRendererPanel> m_RendererPanel;
+			Ref<EditorGameViewPanel> m_GameViewPanel;
+			Ref<EditorGameDebugView> m_GameDebugViewPanel;
+			Ref<EditorMaterialEditorPanel> m_MaterialEditorPanel;
 
 
-			ParticleSystem particleSystem;
-			ParticleProperties particleProps;
 			Ref<Scene> m_EditorScene;
 		
 			Animator anim;

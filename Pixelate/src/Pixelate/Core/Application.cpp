@@ -33,6 +33,7 @@
 #endif
 #include "Pixelate/Scene/SceneManager.h"
 #include "Pixelate/Asset/AssetManager.h"
+#include "Pixelate/Rendering/SortingLayers.h"
 
 #include <Glfw/glfw3.h> // to get the time
 
@@ -59,14 +60,15 @@ namespace Pixelate {
 #endif
 
 
+		AssetManager::Init();
 
 
-		Renderer2D::Init();
+		SortingLayerManager::Deserialize("resources/RenderingSettings.pxsettings");
 		Audio::Init();
 
 		ScriptingMaster::Init("assets/scripts/Sandbox-CSharpApp/Sandbox-CSharpApp.dll");
 
-		AssetManager::Init();
+		Renderer2D::Init();
 
 
 		PX_CORE_WARN("Time took to init application: %fms\n", m_AppTimer.GetElapsedMillis());
