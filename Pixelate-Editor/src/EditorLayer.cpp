@@ -109,8 +109,6 @@ namespace Pixelate {
 		// testing asset handles directly
 		assetHandleTestEntity = m_EditorScene->CreateEntity("Texture loaded via asset handle");
 		assetHandleTestEntity.AddComponent<SpriteRendererComponent>();
-		assetHandleTestEntity.GetComponent<SpriteRendererComponent>().Texture = AssetManager::GetAsset<Texture>((AssetHandle)18069192197029962527);
-		assetHandleTestEntity.GetComponent<SpriteRendererComponent>().Rect = Rect({ 0, 0 }, {1024, 1024 });
 
 
 		FileSystem::StartWatching(); // Should move this when projects are introduced.

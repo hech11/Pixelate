@@ -255,19 +255,27 @@ namespace Pixelate {
 
 		float textureIndex = 0.0f;
 		std::array<glm::vec2, 4> texCoords = { {{0.0f, 0.0f}, {0.0f, 0.0f},{0.0f, 0.0f},{0.0f, 0.0f}}};
-		if (texture)
+
+		Ref<Texture> tex;
+		Rect rectt;
+		if (material->GetReflectedSampledImages().find(0) != material->GetReflectedSampledImages().end())
 		{
-			textureIndex = TextureManager::IsTextureValid(texture);
+			tex = material->GetReflectedSampledImages()[0].Texture;
+			rectt = material->GetReflectedSampledImages()[0].Rect;
+		}
+		if (tex)
+		{
+			textureIndex = TextureManager::IsTextureValid(tex);
 
 			if (textureIndex == 0.0f) {
 				auto& manager = TextureManager::GetManagerData();
 				if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
 					command->PrepareNewBatch();
 				textureIndex = manager.TextureSlotIndex;
-				TextureManager::DirectAdd(texture);
+				TextureManager::DirectAdd(tex);
 			}
 
-			texCoords = NormalizedCoordinates(textureDestRect, texture);
+			texCoords = NormalizedCoordinates(rectt, tex);
 		}
 		
 
@@ -297,41 +305,34 @@ namespace Pixelate {
 
 		float textureIndex = 0.0f;
 		std::array<glm::vec2, 4> texCoords = { {{0.0f, 0.0f}, {0.0f, 0.0f},{0.0f, 0.0f},{0.0f, 0.0f}} };
-
 		SampledImage2DContainer* hasTexture = nullptr;
-		/*for (auto& tables : material->GetUniformTable())
-		{
-			for (auto& texture : tables->ReflectedUniformBuffer)
-			{
-				hasTexture = texture;
-				break;
-			}
-			if (hasTexture)
-				break;
-		}
 
+
+		if (material->GetReflectedSampledImages().find(0) != material->GetReflectedSampledImages().end())
+		{
+			hasTexture = &material->GetReflectedSampledImages()[0];
+			if (hasTexture->Texture == nullptr)
+				hasTexture = nullptr;
+		}
 
 
 		if (hasTexture)
 		{
-			textureIndex = TextureManager::IsTextureValid(hasTexture.Texture);
+			textureIndex = TextureManager::IsTextureValid(hasTexture->Texture);
 
 			if (textureIndex == 0.0f) {
 				auto& manager = TextureManager::GetManagerData();
 				if (manager.TextureSlotIndex >= RendererCapabilities::MaxTextureSlots)
 					command->PrepareNewBatch();
 				textureIndex = manager.TextureSlotIndex;
-				TextureManager::DirectAdd(hasTexture.Texture);
+				TextureManager::DirectAdd(hasTexture->Texture);
 			}
 
-			texCoords = NormalizedCoordinates(hasTexture.Rect, hasTexture.Texture);
+			texCoords = NormalizedCoordinates(hasTexture->Rect, hasTexture->Texture);
 		}
-		*/		
-		unsigned char r = 255 * 255.0f;
-		unsigned char g = 255  * 255.0f;
-		unsigned char b = 255  * 255.0f;
-		unsigned char a = 255  * 255.0f;
-		unsigned int color = a << 24 | b << 16 | g << 8 | r;
+
+
+		unsigned int color = 0xFFFFFFFF;
 
 
 		for (unsigned int i = 0; i < VertexCount; i++) {

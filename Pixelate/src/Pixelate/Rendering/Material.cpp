@@ -34,21 +34,17 @@ namespace Pixelate
 
 				}
 
-				//for (auto&& [shaderMember, sampledImage] : resource.SampledImage2DContainers)
-				//{
-
-				//	if (table == nullptr)
-				//	{
-				//		table = CreateRef<MaterialUniformTable>();
-				//	}
-				//	table->Size = shaderMember.Size;
-				//	table->ReflectedSampledImage2Ds[binding] = sampledImage;
-				//	table->InvalidateData();
-
-				//	m_UniformTable.push_back(table);
-				//}
+				int index = 0;
+				for (auto&& [shaderMember, sampledImage] : resource.SampledImage2DContainers)
+				{
+					if(sampledImage.Texture)
+						AddSampledImageEntry(index, sampledImage);
+					index++;
+				}
 
 			}
+
+			
 		}
 	}
 
@@ -99,6 +95,7 @@ namespace Pixelate
 	{
 		m_Shader = shader;
 		m_UniformTable.clear();
+		m_ReflectedSampledImage2Ds.clear();
 
 		Invalidate(shader, m_Name);
 		

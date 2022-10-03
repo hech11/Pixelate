@@ -251,10 +251,13 @@ namespace Pixelate
 
 		for (auto reflectedSample : sampledImageNodes)
 		{
+			uint64_t invalidTextureHandle = -1;
 
 			YAML::Node textureNode = reflectedSample["Texture"];
 			uint64_t assetHandle = textureNode["AssetHandle"].as<uint64_t>();
-			Ref<Texture> texture = AssetManager::GetAsset<Texture>((AssetHandle)assetHandle);
+			Ref<Texture> texture = nullptr;
+			if(assetHandle != invalidTextureHandle)
+				texture = AssetManager::GetAsset<Texture>((AssetHandle)assetHandle);
 
 
 			YAML::Node rectNode = reflectedSample["Rect"];

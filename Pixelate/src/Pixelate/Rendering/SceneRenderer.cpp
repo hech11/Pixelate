@@ -111,7 +111,7 @@ namespace Pixelate
 		}
 
 		Renderer2D::BeginRenderPass(s_GeoRenderPass, s_GeoDrawList);
-		Renderer2D::DrawSpriteWithShader(transform, sprite, entityID);
+		Renderer2D::DrawSpriteWithMaterial(transform.Transform, sprite.Material, entityID);
 
 	}
 

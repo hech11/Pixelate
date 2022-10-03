@@ -13,7 +13,9 @@ namespace Pixelate
 
 	Ref<Shader> ShaderLibrary::Add(const std::string& name, const std::string& filepath)
 	{
-		m_QueuedPaths.push_back(std::make_pair(name, filepath));
+		std::filesystem::path p(filepath);
+		if(p.extension() == ".pxShader")
+			m_QueuedPaths.push_back(std::make_pair(name, filepath));
 		return nullptr;
 	}
 

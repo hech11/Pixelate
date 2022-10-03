@@ -17,12 +17,12 @@ Assets:
   - Handle: 16072470196708842148
     Filepath: audio\tone-ogg.ogg
     Type: Audio
-  - Handle: 4993231541211841246
-    Filepath: scenes\newAssetManager.PXScene
-    Type: Scene
   - Handle: 18069192197029962527
     Filepath: graphics\TestSpritesheet.png
     Type: Texture
+  - Handle: 4993231541211841246
+    Filepath: scenes\newAssetManager.PXScene
+    Type: Scene
   - Handle: 4020195025803029489
     Filepath: scenes\test123_Scripts.PXScene
     Type: Scene
@@ -59,9 +59,6 @@ Assets:
   - Handle: 10350709298579271351
     Filepath: Shaders\BlueShader.pxShader
     Type: Shader
-  - Handle: 4131169557384066883
-    Filepath: materials\BlueMaterial.pxMaterial
-    Type: Material
   - Handle: 14620561520535474729
     Filepath: Shaders\RedShader.pxShader
     Type: Shader
@@ -71,3 +68,6 @@ Assets:
   - Handle: 12776348810065080357
     Filepath: scenes\materialbluetest.PXScene.PXScene
     Type: Scene
+  - Handle: 16822601422350095720
+    Filepath: materials\BlueMaterial.pxMaterial
+    Type: Material

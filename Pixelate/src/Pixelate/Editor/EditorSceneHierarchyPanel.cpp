@@ -1596,6 +1596,7 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 		ImGui::Text(name.c_str());
 		ImGui::NextColumn();
 		std::string id = std::string("##") + name;
+		std::string id2 = std::string("##") + name + std::string("RECT");
 
 
 			if (ImGui::ImageButton((void*)container.Texture->GetHandleID(), { 128, 128 }, { 0, 1 }, { 1, 0 }))
@@ -1610,13 +1611,22 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 				if (metadata.Type == AssetType::Texture) {
 					container.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
 					container.Rect = { {0, 0}, {container.Texture->GetWidth(), container.Texture->GetHeight()} };
+					MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
 
 				}
 				});
 
 
 		ImGui::NextColumn();
+		ImGui::Text("TexCoords");
+		ImGui::NextColumn();
 
+
+		if (ImGui::DragInt4(id2.c_str(), (int*)glm::value_ptr(container.Rect.Position)))
+		{
+			MaterialSerialization::Serialize(AssetManager::GetFilePathString(AssetManager::GetMetadata(material->Handle)), material);
+		}
+		ImGui::NextColumn();
 	}
 
 

@@ -1,24 +1,36 @@
 Scene: Scene
 Entities:
-  - Entity: 8829907738613486222
+  - Entity: 1925063870682301696
     NameComponent:
       Name: Texture loaded via asset handle
     TagComponent:
       Tag: No tag
     TransformComponent:
-      Transform: [33.2514038, 0, 0, 0, 0, 26.7987022, 0, 0, 0, 0, 6.44000006, 0, -0.00317971222, -2.4586916e-07, -1, 1]
+      Transform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -0.0480771065, 0.817307949, -1, 1]
     SpriteRendererComponent:
       Texture:
-        AssetHandle: 18069192197029962527
+        AssetHandle: 0
       Material:
         AssetHandle: 2150874349211282972
       Rect:
         Position: [0, 0]
-        Scale: [1024, 1024]
+        Scale: [1, 1]
       SortingLayer: 0
       RenderOrder: 0
       TintColor: [1, 1, 1, 1]
-  - Entity: 12026916381553012072
+    ScriptingBehaviourComponent:
+      ClassName: Player
+      Fields:
+        - FieldName: MoveSpeed
+          FieldType: 2
+          FieldValue: -1.11856806e+29
+        - FieldName: TempInt
+          FieldType: 1
+          FieldValue: -273369340
+        - FieldName: TempBool
+          FieldType: 0
+          FieldValue: true
+  - Entity: 13340899316368056925
     NameComponent:
       Name: Camera
     TagComponent:

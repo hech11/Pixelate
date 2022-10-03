@@ -1,20 +1,11 @@
 Material:
-  - Name: BlueMaterial
-    Shader: 10350709298579271351
-    Table:
-      - ReflectedUniformBuffers:
-          - Binding: 0
-            StructSize: 68
-            Members:
-              - Name: u_ViewProjection
-                Type: 6
-                Size: 64
-                Offset: 0
-              - Name: Blueness
-                Value: -7
-                Type: 4
-                Size: 4
-                Offset: 64
-          - ReflectedSamplerImages
-          -
-            - []
+  Name: Material
+  Shader: 7968149936872318425
+ReflectedUniformBuffers:
+  - Binding: 0
+    StructSize: 64
+    Members:
+      - Name: u_ViewProjection
+        Type: 6
+        Size: 64
+        Offset: 0
