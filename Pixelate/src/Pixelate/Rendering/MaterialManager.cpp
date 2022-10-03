@@ -2,6 +2,7 @@
 #include "MaterialManager.h"
 
 #include "Pixelate/Asset/AssetManager.h"
+#include "Pixelate/Rendering/TextureManager.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -251,11 +252,13 @@ namespace Pixelate
 
 		for (auto reflectedSample : sampledImageNodes)
 		{
-			uint64_t invalidTextureHandle = -1;
+			uint64_t invalidTextureHandle = 0;
 
 			YAML::Node textureNode = reflectedSample["Texture"];
 			uint64_t assetHandle = textureNode["AssetHandle"].as<uint64_t>();
-			Ref<Texture> texture = nullptr;
+
+			Ref<Texture> texture = TextureManager::GetDefaultTexture();
+
 			if(assetHandle != invalidTextureHandle)
 				texture = AssetManager::GetAsset<Texture>((AssetHandle)assetHandle);
 

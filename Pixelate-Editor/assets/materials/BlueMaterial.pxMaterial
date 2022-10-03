@@ -1,5 +1,5 @@
 Material:
-  Name: Material
+  Name: BlueMaterial
   Shader: 7968149936872318425
 ReflectedUniformBuffers:
   - Binding: 0

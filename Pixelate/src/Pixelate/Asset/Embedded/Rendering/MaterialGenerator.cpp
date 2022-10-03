@@ -18,7 +18,7 @@ ReflectedUniformBuffers:
         Offset: 0
 ReflectedSamplerImages:
   - Texture:
-      AssetHandle: -1
+      AssetHandle: 0
     Rect:
       PositionX: 0
       PositionY: 0
