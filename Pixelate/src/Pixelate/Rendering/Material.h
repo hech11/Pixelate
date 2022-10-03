@@ -32,6 +32,9 @@ namespace Pixelate
 			const std::vector<Ref<MaterialUniformTable>>& GetUniformTable() const { return m_UniformTable; }
 			std::vector<Ref<MaterialUniformTable>>& GetUniformTable() { return m_UniformTable; }
 
+			std::unordered_map<int, SampledImage2DContainer>& GetReflectedSampledImages() { return m_ReflectedSampledImage2Ds; }
+			const std::unordered_map<int, SampledImage2DContainer>& GetReflectedSampledImages() const { return m_ReflectedSampledImage2Ds; }
+
 			void UpdateMaterial();
 
 			template<typename T>
@@ -65,6 +68,8 @@ namespace Pixelate
 		private :
 			Ref<Shader> m_Shader;
 			std::vector<Ref<MaterialUniformTable>> m_UniformTable;
+			std::unordered_map<int, SampledImage2DContainer> m_ReflectedSampledImage2Ds;
+
 			std::string m_Name;
 	};
 }

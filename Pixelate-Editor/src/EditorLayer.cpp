@@ -38,6 +38,42 @@ namespace Pixelate {
 	static bool GoTo1stClip = false;
 	void EditorLayer::Init() {
 
+		auto& shaderLibrary = Renderer2D::GetShaderLibrary();
+
+		shaderLibrary.LoadExternalResource("DefaultShader", "resources/shaders/DefaultShader.pxShader");
+
+#define SER 0
+
+#if SER
+		Ref<Material> defaultMaterial = CreateRef<Material>(Renderer2D::GetShaderLibrary().GetResources()["DefaultShader"], "DefaultMaterial", false);
+		ShaderUniform table;
+		table.StructSize = 64;
+		table.Binding = 0;
+
+		ShaderMember viewProj;
+		viewProj.Name = "u_ViewProjection";
+		viewProj.Type = ShaderBaseType::Mat4;
+		viewProj.Size = 64;
+		viewProj.Offset = 0;
+
+
+
+		table.Members.push_back(viewProj);
+
+		defaultMaterial->AddUniformBufferEntry(table);
+		SampledImage2DContainer container;
+		container.Rect = { {0,0}, {1024, 1024} };
+		container.Texture = AssetManager::GetAsset<Texture>("assets/graphics/TestSpritesheet.png");
+
+		defaultMaterial->AddSampledImageEntry(0, container);
+		MaterialSerialization::Serialize("test.pxMaterial", defaultMaterial);
+		MaterialSerialization::Serialize("resources/materials/DefaultMaterial.pxMaterial", defaultMaterial);
+
+		
+#else
+		Ref<Material> testMaterial =  MaterialSerialization::Deserialize("test.pxMaterial");
+#endif
+
 		m_GameSceneRenderer = CreateRef<SceneRenderer>();
 		m_EditorSceneRenderer = CreateRef<SceneRenderer>();
 
@@ -65,6 +101,10 @@ namespace Pixelate {
 
 		m_AudioMixerPanel->SetOpenPanel(false);
 		m_PhysicsPanel->SetOpenPanel(false);
+
+
+
+		
 
 
 		// testing asset handles directly

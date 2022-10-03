@@ -34,19 +34,19 @@ namespace Pixelate
 
 				}
 
-				for (auto&& [shaderMember, sampledImage] : resource.SampledImage2DContainers)
-				{
+				//for (auto&& [shaderMember, sampledImage] : resource.SampledImage2DContainers)
+				//{
 
-					if (table == nullptr)
-					{
-						table = CreateRef<MaterialUniformTable>();
-					}
-					table->Size = shaderMember.Size;
-					table->ReflectedSampledImage2Ds[binding] = sampledImage;
-					table->InvalidateData();
+				//	if (table == nullptr)
+				//	{
+				//		table = CreateRef<MaterialUniformTable>();
+				//	}
+				//	table->Size = shaderMember.Size;
+				//	table->ReflectedSampledImage2Ds[binding] = sampledImage;
+				//	table->InvalidateData();
 
-					m_UniformTable.push_back(table);
-				}
+				//	m_UniformTable.push_back(table);
+				//}
 
 			}
 		}
@@ -92,14 +92,7 @@ namespace Pixelate
 
 	void Material::AddSampledImageEntry(int binding, SampledImage2DContainer& container)
 	{
-		Ref<MaterialUniformTable> entry = CreateRef<MaterialUniformTable>();
-
-		entry->Size = 1;
-		entry->ReflectedSampledImage2Ds[binding] = container;
-		entry->InvalidateData();
-
-		m_UniformTable.push_back(entry);
-
+		m_ReflectedSampledImage2Ds[binding] = container;
 	}
 
 	void Material::SetShader(const Ref<Shader>& shader)

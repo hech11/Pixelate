@@ -11,7 +11,6 @@ namespace Pixelate
 	{
 		std::unordered_map<int, ShaderUniform> ReflectedUniformBuffers;
 		std::unordered_map<int, Ref<UniformBuffer>> UBOs;
-		std::unordered_map<int, SampledImage2DContainer> ReflectedSampledImage2Ds;
 
 
 		std::vector<uint8_t> Data;
@@ -38,7 +37,6 @@ namespace Pixelate
 			Size = other.Size;
 			ReflectedUniformBuffers = other.ReflectedUniformBuffers;
 			UBOs = other.UBOs;
-			ReflectedSampledImage2Ds = other.ReflectedSampledImage2Ds;
 		}
 		~MaterialUniformTable()
 		{

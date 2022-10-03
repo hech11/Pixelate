@@ -567,11 +567,11 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 						}
 					}
 
-					for (auto&& [binding, sampledImageContainers] : materialTable->ReflectedSampledImage2Ds)
-					{
-						RenderMaterialSampledImage2D(material, sampledImageContainers, binding);
-					}
-					
+				}
+
+				for (auto&& [binding, sampledImages] : material->GetReflectedSampledImages())
+				{
+					RenderMaterialSampledImage2D(material, sampledImages, binding);
 				}
 
 /*				if (spriteRect) {

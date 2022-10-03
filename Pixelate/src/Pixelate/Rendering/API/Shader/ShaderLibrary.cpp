@@ -20,6 +20,10 @@ namespace Pixelate
 	Ref<Shader> ShaderLibrary::LoadExternalResource(const std::string& name, const std::string& filepath)
 	{
 		Ref<Shader> result = Shader::Create(filepath);
+
+
+		std::filesystem::path childpath = std::filesystem::relative(filepath, "resources");
+		result->Handle = AssetManager::GetMetadata(childpath).Handle;
 		m_ResourceShaders[name] = result;
 
 		return result;

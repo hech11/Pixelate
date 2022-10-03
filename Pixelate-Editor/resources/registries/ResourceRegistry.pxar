@@ -2,24 +2,24 @@ Assets:
   - Handle: 14688645337383357422
     Filepath: audio\DefaultMixer.pxam
     Type: Audio Mixer
-  - Handle: 2150874349211282972
-    Filepath: materials\DefaultMaterial.pxMaterial
-    Type: Material
-  - Handle: 12450456544470214445
-    Filepath: icons\content-browser\folder.png
-    Type: Texture
   - Handle: 12901532479848558510
     Filepath: icons\content-browser\file.png
     Type: Texture
+  - Handle: 12450456544470214445
+    Filepath: icons\content-browser\folder.png
+    Type: Texture
+  - Handle: 2150874349211282972
+    Filepath: materials\DefaultMaterial.pxMaterial
+    Type: Material
   - Handle: 8155747883008691076
     Filepath: icons\scene-viewport\audio-source.png
+    Type: Texture
+  - Handle: 15821297334588596134
+    Filepath: icons\window\Pixelate_Logo.png
     Type: Texture
   - Handle: 1684191874365213599
     Filepath: registries\AssetRegistry.pxar
     Type: Asset Registry
-  - Handle: 15821297334588596134
-    Filepath: icons\window\Pixelate_Logo.png
-    Type: Texture
   - Handle: 16188489710865445189
     Filepath: registries\ResourceRegistry.pxar
     Type: Asset Registry
