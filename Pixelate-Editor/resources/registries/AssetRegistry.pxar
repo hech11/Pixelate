@@ -2,11 +2,14 @@ Assets:
   - Handle: 9025024172503938240
     Filepath: ""
     Type: Texture
+  - Handle: 15401950371930225587
+    Filepath: audio\noise.wav
+    Type: Audio
   - Handle: 16809476356410631126
     Filepath: ACTIVESCENE.PXScene
     Type: Scene
-  - Handle: 15401950371930225587
-    Filepath: audio\noise.wav
+  - Handle: 5767884922789449816
+    Filepath: audio\tone-mp3.mp3
     Type: Audio
   - Handle: 14995343214189438174
     Filepath: physics\Physics Material2D.pxPhysicsMaterial2D
@@ -14,21 +17,18 @@ Assets:
   - Handle: 16072470196708842148
     Filepath: audio\tone-ogg.ogg
     Type: Audio
-  - Handle: 5767884922789449816
-    Filepath: audio\tone-mp3.mp3
-    Type: Audio
   - Handle: 4993231541211841246
     Filepath: scenes\newAssetManager.PXScene
     Type: Scene
   - Handle: 18069192197029962527
     Filepath: graphics\TestSpritesheet.png
     Type: Texture
-  - Handle: 1564386651501461505
-    Filepath: audio\tone.wav
-    Type: Audio
   - Handle: 4020195025803029489
     Filepath: scenes\test123_Scripts.PXScene
     Type: Scene
+  - Handle: 1564386651501461505
+    Filepath: audio\tone.wav
+    Type: Audio
   - Handle: 16257840863795969837
     Filepath: graphics\sprite.png
     Type: Texture
@@ -65,9 +65,9 @@ Assets:
   - Handle: 14620561520535474729
     Filepath: Shaders\RedShader.pxShader
     Type: Shader
-  - Handle: 12776348810065080357
-    Filepath: scenes\materialbluetest.PXScene.PXScene
-    Type: Scene
   - Handle: 12218528700155114938
     Filepath: scenes\materialbluetest.PXScene
+    Type: Scene
+  - Handle: 12776348810065080357
+    Filepath: scenes\materialbluetest.PXScene.PXScene
     Type: Scene

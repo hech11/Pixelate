@@ -38,13 +38,13 @@ namespace Pixelate {
 	static bool GoTo1stClip = false;
 	void EditorLayer::Init() {
 
+#define SER 0
+#if SER
 		auto& shaderLibrary = Renderer2D::GetShaderLibrary();
 
 		shaderLibrary.LoadExternalResource("DefaultShader", "resources/shaders/DefaultShader.pxShader");
 
-#define SER 0
 
-#if SER
 		Ref<Material> defaultMaterial = CreateRef<Material>(Renderer2D::GetShaderLibrary().GetResources()["DefaultShader"], "DefaultMaterial", false);
 		ShaderUniform table;
 		table.StructSize = 64;
@@ -70,7 +70,6 @@ namespace Pixelate {
 		MaterialSerialization::Serialize("resources/materials/DefaultMaterial.pxMaterial", defaultMaterial);
 
 		
-#else
 		Ref<Material> testMaterial =  MaterialSerialization::Deserialize("test.pxMaterial");
 #endif
 

@@ -1608,13 +1608,12 @@ Input::SetMouseLockMode(Input::MouseLockMode::None);\
 
 			BeginDragDrop([&](AssetMetadata& metadata) {
 				if (metadata.Type == AssetType::Texture) {
-//					spriteComp.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
-					//spriteComp.Rect = { {0, 0}, {spriteComp.Texture->GetWidth(), spriteComp.Texture->GetHeight()} };
+					container.Texture = AssetManager::GetAsset<Texture>(metadata.Handle);
+					container.Rect = { {0, 0}, {container.Texture->GetWidth(), container.Texture->GetHeight()} };
 
 				}
 				});
 
-			ImGui::PopItemWidth();
 
 		ImGui::NextColumn();
 
